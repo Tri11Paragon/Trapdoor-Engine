@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.EXTTextureFilterAnisotropic;
 import org.lwjgl.opengl.GL;
@@ -17,7 +19,9 @@ import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL42;
 import org.lwjgl.stb.STBImage;
+import org.lwjgl.stb.STBImageResize;
 
 import com.game.engine.datatypes.BlockModelVAO;
 import com.game.engine.datatypes.ModelVAO;
@@ -430,14 +434,15 @@ public class Loader {
 	 * loads all the textures defined inside <b>GameRegistry.registerTextures) 
 	 * at as specified width and height
 	 */
-	/*public int loadSpecialTextureATLAS(int width, int height) {
+	public int loadSpecialTextureATLAS(int width, int height) {
 		try {
 			//for more detail on array textures
 			//https://www.khronos.org/opengl/wiki/Array_Texture
 			float anisf = Math.min(SettingsLoader.AF, GL11.glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
 			// map of textures that need to be put into the texture array.
 			// they should be in order from 0 to #
-			HashMap<Integer, String> texs = GameRegistry.registerTextures();
+			// TODO: THIS
+			HashMap<Integer, String> texs = new HashMap<>();
 			// generate a texture id like normal
 			int id = GL11.glGenTextures();
 			
@@ -468,7 +473,7 @@ public class Loader {
 	        			// format, format
 	        			GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, 
 	        			// decode the image texture
-	        			decodeTextureFile("resources/textures/" + s.getValue() + ".png").getBuffer());
+	        			decodeTextureToSize("resources/textures/" + s.getValue() + ".png", SettingsLoader.textureMapSize, SettingsLoader.textureMapSize).getBuffer());
 	        	// AF
 	        	GL11.glTexParameterf(GL30.GL_TEXTURE_2D_ARRAY, EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT, anisf);
 	        }
@@ -489,7 +494,7 @@ public class Loader {
 			return id;
 		} catch (Exception e) {}
 		return 0;
-	}*/
+	}
 	
 	/**
 	 * Decodes texture data from a file
@@ -513,6 +518,57 @@ public class Loader {
 			height = h[0];
 			channels = ch[0];
 			
+			buffer.flip();
+		} catch (Exception e) {
+			// we had issue loading texture. exit the game.
+			e.printStackTrace();
+			System.err.println("Tried to load texture " + fileName + ", didn't work");
+			System.exit(-1);
+		}
+		// return the texture data.
+		return new TextureData(buffer, width, height, channels);
+	}
+	
+	private TextureData decodeTextureToSize(String fileName, int width, int height) {
+		// image data storage.
+		int wd = 0;
+		int hd = 0;
+		int channels = 0;
+		ByteBuffer buffer = null;
+		try {
+			// decoder for the PNG file
+			int[] w = new int[1];
+			int[] h = new int[1];
+			int[] ch = new int[1];
+			
+			buffer = STBImage.stbi_load(fileName, w, h, ch, 0);
+			
+			// assigns the width and height of the texture data
+			wd = w[0];
+			hd = h[0];
+			channels = ch[0];
+			
+			int alpha;
+			if (channels == 4) 
+				alpha = channels-1;
+			else 
+				alpha = STBImageResize.STBIR_ALPHA_CHANNEL_NONE;
+			
+			ByteBuffer newImage = BufferUtils.createByteBuffer(wd * hd * channels );
+			STBImageResize.stbir_resize(buffer, wd, hd, wd * channels, 
+					newImage, width, height, width * channels, 
+					STBImageResize.STBIR_TYPE_UINT8,
+					channels,
+					alpha,
+					0,
+					STBImageResize.STBIR_EDGE_ZERO,
+					STBImageResize.STBIR_EDGE_ZERO,
+					STBImageResize.STBIR_FILTER_CUBICBSPLINE,
+					STBImageResize.STBIR_FILTER_CUBICBSPLINE,
+					STBImageResize.STBIR_COLORSPACE_SRGB
+					);
+			
+			buffer = newImage;
 			buffer.flip();
 		} catch (Exception e) {
 			// we had issue loading texture. exit the game.
