@@ -1,12 +1,9 @@
 package com.game.engine.display;
 
 import org.joml.Matrix4f;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
 import org.lwjgl.opengl.GL30;
 
 import com.game.engine.Loader;
-import com.game.engine.ProjectionMatrix;
 import com.game.engine.camera.FreecamCamera;
 import com.game.engine.datatypes.BlockModelVAO;
 import com.game.engine.shaders.WorldShader;
