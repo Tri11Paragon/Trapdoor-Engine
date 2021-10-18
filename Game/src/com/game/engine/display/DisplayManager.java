@@ -55,6 +55,7 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.system.MemoryStack;
 
 import com.game.engine.ProjectionMatrix;
+import com.game.engine.TextureLoader;
 import com.game.engine.tools.Logger;
 import com.game.engine.tools.RescaleEvent;
 import com.game.engine.tools.SettingsLoader;
@@ -124,6 +125,7 @@ public class DisplayManager {
 		Logger.writeln("LWJGL Version: " + Version.getVersion() + "!");
 		Logger.writeln("Game Version: " + gameVersion);
 		Logger.writeln("Engine Version: " + engineVersion);
+		Logger.writeln();
 		
 		GLFWErrorCallback.createPrint(System.err).set();
 		
@@ -207,6 +209,9 @@ public class DisplayManager {
 		GLIcon gli = new GLIcon("resources/textures/icon/icon16.png", "resources/textures/icon/icon32.png");
 		glfwSetWindowIcon(window, gli.getBuffer());
 		ProjectionMatrix.updateProjectionMatrix();
+		
+		// load the texture atlas stuff
+		TextureLoader.init("resources/textures/atlas/");
 	}
 
 	public static void closeDisplay() {

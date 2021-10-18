@@ -37,7 +37,6 @@ public class SettingsLoader {
 	public static double SENSITIVITY = 0.5d;
 	public static double MUSIC = 0.5d;
 	public static int VSYNC = 0;
-	public static int textureMapSize = 256;
 	
 	private static int readLines = 1;
 	public static void loadSettings() {
@@ -78,8 +77,6 @@ public class SettingsLoader {
 					MUSIC = Float.parseFloat(name[1]);
 				if (name[0].equals("vsync"))
 					VSYNC = (int)Float.parseFloat(name[1]);
-				if (name[0].equals("ta_size"))
-					textureMapSize = (int)Float.parseFloat(name[1]);
 			}
 			reader.close();
 		} catch (FileNotFoundException e) {
@@ -105,7 +102,6 @@ public class SettingsLoader {
 			writeLine(writer, "anisotropy: " + AF);
 			writeLine(writer, "vsync: " + VSYNC);
 			writeLine(writer, "music: " + MUSIC);
-			writeLine(writer, "ta_size: " + textureMapSize);
 			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();

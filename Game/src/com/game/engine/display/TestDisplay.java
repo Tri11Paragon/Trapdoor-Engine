@@ -6,7 +6,7 @@ import org.lwjgl.opengl.GL30;
 import com.game.engine.Loader;
 import com.game.engine.camera.FreecamCamera;
 import com.game.engine.datatypes.BlockModelVAO;
-import com.game.engine.shaders.WorldShader;
+import com.game.engine.shaders.AtlasShader;
 import com.game.engine.tools.math.Maths;
 
 /**
@@ -30,13 +30,13 @@ public class TestDisplay extends IDisplay {
 	
 	private FreecamCamera camera;
 	private Matrix4f view;
-	private WorldShader shader;
+	private AtlasShader shader;
 	private BlockModelVAO vao;
 	
 	@Override
 	public void onCreate() {
 		camera = new FreecamCamera();
-		shader = new WorldShader("test.vs", "test.fs");
+		shader = new AtlasShader("test.vs", "test.fs");
 		vao = Loader.loadToVAO(vertices, indices);
 	}
 
@@ -60,7 +60,7 @@ public class TestDisplay extends IDisplay {
 		
 		shader.loadViewMatrix(view);
 		GL30.glActiveTexture(GL30.GL_TEXTURE0);
-		GL30.glBindTexture(GL30.GL_TEXTURE_2D, Loader.loadTexture("1531688878833.png"));
+		GL30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, Loader.loadTexture("1531688878833.png"));
 		
 		shader.loadTranslationMatrix(Maths.createTransformationMatrix(0, 0, 0.0f, 500, 500));
 		GL30.glDrawElements(GL30.GL_TRIANGLES, vao.getVertexCount(), GL30.GL_UNSIGNED_INT, 0);

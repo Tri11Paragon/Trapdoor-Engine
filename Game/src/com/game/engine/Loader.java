@@ -1,33 +1,17 @@
 package com.game.engine;
 
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.EXTTextureFilterAnisotropic;
-import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
-import org.lwjgl.opengl.GL42;
-import org.lwjgl.stb.STBImage;
-import org.lwjgl.stb.STBImageResize;
-
 import com.game.engine.datatypes.BlockModelVAO;
 import com.game.engine.datatypes.ModelVAO;
-import com.game.engine.datatypes.TextureData;
 import com.game.engine.tools.Logger;
-import com.game.engine.tools.SettingsLoader;
 import com.game.engine.tools.obj.ModelData;
 
 /*
@@ -77,52 +61,17 @@ public class Loader {
 	 */
 	private static List<Integer> vaos = new ArrayList<Integer>();
 	private static List<Integer> vbos = new ArrayList<Integer>();
-	private static List<Integer> textures = new ArrayList<Integer>();
-	// map of loaded textures.
-	public static Map<String, Integer> textureMap = new HashMap<String, Integer>();
 	
-	/**
-	 * prints the sizes of all the maps
-	 */
-	public static void printSizes() {
-		Logger.writeln("VAOs Size: " + vaos.size());
-		Logger.writeln("VBOs Size: " + vbos.size());
-		Logger.writeln("Textures Size: " + textures.size());
-		Logger.writeln("Texture Map Size: " + textureMap.size());
+	public static int loadTexture(String filename) {
+		return TextureLoader.loadTexture(filename);
 	}
 	
-	/**
-	 * load to a VAO using indices
-	 */
-	public static ModelVAO loadToVAO(float[] positions,float[] textureCoords,int[] indices){
-		// create a VAO
-		int vaoID = createVAO();
-		// bind the index buffer
-		bindIndicesBuffer(indices);
-		// store the data into vbos
-		storeDataInAttributeList(0,3,positions);
-		storeDataInAttributeList(1,2,textureCoords);
-		// unbind the vbos
-		unbindVAO();
-		// return the model
-		return new ModelVAO(vaoID,indices.length);
+	public static int loadTexture(String filename, float bias) {
+		return TextureLoader.loadTexture(filename, bias);
 	}
 	
-	/**
-	 * load to VAO containing a position and texture while specifying the size
-	 */
-	public static BlockModelVAO loadToVAO(float[] positions,float[] textureCoords, int dimensions){
-		// standard stuff that this point
-		// create VAO
-		int vaoID = createVAO();
-		// we want to keep reference of vbos for runtime deletion
-		int[] vbos = new int[2];
-		// store the data into the vbos
-		vbos[0] = storeDataInAttributeList(0, dimensions, positions);
-		vbos[1] = storeDataInAttributeList(1, dimensions, textureCoords);
-		// unbind the VAO
-		unbindVAO();
-		return new BlockModelVAO(vaoID, vbos, positions.length);
+	public static int loadTexture(String texture, float bias, int minmag_filter, int minmag_mipmap) {
+		return TextureLoader.loadTexture(texture, bias, minmag_filter, minmag_mipmap);
 	}
 	
 	public static BlockModelVAO loadToVAO(float[] data, int[] indicies) {
@@ -162,22 +111,7 @@ public class Loader {
 		// return the model
 		return new ModelVAO(vaoID,indices.length);
 	}
-	
-	/**
-	 * creates a VAO with only position data.
-	 */
-	public static ModelVAO loadToVAO(float[] positions, int dimensions) {
-		// create the VAO
-		int vaoID = createVAO();
-		// store data in its first position
-		storeDataInAttributeList(0, 2, positions);
-		// unbind the vao
-		unbindVAO();
-		// return this as a ModelVAO object.
-		return new ModelVAO(vaoID, positions.length/2);
-		
-	}
-	
+
 	/**
 	 * deletes an actual model from the graphics card
 	 */
@@ -219,9 +153,7 @@ public class Loader {
 		for(int vbo:vbos){
 			GL15.glDeleteBuffers(vbo);
 		}
-		for(int texture:textures){
-			GL11.glDeleteTextures(texture);
-		}
+		TextureLoader.cleanup();
 	}
 	
 	/**
@@ -351,267 +283,14 @@ public class Loader {
 		buffer.flip();
 		return buffer;
 	}
-	
-	/**
-	 * loads textures from the specified files and then
-	 * put them into a cubemap and returns.
-	 */
-	public static int loadCubeMap(String[] textureFiles) {
-		// generate a texture buffer
-		int texID = GL11.glGenTextures();
-		// enable texture
-		GL13.glActiveTexture(GL13.GL_TEXTURE0);
-		// bind buffer this time as a cube map
-		GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, texID);
-		
-		// loop through all files
-		for(int i=0;i<textureFiles.length;i++) {
-			// load the texture from the skybox location
-			TextureData data = decodeTextureFile("resources/textures/terrain/skyboxes/" + textureFiles[i] + ".png");
-			// load the texture into its position in the cube map
-			GL11.glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL11.GL_RGBA, data.getWidth(), data.getHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, data.getBuffer());
-		}
-		/**
-		 * Apply texture filters
-		 */
-		GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-		GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-		GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE); 
-		GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
-		// add texture for later deletion.
-		textures.add(texID);
-		return texID;
-	}
-	
-	/**
-	 * loads a texture with default settings.
-	 */
-	public static int loadTexture(String filename) {
-		try {
-			// load texture with default settings.
-			return loadTexture(filename, -0.2f);
-		} catch (RuntimeException e) {}
-		return 0;
-	}
-	
-	/**
-	 * loads textures with a specified LOD bias.
-	 */
-	public static int loadTexture(String filename, float bias) {
-		// this used to be a different function but I have changed it to use the special texture loader
-		// as it appears to be able to handle non 2^x sized images and its just more clean.
-		return loadSpecialTexture(filename, bias, GL11.GL_NEAREST, GL11.GL_LINEAR_MIPMAP_LINEAR);
-	}
-	
-	/**
-	 * this is the same thing as <b>{@code loadTexture(String)}</b>
-	 * loads a texture with default settings.
-	 */
-	public static int loadSpecialTexture(String texture) {
-		// default settings.
-		return loadSpecialTexture(texture, -0.2f, GL11.GL_NEAREST, GL11.GL_LINEAR_MIPMAP_LINEAR);
-	}
-	
-	/**
-	 * Loads a texture with specified LOD bias, min/mag filtering and mipmap filtering.
-	 */
-	public static int loadSpecialTexture(String texture, float bias, int minmag_filter, int minmag_mipmap) {
-		// return the texture if its already been loaded.
-		if (textureMap.containsKey(texture))
-			return textureMap.get(texture);
-		try {
-			// don't load if we don't have a window with OpenGL (we are the server)
-			if (GL.getCapabilities() == null)
-				return 0;
-			// decode some texture data.
-			TextureData d = decodeTextureFile("resources/textures/" + texture);
-			// generate a new texture buffer
-			int id = GL11.glGenTextures();
-			
-			// enable texture
-			GL13.glActiveTexture(GL13.GL_TEXTURE0);
-			// bind the texture buffer
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, id);
-			
-			// Min and Mag filter is for when a texture is upscaled or downscaled.
-			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, minmag_filter); 
-	        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, minmag_filter); 
-			
-	        // put the texture data into the texture buffer.
-			GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, d.getWidth(), d.getHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, d.getBuffer());
-	        
-	        // generates the mipmaps
-			GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
-			// Min and Mag filter is for when a texture is upscaled or downscaled.
-			// im pretty sure i only need to call this ^ but i'd like to make sure that
-			// the mipmaps use the same filters.
-			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, minmag_mipmap); 
-	        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, minmag_mipmap); 
-	        // this bias is how fast a texture loses detail (LOD = level of detail)
-			// > 0 = less detail
-			GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_LOD_BIAS, bias);
-			// applies anisotropic filtering and makes sure that the graphics card supports this level of AF
-			float amount = Math.min(SettingsLoader.AF, GL11.glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
-			GL11.glTexParameterf(GL11.GL_TEXTURE_2D, EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT, amount);
-			
-			// add this texture to the map
-			textureMap.put(texture, id);
-			// add to the textures buffer list (for deletion when the game closes)
-			textures.add(id);
-			// return the buffer.
-			return id;
-		} catch (Exception e) {return 0;}
-	}
-	
-	/**
-	 * loads all the textures defined inside <b>GameRegistry.registerTextures) 
-	 * at as specified width and height
-	 */
-	public static int loadSpecialTextureATLAS(int width, int height) {
-		try {
-			//for more detail on array textures
-			//https://www.khronos.org/opengl/wiki/Array_Texture
-			float anisf = Math.min(SettingsLoader.AF, GL11.glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
-			// map of textures that need to be put into the texture array.
-			// they should be in order from 0 to #
-			// TODO: THIS
-			HashMap<Integer, String> texs = new HashMap<>();
-			// generate a texture id like normal
-			int id = GL11.glGenTextures();
-			
-			// enable texture
-			GL13.glActiveTexture(GL13.GL_TEXTURE0);
-			// bind the texture buffer, this time to texture array.
-			GL11.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, id); 
-			
-	        // i really don't like this
-	        // openGL4.2. i was trying to use < 3.2
-	        // if you are having issues its likely because of this.
-	        // "OpenGL 4.2 (2011)"
-	        // i feel like this should be in gl30
-			// but at the same time im able to use contect of 3.3 without any issues
-			// this is very weird and I think this is in the wrong class.
-	        GL42.glTexStorage3D(GL30.GL_TEXTURE_2D_ARRAY, 4, GL11.GL_RGBA8, width, height, texs.size());
-	        
-	        // loop through all textures.
-	        for (Entry<Integer, String> s : texs.entrySet()) {
-	        	// i don't understand why this is in gl12 but to allocate this is in gl42
-	        	GL12.glTexSubImage3D(GL30.GL_TEXTURE_2D_ARRAY,
-	        			// level
-	        			0, 
-	        			// x,y,z offsets using the texture # as the position in the array
-	        			0, 0, s.getKey(),
-	        			// width, height depth
-	        			width, height, 1, 
-	        			// format, format
-	        			GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, 
-	        			// decode the image texture
-	        			decodeTextureToSize("resources/textures/" + s.getValue() + ".png", SettingsLoader.textureMapSize, SettingsLoader.textureMapSize).getBuffer());
-	        	// AF
-	        	GL11.glTexParameterf(GL30.GL_TEXTURE_2D_ARRAY, EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT, anisf);
-	        }
-	        
-	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST); 
-	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
-	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT);
-	        
-	        GL30.glGenerateMipmap(GL30.GL_TEXTURE_2D_ARRAY);
-			GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST_MIPMAP_LINEAR);
-			GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST_MIPMAP_LINEAR);
-			// > 0 = less detail
-			GL11.glTexParameterf(GL30.GL_TEXTURE_2D_ARRAY, GL14.GL_TEXTURE_LOD_BIAS, 0.2f);
-	        
-			// add texture for later deletion.
-			textures.add(id);
-			return id;
-		} catch (Exception e) {}
-		return 0;
-	}
-	
-	/**
-	 * Decodes texture data from a file
-	 */
-	private static TextureData decodeTextureFile(String fileName) {
-		// image data storage.
-		int width = 0;
-		int height = 0;
-		int channels = 0;
-		ByteBuffer buffer = null;
-		try {
-			// decoder for the PNG file
-			int[] w = new int[1];
-			int[] h = new int[1];
-			int[] ch = new int[1];
-			
-			buffer = STBImage.stbi_load(fileName, w, h, ch, 0);
-			
-			// assigns the width and height of the texture data
-			width = w[0];
-			height = h[0];
-			channels = ch[0];
-			
-			buffer.flip();
-		} catch (Exception e) {
-			// we had issue loading texture. exit the game.
-			e.printStackTrace();
-			System.err.println("Tried to load texture " + fileName + ", didn't work");
-			System.exit(-1);
-		}
-		// return the texture data.
-		return new TextureData(buffer, width, height, channels);
-	}
-	
-	private static TextureData decodeTextureToSize(String fileName, int width, int height) {
-		// image data storage.
-		int wd = 0;
-		int hd = 0;
-		int channels = 0;
-		ByteBuffer buffer = null;
-		try {
-			// decoder for the PNG file
-			int[] w = new int[1];
-			int[] h = new int[1];
-			int[] ch = new int[1];
-			
-			buffer = STBImage.stbi_load(fileName, w, h, ch, 0);
-			
-			// assigns the width and height of the texture data
-			wd = w[0];
-			hd = h[0];
-			channels = ch[0];
-			
-			int alpha;
-			if (channels == 4) 
-				alpha = channels-1;
-			else 
-				alpha = STBImageResize.STBIR_ALPHA_CHANNEL_NONE;
-			
-			ByteBuffer newImage = BufferUtils.createByteBuffer(wd * hd * channels );
-			STBImageResize.stbir_resize(buffer, wd, hd, wd * channels, 
-					newImage, width, height, width * channels, 
-					STBImageResize.STBIR_TYPE_UINT8,
-					channels,
-					alpha,
-					0,
-					STBImageResize.STBIR_EDGE_ZERO,
-					STBImageResize.STBIR_EDGE_ZERO,
-					STBImageResize.STBIR_FILTER_CUBICBSPLINE,
-					STBImageResize.STBIR_FILTER_CUBICBSPLINE,
-					STBImageResize.STBIR_COLORSPACE_SRGB
-					);
-			
-			buffer = newImage;
-			buffer.flip();
-		} catch (Exception e) {
-			// we had issue loading texture. exit the game.
-			e.printStackTrace();
-			System.err.println("Tried to load texture " + fileName + ", didn't work");
-			System.exit(-1);
-		}
-		// return the texture data.
-		return new TextureData(buffer, width, height, channels);
-	}
 
+	/**
+	 * prints the sizes of all the maps
+	 */
+	public static void printSizes() {
+		Logger.writeln("VAOs Size: " + vaos.size());
+		Logger.writeln("VBOs Size: " + vbos.size());
+		TextureLoader.print();
+	}
 	
 }

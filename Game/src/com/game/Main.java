@@ -32,6 +32,7 @@ public class Main {
 	public static String token = null;
 	public static String username = null;
 	public static String password = null;
+	public static boolean verbose = true;
 	public static int processors = 8;
 	
 	public static void main(String[] args) {
@@ -44,6 +45,15 @@ public class Main {
 		});
 		CommandLineInput.registerCommandLineProcessor("password", (String data) -> {
 			password = data;
+		});
+		
+		// verbose console output is default. only disable if on potato pc.
+		CommandLineInput.registerCommandLineProcessor("verbose", (String data) -> {
+			verbose = false;
+		});
+		
+		CommandLineInput.registerCommandLineProcessor('v', (String data) -> {
+			verbose = false;
 		});
 		
 		// assign the variables.
