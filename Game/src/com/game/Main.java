@@ -7,6 +7,8 @@ import java.lang.management.RuntimeMXBean;
 import java.lang.management.ThreadMXBean;
 
 import com.game.engine.display.DisplayManager;
+import com.game.engine.display.IDisplay;
+import com.game.engine.display.TestDisplay;
 import com.game.engine.tools.CommandLineInput;
 import com.game.engine.tools.Logger;
 
@@ -84,6 +86,10 @@ public class Main {
 				"Number of cores: " + processors,
 				"Current Thread: " + Thread.currentThread()
 				});
+		
+		IDisplay dis = new TestDisplay();
+		DisplayManager.createDisplay(dis);
+		DisplayManager.changeDisplay(dis);
 		
 		// starts the update display loop
 		DisplayManager.updateDisplay();

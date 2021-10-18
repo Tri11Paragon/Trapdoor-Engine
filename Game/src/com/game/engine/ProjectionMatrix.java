@@ -43,14 +43,14 @@ public class ProjectionMatrix {
 		
 		Iterator<Entry<Integer, WorldShader>> shaderIt = shaders.entrySet().iterator();
 		
+		projectionMatrixOrtho.set(Maths.ortho());
+		
 		while (shaderIt.hasNext()) {
 			WorldShader localShader = shaderIt.next().getValue(); 
 			localShader.start();
-			localShader.loadProjectionMatrix(projectionMatrix);
+			localShader.loadProjectionMatrix(projectionMatrixOrtho);
 			localShader.stop();
 		}
-		
-		projectionMatrixOrtho.set(Maths.ortho());
 		
 		//GUIShader guishader = VoxelScreenManager.ui.getRenderer().getShader();
 		//guishader.start();

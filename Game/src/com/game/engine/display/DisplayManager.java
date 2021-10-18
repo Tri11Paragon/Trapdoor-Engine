@@ -63,30 +63,67 @@ import com.game.engine.tools.input.InputMaster;
 
 public class DisplayManager {
 
-	public static final String version = "0.2A";
+	public static final String gameVersion = "0.0A";
+	public static final String engineVersion = "0.1A";
 	
+	// temp color
 	private static final float RED = 0.5444f;
 	private static final float GREEN = 0.62f;
 	private static final float BLUE = 0.69f;
+	
+	// window
+	public static long window;
+		
+	private static long lastFrameTime;
+	private static double delta;
 	
 	public static int WIDTH = 1280;
 	public static int HEIGHT = 720;
 	public static int FPS_MAX = 120;
 	
-	public static boolean isMouseGrabbed = false;
-
-	public static long window;
-	
-	private static long lastFrameTime;
-	private static double delta;
-	
+	// mouse
 	public static double mouseX,mouseY;
+	private static double lx, ly;
+	public static boolean isMouseGrabbed = false;
 	
+	// classes needing to change when the window resizes
 	public static List<RescaleEvent> rescales = new ArrayList<RescaleEvent>();
-
+	
+	// display
+	private static IDisplay currentDisplay; 
+	private static List<IDisplay> allDisplays = new ArrayList<IDisplay>();
+	
+	// display updating
+	
+	public static void updateDisplay() {
+		while(!GLFW.glfwWindowShouldClose(DisplayManager.window)) {
+			try {
+				GL11.glEnable(GL11.GL_DEPTH_TEST);
+				GL11.glClearColor(RED, GREEN, BLUE, 1.0f);
+				GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+				
+				currentDisplay.render();
+				
+				lx = mouseX;
+				ly = mouseY;
+				InputMaster.update();
+				
+				glfwSwapBuffers(window);
+				glfwPollEvents();
+				
+				long currentFrameTime = getCurrentTime();
+				delta = currentFrameTime - lastFrameTime;
+				lastFrameTime = currentFrameTime;
+			} catch (Exception e) {e.printStackTrace();}
+		}
+	}
+	
+	// display opening / closing
+	
 	public static void createDisplay(boolean isUsingFBOs) {
 		Logger.writeln("LWJGL Version: " + Version.getVersion() + "!");
-		Logger.writeln("Game Version: " + version);
+		Logger.writeln("Game Version: " + gameVersion);
+		Logger.writeln("Engine Version: " + engineVersion);
 		
 		GLFWErrorCallback.createPrint(System.err).set();
 		
@@ -100,7 +137,7 @@ public class DisplayManager {
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 		
 		
-		window = glfwCreateWindow(WIDTH, HEIGHT, "Total Femboy Master Fighters - V" + version, NULL, NULL);
+		window = glfwCreateWindow(WIDTH, HEIGHT, "Total Femboy Master Fighters - V" + gameVersion + " // Trapdoor V" + engineVersion, NULL, NULL);
 		if ( window == NULL )
 			throw new RuntimeException("Failed to create the GLFW window");
 		
@@ -163,46 +200,19 @@ public class DisplayManager {
 		
 		GL.createCapabilities();
 		
-		glfwWindowHint(GLFW_SAMPLES, 4);
-		GL11.glEnable(GL13.GL_MULTISAMPLE);
+		glfwWindowHint(GLFW_SAMPLES, SettingsLoader.SAMPLES);
+		if (SettingsLoader.SAMPLES > 0)
+			GL11.glEnable(GL13.GL_MULTISAMPLE);
 		
 		GLIcon gli = new GLIcon("resources/textures/icon/icon16.png", "resources/textures/icon/icon32.png");
 		glfwSetWindowIcon(window, gli.getBuffer());
 		ProjectionMatrix.updateProjectionMatrix();
 	}
 
-	public static double getDX() {
-		return mouseX - lx;
-	}
-	
-	public static double getDY() {
-		return mouseY - ly;
-	}
-	
-	private static double lx, ly;
-	
-	public static void updateDisplay() {
-		while(!GLFW.glfwWindowShouldClose(DisplayManager.window)) {
-			try {
-				GL11.glEnable(GL11.GL_DEPTH_TEST);
-				GL11.glClearColor(RED, GREEN, BLUE, 1.0f);
-				GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-				
-				lx = mouseX;
-				ly = mouseY;
-				InputMaster.update();
-				
-				glfwSwapBuffers(window);
-				glfwPollEvents();
-				
-				long currentFrameTime = getCurrentTime();
-				delta = currentFrameTime - lastFrameTime;
-				lastFrameTime = currentFrameTime;
-			} catch (Exception e) {e.printStackTrace();}
-		}
-	}
-
 	public static void closeDisplay() {
+		for (int i = 0; i < allDisplays.size(); i++)
+			allDisplays.get(i).onDestory();
+		
 		glfwFreeCallbacks(window);
 		glfwDestroyWindow(window);
 		
@@ -210,12 +220,39 @@ public class DisplayManager {
 		glfwSetErrorCallback(null);
 	}
 
-	public static void setMouseGrabbed(boolean gr) {
-		if (gr) {
-			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-		} else {
-			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-		}
+	/*
+	 * Display manager functions
+	 */
+	
+	public static void changeDisplay(IDisplay display) {
+		IDisplay old = currentDisplay;
+		currentDisplay = display;
+		if (display != null)
+			display.onSwitch();
+		if (old != null)
+			old.onLeave();
+	}
+	
+	public static void createDisplay(IDisplay display) {
+		allDisplays.add(display);
+		display.onCreate();
+		ProjectionMatrix.updateProjectionMatrix();
+	}
+	
+	/*
+	 * Helper functions
+	 */
+	
+	public static void setMouseGrabbed(boolean grabbed) {
+		glfwSetInputMode(window, GLFW_CURSOR, grabbed ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
+	}
+	
+	public static double getDX() {
+		return mouseX - lx;
+	}
+	
+	public static double getDY() {
+		return mouseY - ly;
 	}
 	
 	public static void setGrabbed(boolean gr) {

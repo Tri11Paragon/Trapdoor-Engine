@@ -75,16 +75,16 @@ public class Loader {
 	/**
 	 * list of the VBOs, textures and VAOs.
 	 */
-	private List<Integer> vaos = new ArrayList<Integer>();
-	private List<Integer> vbos = new ArrayList<Integer>();
-	private List<Integer> textures = new ArrayList<Integer>();
+	private static List<Integer> vaos = new ArrayList<Integer>();
+	private static List<Integer> vbos = new ArrayList<Integer>();
+	private static List<Integer> textures = new ArrayList<Integer>();
 	// map of loaded textures.
-	public Map<String, Integer> textureMap = new HashMap<String, Integer>();
+	public static Map<String, Integer> textureMap = new HashMap<String, Integer>();
 	
 	/**
 	 * prints the sizes of all the maps
 	 */
-	public void printSizes() {
+	public static void printSizes() {
 		Logger.writeln("VAOs Size: " + vaos.size());
 		Logger.writeln("VBOs Size: " + vbos.size());
 		Logger.writeln("Textures Size: " + textures.size());
@@ -94,7 +94,7 @@ public class Loader {
 	/**
 	 * load to a VAO using indices
 	 */
-	public ModelVAO loadToVAO(float[] positions,float[] textureCoords,int[] indices){
+	public static ModelVAO loadToVAO(float[] positions,float[] textureCoords,int[] indices){
 		// create a VAO
 		int vaoID = createVAO();
 		// bind the index buffer
@@ -111,24 +111,38 @@ public class Loader {
 	/**
 	 * load to VAO containing a position and texture while specifying the size
 	 */
-	public BlockModelVAO loadToVAO(float[] positions,float[] textureCoords, int dimensions){
+	public static BlockModelVAO loadToVAO(float[] positions,float[] textureCoords, int dimensions){
 		// standard stuff that this point
 		// create VAO
 		int vaoID = createVAO();
 		// we want to keep reference of vbos for runtime deletion
 		int[] vbos = new int[2];
 		// store the data into the vbos
-		vbos[0] = this.storeDataInAttributeList(0, dimensions, positions);
-		vbos[1] = this.storeDataInAttributeList(1, dimensions, textureCoords);
+		vbos[0] = storeDataInAttributeList(0, dimensions, positions);
+		vbos[1] = storeDataInAttributeList(1, dimensions, textureCoords);
 		// unbind the VAO
 		unbindVAO();
 		return new BlockModelVAO(vaoID, vbos, positions.length);
 	}
 	
+	public static BlockModelVAO loadToVAO(float[] data, int[] indicies) {
+		int vao = createVAO();
+		
+		int[] vbos = new int[2];
+		
+		bindIndicesBuffer(indicies);
+		
+		vbos[0] = storeDataInAttributeList(0, 3, 20, 0, data);
+		vbos[1] = storeDataInAttributeList(1, 2, 20, 12, data);
+		
+		unbindVAO();
+		return new BlockModelVAO(vao, vbos, indicies.length);
+	}
+	
 	/**
 	 * loads to VAO using ModelData
 	 */
-	public ModelVAO loadToVAO(ModelData data) {
+	public static ModelVAO loadToVAO(ModelData data) {
 		// create the VAO
 		int vaoID = createVAO();
 		// get the indices
@@ -152,11 +166,11 @@ public class Loader {
 	/**
 	 * creates a VAO with only position data.
 	 */
-	public ModelVAO loadToVAO(float[] positions, int dimensions) {
+	public static ModelVAO loadToVAO(float[] positions, int dimensions) {
 		// create the VAO
 		int vaoID = createVAO();
 		// store data in its first position
-		this.storeDataInAttributeList(0, 2, positions);
+		storeDataInAttributeList(0, 2, positions);
 		// unbind the vao
 		unbindVAO();
 		// return this as a ModelVAO object.
@@ -167,7 +181,7 @@ public class Loader {
 	/**
 	 * deletes an actual model from the graphics card
 	 */
-	public ModelVAO deleteVAO(ModelVAO model) {
+	public static ModelVAO deleteVAO(ModelVAO model) {
 		try {
 			// if this is a block then we will delete the VBOs
 			if (model instanceof BlockModelVAO) {
@@ -177,9 +191,9 @@ public class Loader {
 				for (int i = 0; i < vbos.length; i++) {
 					GL15.glDeleteBuffers(vbos[i]);
 					// make sure we remove them from the list.
-					for (int j = 0; j < this.vbos.size(); j++) {
-						if (this.vbos.get(i) == vbos[i])
-							this.vbos.remove(j);
+					for (int j = 0; j < Loader.vbos.size(); j++) {
+						if (Loader.vbos.get(i) == vbos[i])
+							Loader.vbos.remove(j);
 					}
 				}
 			}
@@ -198,7 +212,7 @@ public class Loader {
 	/**
 	 * deletes all the VAOs, VBOs and Textures from the graphics card.
 	 */
-	public void cleanUp(){
+	public static void cleanUp(){
 		for(int vao:vaos){
 			GL30.glDeleteVertexArrays(vao);
 		}
@@ -213,9 +227,9 @@ public class Loader {
 	/**
 	 * deletes a vao
 	 */
-	public void deleteVAO(int vaoID) {
+	public static void deleteVAO(int vaoID) {
 		// remove it since we already deleted it
-		this.vaos.remove((Integer) vaoID);
+		Loader.vaos.remove((Integer) vaoID);
 		// deletes the vertex array from the graphics card
 		GL30.glDeleteVertexArrays(vaoID);
 	}
@@ -223,9 +237,9 @@ public class Loader {
 	/**
 	 * deletes a vbo
 	 */
-	public void deleteVBO(int vboID) {
+	public static void deleteVBO(int vboID) {
 		// remove it since we already deleted it
-		this.vbos.remove((Integer) vboID); // needed to make this work
+		Loader.vbos.remove((Integer) vboID); // needed to make this work
 		// delete it from the graphics card
 		GL15.glDeleteBuffers(vboID);
 	}
@@ -233,7 +247,7 @@ public class Loader {
 	/**
 	 * creates a VAO
 	 */
-	private int createVAO(){
+	private static int createVAO(){
 		// create the VAO
 		int vaoID = GL30.glGenVertexArrays();
 		// store for later deletion
@@ -251,7 +265,7 @@ public class Loader {
 	 * @param coordinateSize how many floats are to be passed each vertex. 1 is just one float, 2 would be a 2d vector, 3 would be a 3d vector and so on
 	 * @param data float[] the data
 	 */
-	private int storeDataInAttributeList(int attributeNumber, int coordinateSize,float[] data){
+	private static int storeDataInAttributeList(int attributeNumber, int coordinateSize,float[] data){
 		// creates a VBO
 		int vboID = GL15.glGenBuffers();
 		// add for later deletion
@@ -270,17 +284,36 @@ public class Loader {
 		return vboID;
 	}
 	
+	private static int storeDataInAttributeList(int attributeNumber, int coordinateSize, int stride, int offset, float[] data){
+		// creates a VBO
+		int vboID = GL15.glGenBuffers();
+		// add for later deletion
+		vbos.add(vboID);
+		// binds the buffer as just a standard array buffer
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID);
+		// creates a float buffer from the data
+		FloatBuffer buffer = storeDataInFloatBuffer(data);
+		// puts the data into the VBO
+		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
+		// assign this VBO to the pointer and coordinate size. We are using floats, they are not normalized and start at 0
+		GL20.glVertexAttribPointer(attributeNumber,coordinateSize,GL11.GL_FLOAT,false,stride,offset);
+		// unbind the VBO
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+		// return the VBO
+		return vboID;
+	}
+	
 	/**
 	 * unbinds any active VAO
 	 */
-	private void unbindVAO(){
+	private static void unbindVAO(){
 		GL30.glBindVertexArray(0);
 	}
 	
 	/**
 	 * puts the indices into the element buffer for index based drawing.
 	 */
-	private void bindIndicesBuffer(int[] indices){
+	private static void bindIndicesBuffer(int[] indices){
 		// generate the vbo
 		int vboID = GL15.glGenBuffers();
 		// add it for later deletion
@@ -296,7 +329,7 @@ public class Loader {
 	/**
 	 * stores the int[] into a int buffer
 	 */
-	private IntBuffer storeDataInIntBuffer(int[] data){
+	private static IntBuffer storeDataInIntBuffer(int[] data){
 		// create the int buffer
 		IntBuffer buffer = BufferUtils.createIntBuffer(data.length);
 		// put the data 
@@ -309,7 +342,7 @@ public class Loader {
 	/**
 	 * stores the float[] into a float buffer
 	 */
-	private FloatBuffer storeDataInFloatBuffer(float[] data){
+	private static FloatBuffer storeDataInFloatBuffer(float[] data){
 		// create a float buffer
 		FloatBuffer buffer = BufferUtils.createFloatBuffer(data.length);
 		// put the data
@@ -323,7 +356,7 @@ public class Loader {
 	 * loads textures from the specified files and then
 	 * put them into a cubemap and returns.
 	 */
-	public int loadCubeMap(String[] textureFiles) {
+	public static int loadCubeMap(String[] textureFiles) {
 		// generate a texture buffer
 		int texID = GL11.glGenTextures();
 		// enable texture
@@ -353,7 +386,7 @@ public class Loader {
 	/**
 	 * loads a texture with default settings.
 	 */
-	public int loadTexture(String filename) {
+	public static int loadTexture(String filename) {
 		try {
 			// load texture with default settings.
 			return loadTexture(filename, -0.2f);
@@ -364,7 +397,7 @@ public class Loader {
 	/**
 	 * loads textures with a specified LOD bias.
 	 */
-	public int loadTexture(String filename, float bias) {
+	public static int loadTexture(String filename, float bias) {
 		// this used to be a different function but I have changed it to use the special texture loader
 		// as it appears to be able to handle non 2^x sized images and its just more clean.
 		return loadSpecialTexture(filename, bias, GL11.GL_NEAREST, GL11.GL_LINEAR_MIPMAP_LINEAR);
@@ -374,7 +407,7 @@ public class Loader {
 	 * this is the same thing as <b>{@code loadTexture(String)}</b>
 	 * loads a texture with default settings.
 	 */
-	public int loadSpecialTexture(String texture) {
+	public static int loadSpecialTexture(String texture) {
 		// default settings.
 		return loadSpecialTexture(texture, -0.2f, GL11.GL_NEAREST, GL11.GL_LINEAR_MIPMAP_LINEAR);
 	}
@@ -382,7 +415,7 @@ public class Loader {
 	/**
 	 * Loads a texture with specified LOD bias, min/mag filtering and mipmap filtering.
 	 */
-	public int loadSpecialTexture(String texture, float bias, int minmag_filter, int minmag_mipmap) {
+	public static int loadSpecialTexture(String texture, float bias, int minmag_filter, int minmag_mipmap) {
 		// return the texture if its already been loaded.
 		if (textureMap.containsKey(texture))
 			return textureMap.get(texture);
@@ -391,7 +424,7 @@ public class Loader {
 			if (GL.getCapabilities() == null)
 				return 0;
 			// decode some texture data.
-			TextureData d = decodeTextureFile("resources/textures/" + texture + ".png");
+			TextureData d = decodeTextureFile("resources/textures/" + texture);
 			// generate a new texture buffer
 			int id = GL11.glGenTextures();
 			
@@ -434,7 +467,7 @@ public class Loader {
 	 * loads all the textures defined inside <b>GameRegistry.registerTextures) 
 	 * at as specified width and height
 	 */
-	public int loadSpecialTextureATLAS(int width, int height) {
+	public static int loadSpecialTextureATLAS(int width, int height) {
 		try {
 			//for more detail on array textures
 			//https://www.khronos.org/opengl/wiki/Array_Texture
@@ -499,7 +532,7 @@ public class Loader {
 	/**
 	 * Decodes texture data from a file
 	 */
-	private TextureData decodeTextureFile(String fileName) {
+	private static TextureData decodeTextureFile(String fileName) {
 		// image data storage.
 		int width = 0;
 		int height = 0;
@@ -529,7 +562,7 @@ public class Loader {
 		return new TextureData(buffer, width, height, channels);
 	}
 	
-	private TextureData decodeTextureToSize(String fileName, int width, int height) {
+	private static TextureData decodeTextureToSize(String fileName, int width, int height) {
 		// image data storage.
 		int wd = 0;
 		int hd = 0;

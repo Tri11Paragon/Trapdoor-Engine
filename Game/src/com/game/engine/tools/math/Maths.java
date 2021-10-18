@@ -131,7 +131,53 @@ public class Maths {
 	public static Matrix4f createTransformationMatrix(float x, float y, float sx, float sy) {
 		matrix.identity();
 		matrix.translate(x, y, 0);
-		matrix.scale(new Vector3f(sx, sy, 1f));
+		matrix.scale(sx, sy, 1f);
+		return matrix;
+	}
+	
+	public static Matrix4f createTransformationMatrix(float x, float y, float z, float sx, float sy) {
+		matrix.identity();
+		matrix.translate(x, y, z);
+		matrix.scale(sx, sy, 1f);
+		return matrix;
+	}
+	
+	public static Matrix4f createTransformationMatrix(float x, float y, float z, float sx, float sy, float rot) {
+		matrix.identity();
+		matrix.translate(x, y, z);
+		matrix.scale(sx, sy, 1f);
+		matrix.rotate(rot, rz);
+		return matrix;
+	}
+	
+	public static Matrix4f createTransformationMatrix(float x, float y, float z, float sx, float sy, float rotx, float roty) {
+		matrix.identity();
+		matrix.translate(x, y, z);
+		matrix.scale(sx, sy, 1f);
+		matrix.rotate(rotx, rx);
+		matrix.rotate(roty, ry);
+		return matrix;
+	}
+	
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param sx
+	 * @param sy
+	 * @param rotx flips top to bottom
+	 * @param roty flips left to right
+	 * @param rotz rotates the image
+	 * @return
+	 */
+	public static Matrix4f createTransformationMatrix(float x, float y, float z, float sx, float sy, float rotx, float roty, float rotz) {
+		matrix.identity();
+		matrix.translate(x, y, z);
+		matrix.scale(sx, sy, 1f);
+		matrix.rotate(rotx, rx);
+		matrix.rotate(roty, ry);
+		matrix.rotate(rotz, rz);
 		return matrix;
 	}
 	
@@ -144,7 +190,7 @@ public class Maths {
 	public static Matrix4f createTransformationMatrix(Vector3f translation, Vector2f scale) {
 		matrix.identity();
 		matrix.translate(translation.x, translation.y, translation.z);
-		matrix.scale(new Vector3f(scale.x, scale.y, 1f));
+		matrix.scale(scale.x, scale.y, 1);
 		return matrix;
 	}
 	
@@ -166,13 +212,13 @@ public class Maths {
 	/**
 	 * creates a translation matrix
 	 */
-	public static Matrix4f createTransformationMatrix(float SWIDTH, float SHEIGHT, float x, float y, float width,
+	/*public static Matrix4f createTransformationMatrix(float SWIDTH, float SHEIGHT, float x, float y, float width,
 			float height) {
 		matrix.identity();
 		matrix.translate(x / SWIDTH, y / SHEIGHT, 0);
 		matrix.scale(width / SWIDTH, height / SHEIGHT, 1f);
 		return matrix;
-	}
+	}*/
 
 	/**
 	 * creates a translation matrix
@@ -204,15 +250,21 @@ public class Maths {
 		Matrix4f m = new Matrix4f();
 		
 		m.identity();
-		//m.m00( 2 / (right - left));
-		//m.m11(2 / (top - bottom));
-		//m.m22(-2 / (zFar - zNear));
-		//m.m30(-(right + left) / (right - left));
-		//m.m31(-(top + bottom) / (top - bottom));
-		//m.m32(-(zFar + zNear) / (zFar - zNear));
-		//m.m33(1);
-		m.setOrtho2D(0, DisplayManager.WIDTH, DisplayManager.HEIGHT, 0);
-
+		
+		float right = DisplayManager.WIDTH;
+		float left = 0;
+		float top = 0;
+		float bottom = DisplayManager.HEIGHT;
+		float zFar = 50;
+		float zNear = -50;
+		
+		m.m00(2/(right - left));
+		m.m11(2/(top-bottom));
+		m.m22(-2/(zFar-zNear));
+		m.m30(-(right+left)/(right-left));
+		m.m31(-(top+bottom)/(top-bottom));
+		m.m32(-(zFar+zNear)/(zFar - zNear));
+		
 		return m;
 	}
 
