@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.EXTTextureFilterAnisotropic;
 import org.lwjgl.opengl.GL;
@@ -24,7 +22,7 @@ import org.lwjgl.stb.STBImageResize;
 
 import com.game.Main;
 import com.game.engine.datatypes.Atlas;
-import com.game.engine.datatypes.TextureData;
+import com.game.engine.datatypes.ogl.TextureData;
 import com.game.engine.tools.Logger;
 import com.game.engine.tools.SettingsLoader;
 
@@ -39,6 +37,11 @@ public class TextureLoader {
 	public static Map<String, Integer> textureMap = new HashMap<String, Integer>();
 	
 	private static List<Integer> textures = new ArrayList<Integer>();
+	
+	// contains TextureName -> array pos
+	public static HashMap<String, Integer> atlasMap = new HashMap<String, Integer>();
+	// contains TextureName -> atlas id
+	public static HashMap<String, Integer> atlasTextureMap = new HashMap<String, Integer>();
 
 	/**
 	 * does all the texture atlas stuff.
@@ -93,7 +96,7 @@ public class TextureLoader {
 					width = height = Integer.parseInt(size[1]);
 				} else {
 					width = height = 128;
-					System.err.println("UNABLE TO FIND ATLAS SIZE. ASSUMING 128x128. \n "
+					Logger.writeErrorln("UNABLE TO FIND ATLAS SIZE. ASSUMING 128x128. \n "
 							+ "If you are seeing this, please include the size in the folder title \n "
 							+ "or include a atlas.properties with the width and height on separate lines.");
 				}
@@ -102,68 +105,38 @@ public class TextureLoader {
 			atlases.add(new Atlas(textures, width, height));
 		}
 		
+		for (Atlas e : atlases) {
+			loadSpecialTextureATLAS(e);
+		}
+		
 	}
 	
-	public static int loadSpecialTextureATLAS(int width, int height) {
-		try {
-			//for more detail on array textures
-			//https://www.khronos.org/opengl/wiki/Array_Texture
-			float anisf = Math.min(SettingsLoader.AF, GL11.glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
-			// map of textures that need to be put into the texture array.
-			// they should be in order from 0 to #
-			// TODO: THIS
-			HashMap<Integer, String> texs = new HashMap<>();
-			// generate a texture id like normal
-			int id = GL11.glGenTextures();
-			
-			// enable texture
-			GL13.glActiveTexture(GL13.GL_TEXTURE0);
-			// bind the texture buffer, this time to texture array.
-			GL11.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, id); 
-			
-	        // i really don't like this
-	        // openGL4.2. i was trying to use < 3.2
-	        // if you are having issues its likely because of this.
-	        // "OpenGL 4.2 (2011)"
-	        // i feel like this should be in gl30
-			// but at the same time im able to use contect of 3.3 without any issues
-			// this is very weird and I think this is in the wrong class.
-	        GL42.glTexStorage3D(GL30.GL_TEXTURE_2D_ARRAY, 4, GL11.GL_RGBA8, width, height, texs.size());
-	        
-	        // loop through all textures.
-	        for (Entry<Integer, String> s : texs.entrySet()) {
-	        	// i don't understand why this is in gl12 but to allocate this is in gl42
-	        	GL12.glTexSubImage3D(GL30.GL_TEXTURE_2D_ARRAY,
-	        			// level
-	        			0, 
-	        			// x,y,z offsets using the texture # as the position in the array
-	        			0, 0, s.getKey(),
-	        			// width, height depth
-	        			width, height, 1, 
-	        			// format, format
-	        			GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, 
-	        			// decode the image texture
-	        			decodeTextureToSize("resources/textures/" + s.getValue() + ".png", width, height).getBuffer());
-	        	// AF
-	        	GL11.glTexParameterf(GL30.GL_TEXTURE_2D_ARRAY, EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT, anisf);
-	        }
-	        
-	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST); 
-	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
-	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT);
-	        
-	        GL30.glGenerateMipmap(GL30.GL_TEXTURE_2D_ARRAY);
-			GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST_MIPMAP_LINEAR);
-			GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST_MIPMAP_LINEAR);
-			// > 0 = less detail
-			GL11.glTexParameterf(GL30.GL_TEXTURE_2D_ARRAY, GL14.GL_TEXTURE_LOD_BIAS, 0.2f);
-	        
-			// add texture for later deletion.
-			textures.add(id);
-			return id;
-		} catch (Exception e) {}
-		return 0;
+	/**
+	 * gets the corresponding texture ID of the atlas to the texture name supplied (must contain the .png/.jpg etc)
+	 * @param filename name of the file
+	 * @return the id of the texture atlas containing the file
+	 */
+	public static int getTextureAtlas(String filename) {
+		Integer i = atlasTextureMap.get(filename);
+		if (i == null) {
+			Logger.writeErrorln("Unable to find texture atlas.");
+			return -1;
+		}
+		return i;
+	}
+	
+	/**
+	 * gets the internal ID (z) of the texture inside the atlas
+	 * @param filename name of the file
+	 * @return the index of the texture contained inside its corresponding atlas
+	 */
+	public static int getTextureAtlasID(String filename) {
+		Integer i = atlasMap.get(filename);
+		if (i == null) {
+			Logger.writeErrorln("Unable to find texture inside atlas.");
+			return -1;
+		}
+		return i;
 	}
 	
 	/**
@@ -237,6 +210,71 @@ public class TextureLoader {
 		} catch (Exception e) {return 0;}
 	}
 	
+	private static int loadSpecialTextureATLAS(Atlas atlas) {
+		try {
+			//for more detail on array textures
+			//https://www.khronos.org/opengl/wiki/Array_Texture
+			float anisf = Math.min(SettingsLoader.AF, GL11.glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
+			// map of textures that need to be put into the texture array.
+			// they should be in order from 0 to #
+			ArrayList<File> textures = atlas.textures;
+			// generate a texture id like normal
+			int id = GL11.glGenTextures();
+			
+			// enable texture
+			GL13.glActiveTexture(GL13.GL_TEXTURE0);
+			// bind the texture buffer, this time to texture array.
+			GL11.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, id); 
+			
+	        // i really don't like this
+	        // openGL4.2. i was trying to use < 3.2
+	        // if you are having issues its likely because of this.
+	        // "OpenGL 4.2 (2011)"
+	        // i feel like this should be in gl30
+			// but at the same time im able to use contect of 3.3 without any issues
+			// this is very weird and I think this is in the wrong class.
+	        GL42.glTexStorage3D(GL30.GL_TEXTURE_2D_ARRAY, 4, GL11.GL_RGBA8, atlas.width, atlas.height, textures.size());
+	        
+	        // loop through all textures.
+	        for (int i = 0; i < textures.size(); i++) {
+	        	TextureData data = decodeTextureToSize(textures.get(i).getPath(), atlas.width, atlas.height);
+	        	// i don't understand why this is in gl12 but to allocate this is in gl42
+	        	GL12.glTexSubImage3D(GL30.GL_TEXTURE_2D_ARRAY,
+	        			// level
+	        			0, 
+	        			// x,y,z offsets using the texture # as the position in the array
+	        			0, 0, i,
+	        			// width, height depth
+	        			atlas.width, atlas.height, 1, 
+	        			// format, format
+	        			data.getChannels() == 4 ? GL11.GL_RGBA : GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, 
+	        			// decode the image texture
+	        			data.getBuffer());
+	        	// AF
+	        	GL11.glTexParameterf(GL30.GL_TEXTURE_2D_ARRAY, EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT, anisf);
+	        	atlasMap.put(textures.get(i).getName(), i);
+	        	// memory? we got lots of that! right?
+	        	atlasTextureMap.put(textures.get(i).getName(), id);
+	        }
+	        
+	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST); 
+	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
+	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT);
+	        
+	        GL30.glGenerateMipmap(GL30.GL_TEXTURE_2D_ARRAY);
+			GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST_MIPMAP_LINEAR);
+			GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST_MIPMAP_LINEAR);
+			// > 0 = less detail
+			GL11.glTexParameterf(GL30.GL_TEXTURE_2D_ARRAY, GL14.GL_TEXTURE_LOD_BIAS, 0.2f);
+	        
+			// add texture for later deletion.
+			TextureLoader.textures.add(id);
+			return id;
+		} catch (Exception e) {}
+		return 0;
+	}
+	
 	/**
 	 * Decodes texture data from a file
 	 */
@@ -277,7 +315,7 @@ public class TextureLoader {
 		int channels = 0;
 		ByteBuffer buffer = null;
 		try {
-			// decoder for the PNG file
+			// decoder for the image files
 			int[] w = new int[1];
 			int[] h = new int[1];
 			int[] ch = new int[1];
@@ -289,13 +327,18 @@ public class TextureLoader {
 			hd = h[0];
 			channels = ch[0];
 			
+			if (wd == width && hd == height) {
+				buffer.flip();
+				return new TextureData(buffer, width, height, channels);
+			}
+			
 			int alpha;
 			if (channels == 4) 
 				alpha = channels-1;
 			else 
 				alpha = STBImageResize.STBIR_ALPHA_CHANNEL_NONE;
-			
-			ByteBuffer newImage = BufferUtils.createByteBuffer(wd * hd * channels );
+			// not sure why *4 is needed, but without it the JVM crashes.
+			ByteBuffer newImage = BufferUtils.createByteBuffer(width * height * channels * 4);
 			STBImageResize.stbir_resize(buffer, wd, hd, wd * channels, 
 					newImage, width, height, width * channels, 
 					STBImageResize.STBIR_TYPE_UINT8,

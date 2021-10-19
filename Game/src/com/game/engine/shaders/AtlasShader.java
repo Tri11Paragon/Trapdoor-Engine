@@ -20,7 +20,7 @@ public class AtlasShader extends WorldShader {
 	}
 	
 	public void loadTextureID(int id) {
-		super.loadInt(location_textureID, id);
+		super.loadFloat(location_textureID, id);
 	}
 
 }

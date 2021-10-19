@@ -2,6 +2,7 @@ package com.game.engine.camera;
 
 import org.lwjgl.glfw.GLFW;
 
+import com.game.engine.display.DisplayManager;
 import com.game.engine.tools.input.Keyboard;
 
 /**
@@ -16,37 +17,39 @@ public class FreecamCamera extends Camera {
 		//this.yaw = 25;
 	}
 	
+	private float speed = 150;
+	
 	@Override
 	public void move() {
 		super.move();
 		if (Keyboard.isKeyDown(Keyboard.W)) {
-			this.position.y--;
+			this.position.y -= speed * DisplayManager.getFrameTimeSeconds();
 		}
 		if (Keyboard.isKeyDown(Keyboard.S)) {
-			this.position.y++;
+			this.position.y += speed * DisplayManager.getFrameTimeSeconds();
 		}
 		if (Keyboard.isKeyDown(Keyboard.A)) {
-			this.position.x--;
+			this.position.x -= speed * DisplayManager.getFrameTimeSeconds();
 		}
 		if (Keyboard.isKeyDown(Keyboard.D)) {
-			this.position.x++;
+			this.position.x += speed * DisplayManager.getFrameTimeSeconds();
 		}
 		if (Keyboard.isKeyDown(GLFW.GLFW_KEY_UP)) {
-			this.pitch++;
+			this.pitch += speed * DisplayManager.getFrameTimeSeconds();
 		}
 		if (Keyboard.isKeyDown(GLFW.GLFW_KEY_DOWN)) {
-			this.pitch--;
+			this.pitch -= speed * DisplayManager.getFrameTimeSeconds();
 		}
 		if (Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT)) {
-			this.yaw--;
+			this.yaw -= speed * DisplayManager.getFrameTimeSeconds();
 		}
 		if (Keyboard.isKeyDown(GLFW.GLFW_KEY_RIGHT))
-			this.yaw++;
+			this.yaw += speed * DisplayManager.getFrameTimeSeconds();
 		if (Keyboard.isKeyDown(GLFW.GLFW_KEY_COMMA)) {
-			this.position.z--;
+			this.position.z -= speed * DisplayManager.getFrameTimeSeconds();
 		}
 		if (Keyboard.isKeyDown(GLFW.GLFW_KEY_PERIOD)) {
-			this.position.z++;
+			this.position.z += speed * DisplayManager.getFrameTimeSeconds();
 		}
 	}
 	

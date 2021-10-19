@@ -1,12 +1,11 @@
 package com.game.engine.display;
 
 import org.joml.Matrix4f;
-import org.lwjgl.opengl.GL30;
-
-import com.game.engine.Loader;
 import com.game.engine.camera.FreecamCamera;
-import com.game.engine.datatypes.BlockModelVAO;
+import com.game.engine.datatypes.world.Entity;
+import com.game.engine.renderer.EntityRenderer;
 import com.game.engine.shaders.AtlasShader;
+import com.game.engine.shaders.WorldShader;
 import com.game.engine.tools.math.Maths;
 
 /**
@@ -15,34 +14,29 @@ import com.game.engine.tools.math.Maths;
  * 
  */
 public class TestDisplay extends IDisplay {
-
-	private static final float vertices[] = {
-		    // positions        // texture coords
-		     1f,  1f, 0.0f,  1.0f, 1.0f,   // top right
-		     1f,  0f, 0.0f,  1.0f, 0.0f,   // bottom right
-		     0f,  0f, 0.0f,  0.0f, 0.0f,   // bottom left
-		     0f,  1f, 0.0f,  0.0f, 1.0f    // top left 
-		};
-	private static final int indices[] = {
-	        0, 1, 3, // first triangle
-	        1, 2, 3  // second triangle
-	    };
 	
 	private FreecamCamera camera;
 	private Matrix4f view;
 	private AtlasShader shader;
-	private BlockModelVAO vao;
+	private WorldShader wshader;
+	private Entity e;
+	
+	private String[] test = {"1540093100131.jpg", "1540046285552.jpg", "1534874238973.png", "1531696571587.jpg"};
 	
 	@Override
 	public void onCreate() {
 		camera = new FreecamCamera();
-		shader = new AtlasShader("test.vs", "test.fs");
-		vao = Loader.loadToVAO(vertices, indices);
+		shader = new AtlasShader("main.vs", "main.fs");
+		wshader = new AtlasShader("main.vs", "main.fs");
+		e = new Entity(50, 50, 500, 500, "1540093100131.jpg", true).enable();
+		for (int i = 0; i < 10000; i++) {
+			new Entity(i%DisplayManager.WIDTH, 600, 500, 500, test[i%test.length], true).enable();
+		}
 	}
 
 	@Override
 	public void onSwitch() {
-		
+		e.enable();
 	}
 
 	float z = 0;
@@ -53,27 +47,8 @@ public class TestDisplay extends IDisplay {
 		camera.move();
 		this.view = Maths.createViewMatrix(camera);
 		
-		shader.start();
-		GL30.glBindVertexArray(vao.getVaoID());
-		GL30.glEnableVertexAttribArray(0);
-		GL30.glEnableVertexAttribArray(1);
+		EntityRenderer.render(shader, wshader, view);
 		
-		shader.loadViewMatrix(view);
-		GL30.glActiveTexture(GL30.GL_TEXTURE0);
-		GL30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, Loader.loadTexture("1531688878833.png"));
-		
-		shader.loadTranslationMatrix(Maths.createTransformationMatrix(0, 0, 0.0f, 500, 500));
-		GL30.glDrawElements(GL30.GL_TRIANGLES, vao.getVertexCount(), GL30.GL_UNSIGNED_INT, 0);
-		
-		GL30.glDisableVertexAttribArray(0);
-		GL30.glDisableVertexAttribArray(1);
-		shader.stop();
-		
-		try {
-			Thread.sleep(5);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 	}
 
 	@Override

@@ -56,6 +56,7 @@ import org.lwjgl.system.MemoryStack;
 
 import com.game.engine.ProjectionMatrix;
 import com.game.engine.TextureLoader;
+import com.game.engine.renderer.EntityRenderer;
 import com.game.engine.tools.Logger;
 import com.game.engine.tools.RescaleEvent;
 import com.game.engine.tools.SettingsLoader;
@@ -115,6 +116,7 @@ public class DisplayManager {
 				long currentFrameTime = getCurrentTime();
 				delta = currentFrameTime - lastFrameTime;
 				lastFrameTime = currentFrameTime;
+				System.out.println(getFrameTimeMilis() + " :: " + 1000/getFrameTimeMilis());
 			} catch (Exception e) {e.printStackTrace();}
 		}
 	}
@@ -212,6 +214,8 @@ public class DisplayManager {
 		
 		// load the texture atlas stuff
 		TextureLoader.init("resources/textures/atlas/");
+		// init the renderer
+		EntityRenderer.init();
 	}
 
 	public static void closeDisplay() {

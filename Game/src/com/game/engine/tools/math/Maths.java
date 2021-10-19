@@ -142,11 +142,12 @@ public class Maths {
 		return matrix;
 	}
 	
-	public static Matrix4f createTransformationMatrix(float x, float y, float z, float sx, float sy, float rot) {
+	public static Matrix4f createTransformationMatrix(float x, float y, float z, float rot, float sx, float sy) {
 		matrix.identity();
 		matrix.translate(x, y, z);
 		matrix.scale(sx, sy, 1f);
-		matrix.rotate(rot, rz);
+		if (rot != 0)
+			matrix.rotate(rot, rz);
 		return matrix;
 	}
 	

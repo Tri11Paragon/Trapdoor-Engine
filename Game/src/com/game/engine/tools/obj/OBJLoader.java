@@ -11,7 +11,7 @@ import java.util.List;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-import com.game.engine.datatypes.SmallModelData;
+import com.game.engine.datatypes.ogl.SmallModelData;
 
 /**
  * @author brett & karl

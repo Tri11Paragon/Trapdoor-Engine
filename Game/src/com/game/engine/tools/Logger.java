@@ -106,6 +106,18 @@ public class Logger {
 		} catch (Exception e) {}
 	}
 	
+	public static void writeErrorln(String data) {
+		try {
+			createDateBuilder();
+			builder.append("ERROR: ");
+			builder.append(data);
+			builder.append("!!!!");
+			builder.append('\n');
+			writer.write(builder.toString());
+			System.err.print(builder.toString());
+		} catch (Exception e) {}
+	}
+	
 	public static void writeln() {
 		try {
 			writer.write("\n");

@@ -9,8 +9,9 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
-import com.game.engine.datatypes.BlockModelVAO;
-import com.game.engine.datatypes.ModelVAO;
+
+import com.game.engine.datatypes.ogl.BlockModelVAO;
+import com.game.engine.datatypes.ogl.ModelVAO;
 import com.game.engine.tools.Logger;
 import com.game.engine.tools.obj.ModelData;
 
