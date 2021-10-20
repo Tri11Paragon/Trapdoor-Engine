@@ -226,13 +226,11 @@ public class TextureLoader {
 			// bind the texture buffer, this time to texture array.
 			GL11.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, id); 
 			
-	        // i really don't like this
-	        // openGL4.2. i was trying to use < 3.2
-	        // if you are having issues its likely because of this.
-	        // "OpenGL 4.2 (2011)"
+	        // WHY THE FUCK IS THIS IN GL42
 	        // i feel like this should be in gl30
-			// but at the same time im able to use contect of 3.3 without any issues
-			// this is very weird and I think this is in the wrong class.
+			// but it lets me define a context of GL33 without any issues with this function
+			// WHAT THE FUCK
+			// (GL30/GL33 doesn't contain glTexStorage3D)
 	        GL42.glTexStorage3D(GL30.GL_TEXTURE_2D_ARRAY, 4, GL11.GL_RGBA8, atlas.width, atlas.height, textures.size());
 	        
 	        // loop through all textures.

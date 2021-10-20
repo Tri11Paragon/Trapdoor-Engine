@@ -181,6 +181,11 @@ public class DisplayManager {
 			DisplayManager.mouseY = y;
 		});
 		
+		// FUCKING WHY
+		// THEY DEPRECATE LWJGL 2
+		// THEN COME UP WITH THIS SHIT
+		// FUCK OFF
+		// (I actually like the bindings and changes but this stack nonsense is fucking gay)
 		try ( MemoryStack stack = stackPush() ) {
 			IntBuffer pWidth = stack.mallocInt(1);
 			IntBuffer pHeight = stack.mallocInt(1);

@@ -28,9 +28,8 @@ public class TestDisplay extends IDisplay {
 		camera = new FreecamCamera();
 		shader = new AtlasShader("main.vs", "main.fs");
 		wshader = new AtlasShader("main.vs", "main.fs");
-		e = new Entity(50, 50, 500, 500, "1540093100131.jpg", true).enable();
-		for (int i = 0; i < 10000; i++) {
-			new Entity(i%DisplayManager.WIDTH, 600, 500, 500, test[i%test.length], true).enable();
+		for (int i = 0; i < 500; i++) {
+			e = new Entity(i%DisplayManager.WIDTH*500, 50, 500, 500, test[i%test.length], true).enable();
 		}
 	}
 

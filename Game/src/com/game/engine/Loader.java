@@ -9,6 +9,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL33;
 
 import com.game.engine.datatypes.ogl.BlockModelVAO;
 import com.game.engine.datatypes.ogl.ModelVAO;
@@ -89,6 +90,18 @@ public class Loader {
 		return new BlockModelVAO(vao, vbos, indicies.length);
 	}
 	
+	public static BlockModelVAO loadToVAO(float[] data) {
+		int vao = createVAO();
+		
+		int[] vbos = new int[2];
+		
+		vbos[0] = storeDataInAttributeList(0, 2, 16, 0, data);
+		vbos[1] = storeDataInAttributeList(1, 2, 16, 8, data);
+		
+		unbindVAO();
+		return new BlockModelVAO(vao, vbos, data.length/2);
+	}
+	
 	/**
 	 * loads to VAO using ModelData
 	 */
@@ -111,6 +124,45 @@ public class Loader {
 		unbindVAO();
 		// return the model
 		return new ModelVAO(vaoID,indices.length);
+	}
+	
+	public static int createEmptyVBO(int bytes) {
+		int vbo = GL15.glGenBuffers();
+		vbos.add(vbo);
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
+		// GL_STREAM_DRAW is used because we will be updating the VBO often.
+		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, bytes, GL15.GL_STREAM_DRAW);
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+		return vbo;
+	}
+	
+	/**
+	 * TODO: doccument this and the rest of the loader class
+	 * @param vao
+	 * @param vbo
+	 * @param attribute
+	 * @param datasize
+	 * @param stride Data length of each instance (in bytes, so multiply by 4)
+	 * @param offset offset of the data inside the array.
+	 */
+	public static void addInstancedAttribute(int vao, int vbo, int attribute, int datasize, int stride, int offset) {
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
+		GL30.glBindVertexArray(GL15.GL_ARRAY_BUFFER);
+		GL20.glVertexAttribPointer(attribute, datasize, GL11.GL_FLOAT, false, stride, offset);
+		GL33.glVertexAttribDivisor(attribute, 1);
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+		GL30.glBindVertexArray(0);
+	}
+	
+	// there are ways of making this better
+	public static void updateVBO(int vbo, float[] data, FloatBuffer buffer) {
+		buffer.clear();
+		buffer.put(data);
+		buffer.flip();
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
+		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer.capacity(), GL15.GL_STREAM_DRAW);
+		GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, 0, buffer);
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 	}
 
 	/**
@@ -284,7 +336,7 @@ public class Loader {
 		buffer.flip();
 		return buffer;
 	}
-
+	
 	/**
 	 * prints the sizes of all the maps
 	 */
