@@ -260,9 +260,10 @@ public class TextureLoader {
 	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
 	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT);
 	        
-	        GL30.glGenerateMipmap(GL30.GL_TEXTURE_2D_ARRAY);
-			GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST_MIPMAP_LINEAR);
-			GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST_MIPMAP_LINEAR);
+	        // TODO: this
+	        //GL30.glGenerateMipmap(GL30.GL_TEXTURE_2D_ARRAY);
+			//GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST_MIPMAP_LINEAR);
+			//GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST_MIPMAP_LINEAR);
 			// > 0 = less detail
 			GL11.glTexParameterf(GL30.GL_TEXTURE_2D_ARRAY, GL14.GL_TEXTURE_LOD_BIAS, 0.2f);
 	        
@@ -326,7 +327,8 @@ public class TextureLoader {
 			channels = ch[0];
 			
 			if (wd == width && hd == height) {
-				buffer.flip();
+				if (buffer.position() != 0)
+					buffer.flip();
 				return new TextureData(buffer, width, height, channels);
 			}
 			
@@ -352,7 +354,8 @@ public class TextureLoader {
 			
 			STBImage.stbi_image_free(buffer);
 			buffer = newImage;
-			buffer.flip();
+			if (buffer.position() != 0)
+				buffer.flip();
 		} catch (Exception e) {
 			// we had issue loading texture. exit the game.
 			e.printStackTrace();

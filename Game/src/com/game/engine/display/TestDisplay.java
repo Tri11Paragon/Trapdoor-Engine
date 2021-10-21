@@ -28,8 +28,10 @@ public class TestDisplay extends IDisplay {
 		camera = new FreecamCamera();
 		shader = new AtlasShader("main.vs", "main.fs");
 		wshader = new AtlasShader("main.vs", "main.fs");
-		for (int i = 0; i < 500; i++) {
+		for (int i = 0; i < 10000; i++) {
 			e = new Entity(i%DisplayManager.WIDTH*500, 50, 500, 500, test[i%test.length], true).enable();
+			if (i % 2 == 0)
+				e.disable();
 		}
 	}
 
@@ -46,7 +48,7 @@ public class TestDisplay extends IDisplay {
 		camera.move();
 		this.view = Maths.createViewMatrix(camera);
 		
-		EntityRenderer.render(shader, wshader, view);
+		EntityRenderer.render(shader, wshader, view, camera);
 		
 	}
 

@@ -5,6 +5,8 @@ import java.nio.FloatBuffer;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 
+import com.game.engine.display.DisplayManager;
+
 /**
  * View frustums help:
  * http://www8.cs.umu.se/kurser/5DV051/HT12/lab/plane_extraction.pdf
@@ -26,6 +28,33 @@ public class Camera extends ICamera {
 	@Override
 	public void move() {
 		
+	}
+	
+	private final int padding = 50;
+	
+	public boolean isIn2DFrustum(int x, int y, int width, int height) {
+		// yes it's not a real frustum
+		// fuck off math fag
+		// it does the same thing with less number
+		// (see calc frustum below)
+		// *also see cubeInFrustum
+		int padding = this.padding;
+		int w2 = DisplayManager.WIDTH;
+		int h2 = DisplayManager.HEIGHT;
+		int px = (int) this.position.x;
+		int py = (int) this.position.y;
+		int mx = px + w2 + padding;
+		int my = py + h2 + padding;
+		int nx = px - w2 - padding;
+		int ny = py - h2 - padding;
+		//return ((x > nx && (x) < mx) || (x+width > nx && (x+width) < mx)) &&
+		//		((y > ny && y < mx) || (y+height > ny && y+height < my));
+		// mr math man don't hate me for this one lol
+		return (x > nx && x < mx && y > ny && y < my);
+	}
+	
+	public boolean isIn2DFrustum(float x, float y, float width, float height) {
+		return isIn2DFrustum((int) x, (int) y, (int) width, (int) height);
 	}
 	
 	/**

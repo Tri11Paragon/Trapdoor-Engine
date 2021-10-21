@@ -2,6 +2,7 @@ package com.game.engine.datatypes.world;
 
 import org.joml.Vector3f;
 
+import com.game.engine.TextureLoader;
 import com.game.engine.renderer.EntityRenderer;
 
 /**
@@ -21,6 +22,8 @@ public class Entity {
 	private String texture;
 	private boolean atlas = true;
 	private boolean enabled = false;
+	private int atlasID = 0;
+	private int textureID = 0;
 	
 	
 	/**
@@ -32,6 +35,10 @@ public class Entity {
 		this.width = width;
 		this.height = height;
 		this.texture = texture;
+		if (atlas) {
+			this.atlasID = TextureLoader.getTextureAtlas(this.texture);
+			this.textureID = TextureLoader.getTextureAtlasID(this.texture);
+		}
 		EntityRenderer.addEntity(this);
 	}
 	
@@ -148,6 +155,21 @@ public class Entity {
 	public Entity setHeight(float height) {
 		this.height = height;
 		return this;
+	}
+	public int getAtlasID() {
+		return atlasID;
+	}
+
+	public int getTextureID() {
+		return textureID;
+	}
+
+	public void setTexture(String texture) {
+		this.texture = texture;
+		if (atlas) {
+			this.atlasID = TextureLoader.getTextureAtlas(this.texture);
+			this.textureID = TextureLoader.getTextureAtlasID(this.texture);
+		}
 	}
 
 }

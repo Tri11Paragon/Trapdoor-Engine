@@ -14,6 +14,7 @@ import org.lwjgl.opengl.GL33;
 
 import com.game.engine.Loader;
 import com.game.engine.TextureLoader;
+import com.game.engine.camera.Camera;
 import com.game.engine.datatypes.ogl.BlockModelVAO;
 import com.game.engine.datatypes.world.Entity;
 import com.game.engine.shaders.AtlasShader;
@@ -29,19 +30,21 @@ public class EntityRenderer {
 	
 	private static final float[] VERTICIES = {
 		0, 1, 0.0f, 1.0f,
+		1, 0, 1.0f, 0.0f,
 		0, 0, 0.0f, 0.0f,
+		
+		0, 1, 0.0f, 1.0f,
+		1, 0, 1.0f, 0.0f,
 		1, 1, 1.0f, 1.0f,
-		1, 0, 1.0f, 0.0f
 	};
-	private static final int MAX_INSTANCES = 10000;
+	private static final int MAX_INSTANCES = 100000;
 	private static final int INSTANCE_FLOAT_COUNT = 16 + 1;
 	private static final int INSTANCE_DATA_LENGTH = INSTANCE_FLOAT_COUNT * 4;
 	private static final FloatBuffer buffer = BufferUtils.createFloatBuffer(MAX_INSTANCES * INSTANCE_DATA_LENGTH);
 	private static Matrix4f modelViewMatrix = new Matrix4f();
 	private static int pointer = 0;
-	private static int pointer2 = 0;
 	
-	private static final float[] vertices = {
+	/*private static final float[] vertices = {
 		    // positions        // texture coords
 		     1f,  1f, 0.0f,  1.0f, 1.0f,   // top right
 		     1f,  0f, 0.0f,  1.0f, 0.0f,   // bottom right
@@ -51,10 +54,10 @@ public class EntityRenderer {
 	private static final int[] indices = {
 	        0, 1, 3, // first triangle
 	        1, 2, 3  // second triangle
-	    };
+	    };*/
 	private static BlockModelVAO vao;
 	private static int vbo;
-	private static final HashMap<Integer, HashMap<Integer, List<Entity>>> batchAtlasMap = new HashMap<Integer, HashMap<Integer, List<Entity>>>();
+	private static final HashMap<Integer, List<Entity>> batchAtlasMap = new HashMap<Integer, List<Entity>>();
 	private static int entityCount = 0;
 	private static final HashMap<Integer, List<Entity>> batchMap = new HashMap<Integer, List<Entity>>();
 	
@@ -62,13 +65,13 @@ public class EntityRenderer {
 		vao = Loader.loadToVAO(VERTICIES);
 		vbo = Loader.createEmptyVBO(INSTANCE_DATA_LENGTH * MAX_INSTANCES);
 		Loader.addInstancedAttribute(vao.getVaoID(), vbo, 2, 4, INSTANCE_DATA_LENGTH, 0);
-		Loader.addInstancedAttribute(vao.getVaoID(), vbo, 3, 4, INSTANCE_DATA_LENGTH, 4);
-		Loader.addInstancedAttribute(vao.getVaoID(), vbo, 4, 4, INSTANCE_DATA_LENGTH, 8);
-		Loader.addInstancedAttribute(vao.getVaoID(), vbo, 5, 4, INSTANCE_DATA_LENGTH, 12);
-		Loader.addInstancedAttribute(vao.getVaoID(), vbo, 6, 1, INSTANCE_DATA_LENGTH, 16);
+		Loader.addInstancedAttribute(vao.getVaoID(), vbo, 3, 4, INSTANCE_DATA_LENGTH, 4 * 4);
+		Loader.addInstancedAttribute(vao.getVaoID(), vbo, 4, 4, INSTANCE_DATA_LENGTH, 8 * 4);
+		Loader.addInstancedAttribute(vao.getVaoID(), vbo, 5, 4, INSTANCE_DATA_LENGTH, 12 * 4);
+		Loader.addInstancedAttribute(vao.getVaoID(), vbo, 6, 1, INSTANCE_DATA_LENGTH, 16 * 4);
 	}
 	
-	public static void render(AtlasShader atlasShader, WorldShader normalShader, Matrix4f viewmatrix) {
+	public static void render(AtlasShader atlasShader, WorldShader normalShader, Matrix4f viewmatrix, Camera camera) {
 		GL30.glBindVertexArray(vao.getVaoID());
 		GL30.glEnableVertexAttribArray(0);
 		GL30.glEnableVertexAttribArray(1);
@@ -83,55 +86,64 @@ public class EntityRenderer {
 		
 		GL30.glActiveTexture(GL30.GL_TEXTURE0);
 		// TODO: maybe a less memory intensive way of doing this?
-		Iterator<Entry<Integer, HashMap<Integer, List<Entity>>>> mapIT = batchAtlasMap.entrySet().iterator();
+		Iterator<Entry<Integer, List<Entity>>> mapIT = batchAtlasMap.entrySet().iterator();
 		while (mapIT.hasNext()) {
-			Entry<Integer, HashMap<Integer, List<Entity>>> mapEN = mapIT.next();
+			Entry<Integer, List<Entity>> mapEN = mapIT.next();
 			
 			GL30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, mapEN.getKey());
 			
 			pointer = 0;
-			pointer2 = 0;
-			float[] vboData = new float[entityCount * INSTANCE_FLOAT_COUNT];
 			
-			Iterator<Entry<Integer, List<Entity>>> inIT = mapEN.getValue().entrySet().iterator();
-			while (inIT.hasNext()) {
-				Entry<Integer, List<Entity>> inEN = inIT.next();
-				List<Entity> el = inEN.getValue();
-				
-				
-				//atlasShader.loadTextureID(inEN.getKey());
-				
-				for (int i = 0; i < el.size(); i++) {
-					Entity e = el.get(i);
-					if (!e.isEnabled())
-						continue;
-					//atlasShader.loadTranslationMatrix(Maths.createTransformationMatrix(e.x(), e.y(), e.z(), e.getRotation(), e.getWidth(), e.getHeight()));
-					modelViewMatrix = viewmatrix.mul(Maths.createTransformationMatrix(e.x(), e.y(), e.z(), e.getRotation(), e.getWidth(), e.getHeight()));
-					vboData[pointer++] = modelViewMatrix.m00();
-					vboData[pointer++] = modelViewMatrix.m01();
-					vboData[pointer++] = modelViewMatrix.m02();
-					vboData[pointer++] = modelViewMatrix.m03();
-					vboData[pointer++] = modelViewMatrix.m10();
-					vboData[pointer++] = modelViewMatrix.m11();
-					vboData[pointer++] = modelViewMatrix.m12();
-					vboData[pointer++] = modelViewMatrix.m13();
-					vboData[pointer++] = modelViewMatrix.m20();
-					vboData[pointer++] = modelViewMatrix.m21();
-					vboData[pointer++] = modelViewMatrix.m22();
-					vboData[pointer++] = modelViewMatrix.m23();
-					vboData[pointer++] = modelViewMatrix.m30();
-					vboData[pointer++] = modelViewMatrix.m31();
-					vboData[pointer++] = modelViewMatrix.m32();
-					vboData[pointer++] = modelViewMatrix.m33();
-					// extra float per entity that we don't need eh
-					// but what can ya do
-					vboData[pointer++] = inEN.getKey();
-					// maybe use instance rendering?
-					//GL30.glDrawElements(GL30.GL_TRIANGLES, vao.getVertexCount(), GL30.GL_UNSIGNED_INT, 0);
-				}
-				Loader.updateVBO(vbo, vboData, buffer);
-				GL33.glDrawArraysInstanced(GL30.GL_TRIANGLE_STRIP, 0, vao.getVertexCount(), entityCount);
+			List<Entity> el = mapEN.getValue();
+			float[] vboData = new float[el.size() * INSTANCE_FLOAT_COUNT];
+			// atlasShader.loadTextureID(inEN.getKey());
+
+			for (int i = 0; i < el.size(); i++) {
+				Entity e = el.get(i);
+				// maybe don't use this? idk
+				// the isenbaled fine just the clipping nonsense
+				// i guess it can save like 17 assignments and a matrix calc
+				if (!e.isEnabled() || !camera.isIn2DFrustum(e.x(), e.y(), e.getWidth(), e.getHeight()))
+					continue;
+				// atlasShader.loadTranslationMatrix(Maths.createTransformationMatrix(e.x(),
+				// e.y(), e.z(), e.getRotation(), e.getWidth(), e.getHeight()));
+				modelViewMatrix = Maths.createTransformationMatrix(e.x(), e.y(), e.z(), e.getRotation(), e.getWidth(), e.getHeight());
+				// touch this and i'll kill you
+				// not hard to understand if you know that opengl splits its 4x matrix
+				// into 4 4 length column vectors
+				// and that we need to store the texture atlas position as well
+				// (making 17 floats, in order)
+				vboData[pointer++] = modelViewMatrix.m00();
+				vboData[pointer++] = modelViewMatrix.m01();
+				vboData[pointer++] = modelViewMatrix.m02();
+				vboData[pointer++] = modelViewMatrix.m03();
+				vboData[pointer++] = modelViewMatrix.m10();
+				vboData[pointer++] = modelViewMatrix.m11();
+				vboData[pointer++] = modelViewMatrix.m12();
+				vboData[pointer++] = modelViewMatrix.m13();
+				vboData[pointer++] = modelViewMatrix.m20();
+				vboData[pointer++] = modelViewMatrix.m21();
+				vboData[pointer++] = modelViewMatrix.m22();
+				vboData[pointer++] = modelViewMatrix.m23();
+				vboData[pointer++] = modelViewMatrix.m30();
+				vboData[pointer++] = modelViewMatrix.m31();
+				vboData[pointer++] = modelViewMatrix.m32();
+				vboData[pointer++] = modelViewMatrix.m33();
+				// extra float per entity that we don't need eh
+				// but what can ya do
+				vboData[pointer++] = e.getTextureID();
+				// maybe use instance rendering?
+				// GL30.glDrawElements(GL30.GL_TRIANGLES, vao.getVertexCount(),
+				// GL30.GL_UNSIGNED_INT, 0);
 			}
+			Loader.updateVBO(vbo, vboData, buffer);
+			// "Because some errors in user programs can cause the JVM to crash without a meaningful error message, 
+			// since LWJGL 3 is tuned for extreme speed at the expense of robustness."
+			// SO FUCKING TRUE
+			// HOLY SHIT THIS GAY ASS FUNCTION
+			// always crashes
+			// (see all the hs_err_pid.......log)
+			GL33.glDrawArraysInstanced(GL30.GL_TRIANGLES, 0, 6, el.size());
 		}
 		
 		atlasShader.stop();
@@ -152,15 +164,10 @@ public class EntityRenderer {
 		if (e.getIsUsingAtlas()) {
 			int at = TextureLoader.getTextureAtlas(e.getTexture());
 			int id = TextureLoader.getTextureAtlasID(e.getTexture());
-			HashMap<Integer, List<Entity>> ids = batchAtlasMap.get(at);
-			if (ids == null) {
-				ids = new HashMap<Integer, List<Entity>>();
-				batchAtlasMap.put(at, ids);
-			}
-			List<Entity> list = ids.get(id);
+			List<Entity> list = batchAtlasMap.get(at);
 			if (list == null) {
 				list = new ArrayList<Entity>();
-				ids.put(id, list);
+				batchAtlasMap.put(at, list);
 			}
 			list.add(e);
 			entityCount++;
@@ -192,15 +199,11 @@ public class EntityRenderer {
 	
 	public static int getNumberOfEnabledEntitesInWorld() {
 		int e = 0;
-		Iterator<Entry<Integer, HashMap<Integer, List<Entity>>>> mapIT = batchAtlasMap.entrySet().iterator();
+		Iterator<Entry<Integer,  List<Entity>>> mapIT = batchAtlasMap.entrySet().iterator();
 		while (mapIT.hasNext()) {
-			Entry<Integer, HashMap<Integer, List<Entity>>> mapEN = mapIT.next();
-			Iterator<Entry<Integer, List<Entity>>> inIT = mapEN.getValue().entrySet().iterator();
-			while (inIT.hasNext()) {
-				for (Entity ee : inIT.next().getValue())
-					if (ee.isEnabled())
-						e++;
-			}
+			for (Entity ee : mapIT.next().getValue())
+				if (ee.isEnabled())
+					e++;
 		}
 		return e;
 	}

@@ -147,7 +147,7 @@ public class Loader {
 	 */
 	public static void addInstancedAttribute(int vao, int vbo, int attribute, int datasize, int stride, int offset) {
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
-		GL30.glBindVertexArray(GL15.GL_ARRAY_BUFFER);
+		GL30.glBindVertexArray(vao);
 		GL20.glVertexAttribPointer(attribute, datasize, GL11.GL_FLOAT, false, stride, offset);
 		GL33.glVertexAttribDivisor(attribute, 1);
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
