@@ -8,8 +8,8 @@ out vec2 TexCoord;
 out float texturePos;
 
 uniform mat4 projectionMatrix;
-//uniform mat4 viewMatrix;
-//uniform mat4 translationMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 translationMatrix;
 
 void main()
 {
@@ -17,7 +17,7 @@ void main()
     //vec4 worldPosition = translationMatrix * vec4(aPos,1.0);
 	//vec4 positionRelativeToCam = viewMatrix * worldPosition;
 	//gl_Position = projectionMatrix * positionRelativeToCam;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(aPos, 0.0, 1.0);
+    gl_Position = projectionMatrix * viewMatrix * modelViewMatrix * vec4(aPos, 0.0, 1.0);
     TexCoord = aTexCoord;
     texturePos = textureID;
 }

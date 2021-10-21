@@ -37,6 +37,7 @@ public class TextureLoader {
 	public static Map<String, Integer> textureMap = new HashMap<String, Integer>();
 	
 	private static List<Integer> textures = new ArrayList<Integer>();
+	private static List<ByteBuffer> textureBuffers = new ArrayList<ByteBuffer>();
 	
 	// contains TextureName -> array pos
 	public static HashMap<String, Integer> atlasMap = new HashMap<String, Integer>();
@@ -260,10 +261,9 @@ public class TextureLoader {
 	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
 	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT);
 	        
-	        // TODO: this
-	        //GL30.glGenerateMipmap(GL30.GL_TEXTURE_2D_ARRAY);
-			//GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST_MIPMAP_LINEAR);
-			//GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST_MIPMAP_LINEAR);
+	        GL30.glGenerateMipmap(GL30.GL_TEXTURE_2D_ARRAY);
+			GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST_MIPMAP_LINEAR);
+			GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST_MIPMAP_LINEAR);
 			// > 0 = less detail
 			GL11.glTexParameterf(GL30.GL_TEXTURE_2D_ARRAY, GL14.GL_TEXTURE_LOD_BIAS, 0.2f);
 	        
@@ -367,9 +367,10 @@ public class TextureLoader {
 	}
 	
 	public static void cleanup() {
-		for(int texture:textures){
+		for(int texture:textures)
 			GL11.glDeleteTextures(texture);
-		}
+		for (ByteBuffer buff : textureBuffers)
+			STBImage.stbi_image_free(buff);
 	}
 	
 	public static void print() {
