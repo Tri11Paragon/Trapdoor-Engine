@@ -103,6 +103,8 @@ public class DisplayManager {
 				GL11.glEnable(GL11.GL_DEPTH_TEST);
 				GL11.glClearColor(RED, GREEN, BLUE, 1.0f);
 				GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+				GL11.glEnable(GL13.GL_BLEND);
+				GL13.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 				
 				currentDisplay.render();
 				

@@ -3,12 +3,14 @@ package com.game.engine.display;
 import java.util.ArrayList;
 
 import org.joml.Matrix4f;
-import com.game.engine.camera.FreecamCamera;
+
+import com.game.engine.camera.Camera;
 import com.game.engine.datatypes.world.Entity;
+import com.game.engine.datatypes.world.Player;
 import com.game.engine.renderer.EntityRenderer;
 import com.game.engine.shaders.AtlasShader;
-import com.game.engine.shaders.WorldShader;
 import com.game.engine.tools.math.Maths;
+import com.game.engine.world.World;
 
 /**
  * @author brett
@@ -17,10 +19,9 @@ import com.game.engine.tools.math.Maths;
  */
 public class TestDisplay extends IDisplay {
 	
-	private FreecamCamera camera;
+	private Player p;
 	private Matrix4f view;
 	private AtlasShader shader;
-	private WorldShader wshader;
 	private ArrayList<Entity> e = new ArrayList<Entity>();
 	
 	private String[] test = {"1540093100131.jpg", "1540046285552.jpg", "1534874238973.png", "1531696571587.jpg",
@@ -29,20 +30,19 @@ public class TestDisplay extends IDisplay {
 	
 	@Override
 	public void onCreate() {
-		camera = new FreecamCamera();
+		p = new Player(new Camera(), 64, 64, "emerald.png");
+		p.enable();
 		shader = new AtlasShader("main.vs", "main.fs");
-		wshader = new AtlasShader("main.vs", "main.fs");
-		for (int i = 0; i < 10000; i++) {
-			if (i % 2 == 0)
-				e.add(new Entity(i%DisplayManager.WIDTH*150, 500, 150, 150, test[i%test.length], true).enable());
-			else
-				e.add(new Entity(i%DisplayManager.WIDTH*150, 50, 150, 150, test[i%test.length], true).enable());
-		}
 	}
 
 	@Override
 	public void onSwitch() {
-		
+		for (int i = 0; i < 10000; i++) {
+			if (i % 2 == 0)
+				e.add(new Entity(i%DisplayManager.WIDTH*150, 500, 150, 150, test[i%test.length]).enable());
+			else
+				e.add(new Entity(i%DisplayManager.WIDTH*150, 50, 150, 150, test[i%test.length]).enable());
+		}
 	}
 
 	float z = 0;
@@ -50,10 +50,10 @@ public class TestDisplay extends IDisplay {
 	
 	@Override
 	public void render() {
-		camera.move();
-		this.view = Maths.createViewMatrix(camera);
+		this.view = Maths.createViewMatrix(p.getCamera());
 		
-		EntityRenderer.render(shader, wshader, view, camera);
+		EntityRenderer.render(shader, view, p.getCamera());
+		World.update();
 		
 		for (int i = 0; i < e.size(); i++) {
 			Entity ee = e.get(i);
@@ -64,7 +64,8 @@ public class TestDisplay extends IDisplay {
 
 	@Override
 	public void onLeave() {
-		
+		EntityRenderer.deleteAllEntities();
+		World.deleteAllEntities();
 	}
 
 	@Override

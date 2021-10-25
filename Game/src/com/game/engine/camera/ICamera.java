@@ -1,6 +1,7 @@
 package com.game.engine.camera;
 
 import org.joml.Vector3d;
+import org.joml.Vector3f;
 
 /**
 *
@@ -30,6 +31,24 @@ public abstract class ICamera {
 
 	public void setPosition(Vector3d position) {
 		this.position = position;
+	}
+	
+	public void setPosition(Vector3f position) {
+		this.position.x = position.x;
+		this.position.y = position.y;
+		this.position.z = position.z;
+	}
+	
+	public void setX(float x) {
+		this.position.x = (float) x;
+	}
+	
+	public void setY(float y) {
+		this.position.y = (float) y;
+	}
+	
+	public void setZ(float z) {
+		this.position.z = (float) z;
 	}
 
 	public void setPitch(float pitch) {

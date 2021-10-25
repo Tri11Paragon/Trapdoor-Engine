@@ -4,6 +4,7 @@ import org.joml.Vector3f;
 
 import com.game.engine.TextureLoader;
 import com.game.engine.renderer.EntityRenderer;
+import com.game.engine.world.World;
 
 /**
  * @author brett
@@ -20,16 +21,20 @@ public class Entity {
 	private float height = 32;
 	private float rotation;
 	private String texture;
+	// we will always use texture atlas for entities
 	private boolean atlas = true;
 	private boolean enabled = false;
 	private int atlasID = 0;
 	private int textureID = 0;
 	
+	// world stuff
+	private int worldID;
+	
 	
 	/**
 	 * @param atlas true if the texture is found inside an atlas
 	 */
-	public Entity(float x, float y, float width, float height, String texture, boolean atlas) {
+	public Entity(float x, float y, float width, float height, String texture) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
@@ -40,19 +45,20 @@ public class Entity {
 			this.textureID = TextureLoader.getTextureAtlasID(this.texture);
 		}
 		EntityRenderer.addEntity(this);
+		World.addEntity(this);
 	}
 	
 	/**
 	 * @param texture filename (including extension) of the entity's texture
 	 * @param atlas true if the texture is found inside an atlas
 	 */
-	public Entity(float x, float y, float width, float height, float rotation, String texture, boolean atlas) {
-		this(x,y,width,height,texture,atlas);
+	public Entity(float x, float y, float width, float height, float rotation, String texture) {
+		this(x,y,width,height,texture);
 		this.rotation = rotation;
 	}
 	
 	/**
-	 * called when the game renders this entity
+	 * called when the game renders this entity (slightly before the actual instance call, not called if entity is disabled)
 	 */
 	public void onRender() {
 		
@@ -73,6 +79,7 @@ public class Entity {
 	 */
 	public void delete() {
 		EntityRenderer.deleteEntity(this);
+		World.deleteEntity(this);
 	}
 	
 	public boolean isEnabled() {
@@ -131,7 +138,8 @@ public class Entity {
 		return this;
 	}
 	public Entity setPosition(float x, float y, float z) {
-		setPosition(x, y);
+		this.x = x;
+		this.y = y;
 		this.z = z;
 		return this;
 	}
@@ -175,6 +183,27 @@ public class Entity {
 			this.atlasID = TextureLoader.getTextureAtlas(this.texture);
 			this.textureID = TextureLoader.getTextureAtlasID(this.texture);
 		}
+	}
+	// uneffected by collision detection
+	public Entity setPositionRaw(Vector3f position) {
+		setPosition(position.x, position.y, position.z);
+		return this;
+	}
+	public Entity setPositionRaw(float x, float y) {
+		this.x = x;
+		this.y = y;
+		return this;
+	}
+	public Entity setPositionRaw(float x, float y, float z) {
+		setPosition(x, y);
+		this.z = z;
+		return this;
+	}
+	public int getWorldID() {
+		return worldID;
+	}
+	public void setWorldID(int worldID) {
+		this.worldID = worldID;
 	}
 
 }

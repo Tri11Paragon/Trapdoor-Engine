@@ -17,8 +17,8 @@ import com.game.engine.TextureLoader;
 import com.game.engine.camera.Camera;
 import com.game.engine.datatypes.ogl.BlockModelVAO;
 import com.game.engine.datatypes.world.Entity;
+import com.game.engine.datatypes.world.Player;
 import com.game.engine.shaders.AtlasShader;
-import com.game.engine.shaders.WorldShader;
 import com.game.engine.tools.math.Maths;
 
 /**
@@ -48,7 +48,9 @@ public class EntityRenderer {
 	private static int vbo;
 	private static final HashMap<Integer, List<Entity>> batchAtlasMap = new HashMap<Integer, List<Entity>>();
 	private static int entityCount = 0;
-	private static final HashMap<Integer, List<Entity>> batchMap = new HashMap<Integer, List<Entity>>();
+	
+	private static final ArrayList<Entity> players = new ArrayList<Entity>();
+	private static final float[] vboDataP = new float[INSTANCE_FLOAT_COUNT];
 	
 	public static void init() {
 		vao = Loader.loadToVAO(VERTICIES);
@@ -60,7 +62,7 @@ public class EntityRenderer {
 		Loader.addInstancedAttribute(vao.getVaoID(), vbo, 6, 1, INSTANCE_DATA_LENGTH, 16 * 4);
 	}
 	
-	public static void render(AtlasShader atlasShader, WorldShader normalShader, Matrix4f viewmatrix, Camera camera) {
+	public static void render(AtlasShader atlasShader, Matrix4f viewmatrix, Camera camera) {
 		GL30.glBindVertexArray(vao.getVaoID());
 		GL30.glEnableVertexAttribArray(0);
 		GL30.glEnableVertexAttribArray(1);
@@ -69,11 +71,45 @@ public class EntityRenderer {
 		GL30.glEnableVertexAttribArray(4);
 		GL30.glEnableVertexAttribArray(5);
 		GL30.glEnableVertexAttribArray(6);
-		atlasShader.start();
 		
+		atlasShader.start();
 		atlasShader.loadViewMatrix(viewmatrix);
 		
 		GL30.glActiveTexture(GL30.GL_TEXTURE0);
+		
+		// optimized? whats that!
+		// hahahhahahahhahaha
+		// TODO: better this...
+		for (int i = 0; i < players.size(); i++) {
+			Entity e = players.get(i);
+			if (!e.isEnabled() || !camera.isIn2DFrustum(e.x(), e.y(), e.getWidth(), e.getHeight()))
+				continue;
+			GL30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, e.getAtlasID());
+			pointer = 0;
+			e.onRender();
+			modelViewMatrix = Maths.createTransformationMatrix(e.x(), e.y(), e.z(), e.getRotation(), e.getWidth(),
+					e.getHeight());
+			vboDataP[pointer++] = modelViewMatrix.m00();
+			vboDataP[pointer++] = modelViewMatrix.m01();
+			vboDataP[pointer++] = modelViewMatrix.m02();
+			vboDataP[pointer++] = modelViewMatrix.m03();
+			vboDataP[pointer++] = modelViewMatrix.m10();
+			vboDataP[pointer++] = modelViewMatrix.m11();
+			vboDataP[pointer++] = modelViewMatrix.m12();
+			vboDataP[pointer++] = modelViewMatrix.m13();
+			vboDataP[pointer++] = modelViewMatrix.m20();
+			vboDataP[pointer++] = modelViewMatrix.m21();
+			vboDataP[pointer++] = modelViewMatrix.m22();
+			vboDataP[pointer++] = modelViewMatrix.m23();
+			vboDataP[pointer++] = modelViewMatrix.m30();
+			vboDataP[pointer++] = modelViewMatrix.m31();
+			vboDataP[pointer++] = modelViewMatrix.m32();
+			vboDataP[pointer++] = modelViewMatrix.m33();
+			vboDataP[pointer++] = e.getTextureID();
+			Loader.updateVBO(vbo, vboDataP, buffer);
+			GL33.glDrawArraysInstanced(GL30.GL_TRIANGLES, 0, 6, 1);
+		}
+		
 		// TODO: maybe a less memory intensive way of doing this?
 		Iterator<Entry<Integer, List<Entity>>> mapIT = batchAtlasMap.entrySet().iterator();
 		while (mapIT.hasNext()) {
@@ -84,6 +120,7 @@ public class EntityRenderer {
 			pointer = 0;
 			
 			List<Entity> el = mapEN.getValue();
+			// TODO: optimize this lol
 			float[] vboData = new float[el.size() * INSTANCE_FLOAT_COUNT];
 			int count = 0;
 			
@@ -94,6 +131,7 @@ public class EntityRenderer {
 				// i guess it can save like 17 assignments and a matrix calc
 				if (!e.isEnabled() || !camera.isIn2DFrustum(e.x(), e.y(), e.getWidth(), e.getHeight()))
 					continue;
+				e.onRender();
 				count++;
 				modelViewMatrix = Maths.createTransformationMatrix(e.x(), e.y(), e.z(), e.getRotation(), e.getWidth(), e.getHeight());
 				// touch this and i'll kill you
@@ -137,9 +175,6 @@ public class EntityRenderer {
 		}
 		
 		atlasShader.stop();
-		//normalShader.start();
-		
-		//normalShader.loadViewMatrix(viewmatrix);
 		
 		GL30.glDisableVertexAttribArray(0);
 		GL30.glDisableVertexAttribArray(1);
@@ -156,7 +191,9 @@ public class EntityRenderer {
 	 * @param e entity to add to the draw queue
 	 */
 	public static void addEntity(Entity e) {
-		if (e.getIsUsingAtlas()) {
+		if (e instanceof Player) {
+			players.add(e);
+		} else {
 			int at = TextureLoader.getTextureAtlas(e.getTexture());
 			List<Entity> list = batchAtlasMap.get(at);
 			if (list == null) {
@@ -164,17 +201,8 @@ public class EntityRenderer {
 				batchAtlasMap.put(at, list);
 			}
 			list.add(e);
-			
-		} else {
-			int id = TextureLoader.loadTexture(e.getTexture());
-			List<Entity> list = batchMap.get(id);
-			if (list == null) {
-				list = new ArrayList<Entity>();
-				batchMap.put(id, list);
-			}
-			list.add(e);
+			entityCount++;
 		}
-		entityCount++;
 	}
 	
 	/**
@@ -182,26 +210,21 @@ public class EntityRenderer {
 	 * If you are intending for a entity to not be drawn, ie you are not removing it from the world,
 	 * please use e.setEnabled(false); <br>
 	 * <b> this method will make it impossible to draw this entity, ever. </b>
+	 * <b> DO NOT USE THIS METHOD. USE entity.Delete();!!!!!!</b> <br>
 	 * @param e entity to be deleted
 	 * @return if the entity was contained inside the renderer
 	 */
 	public static boolean deleteEntity(Entity e) {
-		if (e.getIsUsingAtlas()) {
-			 int at = TextureLoader.getTextureAtlas(e.getTexture());
-			 List<Entity> list = batchAtlasMap.get(at);
-			 if (list != null) {
-				 entityCount--;
-				 return list.remove(e);
-			 }
-			 return false;
+		if (e instanceof Player) {
+			return players.remove(e);
 		} else {
-			int at = TextureLoader.loadTexture(e.getTexture());
-			 List<Entity> list = batchMap.get(at);
-			 if (list != null) {
-				 entityCount--;
-				 return list.remove(e);
-			 }
-			 return false;
+			int at = TextureLoader.getTextureAtlas(e.getTexture());
+			List<Entity> list = batchAtlasMap.get(at);
+			if (list != null) {
+				entityCount--;
+				return list.remove(e);
+			}
+			return false;
 		}
 	}
 	
@@ -211,7 +234,6 @@ public class EntityRenderer {
 	 */
 	public static void deleteAllEntities() {
 		batchAtlasMap.clear();
-		batchMap.clear();
 	}
 
 	public static int getNumberOfEntitesInWorld() {
