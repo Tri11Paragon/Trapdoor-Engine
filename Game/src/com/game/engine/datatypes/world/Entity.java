@@ -135,11 +135,16 @@ public class Entity {
 		this.z = z;
 		return this;
 	}
+	public Entity addPosition(float x, float y) {
+		this.x += x;
+		this.y += y;
+		return this;
+	}
 	public float getRotation() {
 		return rotation;
 	}
 	public Entity setRotation(float rotation) {
-		this.rotation = rotation;
+		this.rotation = rotation % 360;
 		return this;
 	}
 	public float getWidth() {

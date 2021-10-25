@@ -29,12 +29,12 @@ import com.game.engine.tools.math.Maths;
 public class EntityRenderer {
 	
 	private static final float[] VERTICIES = {
-		0, 1, 0.0f, 1.0f,
-		1, 0, 1.0f, 0.0f,
-		0, 0, 0.0f, 0.0f,
+		-1, 1, 0.0f, 1.0f,
+		1, -1, 1.0f, 0.0f,
+		-1, -1, 0.0f, 0.0f,
 		
-		0, 1, 0.0f, 1.0f,
-		1, 0, 1.0f, 0.0f,
+		-1, 1, 0.0f, 1.0f,
+		1, -1, 1.0f, 0.0f,
 		1, 1, 1.0f, 1.0f,
 	};
 	private static final int MAX_INSTANCES = 100000;
@@ -44,17 +44,6 @@ public class EntityRenderer {
 	private static Matrix4f modelViewMatrix = new Matrix4f();
 	private static int pointer = 0;
 	
-	/*private static final float[] vertices = {
-		    // positions        // texture coords
-		     1f,  1f, 0.0f,  1.0f, 1.0f,   // top right
-		     1f,  0f, 0.0f,  1.0f, 0.0f,   // bottom right
-		     0f,  0f, 0.0f,  0.0f, 0.0f,   // bottom left
-		     0f,  1f, 0.0f,  0.0f, 1.0f    // top left 
-		};
-	private static final int[] indices = {
-	        0, 1, 3, // first triangle
-	        1, 2, 3  // second triangle
-	    };*/
 	private static BlockModelVAO vao;
 	private static int vbo;
 	private static final HashMap<Integer, List<Entity>> batchAtlasMap = new HashMap<Integer, List<Entity>>();
@@ -96,8 +85,8 @@ public class EntityRenderer {
 			
 			List<Entity> el = mapEN.getValue();
 			float[] vboData = new float[el.size() * INSTANCE_FLOAT_COUNT];
-			// atlasShader.loadTextureID(inEN.getKey());
-
+			int count = 0;
+			
 			for (int i = 0; i < el.size(); i++) {
 				Entity e = el.get(i);
 				// maybe don't use this? idk
@@ -105,8 +94,7 @@ public class EntityRenderer {
 				// i guess it can save like 17 assignments and a matrix calc
 				if (!e.isEnabled() || !camera.isIn2DFrustum(e.x(), e.y(), e.getWidth(), e.getHeight()))
 					continue;
-				// atlasShader.loadTranslationMatrix(Maths.createTransformationMatrix(e.x(),
-				// e.y(), e.z(), e.getRotation(), e.getWidth(), e.getHeight()));
+				count++;
 				modelViewMatrix = Maths.createTransformationMatrix(e.x(), e.y(), e.z(), e.getRotation(), e.getWidth(), e.getHeight());
 				// touch this and i'll kill you
 				// not hard to understand if you know that opengl splits its 4x matrix
@@ -143,7 +131,9 @@ public class EntityRenderer {
 			// HOLY SHIT THIS GAY ASS FUNCTION
 			// always crashes
 			// (see all the hs_err_pid.......log)
-			GL33.glDrawArraysInstanced(GL30.GL_TRIANGLES, 0, 6, el.size());
+			GL33.glDrawArraysInstanced(GL30.GL_TRIANGLES, 0, 6, count);
+			// turns out the crashes was due to my own incompetence 
+			// *shhhhhhhh
 		}
 		
 		atlasShader.stop();
@@ -160,39 +150,70 @@ public class EntityRenderer {
 		GL30.glDisableVertexAttribArray(6);
 	}
 	
+	/**
+	 * Adds the entity to the internal data structure for rendering <br>
+	 * <b>THIS FUNCTION SHOULD ONLY BE CALLED WHEN AN ENTITY IS CREATED. <b>
+	 * @param e entity to add to the draw queue
+	 */
 	public static void addEntity(Entity e) {
 		if (e.getIsUsingAtlas()) {
 			int at = TextureLoader.getTextureAtlas(e.getTexture());
-			int id = TextureLoader.getTextureAtlasID(e.getTexture());
 			List<Entity> list = batchAtlasMap.get(at);
 			if (list == null) {
 				list = new ArrayList<Entity>();
 				batchAtlasMap.put(at, list);
 			}
 			list.add(e);
-			entityCount++;
-		} else {
 			
+		} else {
+			int id = TextureLoader.loadTexture(e.getTexture());
+			List<Entity> list = batchMap.get(id);
+			if (list == null) {
+				list = new ArrayList<Entity>();
+				batchMap.put(id, list);
+			}
+			list.add(e);
 		}
+		entityCount++;
 	}
 	
-	public static void deleteEntity(Entity e) {
+	/**
+	 * deletes an entity from the renderer's internal data structure. <br>
+	 * If you are intending for a entity to not be drawn, ie you are not removing it from the world,
+	 * please use e.setEnabled(false); <br>
+	 * <b> this method will make it impossible to draw this entity, ever. </b>
+	 * @param e entity to be deleted
+	 * @return if the entity was contained inside the renderer
+	 */
+	public static boolean deleteEntity(Entity e) {
 		if (e.getIsUsingAtlas()) {
-			 
-			entityCount--;
+			 int at = TextureLoader.getTextureAtlas(e.getTexture());
+			 List<Entity> list = batchAtlasMap.get(at);
+			 if (list != null) {
+				 entityCount--;
+				 return list.remove(e);
+			 }
+			 return false;
 		} else {
-			
+			int at = TextureLoader.loadTexture(e.getTexture());
+			 List<Entity> list = batchMap.get(at);
+			 if (list != null) {
+				 entityCount--;
+				 return list.remove(e);
+			 }
+			 return false;
 		}
 	}
 	
-	public static void renderEntity(Entity e) {
-		if (e.getIsUsingAtlas()) {
-			
-		} else {
-			
-		}
+	/**
+	 * this function completely removes all entities from the draw queue. <br>
+	 * Only use when screen are being swapped.
+	 */
+	public static void deleteAllEntities() {
+		batchAtlasMap.clear();
+		batchMap.clear();
 	}
-	
+
 	public static int getNumberOfEntitesInWorld() {
 		return entityCount;
 	}

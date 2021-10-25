@@ -231,7 +231,7 @@ public class DisplayManager {
 		glfwDestroyWindow(window);
 		
 		glfwTerminate();
-		glfwSetErrorCallback(null);
+		glfwSetErrorCallback(null).free();
 	}
 
 	/*

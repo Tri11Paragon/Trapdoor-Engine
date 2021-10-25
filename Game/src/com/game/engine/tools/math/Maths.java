@@ -144,10 +144,20 @@ public class Maths {
 	
 	public static Matrix4f createTransformationMatrix(float x, float y, float z, float rot, float sx, float sy) {
 		matrix.identity();
-		matrix.translate(x, y, z);
-		matrix.scale(sx, sy, 1f);
-		if (rot != 0)
-			matrix.rotate(rot, rz);
+		float sx2 = sx/2;
+		float sy2 = sy/2;
+		// transform
+		matrix.m30(x + sx2);
+		matrix.m31(y + sy2);
+		matrix.m32(z);
+		// scale
+		matrix.m00(matrix.m00() * sx2);
+		matrix.m11(matrix.m11() * sy2);
+		// rotate
+		// this is a costly function to run. so only run it when we actually need to
+		if (rot != 0) {
+			matrix.rotateZ((float) (rot / 180.0 * 3.14159265359));
+		}
 		return matrix;
 	}
 	

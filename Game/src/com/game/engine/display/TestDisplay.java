@@ -1,5 +1,7 @@
 package com.game.engine.display;
 
+import java.util.ArrayList;
+
 import org.joml.Matrix4f;
 import com.game.engine.camera.FreecamCamera;
 import com.game.engine.datatypes.world.Entity;
@@ -19,9 +21,11 @@ public class TestDisplay extends IDisplay {
 	private Matrix4f view;
 	private AtlasShader shader;
 	private WorldShader wshader;
-	private Entity e;
+	private ArrayList<Entity> e = new ArrayList<Entity>();
 	
-	private String[] test = {"1540093100131.jpg", "1540046285552.jpg", "1534874238973.png", "1531696571587.jpg"};
+	private String[] test = {"1540093100131.jpg", "1540046285552.jpg", "1534874238973.png", "1531696571587.jpg",
+			"1200px-bi_flag-svg.png", "1540146676067.png", "1540333513771.jpg", "1540168411469.jpg", "1540139171163.jpg",
+		"1540138132856.jpg"};
 	
 	@Override
 	public void onCreate() {
@@ -29,15 +33,16 @@ public class TestDisplay extends IDisplay {
 		shader = new AtlasShader("main.vs", "main.fs");
 		wshader = new AtlasShader("main.vs", "main.fs");
 		for (int i = 0; i < 10000; i++) {
-			e = new Entity(i%DisplayManager.WIDTH*500, 50, 500, 500, test[i%test.length], true).enable();
 			if (i % 2 == 0)
-				e.disable();
+				e.add(new Entity(i%DisplayManager.WIDTH*150, 500, 150, 150, test[i%test.length], true).enable());
+			else
+				e.add(new Entity(i%DisplayManager.WIDTH*150, 50, 150, 150, test[i%test.length], true).enable());
 		}
 	}
 
 	@Override
 	public void onSwitch() {
-		e.enable();
+		
 	}
 
 	float z = 0;
@@ -49,6 +54,11 @@ public class TestDisplay extends IDisplay {
 		this.view = Maths.createViewMatrix(camera);
 		
 		EntityRenderer.render(shader, wshader, view, camera);
+		
+		for (int i = 0; i < e.size(); i++) {
+			Entity ee = e.get(i);
+			ee.setRotation((float) (ee.getRotation()+(25 * DisplayManager.getFrameTimeSeconds())));
+		}
 		
 	}
 
