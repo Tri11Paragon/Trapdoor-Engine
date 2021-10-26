@@ -11,7 +11,6 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL33;
 
-import com.game.engine.datatypes.ogl.BlockModelVAO;
 import com.game.engine.datatypes.ogl.ModelVAO;
 import com.game.engine.tools.Logger;
 import com.game.engine.tools.obj.ModelData;
@@ -76,7 +75,7 @@ public class Loader {
 		return TextureLoader.loadTexture(texture, bias, minmag_filter, minmag_mipmap);
 	}
 	
-	public static BlockModelVAO loadToVAO(float[] data, int[] indicies) {
+	public static ModelVAO loadToVAO(float[] data, int[] indicies) {
 		int vao = createVAO();
 		
 		int[] vbos = new int[2];
@@ -87,10 +86,10 @@ public class Loader {
 		vbos[1] = storeDataInAttributeList(1, 2, 20, 12, data);
 		
 		unbindVAO();
-		return new BlockModelVAO(vao, vbos, indicies.length);
+		return new ModelVAO(vao, vbos, indicies.length);
 	}
 	
-	public static BlockModelVAO loadToVAO(float[] data) {
+	public static ModelVAO loadToVAO(float[] data) {
 		int vao = createVAO();
 		
 		int[] vbos = new int[2];
@@ -99,7 +98,20 @@ public class Loader {
 		vbos[1] = storeDataInAttributeList(1, 2, 16, 8, data);
 		
 		unbindVAO();
-		return new BlockModelVAO(vao, vbos, data.length/2);
+		return new ModelVAO(vao, vbos, data.length/2);
+	}
+	
+	public static ModelVAO loadToVAOTile(float[] data) {
+		int vao = createVAO();
+		
+		int[] vbos = new int[3];
+		
+		vbos[0] = storeDataInAttributeList(0, 2, 24, 0, data);
+		vbos[1] = storeDataInAttributeList(1, 2, 24, 16, data);
+		vbos[2] = storeDataInAttributeList(2, 2, 24, 8, data);
+		
+		unbindVAO();
+		return new ModelVAO(vao, vbos, data.length/3);
 	}
 	
 	/**
@@ -116,14 +128,15 @@ public class Loader {
 		 * I should note its not actually storing the data itself into the VAO, but a pointer to the VBO
 		 * you still need to enable the VBO when rendering.
 		 */
-		// store data into the vao 
-		storeDataInAttributeList(0,3,data.getVertices());
-		storeDataInAttributeList(1,2,data.getTextureCoords());
-		storeDataInAttributeList(2,3,data.getNormals());
+		// store data into the vao
+		int[] vbos = new int[3];
+		vbos[0] = storeDataInAttributeList(0,3,data.getVertices());
+		vbos[1] = storeDataInAttributeList(1,2,data.getTextureCoords());
+		vbos[2] = storeDataInAttributeList(2,3,data.getNormals());
 		// unbind the VAO
 		unbindVAO();
 		// return the model
-		return new ModelVAO(vaoID,indices.length);
+		return new ModelVAO(vaoID, vbos, indices.length);
 	}
 	
 	public static int createEmptyVBO(int bytes) {
@@ -171,9 +184,9 @@ public class Loader {
 	public static ModelVAO deleteVAO(ModelVAO model) {
 		try {
 			// if this is a block then we will delete the VBOs
-			if (model instanceof BlockModelVAO) {
+			if (model instanceof ModelVAO) {
 				// list of all the VBOs for this model
-				int[] vbos = ((BlockModelVAO) model).getVbos();
+				int[] vbos = ((ModelVAO) model).getVbos();
 				// remove them from the graphics card
 				for (int i = 0; i < vbos.length; i++) {
 					GL15.glDeleteBuffers(vbos[i]);

@@ -15,7 +15,7 @@ import org.lwjgl.opengl.GL33;
 import com.game.engine.Loader;
 import com.game.engine.TextureLoader;
 import com.game.engine.camera.Camera;
-import com.game.engine.datatypes.ogl.BlockModelVAO;
+import com.game.engine.datatypes.ogl.ModelVAO;
 import com.game.engine.datatypes.world.Entity;
 import com.game.engine.datatypes.world.Player;
 import com.game.engine.shaders.AtlasShader;
@@ -44,7 +44,8 @@ public class EntityRenderer {
 	private static Matrix4f modelViewMatrix = new Matrix4f();
 	private static int pointer = 0;
 	
-	private static BlockModelVAO vao;
+	private static AtlasShader shader;
+	private static ModelVAO vao;
 	private static int vbo;
 	private static final HashMap<Integer, List<Entity>> batchAtlasMap = new HashMap<Integer, List<Entity>>();
 	private static int entityCount = 0;
@@ -53,6 +54,7 @@ public class EntityRenderer {
 	private static final float[] vboDataP = new float[INSTANCE_FLOAT_COUNT];
 	
 	public static void init() {
+		shader = new AtlasShader("atlas.vs", "atlas.fs");
 		vao = Loader.loadToVAO(VERTICIES);
 		vbo = Loader.createEmptyVBO(INSTANCE_DATA_LENGTH * MAX_INSTANCES);
 		Loader.addInstancedAttribute(vao.getVaoID(), vbo, 2, 4, INSTANCE_DATA_LENGTH, 0);
@@ -62,7 +64,7 @@ public class EntityRenderer {
 		Loader.addInstancedAttribute(vao.getVaoID(), vbo, 6, 1, INSTANCE_DATA_LENGTH, 16 * 4);
 	}
 	
-	public static void render(AtlasShader atlasShader, Matrix4f viewmatrix, Camera camera) {
+	public static void render(Matrix4f viewmatrix, Camera camera) {
 		GL30.glBindVertexArray(vao.getVaoID());
 		GL30.glEnableVertexAttribArray(0);
 		GL30.glEnableVertexAttribArray(1);
@@ -72,8 +74,8 @@ public class EntityRenderer {
 		GL30.glEnableVertexAttribArray(5);
 		GL30.glEnableVertexAttribArray(6);
 		
-		atlasShader.start();
-		atlasShader.loadViewMatrix(viewmatrix);
+		shader.start();
+		shader.loadViewMatrix(viewmatrix);
 		
 		GL30.glActiveTexture(GL30.GL_TEXTURE0);
 		
@@ -87,8 +89,7 @@ public class EntityRenderer {
 			GL30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, e.getAtlasID());
 			pointer = 0;
 			e.onRender();
-			modelViewMatrix = Maths.createTransformationMatrix(e.x(), e.y(), e.z(), e.getRotation(), e.getWidth(),
-					e.getHeight());
+			modelViewMatrix = Maths.createTransformationMatrix(e.x(), e.y(), e.z(), e.getRotation(), e.getWidth(), e.getHeight());
 			vboDataP[pointer++] = modelViewMatrix.m00();
 			vboDataP[pointer++] = modelViewMatrix.m01();
 			vboDataP[pointer++] = modelViewMatrix.m02();
@@ -174,7 +175,7 @@ public class EntityRenderer {
 			// *shhhhhhhh
 		}
 		
-		atlasShader.stop();
+		shader.stop();
 		
 		GL30.glDisableVertexAttribArray(0);
 		GL30.glDisableVertexAttribArray(1);
@@ -183,6 +184,7 @@ public class EntityRenderer {
 		GL30.glDisableVertexAttribArray(4);
 		GL30.glDisableVertexAttribArray(5);
 		GL30.glDisableVertexAttribArray(6);
+		GL30.glBindVertexArray(0);
 	}
 	
 	/**

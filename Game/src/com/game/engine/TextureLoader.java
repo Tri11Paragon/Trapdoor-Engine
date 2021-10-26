@@ -43,6 +43,7 @@ public class TextureLoader {
 	public static HashMap<String, Integer> atlasMap = new HashMap<String, Integer>();
 	// contains TextureName -> atlas id
 	public static HashMap<String, Integer> atlasTextureMap = new HashMap<String, Integer>();
+	public static HashMap<Integer, ArrayList<String>> textureNames = new HashMap<Integer, ArrayList<String>>();
 
 	/**
 	 * does all the texture atlas stuff.
@@ -213,6 +214,7 @@ public class TextureLoader {
 	
 	private static int loadSpecialTextureATLAS(Atlas atlas) {
 		try {
+			ArrayList<String> names = new ArrayList<String>();
 			//for more detail on array textures
 			//https://www.khronos.org/opengl/wiki/Array_Texture
 			float anisf = Math.min(SettingsLoader.AF, GL11.glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
@@ -254,6 +256,7 @@ public class TextureLoader {
 	        	atlasMap.put(textures.get(i).getName(), i);
 	        	// memory? we got lots of that! right?
 	        	atlasTextureMap.put(textures.get(i).getName(), id);
+	        	names.add(textures.get(i).getName());
 	        }
 	        
 	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST); 
@@ -269,6 +272,7 @@ public class TextureLoader {
 	        
 			// add texture for later deletion.
 			TextureLoader.textures.add(id);
+			textureNames.put(id, names);
 			return id;
 		} catch (Exception e) {}
 		return 0;

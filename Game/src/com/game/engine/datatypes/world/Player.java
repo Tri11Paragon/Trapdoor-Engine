@@ -14,6 +14,9 @@ public class Player extends Entity {
 	private Camera c;
 	private float movementSpeed = 150;
 	private String oldTexture;
+	private float zoom = 1;
+	@SuppressWarnings("unused")
+	private float zoomSpeed = 150;
 
 	public Player(Camera c, float width, float height, String texture) {
 		super(0, 0, width, height, texture);
@@ -32,6 +35,7 @@ public class Player extends Entity {
 		super.onUpdate();
 		c.setX(this.x() - DisplayManager.WIDTH/2 + this.getWidth()/2);
 		c.setY(this.y() - DisplayManager.HEIGHT/2 + this.getHeight()/2);
+		c.setZ(zoom);
 		
 		this.setTexture(oldTexture);
 		if (Keyboard.isKeyDown(Keyboard.W)) {
@@ -46,6 +50,9 @@ public class Player extends Entity {
 		if (Keyboard.isKeyDown(Keyboard.D)) {
 			this.addPosition((float) (movementSpeed * DisplayManager.getFrameTimeSeconds()), 0);
 		}
+		//if (InputMaster.scrolledLastFrame) {
+			//zoom += zoomSpeed * InputMaster.lastScrollState * DisplayManager.getFrameTimeSeconds();
+		//}
 	}
 	
 	

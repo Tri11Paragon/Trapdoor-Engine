@@ -9,7 +9,6 @@ public class TexturedModel {
 
 	private ModelVAO rawModel;
 	private Texture texture;
-
 	
 	public TexturedModel(ModelVAO model, Texture texture){
 		this.rawModel = model;

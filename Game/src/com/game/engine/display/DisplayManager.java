@@ -52,16 +52,19 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryStack;
 
 import com.game.engine.ProjectionMatrix;
 import com.game.engine.TextureLoader;
 import com.game.engine.renderer.EntityRenderer;
+import com.game.engine.renderer.SyncSave;
 import com.game.engine.tools.Logger;
 import com.game.engine.tools.RescaleEvent;
 import com.game.engine.tools.SettingsLoader;
 import com.game.engine.tools.icon.GLIcon;
 import com.game.engine.tools.input.InputMaster;
+import com.game.engine.world.World;
 
 public class DisplayManager {
 
@@ -75,6 +78,8 @@ public class DisplayManager {
 	
 	// window
 	public static long window;
+	public static boolean displayOpen = true;
+	public static long mainThreadID = 1;
 		
 	private static long lastFrameTime;
 	private static double delta;
@@ -82,6 +87,7 @@ public class DisplayManager {
 	public static int WIDTH = 1280;
 	public static int HEIGHT = 720;
 	public static int FPS_MAX = 120;
+	public static int MAX_SHADER_TEXTURES = 16;
 	
 	// mouse
 	public static double mouseX,mouseY;
@@ -114,11 +120,12 @@ public class DisplayManager {
 				
 				glfwSwapBuffers(window);
 				glfwPollEvents();
+				SyncSave.sync(FPS_MAX);
 				
 				long currentFrameTime = getCurrentTime();
 				delta = currentFrameTime - lastFrameTime;
 				lastFrameTime = currentFrameTime;
-				System.out.println(getFrameTimeMilis() + " :: " + 1000/getFrameTimeMilis());
+				System.out.println(getFrameTimeMilis() + " :: " + 1000/getFrameTimeMilis() + " (" + World.getFrameTimeMilis() + ") :: " + 1000/World.getFrameTimeMilis());
 			} catch (Exception e) {e.printStackTrace();}
 		}
 	}
@@ -126,6 +133,7 @@ public class DisplayManager {
 	// display opening / closing
 	
 	public static void createDisplay(boolean isUsingFBOs) {
+		mainThreadID = Thread.currentThread().getId();
 		Logger.writeln("LWJGL Version: " + Version.getVersion() + "!");
 		Logger.writeln("Game Version: " + gameVersion);
 		Logger.writeln("Engine Version: " + engineVersion);
@@ -223,6 +231,17 @@ public class DisplayManager {
 		TextureLoader.init("resources/textures/atlas/");
 		// init the renderer
 		EntityRenderer.init();
+		int[] in = new int[1];
+		GL30.glGetIntegerv(GL30.GL_MAX_TEXTURE_IMAGE_UNITS, in);
+		MAX_SHADER_TEXTURES = in[0];
+		Logger.writeln("Max allowed shader texures: " + in[0]);
+		// this is actually a very big problem if anyone runs into this.
+		// we can use 32 but will only use 16 for safety
+		if (in[0] < 16) {
+			Logger.writeErrorln("Your OpenGL drivers do not support this game. Please report this to the developers.");
+			// we cannot recover from this.
+			System.exit(-1);
+		}
 	}
 
 	public static void closeDisplay() {
@@ -231,6 +250,7 @@ public class DisplayManager {
 		
 		glfwFreeCallbacks(window);
 		glfwDestroyWindow(window);
+		displayOpen = false;
 		
 		glfwTerminate();
 		glfwSetErrorCallback(null).free();
@@ -279,12 +299,26 @@ public class DisplayManager {
 		return System.nanoTime();
 	}
 
-	public static double getFrameTimeMilis() {
+	public static double getFrameTimeMilisF() {
 		return delta / 1000000d;
 	}
+	
+	public static double getFrameTimeMilis() {
+		//if (Thread.currentThread().getId() == mainThreadID)
+			return delta / 1000000d;
+		//else
+		//	return World.getFrameTimeMilis();
+	}
 
-	public static double getFrameTimeSeconds() {
+	public static double getFrameTimeSecondsF() {
 		return delta / 1000000000d;
+	}
+	
+	public static double getFrameTimeSeconds() {
+		//if (Thread.currentThread().getId() == mainThreadID)
+			return delta / 1000000000d;
+		//else
+		//	return World.getFrameTimeSeconds();
 	}
 	
 	public static double getFPS() {
