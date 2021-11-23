@@ -1,11 +1,12 @@
 package com.game.engine.display;
 
-import java.util.ArrayList;
-
-import com.game.engine.TextureLoader;
-import com.game.engine.datatypes.world.Entity;
+import com.game.engine.Loader;
+import com.game.engine.camera.CreativeFirstPerson;
+import com.game.engine.datatypes.ogl.ModelVAO;
+import com.game.engine.datatypes.ogl.Texture;
 import com.game.engine.renderer.EntityRenderer;
-import com.game.engine.world.World;
+import com.game.engine.tools.models.OBJLoader;
+import com.game.engine.world.Entity;
 
 /**
  * @author brett
@@ -15,25 +16,31 @@ import com.game.engine.world.World;
 public class TestDisplay extends IDisplay {
 	
 	
-	private ArrayList<Entity> e = new ArrayList<Entity>();
-	
+	//private ArrayList<Entity> e = new ArrayList<Entity>();
+	public CreativeFirstPerson camera;
+	public EntityRenderer renderer;
+	public ModelVAO vao;
+	public Texture texture;
 	
 	@Override
 	public void onCreate() {
-		World.preinit();
+		this.camera = new CreativeFirstPerson();
+		this.renderer = new EntityRenderer(this.camera);
+		this.vao = Loader.loadToVAO(OBJLoader.loadOBJ("depression"));
+		this.texture = new Texture(Loader.loadTexture("atlas/Minecraft Textures SIZE_16/dirt.png"));
+		this.renderer.ents.add(new Entity().setModel(Loader.loadToVAO(OBJLoader.loadOBJ("hmmmmtriangles"))).setTexture(texture).setPosition(0, 0, 0));
+		this.renderer.ents.add(new Entity().setModel(vao).setTexture(texture).setPosition(25, 0, 0));
+		this.renderer.ents.add(new Entity().setModel(vao).setTexture(texture).setPosition(-25, 0, 0));
+		this.renderer.ents.add(new Entity().setModel(vao).setTexture(texture).setPosition(0, 0, 25));
+		this.renderer.ents.add(new Entity().setModel(vao).setTexture(texture).setPosition(0, 0, -25));
+		//World.preinit();
 	}
 
 	@Override
 	public void onSwitch() {
-		World.init();
 		
-		ArrayList<String> test = TextureLoader.textureNames.get(TextureLoader.getTextureAtlas("1540093100131.jpg"));
-		for (int i = 0; i < 100; i++) {
-			if (i % 2 == 0)
-				e.add(new Entity(i%DisplayManager.WIDTH*150, 500, 150, 150, test.get(i%test.size())).enable());
-			else
-				e.add(new Entity(i%DisplayManager.WIDTH*150, 50, 150, 150, test.get(i%test.size())).enable());
-		}
+		
+		
 	}
 
 	float z = 0;
@@ -43,26 +50,28 @@ public class TestDisplay extends IDisplay {
 	@Override
 	public void render() {
 		
+		this.camera.move();
+		this.renderer.render();
 		
-		World.render();
-		World.update();
+		//World.render();
+		//World.update();
 		
-		for (int i = 0; i < e.size(); i++) {
-			Entity ee = e.get(i);
-			ee.setRotation((float) (ee.getRotation() + Math.sin(Math.toRadians((c/180) + 60 * DisplayManager.getFrameTimeSeconds()))));
-			if (ee.getPosition().y < 500) {
-				ee.setPosition(ee.x(), (float) (Math.sin(Math.toRadians((c+ee.x())%360)) * 150));
-			}
-		}
+		//for (int i = 0; i < e.size(); i++) {
+		//	Entity ee = e.get(i);
+		//	ee.setRotation((float) (ee.getRotation() + Math.sin(Math.toRadians((c/180) + 60 * DisplayManager.getFrameTimeSeconds()))));
+		//	if (ee.getPosition().y < 500) {
+		//		ee.setPosition(ee.x(), (float) (Math.sin(Math.toRadians((c+ee.x())%360)) * 150));
+		//	}
+		//}
 		
-		c += 120 * DisplayManager.getFrameTimeSeconds();
-		c %= 360;
+		//c += 120 * DisplayManager.getFrameTimeSeconds();
+		//c %= 360;
 	}
 
 	@Override
 	public void onLeave() {
-		EntityRenderer.deleteAllEntities();
-		World.deleteAllEntities();
+		//EntityRenderer.deleteAllEntities();
+		//World.deleteAllEntities();
 	}
 
 	@Override

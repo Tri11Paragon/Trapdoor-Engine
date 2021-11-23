@@ -13,7 +13,7 @@ import org.lwjgl.opengl.GL33;
 
 import com.game.engine.datatypes.ogl.ModelVAO;
 import com.game.engine.tools.Logger;
-import com.game.engine.tools.obj.ModelData;
+import com.game.engine.tools.models.ModelData;
 
 /*
  * THIS CLASS IS NOT TO BE TOUCHED BY ANYONE
@@ -73,6 +73,10 @@ public class Loader {
 	
 	public static int loadTexture(String texture, float bias, int minmag_filter, int minmag_mipmap) {
 		return TextureLoader.loadTexture(texture, bias, minmag_filter, minmag_mipmap);
+	}
+	
+	public static int loadTexture(String texture, int width, int height) {
+		return TextureLoader.loadTexture(texture, width, height);
 	}
 	
 	public static ModelVAO loadToVAO(float[] data, int[] indicies) {

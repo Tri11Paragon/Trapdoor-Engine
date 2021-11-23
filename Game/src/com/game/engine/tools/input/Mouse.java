@@ -2,6 +2,8 @@ package com.game.engine.tools.input;
 
 import org.lwjgl.glfw.GLFW;
 
+import com.game.engine.display.DisplayManager;
+
 public class Mouse {
 
 	public static final int LEFT_CLICK = GLFW.GLFW_MOUSE_BUTTON_LEFT;
@@ -77,6 +79,18 @@ public class Mouse {
 	 */
 	public static boolean mouseStateMiddle() {
 		return InputMaster.mouseStateMiddle;
+	}
+	
+	public static double getDX() {
+		return DisplayManager.getDX();
+	}
+	
+	public static double getDY() {
+		return DisplayManager.getDY();
+	}
+	
+	public static boolean isGrabbed() {
+		return DisplayManager.isMouseGrabbed;
 	}
 	
 }

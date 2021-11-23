@@ -57,14 +57,12 @@ import org.lwjgl.system.MemoryStack;
 
 import com.game.engine.ProjectionMatrix;
 import com.game.engine.TextureLoader;
-import com.game.engine.renderer.EntityRenderer;
 import com.game.engine.renderer.SyncSave;
 import com.game.engine.tools.Logger;
 import com.game.engine.tools.RescaleEvent;
 import com.game.engine.tools.SettingsLoader;
 import com.game.engine.tools.icon.GLIcon;
 import com.game.engine.tools.input.InputMaster;
-import com.game.engine.world.World;
 
 public class DisplayManager {
 
@@ -92,7 +90,7 @@ public class DisplayManager {
 	// mouse
 	public static double mouseX,mouseY;
 	private static double lx, ly;
-	public static boolean isMouseGrabbed = false;
+	public static boolean isMouseGrabbed = true;
 	
 	// classes needing to change when the window resizes
 	public static List<RescaleEvent> rescales = new ArrayList<RescaleEvent>();
@@ -125,7 +123,7 @@ public class DisplayManager {
 				long currentFrameTime = getCurrentTime();
 				delta = currentFrameTime - lastFrameTime;
 				lastFrameTime = currentFrameTime;
-				System.out.println(getFrameTimeMilis() + " :: " + 1000/getFrameTimeMilis() + " (" + World.getFrameTimeMilis() + ") :: " + 1000/World.getFrameTimeMilis());
+				System.out.println(getFrameTimeMilis() + " :: " + 1000/getFrameTimeMilis() + " (" + 0 + ") :: " + 1000);
 			} catch (Exception e) {e.printStackTrace();}
 		}
 	}
@@ -151,7 +149,7 @@ public class DisplayManager {
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 		
 		
-		window = glfwCreateWindow(WIDTH, HEIGHT, "Total Femboy Master Fighters - V" + gameVersion + " // Trapdoor V" + engineVersion, NULL, NULL);
+		window = glfwCreateWindow(WIDTH, HEIGHT, "Total Femboy - V" + gameVersion + " // Trapdoor V" + engineVersion, NULL, NULL);
 		if ( window == NULL )
 			throw new RuntimeException("Failed to create the GLFW window");
 		
@@ -228,9 +226,9 @@ public class DisplayManager {
 		ProjectionMatrix.updateProjectionMatrix();
 		
 		// load the texture atlas stuff
-		TextureLoader.init("resources/textures/atlas/");
+		//TextureLoader.init("resources/textures/atlas/");
 		// init the renderer
-		EntityRenderer.init();
+		//EntityRenderer.init();
 		int[] in = new int[1];
 		GL30.glGetIntegerv(GL30.GL_MAX_TEXTURE_IMAGE_UNITS, in);
 		MAX_SHADER_TEXTURES = in[0];
@@ -242,6 +240,7 @@ public class DisplayManager {
 			// we cannot recover from this.
 			System.exit(-1);
 		}
+		setMouseGrabbed(isMouseGrabbed);
 	}
 
 	public static void closeDisplay() {

@@ -48,12 +48,12 @@ public class ProjectionMatrix {
 		while (shaderIt.hasNext()) {
 			WorldShader localShader = shaderIt.next().getValue(); 
 			localShader.start();
-			localShader.loadProjectionMatrix(projectionMatrixOrtho);
+			localShader.loadProjectionMatrix(projectionMatrix);
 			localShader.stop();
 		}
 		
 		//GUIShader guishader = VoxelScreenManager.ui.getRenderer().getShader();
-		//guishader.start();
+		//guishader.start();1
 		//guishader.loadProjectionMatrix(projectionMatrixOrtho);
 		//guishader.loadScreenHeight(DisplayManager.HEIGHT);
 		//guishader.stop();

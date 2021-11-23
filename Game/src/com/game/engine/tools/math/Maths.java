@@ -199,6 +199,19 @@ public class Maths {
 		return matrix;
 	}
 	
+	public static Matrix4f createTransformationMatrix(float x, float y, float z, float yaw, float pitch, float roll, float sx, float sy, float sz) {
+		matrix.identity();
+		matrix.translate(x, y, z);
+		matrix.scale(sx, sy, sz);
+		if (yaw != 0)
+			matrix.rotate(yaw, ry);
+		if (pitch != 0)
+			matrix.rotate(pitch, rx);
+		if (roll != 0)
+			matrix.rotate(roll, rz);
+		return matrix;
+	}
+	
 	public static Matrix4f createTransformationMatrix(Vector3f translation) {
 		matrix.identity();
 		matrix.translate(translation.x, translation.y, translation.z);
@@ -333,10 +346,9 @@ public class Maths {
 		// to make the game look like we are moving, what games to is actually move the
 		// world negative
 		// to where the camera is. Pretty neat eh?
-		viewMatrix.translate((float)cameraPos.x, (float)cameraPos.y, -5);
+		viewMatrix.translate((float)cameraPos.x, (float)cameraPos.y, (float)cameraPos.z);
 		// reset the camera pos back to normal
 		cameraPos.negate();
-		viewMatrix.scale((float)cameraPos.z, (float)cameraPos.z, 1f);
 		return viewMatrix;
 	}
 	

@@ -54,6 +54,17 @@ public class Keyboard {
 	public static final int KEY_X = GLFW.GLFW_KEY_X;
 	public static final int KEY_Y = GLFW.GLFW_KEY_Y;
 	public static final int KEY_Z = GLFW.GLFW_KEY_Z;
+	public static final int KEY_LEFT_SHIFT = GLFW.GLFW_KEY_LEFT_SHIFT;
+	public static final int KEY_RIGHT_SHIFT = GLFW.GLFW_KEY_RIGHT_SHIFT;
+	public static final int KEY_L_SHIFT = GLFW.GLFW_KEY_LEFT_SHIFT;
+	public static final int KEY_R_SHIFT = GLFW.GLFW_KEY_RIGHT_SHIFT;
+	public static final int KEY_LEFT_CONTROL = GLFW.GLFW_KEY_LEFT_CONTROL;
+	public static final int KEY_L_CONTROL = GLFW.GLFW_KEY_LEFT_CONTROL;
+	public static final int KEY_SPACE = GLFW.GLFW_KEY_SPACE;
+	public static final int KEY_UP = GLFW.GLFW_KEY_UP;
+	public static final int KEY_DOWN = GLFW.GLFW_KEY_DOWN;
+	public static final int KEY_LEFT = GLFW.GLFW_KEY_LEFT;
+	public static final int KEY_RIGHT = GLFW.GLFW_KEY_RIGHT;
 
 	public static final int A = GLFW.GLFW_KEY_A;
 	public static final int B = GLFW.GLFW_KEY_B;
@@ -81,5 +92,16 @@ public class Keyboard {
 	public static final int X = GLFW.GLFW_KEY_X;
 	public static final int Y = GLFW.GLFW_KEY_Y;
 	public static final int Z = GLFW.GLFW_KEY_Z;
-
+	public static final int LEFT_SHIFT = GLFW.GLFW_KEY_LEFT_SHIFT;
+	public static final int RIGHT_SHIFT = GLFW.GLFW_KEY_RIGHT_SHIFT;
+	public static final int L_SHIFT = GLFW.GLFW_KEY_LEFT_SHIFT;
+	public static final int R_SHIFT = GLFW.GLFW_KEY_RIGHT_SHIFT;
+	public static final int LEFT_CONTROL = GLFW.GLFW_KEY_LEFT_CONTROL;
+	public static final int L_CONTROL = GLFW.GLFW_KEY_LEFT_CONTROL;
+	public static final int SPACE = GLFW.GLFW_KEY_SPACE;
+	public static final int UP = GLFW.GLFW_KEY_UP;
+	public static final int DOWN = GLFW.GLFW_KEY_DOWN;
+	public static final int LEFT = GLFW.GLFW_KEY_LEFT;
+	public static final int RIGHT = GLFW.GLFW_KEY_RIGHT;
+	
 }

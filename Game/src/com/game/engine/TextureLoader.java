@@ -161,6 +161,12 @@ public class TextureLoader {
 		return loadTexture(filename, bias, GL11.GL_NEAREST, GL11.GL_LINEAR_MIPMAP_LINEAR);
 	}
 	
+	public static int loadTexture(String filename, int width, int height) {
+		// this used to be a different function but I have changed it to use the special texture loader
+		// as it appears to be able to handle non 2^x sized images and its just more clean.
+		return loadTexture(filename, width, height, -0.2f, GL11.GL_NEAREST, GL11.GL_LINEAR_MIPMAP_LINEAR);
+	}
+	
 	/**
 	 * Loads a texture with specified LOD bias, min/mag filtering and mipmap filtering.
 	 */
@@ -187,7 +193,55 @@ public class TextureLoader {
 	        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, minmag_filter); 
 			
 	        // put the texture data into the texture buffer.
-			GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, d.getWidth(), d.getHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, d.getBuffer());
+			GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, d.getWidth(), d.getHeight(), 0, d.getChannels() == 4 ? GL11.GL_RGBA : GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, d.getBuffer());
+	        
+	        // generates the mipmaps
+			GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
+			// Min and Mag filter is for when a texture is upscaled or downscaled.
+			// im pretty sure i only need to call this ^ but i'd like to make sure that
+			// the mipmaps use the same filters.
+			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, minmag_mipmap); 
+	        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, minmag_mipmap); 
+	        // this bias is how fast a texture loses detail (LOD = level of detail)
+			// > 0 = less detail
+			GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_LOD_BIAS, bias);
+			// applies anisotropic filtering and makes sure that the graphics card supports this level of AF
+			float amount = Math.min(SettingsLoader.AF, GL11.glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
+			GL11.glTexParameterf(GL11.GL_TEXTURE_2D, EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT, amount);
+			
+			// add this texture to the map
+			textureMap.put(texture, id);
+			// add to the textures buffer list (for deletion when the game closes)
+			textures.add(id);
+			// return the buffer.
+			return id;
+		} catch (Exception e) {return 0;}
+	}
+	
+	public static int loadTexture(String texture, int width, int height, float bias, int minmag_filter, int minmag_mipmap) {
+		// return the texture if its already been loaded.
+		if (textureMap.containsKey(texture))
+			return textureMap.get(texture);
+		try {
+			// don't load if we don't have a window with OpenGL (we are the server)
+			if (GL.getCapabilities() == null)
+				return 0;
+			// decode some texture data.
+			TextureData d = decodeTextureToSize("resources/textures/" + texture, width, height);
+			// generate a new texture buffer
+			int id = GL11.glGenTextures();
+			
+			// enable texture
+			GL13.glActiveTexture(GL13.GL_TEXTURE0);
+			// bind the texture buffer
+			GL11.glBindTexture(GL11.GL_TEXTURE_2D, id);
+			
+			// Min and Mag filter is for when a texture is upscaled or downscaled.
+			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, minmag_filter); 
+	        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, minmag_filter); 
+			
+	        // put the texture data into the texture buffer.
+			GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, d.getWidth(), d.getHeight(), 0, d.getChannels() == 4 ? GL11.GL_RGBA : GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, d.getBuffer());
 	        
 	        // generates the mipmaps
 			GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
@@ -300,6 +354,7 @@ public class TextureLoader {
 			height = h[0];
 			channels = ch[0];
 			
+			//if (buffer.position() != 0)
 			buffer.flip();
 		} catch (Exception e) {
 			// we had issue loading texture. exit the game.
