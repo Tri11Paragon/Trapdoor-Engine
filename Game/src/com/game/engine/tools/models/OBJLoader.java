@@ -12,7 +12,9 @@ import java.util.List;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-import com.game.engine.datatypes.ogl.SmallModelData;
+import com.game.engine.datatypes.ogl.obj.ModelData;
+import com.game.engine.datatypes.ogl.obj.ModelDataArrays;
+import com.game.engine.datatypes.ogl.obj.Vertex;
 
 /**
  * @author brett & karl
@@ -99,7 +101,7 @@ public class OBJLoader {
 	/**
 	 * loads a OBJ as arrays instead of as indices
 	 */
-	public static SmallModelData loadAsArrays(String file) {
+	public static ModelDataArrays loadAsArrays(String file) {
 		// final list of verts
 		float[] verts = {};
 		float[] uvs = {};
@@ -155,7 +157,7 @@ public class OBJLoader {
 				line = r.readLine();
 			}
 		} catch (Exception e) {}
-		return new SmallModelData(verts, uvs);
+		return new ModelDataArrays(verts, uvs);
 	}
 	
 	// this is something that i added.
@@ -164,7 +166,7 @@ public class OBJLoader {
 	 */
 	public static void printArrays(String file) {
 		// get the model
-		SmallModelData model = OBJLoader.loadAsArrays(file);
+		ModelDataArrays model = OBJLoader.loadAsArrays(file);
 		
 		// get the verts from the model
 		float[] verts = model.getVerts();

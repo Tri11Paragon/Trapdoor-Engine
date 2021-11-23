@@ -56,7 +56,6 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryStack;
 
 import com.game.engine.ProjectionMatrix;
-import com.game.engine.TextureLoader;
 import com.game.engine.renderer.SyncSave;
 import com.game.engine.tools.Logger;
 import com.game.engine.tools.RescaleEvent;
@@ -109,6 +108,8 @@ public class DisplayManager {
 				GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 				GL11.glEnable(GL13.GL_BLEND);
 				GL13.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+				GL11.glEnable(GL11.GL_CULL_FACE);
+				GL11.glCullFace(GL11.GL_BACK);
 				
 				currentDisplay.render();
 				
@@ -123,7 +124,7 @@ public class DisplayManager {
 				long currentFrameTime = getCurrentTime();
 				delta = currentFrameTime - lastFrameTime;
 				lastFrameTime = currentFrameTime;
-				System.out.println(getFrameTimeMilis() + " :: " + 1000/getFrameTimeMilis() + " (" + 0 + ") :: " + 1000);
+				//System.out.println(getFrameTimeMilis() + " :: " + 1000/getFrameTimeMilis() + " (" + 0 + ") :: " + 1000);
 			} catch (Exception e) {e.printStackTrace();}
 		}
 	}

@@ -1,4 +1,4 @@
-package com.game.engine.tools.models;
+package com.game.engine.datatypes.ogl.obj;
 
 /**
  * stores data about a model

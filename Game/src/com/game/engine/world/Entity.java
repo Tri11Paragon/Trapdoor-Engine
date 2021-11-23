@@ -1,7 +1,7 @@
 package com.game.engine.world;
 
-import com.game.engine.datatypes.ogl.ModelVAO;
 import com.game.engine.datatypes.ogl.Texture;
+import com.game.engine.datatypes.ogl.obj.LoadedModel;
 
 /**
  * @author laptop
@@ -13,7 +13,7 @@ public class Entity {
 	private float x,y,z;
 	private float yaw,pitch,roll;
 	private float sx=1,sy=1,sz=1;
-	private ModelVAO model;
+	private LoadedModel model;
 	private Texture texture;
 	
 	public Entity() {
@@ -70,10 +70,10 @@ public class Entity {
 		this.roll = roll;
 		return this;
 	}
-	public ModelVAO getModel() {
+	public LoadedModel getModel() {
 		return model;
 	}
-	public Entity setModel(ModelVAO model) {
+	public Entity setModel(LoadedModel model) {
 		this.model = model;
 		return this;
 	}

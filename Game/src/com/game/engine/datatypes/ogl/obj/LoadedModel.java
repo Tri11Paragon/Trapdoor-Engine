@@ -1,4 +1,4 @@
-package com.game.engine.datatypes.ogl;
+package com.game.engine.datatypes.ogl.obj;
 
 /**
 *
@@ -7,13 +7,13 @@ package com.game.engine.datatypes.ogl;
 * Just a ModelVAO that stores the VBOs in an int[]
 */
 
-public class ModelVAO  {
+public class LoadedModel  {
 	
 	private int[] vbos;
 	private int vaoID;
 	private int vertexCount;
 	
-	public ModelVAO(int vaoID, int[] vbos, int vertexCount) {
+	public LoadedModel(int vaoID, int[] vbos, int vertexCount) {
 		this.vaoID = vaoID;
 		this.vertexCount = vertexCount;
 		this.vbos = vbos;

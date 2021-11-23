@@ -1,4 +1,4 @@
-package com.game.engine.datatypes.ogl;
+package com.game.engine.datatypes.ogl.obj;
 
 /**
 *
@@ -8,12 +8,12 @@ package com.game.engine.datatypes.ogl;
 * Very simple data storage type
 */
 
-public class SmallModelData {
+public class ModelDataArrays {
 	
 	private float[] verts;
 	private float[] uvs;
 	
-	public SmallModelData(float[] verts, float[] uvs) {
+	public ModelDataArrays(float[] verts, float[] uvs) {
 		this.verts = verts;
 		this.uvs = uvs;
 	}

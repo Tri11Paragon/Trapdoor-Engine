@@ -6,12 +6,9 @@ package com.game.engine.shaders;
  * 
  */
 public class EntityShader extends WorldShader {
-
-	
 	
 	public EntityShader(String vertexFile, String fragmentFile) {
 		super(vertexFile, fragmentFile);
-		
 	}
 	
 	@Override

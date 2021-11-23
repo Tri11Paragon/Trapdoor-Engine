@@ -11,9 +11,10 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL33;
 
-import com.game.engine.datatypes.ogl.ModelVAO;
+import com.game.engine.datatypes.ogl.Texture;
+import com.game.engine.datatypes.ogl.obj.LoadedModel;
+import com.game.engine.datatypes.ogl.obj.ModelData;
 import com.game.engine.tools.Logger;
-import com.game.engine.tools.models.ModelData;
 
 /*
  * THIS CLASS IS NOT TO BE TOUCHED BY ANYONE
@@ -63,23 +64,23 @@ public class Loader {
 	private static List<Integer> vaos = new ArrayList<Integer>();
 	private static List<Integer> vbos = new ArrayList<Integer>();
 	
-	public static int loadTexture(String filename) {
+	public static Texture loadTexture(String filename) {
 		return TextureLoader.loadTexture(filename);
 	}
 	
-	public static int loadTexture(String filename, float bias) {
+	public static Texture loadTexture(String filename, float bias) {
 		return TextureLoader.loadTexture(filename, bias);
 	}
 	
-	public static int loadTexture(String texture, float bias, int minmag_filter, int minmag_mipmap) {
-		return TextureLoader.loadTexture(texture, bias, minmag_filter, minmag_mipmap);
+	public static Texture loadTexture(String texture, float bias, int minmag_filter, int minmag_mipmap) {
+		return TextureLoader.loadTexture(texture, 0, 0, bias, minmag_filter, minmag_mipmap);
 	}
 	
-	public static int loadTexture(String texture, int width, int height) {
+	public static Texture loadTexture(String texture, int width, int height) {
 		return TextureLoader.loadTexture(texture, width, height);
 	}
 	
-	public static ModelVAO loadToVAO(float[] data, int[] indicies) {
+	public static LoadedModel loadToVAO(float[] data, int[] indicies) {
 		int vao = createVAO();
 		
 		int[] vbos = new int[2];
@@ -90,10 +91,10 @@ public class Loader {
 		vbos[1] = storeDataInAttributeList(1, 2, 20, 12, data);
 		
 		unbindVAO();
-		return new ModelVAO(vao, vbos, indicies.length);
+		return new LoadedModel(vao, vbos, indicies.length);
 	}
 	
-	public static ModelVAO loadToVAO(float[] data) {
+	public static LoadedModel loadToVAO(float[] data) {
 		int vao = createVAO();
 		
 		int[] vbos = new int[2];
@@ -102,10 +103,10 @@ public class Loader {
 		vbos[1] = storeDataInAttributeList(1, 2, 16, 8, data);
 		
 		unbindVAO();
-		return new ModelVAO(vao, vbos, data.length/2);
+		return new LoadedModel(vao, vbos, data.length/2);
 	}
 	
-	public static ModelVAO loadToVAOTile(float[] data) {
+	public static LoadedModel loadToVAOTile(float[] data) {
 		int vao = createVAO();
 		
 		int[] vbos = new int[3];
@@ -115,13 +116,13 @@ public class Loader {
 		vbos[2] = storeDataInAttributeList(2, 2, 24, 8, data);
 		
 		unbindVAO();
-		return new ModelVAO(vao, vbos, data.length/3);
+		return new LoadedModel(vao, vbos, data.length/3);
 	}
 	
 	/**
 	 * loads to VAO using ModelData
 	 */
-	public static ModelVAO loadToVAO(ModelData data) {
+	public static LoadedModel loadToVAO(ModelData data) {
 		// create the VAO
 		int vaoID = createVAO();
 		// get the indices
@@ -140,7 +141,7 @@ public class Loader {
 		// unbind the VAO
 		unbindVAO();
 		// return the model
-		return new ModelVAO(vaoID, vbos, indices.length);
+		return new LoadedModel(vaoID, vbos, indices.length);
 	}
 	
 	public static int createEmptyVBO(int bytes) {
@@ -185,12 +186,12 @@ public class Loader {
 	/**
 	 * deletes an actual model from the graphics card
 	 */
-	public static ModelVAO deleteVAO(ModelVAO model) {
+	public static LoadedModel deleteVAO(LoadedModel model) {
 		try {
 			// if this is a block then we will delete the VBOs
-			if (model instanceof ModelVAO) {
+			if (model instanceof LoadedModel) {
 				// list of all the VBOs for this model
-				int[] vbos = ((ModelVAO) model).getVbos();
+				int[] vbos = ((LoadedModel) model).getVbos();
 				// remove them from the graphics card
 				for (int i = 0; i < vbos.length; i++) {
 					GL15.glDeleteBuffers(vbos[i]);

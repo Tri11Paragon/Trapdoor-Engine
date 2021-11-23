@@ -2,8 +2,8 @@ package com.game.engine.display;
 
 import com.game.engine.Loader;
 import com.game.engine.camera.CreativeFirstPerson;
-import com.game.engine.datatypes.ogl.ModelVAO;
 import com.game.engine.datatypes.ogl.Texture;
+import com.game.engine.datatypes.ogl.obj.LoadedModel;
 import com.game.engine.renderer.EntityRenderer;
 import com.game.engine.tools.models.OBJLoader;
 import com.game.engine.world.Entity;
@@ -19,7 +19,7 @@ public class TestDisplay extends IDisplay {
 	//private ArrayList<Entity> e = new ArrayList<Entity>();
 	public CreativeFirstPerson camera;
 	public EntityRenderer renderer;
-	public ModelVAO vao;
+	public LoadedModel vao;
 	public Texture texture;
 	
 	@Override
@@ -27,7 +27,7 @@ public class TestDisplay extends IDisplay {
 		this.camera = new CreativeFirstPerson();
 		this.renderer = new EntityRenderer(this.camera);
 		this.vao = Loader.loadToVAO(OBJLoader.loadOBJ("depression"));
-		this.texture = new Texture(Loader.loadTexture("atlas/Minecraft Textures SIZE_16/dirt.png"));
+		this.texture = Loader.loadTexture("atlas/Minecraft Textures SIZE_16/dirt.png");
 		this.renderer.ents.add(new Entity().setModel(Loader.loadToVAO(OBJLoader.loadOBJ("hmmmmtriangles"))).setTexture(texture).setPosition(0, 0, 0));
 		this.renderer.ents.add(new Entity().setModel(vao).setTexture(texture).setPosition(25, 0, 0));
 		this.renderer.ents.add(new Entity().setModel(vao).setTexture(texture).setPosition(-25, 0, 0));
