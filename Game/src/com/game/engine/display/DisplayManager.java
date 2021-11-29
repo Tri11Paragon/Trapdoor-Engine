@@ -56,7 +56,9 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryStack;
 
 import com.game.engine.ProjectionMatrix;
+import com.game.engine.TextureLoader;
 import com.game.engine.renderer.SyncSave;
+import com.game.engine.threading.Threading;
 import com.game.engine.tools.Logger;
 import com.game.engine.tools.RescaleEvent;
 import com.game.engine.tools.SettingsLoader;
@@ -103,6 +105,7 @@ public class DisplayManager {
 	public static void updateDisplay() {
 		while(!GLFW.glfwWindowShouldClose(DisplayManager.window)) {
 			try {
+				long start = getCurrentTime();
 				GL11.glEnable(GL11.GL_DEPTH_TEST);
 				GL11.glClearColor(RED, GREEN, BLUE, 1.0f);
 				GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
@@ -119,6 +122,14 @@ public class DisplayManager {
 				
 				glfwSwapBuffers(window);
 				glfwPollEvents();
+				long end = getCurrentTime();
+				long time = start - end;
+				time = time < 0 ? 0 : time;
+				if (FPS_MAX == 0)
+					Threading.processMain(16000000-time);
+				else
+					Threading.processMain((1000000000/FPS_MAX)-time);
+					
 				SyncSave.sync(FPS_MAX);
 				
 				long currentFrameTime = getCurrentTime();
@@ -150,7 +161,7 @@ public class DisplayManager {
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 		
 		
-		window = glfwCreateWindow(WIDTH, HEIGHT, "Total Femboy - V" + gameVersion + " // Trapdoor V" + engineVersion, NULL, NULL);
+		window = glfwCreateWindow(WIDTH, HEIGHT, "Total Femboy Donamania - V" + gameVersion + " // Trapdoor V" + engineVersion, NULL, NULL);
 		if ( window == NULL )
 			throw new RuntimeException("Failed to create the GLFW window");
 		
@@ -227,7 +238,7 @@ public class DisplayManager {
 		ProjectionMatrix.updateProjectionMatrix();
 		
 		// load the texture atlas stuff
-		//TextureLoader.init("resources/textures/atlas/");
+		TextureLoader.init("resources/textures/atlas/");
 		// init the renderer
 		//EntityRenderer.init();
 		int[] in = new int[1];
@@ -254,6 +265,7 @@ public class DisplayManager {
 		
 		glfwTerminate();
 		glfwSetErrorCallback(null).free();
+		Threading.cleanup();
 	}
 
 	/*

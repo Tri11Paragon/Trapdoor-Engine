@@ -202,7 +202,8 @@ public class Maths {
 	public static Matrix4f createTransformationMatrix(float x, float y, float z, float yaw, float pitch, float roll, float sx, float sy, float sz) {
 		matrix.identity();
 		matrix.translate(x, y, z);
-		matrix.scale(sx, sy, sz);
+		if (sx != 1 || sy != 1 || sz != 1)
+			matrix.scale(sx, sy, sz);
 		if (yaw != 0)
 			matrix.rotate(yaw, ry);
 		if (pitch != 0)

@@ -12,6 +12,7 @@ import java.util.HashMap;
 import org.lwjgl.glfw.GLFW;
 
 import com.game.engine.ProjectionMatrix;
+import com.game.engine.TextureLoader;
 import com.game.engine.display.DisplayManager;
 
 /**
@@ -77,6 +78,10 @@ public class SettingsLoader {
 					MUSIC = Float.parseFloat(name[1]);
 				if (name[0].equals("vsync"))
 					VSYNC = (int)Float.parseFloat(name[1]);
+				if (name[0].equals("lod"))
+					TextureLoader.TEXTURE_LOD = Float.parseFloat(name[1]);
+				if (name[0].equals("tscale"))
+					TextureLoader.TEXTURE_SCALE = (int) Float.parseFloat(name[1]);
 			}
 			reader.close();
 		} catch (FileNotFoundException e) {
@@ -102,6 +107,8 @@ public class SettingsLoader {
 			writeLine(writer, "anisotropy: " + AF);
 			writeLine(writer, "vsync: " + VSYNC);
 			writeLine(writer, "music: " + MUSIC);
+			writeLine(writer, "lod: " + TextureLoader.TEXTURE_LOD);
+			writeLine(writer, "tscale: " + TextureLoader.TEXTURE_SCALE);
 			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();

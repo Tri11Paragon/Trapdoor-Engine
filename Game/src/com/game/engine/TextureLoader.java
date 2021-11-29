@@ -1,8 +1,5 @@
 package com.game.engine;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,8 +17,6 @@ import org.lwjgl.opengl.GL42;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.stb.STBImageResize;
 
-import com.game.Main;
-import com.game.engine.datatypes.Atlas;
 import com.game.engine.datatypes.ogl.Texture;
 import com.game.engine.datatypes.ogl.TextureData;
 import com.game.engine.tools.Logger;
@@ -34,6 +29,11 @@ import com.game.engine.tools.SettingsLoader;
  */
 public class TextureLoader {
 	
+	public static float TEXTURE_LOD = -0.2f;
+	public static int MINMAG_FILTER = GL11.GL_NEAREST;
+	public static int MINMAG_MIPMAP_FILTER = GL11.GL_LINEAR_MIPMAP_LINEAR;
+	public static int TEXTURE_SCALE = 1;
+	
 	public static Texture nullTexture = new Texture(0, 32, 32, 4);
 	
 	// map of loaded textures.
@@ -41,12 +41,6 @@ public class TextureLoader {
 	
 	private static List<Integer> textures = new ArrayList<Integer>();
 	private static List<ByteBuffer> textureBuffers = new ArrayList<ByteBuffer>();
-	
-	// contains TextureName -> array pos
-	public static HashMap<String, Integer> atlasMap = new HashMap<String, Integer>();
-	// contains TextureName -> atlas id
-	public static HashMap<String, Integer> atlasTextureMap = new HashMap<String, Integer>();
-	public static HashMap<Integer, ArrayList<String>> textureNames = new HashMap<Integer, ArrayList<String>>();
 
 	/**
 	 * does all the texture atlas stuff.
@@ -54,7 +48,7 @@ public class TextureLoader {
 	 */
 	public static void init(String path) {
 		nullTexture = new Texture(0, 32, 32, 4);
-		Logger.writeln("Loading texture atlas(es):");
+		/*Logger.writeln("Loading texture atlas(es):");
 		
 		File root = new File(path);
 		ArrayList<File> subdirs = new ArrayList<File>();
@@ -113,62 +107,22 @@ public class TextureLoader {
 		
 		for (Atlas e : atlases) {
 			loadSpecialTextureATLAS(e);
-		}
+		} */
 		
-	}
-	
-	/**
-	 * gets the corresponding texture ID of the atlas to the texture name supplied (must contain the .png/.jpg etc)
-	 * @param filename name of the file
-	 * @return the id of the texture atlas containing the file
-	 */
-	public static int getTextureAtlas(String filename) {
-		Integer i = atlasTextureMap.get(filename);
-		if (i == null) {
-			Logger.writeErrorln("Unable to find texture atlas.");
-			return -1;
-		}
-		return i;
-	}
-	
-	/**
-	 * gets the internal ID (z) of the texture inside the atlas
-	 * @param filename name of the file
-	 * @return the index of the texture contained inside its corresponding atlas
-	 */
-	public static int getTextureAtlasID(String filename) {
-		Integer i = atlasMap.get(filename);
-		if (i == null) {
-			Logger.writeErrorln("Unable to find texture inside atlas.");
-			return -1;
-		}
-		return i;
 	}
 	
 	/**
 	 * loads a texture with default settings.
 	 */
 	public static Texture loadTexture(String filename) {
-		try {
-			// load texture with default settings.
-			return loadTexture(filename, -0.2f);
-		} catch (RuntimeException e) {}
-		return nullTexture;
+		return loadTexture(filename, 0, 0);
 	}
 	
 	/**
-	 * loads textures with a specified LOD bias.
+	 * loads a texture to a specified width and height
 	 */
-	public static Texture loadTexture(String filename, float bias) {
-		// this used to be a different function but I have changed it to use the special texture loader
-		// as it appears to be able to handle non 2^x sized images and its just more clean.
-		return loadTexture(filename, 0, 0, bias, GL11.GL_NEAREST, GL11.GL_LINEAR_MIPMAP_LINEAR);
-	}
-	
 	public static Texture loadTexture(String filename, int width, int height) {
-		// this used to be a different function but I have changed it to use the special texture loader
-		// as it appears to be able to handle non 2^x sized images and its just more clean.
-		return loadTexture(filename, width, height, -0.2f, GL11.GL_NEAREST, GL11.GL_LINEAR_MIPMAP_LINEAR);
+		return loadTexture(filename, width, height, TEXTURE_LOD, MINMAG_FILTER, MINMAG_MIPMAP_FILTER);
 	}
 	
 	/**
@@ -181,24 +135,18 @@ public class TextureLoader {
 		// don't load if we don't have a window with OpenGL (we are the server)
 		if (GL.getCapabilities() == null)
 			return nullTexture;
-		TextureData d = null;
-		// decode some texture data.
-		if (width > 0)
-			d = decodeTextureToSize("resources/textures/" + texture, width, height);
-		else
-			d = decodeTextureFile("resources/textures/" + texture, true);
-		return loadTextureI(texture, d, bias, minmag_filter, minmag_mipmap);
+		return loadTextureI(texture, decodeTextureToSize("resources/textures/" + texture, true, false, width, height), bias, minmag_filter, minmag_mipmap);
 	}
 	
-	public static Texture loadTexture(String texture1, String texture2, String texture3, String texture4) {
-		return loadTexture(texture1, texture2, texture3, texture4, -0.2f, GL11.GL_NEAREST, GL11.GL_LINEAR_MIPMAP_LINEAR);
+	public static Texture loadTexture(int width, int height, String texture1, String texture2, String texture3, String texture4) {
+		return loadTexture(width, height, texture1, texture2, texture3, texture4, -0.2f, GL11.GL_NEAREST, GL11.GL_LINEAR_MIPMAP_LINEAR);
 	}
 	
-	public static Texture loadTexture(String texture1, String texture2, String texture3, String texture4, float bias, int minmag_filter, int minmag_mipmap) {
+	public static Texture loadTexture(int width, int height, String texture1, String texture2, String texture3, String texture4, float bias, int minmag_filter, int minmag_mipmap) {
 		// don't load if we don't have a window with OpenGL (we are the server)
 		if (GL.getCapabilities() == null)
 			return nullTexture;
-		return loadTextureI(null, decodeTextureFile(
+		return loadTextureI(null, decodeTextureFile(width,height,
 				"resources/textures/" + texture1, 
 				"resources/textures/" + texture2, 
 				"resources/textures/" + texture3, 
@@ -206,7 +154,7 @@ public class TextureLoader {
 				bias, minmag_filter, minmag_mipmap);
 	}
 	
-	private static Texture loadTextureI(String texture, TextureData d, float bias, int minmag_filter, int minmag_mipmap) {
+	public static Texture loadTextureI(String texture, TextureData d, float bias, int minmag_filter, int minmag_mipmap) {
 		try {
 			// generate a new texture buffer
 			int id = GL11.glGenTextures();
@@ -247,15 +195,11 @@ public class TextureLoader {
 		} catch (Exception e) {return nullTexture;}
 	}
 	
-	private static int loadSpecialTextureATLAS(Atlas atlas) {
+	public static int loadSpecialTextureATLAS(ArrayList<TextureData> textures) {
 		try {
-			ArrayList<String> names = new ArrayList<String>();
 			//for more detail on array textures
 			//https://www.khronos.org/opengl/wiki/Array_Texture
 			float anisf = Math.min(SettingsLoader.AF, GL11.glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
-			// map of textures that need to be put into the texture array.
-			// they should be in order from 0 to #
-			ArrayList<File> textures = atlas.textures;
 			// generate a texture id like normal
 			int id = GL11.glGenTextures();
 			
@@ -269,11 +213,11 @@ public class TextureLoader {
 			// but it lets me define a context of GL33 without any issues with this function
 			// WHAT THE FUCK
 			// (GL30/GL33 doesn't contain glTexStorage3D)
-	        GL42.glTexStorage3D(GL30.GL_TEXTURE_2D_ARRAY, 4, GL11.GL_RGBA8, atlas.width, atlas.height, textures.size());
+	        GL42.glTexStorage3D(GL30.GL_TEXTURE_2D_ARRAY, 4, GL11.GL_RGBA8, textures.get(0).getWidth(), textures.get(0).getHeight(), textures.size());
 	        
 	        // loop through all textures.
 	        for (int i = 0; i < textures.size(); i++) {
-	        	TextureData data = decodeTextureToSize(textures.get(i).getPath(), atlas.width, atlas.height);
+	        	TextureData data = textures.get(i);
 	        	// i don't understand why this is in gl12 but to allocate this is in gl42
 	        	GL12.glTexSubImage3D(GL30.GL_TEXTURE_2D_ARRAY,
 	        			// level
@@ -281,17 +225,13 @@ public class TextureLoader {
 	        			// x,y,z offsets using the texture # as the position in the array
 	        			0, 0, i,
 	        			// width, height depth
-	        			atlas.width, atlas.height, 1, 
+	        			data.getWidth(), data.getHeight(), 1, 
 	        			// format, format
 	        			data.getChannels() == 4 ? GL11.GL_RGBA : GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, 
 	        			// decode the image texture
 	        			data.getBuffer());
 	        	// AF
 	        	GL11.glTexParameterf(GL30.GL_TEXTURE_2D_ARRAY, EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT, anisf);
-	        	atlasMap.put(textures.get(i).getName(), i);
-	        	// memory? we got lots of that! right?
-	        	atlasTextureMap.put(textures.get(i).getName(), id);
-	        	names.add(textures.get(i).getName());
 	        }
 	        
 	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST); 
@@ -307,45 +247,9 @@ public class TextureLoader {
 	        
 			// add texture for later deletion.
 			TextureLoader.textures.add(id);
-			textureNames.put(id, names);
 			return id;
 		} catch (Exception e) {}
 		return 0;
-	}
-	
-	/**
-	 * Decodes texture data from a file
-	 */
-	private static TextureData decodeTextureFile(String fileName, boolean flip) {
-		// image data storage.
-		int width = 0;
-		int height = 0;
-		int channels = 0;
-		ByteBuffer buffer = null;
-		try {
-			// decoder for the PNG file
-			int[] w = new int[1];
-			int[] h = new int[1];
-			int[] ch = new int[1];
-			
-			buffer = STBImage.stbi_load(fileName, w, h, ch, 0);
-			
-			// assigns the width and height of the texture data
-			width = w[0];
-			height = h[0];
-			channels = ch[0];
-			
-			//if (buffer.position() != 0)
-			if (flip)
-				buffer.flip();
-		} catch (Exception e) {
-			// we had issue loading texture. exit the game.
-			e.printStackTrace();
-			System.err.println("Tried to load texture " + fileName + ", didn't work");
-			System.exit(-1);
-		}
-		// return the texture data.
-		return new TextureData(buffer, width, height, channels);
 	}
 	
 	private static int removeNegative(byte b) {
@@ -355,11 +259,15 @@ public class TextureLoader {
 	}
 	
 	// can fit 4 files into one texture.
-	public static TextureData decodeTextureFile(String file1, String file2, String file3, String file4) {
-		TextureData t1 = decodeTextureFile(file1,false);
-		TextureData t2 = decodeTextureToSize(file2, t1.getWidth(), t1.getHeight());
-		TextureData t3 = decodeTextureToSize(file3, t1.getWidth(), t1.getHeight());
-		TextureData t4 = decodeTextureToSize(file4, t1.getWidth(), t1.getHeight());
+	public static TextureData decodeTextureFile(int width, int height, String file1, String file2, String file3, String file4) {
+		TextureData t1 = null;
+		if (width <= 0 || height <= 0)
+			t1 = decodeTextureToSize(file1, false, true, 0, 0);
+		else
+			t1 = decodeTextureToSize(file1, true, true, width, height);
+		TextureData t2 = decodeTextureToSize(file2, true, true, t1.getWidth(), t1.getHeight());
+		TextureData t3 = decodeTextureToSize(file3, true, true, t1.getWidth(), t1.getHeight());
+		TextureData t4 = decodeTextureToSize(file4, true, true, t1.getWidth(), t1.getHeight());
 		
 		int[] t1bytes = new int[t1.getBuffer().capacity()];
 		int[] t2bytes = new int[t2.getBuffer().capacity()];
@@ -410,10 +318,10 @@ public class TextureLoader {
 		
 		newBuff.flip();
 		
-		return new TextureData(newBuff, t1.getWidth(), t1.getHeight(), 4);
+		return new TextureData(newBuff, t1.getWidth(), t1.getHeight(), 4, file1 + file2 + file3 + file4);
 	}
 	
-	private static TextureData decodeTextureToSize(String fileName, int width, int height) {
+	public static TextureData decodeTextureToSize(String fileName, boolean flip, boolean scale, int width, int height) {
 		// image data storage.
 		int wd = 0;
 		int hd = 0;
@@ -425,17 +333,22 @@ public class TextureLoader {
 			int[] h = new int[1];
 			int[] ch = new int[1];
 			
-			buffer = STBImage.stbi_load(fileName, w, h, ch, 0);
+			buffer = STBImage.stbi_load(fileName, w, h, ch, 4);
 			
 			// assigns the width and height of the texture data
 			wd = w[0];
 			hd = h[0];
 			channels = ch[0];
 			
-			if (wd == width && hd == height) {
-				if (buffer.position() != 0)
+			if ((wd == width && hd == height) || (width <= 0 && height <= 0)) {
+				if (buffer.position() != 0 && flip)
 					buffer.flip();
-				return new TextureData(buffer, width, height, channels);
+				if (!scale)
+					return new TextureData(buffer, wd, hd, channels, fileName);
+				else {
+					STBImage.stbi_image_free(buffer);
+					return decodeTextureToSize(fileName, flip, false, wd/TEXTURE_SCALE, hd/TEXTURE_SCALE);
+				}
 			}
 			
 			int alpha;
@@ -469,7 +382,7 @@ public class TextureLoader {
 			System.exit(-1);
 		}
 		// return the texture data.
-		return new TextureData(buffer, width, height, channels);
+		return new TextureData(buffer, width, height, channels, fileName);
 	}
 	
 	public static void cleanup() {

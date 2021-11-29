@@ -8,9 +8,11 @@ import java.lang.management.ThreadMXBean;
 
 import com.game.engine.display.DisplayManager;
 import com.game.engine.display.IDisplay;
-import com.game.engine.display.TestDisplay;
+import com.game.engine.display.LoadingScreenDisplay;
+import com.game.engine.threading.Threading;
 import com.game.engine.tools.CommandLineInput;
 import com.game.engine.tools.Logger;
+import com.game.engine.tools.SettingsLoader;
 
 
 public class Main {
@@ -82,6 +84,9 @@ public class Main {
 		if (processors < 4)
 			processors = 4;
 		
+		SettingsLoader.loadSettings();
+		Threading.init(processors-1);
+		
 		// create the display
 		DisplayManager.createDisplay(false);
 		
@@ -97,7 +102,7 @@ public class Main {
 				"Current Thread: " + Thread.currentThread()
 				});
 		
-		IDisplay dis = new TestDisplay();
+		IDisplay dis = new LoadingScreenDisplay();
 		DisplayManager.createDisplay(dis);
 		DisplayManager.changeDisplay(dis);
 		
@@ -105,6 +110,7 @@ public class Main {
 		DisplayManager.updateDisplay();
 		// delete all glfw / gl stuff
 		DisplayManager.closeDisplay();
+		SettingsLoader.saveSettings();
 		
 		// close the file stream
 		Logger.close();

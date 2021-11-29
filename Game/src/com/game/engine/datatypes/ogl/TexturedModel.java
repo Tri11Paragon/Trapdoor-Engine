@@ -1,6 +1,6 @@
 package com.game.engine.datatypes.ogl;
 
-import com.game.engine.datatypes.ogl.obj.LoadedModel;
+import com.game.engine.datatypes.ogl.obj.VAO;
 
 /**
  * @author brett
@@ -9,19 +9,19 @@ import com.game.engine.datatypes.ogl.obj.LoadedModel;
  */
 public class TexturedModel {
 
-	private LoadedModel rawModel;
+	private VAO rawModel;
 	private Texture texture;
 	
-	public TexturedModel(LoadedModel model, Texture texture){
+	public TexturedModel(VAO model, Texture texture){
 		this.rawModel = model;
 		this.texture = texture;
 	}
 	
-	public void setRawModel(LoadedModel model) {
+	public void setRawModel(VAO model) {
 		this.rawModel = model;
 	}
 	
-	public LoadedModel getRawModel() {
+	public VAO getRawModel() {
 		return rawModel;
 	}
 

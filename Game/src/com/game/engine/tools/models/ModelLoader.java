@@ -11,7 +11,7 @@ import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.AIString;
 import org.lwjgl.assimp.Assimp;
 
-import com.game.engine.Loader;
+import com.game.engine.TextureLoader;
 import com.game.engine.datatypes.ogl.Texture;
 import com.game.engine.datatypes.ogl.assimp.Material;
 import com.game.engine.datatypes.ogl.assimp.Mesh;
@@ -62,7 +62,7 @@ public class ModelLoader {
 		AIString path = AIString.calloc();
 		Assimp.aiGetMaterialTexture(material, Assimp.aiTextureType_DIFFUSE, 0, path, (IntBuffer) null, null, null, null, null, null);
 		String texturePath = path.dataString();
-		Texture t = Loader.loadTexture(texturesDir + "/" + texturePath);
+		Texture t = TextureLoader.loadTexture(texturesDir + "/" + texturePath);
 		
 		
 		

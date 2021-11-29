@@ -10,7 +10,7 @@ import org.lwjgl.opengl.GL30;
 
 import com.game.engine.ProjectionMatrix;
 import com.game.engine.camera.ICamera;
-import com.game.engine.datatypes.ogl.obj.LoadedModel;
+import com.game.engine.datatypes.ogl.obj.VAO;
 import com.game.engine.shaders.EntityShader;
 import com.game.engine.tools.math.Maths;
 import com.game.engine.world.Entity;
@@ -42,7 +42,7 @@ public class EntityRenderer {
 		
 		for (Entity entity : ents) {
 			entity.update();
-			LoadedModel mod = entity.getModel();
+			VAO mod = entity.getModel();
 			GL30.glBindVertexArray(mod.getVaoID());
 			GL20.glEnableVertexAttribArray(0);
 			GL20.glEnableVertexAttribArray(1);
