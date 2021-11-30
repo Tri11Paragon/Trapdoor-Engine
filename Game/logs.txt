@@ -1,746 +1,752 @@
-[00:33:38]: LWJGL Version: 3.2.3 build 13!
-[00:33:38]: Game Version: 0.0A
-[00:33:38]: Engine Version: 0.1A
+[12:14:51]: LWJGL Version: 3.2.3 build 13!
+[12:14:51]: Game Version: 0.0A
+[12:14:51]: Engine Version: 0.1A
 
-[00:33:38]: Max allowed shader texures: 32
+[12:14:51]: Max allowed shader texures: 32
 
 ----------------------------------------------------------------------------------------------
-[00:33:38]: OS: Linux 5.10.0-9-amd64 amd64
-[00:33:38]: User: brett@/home/brett
-[00:33:38]: Working Directory: /home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Game
-[00:33:38]: Number of cores: 16
-[00:33:38]: Current Thread: Thread[main,5,main]
+[12:14:51]: OS: Linux 5.10.0-9-amd64 amd64
+[12:14:51]: User: brett@/home/brett
+[12:14:51]: Working Directory: /home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Game
+[12:14:51]: Number of cores: 16
+[12:14:51]: Current Thread: Thread[main,5,main]
 ----------------------------------------------------------------------------------------------
 
-[00:33:38]: Loading texture: resources/textures/512.png
-[00:33:38]: Loading texture: resources/textures/1531688878833.png
-[00:33:38]: Loading texture: resources/textures/512.png
-[00:33:38]: Loading texture: resources/textures/icon/icon16.png
-[00:33:38]: Loading texture: resources/textures/icon/G-Sm6d0qIwQxUGHIp-m2WBI3hKOWHiiZHByMUrOg0tRX4FcyZLsIASzgBAV_W0W-l1AzlcO2XnXGi9eJEv4foFkbxyyHgmbMnyu-.png
-[00:33:38]: Loading texture: resources/textures/icon/icon32.png
-[00:33:38]: Loading texture: resources/textures/atlas/Other SIZE_512/1540146676067.png
-[00:33:38]: Loading texture: resources/textures/atlas/Other SIZE_512/1540142141108.png
-[00:33:38]: Loading texture: resources/textures/atlas/Other SIZE_512/1531696571587.jpg
-[00:33:38]: Loading texture: resources/textures/atlas/Other SIZE_512/1534681516009.png
-[00:33:38]: Loading texture: resources/textures/atlas/Other SIZE_512/1540093100131.jpg
-[00:33:38]: Loading texture: resources/textures/atlas/Other SIZE_512/1534874238973.png
-[00:33:38]: Loading texture: resources/textures/atlas/Other SIZE_512/1540142120113.jpg
-[00:33:38]: Loading texture: resources/textures/atlas/Other SIZE_512/1539376727340.jpg
-[00:33:38]: Loading texture: resources/textures/atlas/Other SIZE_512/1531688878833.png
-[00:33:38]: Loading texture: resources/textures/atlas/Other SIZE_512/1540141942289.jpg
-[00:33:38]: Loading texture: resources/textures/atlas/Other SIZE_512/1540142141108.jpg
-[00:33:38]: Loaded texture: resources/textures/icon/icon16.png
-[00:33:38]: Loaded texture: resources/textures/icon/icon32.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Other SIZE_512/1540146676067.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Other SIZE_512/1540142141108.png
-[00:33:38]: Loading texture: resources/textures/atlas/Other SIZE_512/1540139171163.jpg
-[00:33:38]: Loading texture: resources/textures/atlas/Other SIZE_512/1532305305099.jpg
-[00:33:38]: Loading texture: resources/textures/atlas/Other SIZE_512/1540160287192.jpg
-[00:33:38]: Loading texture: resources/textures/atlas/Other SIZE_512/1540139655460.jpg
-[00:33:38]: Loading texture: resources/textures/atlas/Other SIZE_512/1534366775880.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Other SIZE_512/1540093100131.jpg
-[00:33:38]: Loaded texture: resources/textures/atlas/Other SIZE_512/1540141942289.jpg
-[00:33:38]: Loaded texture: resources/textures/atlas/Other SIZE_512/1540142120113.jpg
-[00:33:38]: Loaded texture: resources/textures/atlas/Other SIZE_512/1540160287192.jpg
-[00:33:38]: Loaded texture: resources/textures/512.png
-[00:33:38]: Loaded texture: resources/textures/icon/G-Sm6d0qIwQxUGHIp-m2WBI3hKOWHiiZHByMUrOg0tRX4FcyZLsIASzgBAV_W0W-l1AzlcO2XnXGi9eJEv4foFkbxyyHgmbMnyu-.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Other SIZE_512/1534681516009.png
-[00:33:38]: Loading texture: resources/textures/atlas/Other SIZE_512/1540493760334.png
-[00:33:38]: Loading texture: resources/textures/atlas/Other SIZE_512/1531692584494.jpg
-[00:33:38]: Loading texture: resources/textures/atlas/Other SIZE_512/1540333513771.jpg
-[00:33:38]: Loading texture: resources/textures/atlas/Other SIZE_512/1539213130067.jpg
-[00:33:38]: Loading texture: resources/textures/atlas/Other SIZE_512/1540138132856.jpg
-[00:33:38]: Loading texture: resources/textures/atlas/Other SIZE_512/1200px-bi_flag-svg.png
-[00:33:38]: Loading texture: resources/textures/atlas/Other SIZE_512/1539289916387.jpg
-[00:33:38]: Loading texture: resources/textures/atlas/Other SIZE_512/1530192462674.jpg
-[00:33:38]: Loaded texture: resources/textures/512.png
-[00:33:38]: Loaded texture: resources/textures/1531688878833.png
-[00:33:38]: Loading texture: resources/textures/atlas/Other SIZE_512/1539850671705.jpg
-[00:33:38]: Loading texture: resources/textures/atlas/Other SIZE_512/1540141453773.jpg
-[00:33:38]: Loading texture: resources/textures/atlas/Other SIZE_512/1540046285552.jpg
-[00:33:38]: Loading texture: resources/textures/atlas/Other SIZE_512/1540168411469.jpg
-[00:33:38]: Loaded texture: resources/textures/atlas/Other SIZE_512/1540139655460.jpg
-[00:33:38]: Loading texture: resources/textures/atlas/Other SIZE_512/1531690192916.jpg
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/break7.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/willpick.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/planks_oak.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/leaves_oak.png
-[00:33:38]: Loading texture: resources/textures/atlas/Other SIZE_512/1539212443187.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/cobble.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/grass_top.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/stone3.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/chest_front.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/chest_top.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Other SIZE_512/1531692584494.jpg
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/grassy2.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/break2.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/break6.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/copper_ore.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/furnace_front_on.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/stone.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Other SIZE_512/1540142141108.jpg
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/will.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/playerimage.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/coal_ore.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/redstone_ore.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/grassy3.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/glowstone.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/ironpick.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/wood_shovel.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/emerald.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/crosshair.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/stonepick.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/diamond.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/grass_side.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/tnt_bottom.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/stone2.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/redstone_dust.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/redstone_dust.p[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/cobalt.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/tinpick.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/crafting_table_top.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/gold_ingot.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/pine.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/furnace_side.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/clay.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/sand.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/stone_sword.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/flower_red.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/oak.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/woodenpick.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/gold_ore.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/wood_axe.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/void.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/copperpick.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/diamond_axe.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/iron_ore.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/stone_shovel.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/tnt_side.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/break3.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/bookshelf.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/double_plant_grass_top.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/emerald_ore.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/planks.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Other SIZE_512/1530192462674.jpg
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/diamondpick.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/break5.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/coal.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/break4.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/furnace_top.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/tnt_top.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/diamond_sword.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/crafting_table_side.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/coal_block.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/snow.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/iron_ingot.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/iron_axe.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/crafting_table_front.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/darkstone.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/glass.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/furnace_front_off.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/iron_shovel.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/break9.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/bluestone.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/break8.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/error.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/flower_yellow.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/brick.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/break0.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/tallgrass.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/diamond_ore.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/diamond_shovel.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/stone_axe.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/break1.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/grass.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/outline.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/chest_side.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/dirt.png
-[00:33:38]: Loading texture: resources/textures/materials/Asphalt021_1K-PNG/Asphalt021_1K_Color.png
-[00:33:38]: Loading texture: resources/textures/materials/Asphalt021_1K-PNG/Asphalt021_1K_Roughness.png
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft t021_1K-PNG/Asphalt021_1K_Roughn[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/sticks.png
-[00:33:38]: Loading texture: resources/textures/materials/Asphalt021_1K-PNG/Asphalt021_PREVIEW.jpg
-[00:33:38]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/grey.png
-[00:33:38]: Loading texture: resources/textures/materials/Asphalt021_1K-PNG/Asphalt021_1K_Displacement.png
-[00:33:38]: Loading texture: resources/textures/materials/Asphalt021_1K-PNG/Asphalt021_1K_AmbientOcclusion.png
-[00:33:38]: Loading texture: resources/textures/materials/Asphalt021_1K-PNG/Asphalt021_1K_NormalGL.png
-[00:33:38]: Loading texture: resources/textures/materials/Rock044_1K-PNG/Rock044_1K_Displacement.png
-[00:33:38]: Loading texture: resources/textures/materials/Rock044_1K-PNG/Rock044_1K_Displacement.png
-g
-[00:33:38]: Loading texture: resources/textures/materials/Rock044_1K-PNG/Rock044_1K_Color.png
-[00:33:38]: Loading texture: resources/textures/materials/Rock044_1K-PNG/Rock044_1K_AmbientOcclusion.png
-[00:33:38]: Loading texture: resources/textures/materials/Rock044_1K-PNG/Rock044_PREVIEW.jpg
-[00:33:38]: Loading texture: resources/textures/materials/Rock044_1K-PNG/Rock044_1K_Roughness.png
-[00:33:38]: Loading texture: resources/textures/materials/Rock044_1K-PNG/Rock044_1K_NormalDX.png
-[00:33:38]: Loading texture: resources/textures/materials/Rock044_1K-PNG/Rock044_1K_NormalGL.png
-[00:33:38]: Loading texture: resources/textures/materials/Gravel023_1K-PNG/Gravel023_1K_NormalGL.png
-[00:33:38]: Loading texture: resources/textures/materials/Gravel023_1K-PNG/Gravel023_1K_AmbientOcclusion.png
-[00:33:38]: Loading texture: resources/textures/materials/Gravel023_1K-PNG/Gravel023_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Other SIZE_512/1539213130067.jpg
-[00:33:38]: Loading texture: resources/textures/materials/Gravel023_1K-PNG/Gravel023_PREVIEW.jpg
-[00:33:38]: Loading texture: resources/textures/materials/Gravel023_1K-PNG/Gravel023_1K_Roughness.png
-[00:33:38]: Loading texture: resources/textures/materials/Gravel023_1K-PNG/Gravel023_1K_Color.png
-[00:33:38]: Loading texture: resources/textures/materials/Gravel023_1K-PNG/Gravel023_1K_NormalDX.png
-[00:33:38]: Loading texture: resources/textures/materials/Tiles107_1K-PNG/Tiles107_1K_Roughness.png
-[00:33:38]: Loading texture: resources/textures/materials/Tiles107_1K-PNG/Tiles107_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Other SIZE_512/1540333513771.jpg
-[00:33:38]: Loading texture: resources/textures/materials/Tiles107_1K-PNG/Tiles107_1K_Displacement.png
-[00:33:38]: Loading texture: resources/textures/materials/Tiles107_1K-PNG/Tiles107_PREVIEW.jpg
-[00:33:38]: Loading texture: resources/textures/materials/Tiles107_1K-PNG/Tiles107_1K_AmbientOcclusion.png
-[00:33:38]: Loading texture: resources/textures/materials/Tiles107_1K-PNG/Tiles107_1K_NormalGL.png
-[00:33:38]: Loading texture: resources/textures/materials/Tiles107_1K-PNG/Tiles107_1K_NormalDX.png
-[00:33:38]: Loading texture: resources/textures/materials/Rock048_1K-PNG/Rock048_1K_Displacement.png
-[00:33:38]: Loading texture: resources/textures/materials/Rock048_1K-PNG/Rock048_PREVIEW.jpg
-[00:33:38]: Loading texture: resources/textures/materials/Rock048_1K-PNG/Rock048_1K_Color.png
-[00:33:38]: Loading texture: resources/textures/materials/Rock048_1K-PNG/Rock048_1K_NormalGL.png
-[00:33:38]: Loading texture: resources/textures/materials/Rock048_1K-PNG/Rock048_1K_NormalDX.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor041_1K-PNG/WoodFloor041_1K_Color.png
-[00:33:38]: Loading texture: resources/textures/materials/Rock048_1K-PNG/Rock048_1K_AmbientOcclusion.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor041_1K-PNG/WoodFloor041_1K_NormalDX.png
-[00:33:38]: Loading texture: resources/textures/materials/Rock048_1K-PNG/Rock048_1K_Roughness.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor041_1K-PNG/WoodFloor041_1K_Roughness.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor041_1K-PNG/WoodFloor041_1K_NormalGL.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor041_1K-PNG/WoodFloor041_1K_AmbientOcclusion.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Other SIZE_512/1200px-bi_flag-svg.png
-[00:33:38]: Loading texture: resources/textures/materials/Marble023_1K-PNG/Marble023_PREVIEW.jpg
-[00:33:38]: Loading texture: resources/textures/materials/Marble023_1K-PNG/Marble023_1K_NormalGL.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor041_1K-PNG/WoodFloor041_PREVIEW.jpg
-[00:33:38]: Loading texture: resources/textures/materials/Marble023_1K-PNG/Marble023_1K_NormalDX.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor041_1K-PNG/WoodFloor041_1K_Displacement.png
-[00:33:38]: Loading texture: resources/textures/materials/Marble023_1K-PNG/Marble023_1K_Roughness.png
-[00:33:38]: Loading texture: resources/textures/materials/Marble023_1K-PNG/Marble023_1K_Color.png
-[00:33:38]: Loading texture: resources/textures/materials/Marble023_1K-PNG/Marble023_1K_Displacement.png
-[00:33:38]: Loading texture: resources/textures/materials/Marble016_1K-PNG/Marble016_PREVIEW.jpg
-[00:33:38]: Loading texture: resources/textures/materials/Marble016_1K-PNG/Marble016_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Other SIZE_512/1532305305099.jpg
-[00:33:38]: Loading texture: resources/textures/materials/Marble016_1K-PNG/Marble016_1K_Displacement.png
-[00:33:38]: Loading texture: resources/textures/materials/Marble016_1K-PNG/Marble016_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/break7.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor048_1K-PNG/WoodFloor048_1K_NormalGL.png
-[[00:33:38: Loadin]]:  Loading texture: resources/textures/materials/WoodFloor048_1K-PNG/WoodFloor048_1K_Color.png
-[[00:33:38: Loadin]]:  Loading texture: resources/textures/materials/WoodFloor048_1K-PNG/WoodFloor048_1K_Color.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor048_1K-PNG/WoodFloor048_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/planks_oak.png
-[00:33:38]: Loading texture: resources/textures/materials/Marble016_1K-PNG/Marble016_1K_NormalDX.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor048_1K-PNG/WoodFloor048_1K_Roughness.png
-[00:33:38]: Loading texture: resources/textures/materials/Concrete031_1K-PNG/Concrete031_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/willpick.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/grass_top.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/stone3.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/cobble.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/chest_front.png
-[00:33:38]: Loading texture: resources/textures/materials/Concrete031_1K-PNG/Concrete031_PREVIEW.jpg
-[00:33:38]: Loading texture: resources/textures/materials/Marble016_1K-PNG/Marble016_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Other SIZE_512/1540493760334.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor048_1K-PNG/WoodFloor048_1K_NormalDX.png
-[00:33:38]: Loading texture: resources/textures/materials/Concrete031_1K-PNG/Concrete031_1K_Roughness.png
-[00:33:38]: Loading texture: resources/textures/materials/Concrete031_1K-PNG/Concrete031_1K_Displacement.png
-[00:33:38]: Loading texture: resources/textures/materials/Concrete031_1K-PNG/Concrete031_1K_NormalGL.png
-[00:33:38]: Loading texture: resources/textures/materials/Concrete031_1K-PNG/Concrete031_1K_NormalDX.png
-[00:33:38]: Loading texture: resources/textures/materials/Marble012_1K-PNG/Marble012_1K_Displacement.png
-[00:33:38]: Loading texture: resources/textures/materials/Marble012_1K-PNG/Marble012_1K_NormalGL.png
-[00:33:38]: Loading texture: resources/textures/materials/Marble012_1K-PNG/Marble012_1K_NormalDX.png
-[00:33:38]: Loading texture: resources/textures/materials/Concrete031_1K-PNG/Concrete031_1K_AmbientOcclusion.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/leaves_oak.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/chest_top.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Other SIZE_512/1531696571587.jpg
-[00:33:38]: Loading texture: resources/textures/materials/Marble012_1K-PNG/Marble012_1K_Roughness.png
-[00:33:38]: Loading texture: resources/textures/materials/Marble012_1K-PNG/Marble012_1K_Color.png
-[00:33:38]: Loading texture: resources/textures/materials/Rock035_1K-PNG/Rock035_1K_Displacement.png
-[00:33:38]: Loading texture: resources/textures/materials/Marble012_1K-PNG/Marble012_PREVIEW.jpg
-[00:33:38]: Loading texture: resources/textures/materials/Rock035_1K-PNG/Rock035_1K_Roughness.png
-[00:33:38]: Loading texture: resources/textures/materials/Rock035_1K-PNG/Rock035_1K_NormalDX.png
-[00:33:38]: Loading texture: resources/textures/materials/Rock035_1K-PNG/Rock035_PREVIEW.jpg
-[00:33:38]: Loading texture: resources/textures/materials/Rock035_1K-PNG/Rock035_1K_NormalGL.png
-[00:33:38]: Loading texture: resources/textures/materials/PaintedPlaster017_1K-PNG/PaintedPlaster017_1K_Color.png
-[00:33:38]: Loading texture: resources/textures/materials/Rock035_1K-PNG/Rock035_1K_AmbientOcclusion.png
-[00:33:38]: Loading texture: resources/textures/materials/PaintedPlaster017_1K-PNG/PaintedPlaster017_1K_NormalDX.png
-[00:33:38]: Loading texture: resources/textures/materials/PaintedPlaster017_1K-PNG/PaintedPlaster017_1K_Displacement.png
-[00:33:38]: Loading texture: resources/textures/materials/PaintedPlaster017_1K-PNG/PaintedPlaster017_1K_NormalGL.png
-[00:33:38]: Loading texture: resources/textures/materials/Rock035_1K-PNG/Rock035_1K_Color.png
-[00:33:38]: Loading texture: resources/textures/materials/Bricks074_1K-PNG/Bricks074_1K_Color.png
-[00:33:38]: Loading texture: resources/textures/materials/Bricks074_1K-PNG/Bricks074_1K_NormalDX.png
-[00:33:38]: Loading texture: resources/textures/materials/Bricks074_1K-PNG/Bricks074_1K_Roughness.png
-[00:33:38]: Loading texture: resources/textures/materials/PaintedPlaster017_1K-PNG/PaintedPlaster017_PREVIEW.jpg
-[00:33:38]: Loading texture: resources/textures/materials/PaintedPlaster017_1K-PNG/PaintedPlaster017_1K_Roughness.png
-[00:33:38]: Loading texture: resources/textures/materials/Bricks074_1K-PNG/Bricks074_1K_Displacement.png
-[00:33:38]: Loading texture: resources/textures/materials/Bricks074_1K-PNG/Bricks074_PREVIEW.jpg
-[00:33:38]: Loading texture: resources/textures/materials/Rock047_1K-PNG/Rock047_1K_Roughness.png
-[00:33:38]: Loading texture: resources/textures/materials/Rock047_1K-PNG/Rock047_1K_AmbientOcclusion.png
-[00:33:38]: Loading texture: resources/textures/materials/Bricks074_1K-PNG/Bricks074_1K_NormalGL.png
-[00:33:38]: Loading texture: resources/textures/materials/Bricks074_1K-PNG/Bricks074_1K_AmbientOcclusion.png
-[00:33:38]: Loading texture: resources/textures/materials/Rock047_1K-PNG/Rock047_1K_Displacement.png
-[00:33:38]: Loading texture: resources/textures/materials/Rock047_1K-PNG/Rock047_1K_NormalDX.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor042_1K-PNG/WoodFloor042_1K_NormalDX.png
-[00:33:38]: Loading texture: resources/textures/materials/Rock047_1K-PNG/Rock047_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Other SIZE_512/1531688878833.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor042_1K-PNG/WoodFloor042_1K_Displacement.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor042_1K-PNG/WoodFloor042_1K_NormalGL.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor042_1K-PNG/WoodFloor042_1K_AmbientOcclusion.png
-[00:33:38]: Loading texture: resources/textures/materials/Rock047_1K-PNG/Rock047_1K_Color.png
-[00:33:38]: Loading texture: resources/textures/materials/Rock047_1K-PNG/Rock047_PREVIEW.jpg
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor042_1K-PNG/WoodFloor042_1K_Metalness.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor042_1K-PNG/WoodFloor042_1K_Color.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor042_1K-PNG/WoodFloor042_1K_Roughness.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor044_1K-PNG/WoodFloor044_1K_Displacement.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor044_1K-PNG/WoodFloor044_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/grassy2.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor044_1K-PNG/WoodFloor044_1K_NormalGL.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor044_1K-PNG/WoodFloor044_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/break2.png
-[000:33:38: Loaded]: LLoading texture: resources/textures/materials/WoodFloor044_1K-PNG/WoodFloor044_1K_Color.png
-[000:33:38: Loaded]: LLoading texture: resources/textures/materials/WoodFloor044_1K-PNG/WoodFloor044_1K_Color.png
-[00:33:38]: Loading texture: resources/textures/materials/RoofingTiles006_1K-PNG/RoofingTiles006_1K_NormalGL.png
-[00:33:38]: Loading texture: resources/textures/materials/RoofingTiles006_1K-PNG/RoofingTiles006_1K_AmbientOcclusion.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/furnace_front_on.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor042_1K-PNG/WoodFloor042_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/copper_ore.png
-[00:33:38]: Loading texture: resources/textures/materials/RoofingTiles006_1K-PNG/RoofingTiles006_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/stone.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/will.png
-[00:33:38]: Loading texture: resources/textures/materials/RoofingTiles006_1K-PNG/RoofingTiles006_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/glowstone.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor044_1K-PNG/WoodFloor044_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/coal_ore.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/break6.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/ironpick.png
-[00:33:38]: Loading texture: resources/textures/materials/RoofingTiles006_1K-PNG/RoofingTiles006_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/wood_shovel.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/emerald.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor044_1K-PNG/WoodFloor044_1K_Metalness.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/redstone_ore.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/diamond.png
-[00:33:38]: Loading texture: resources/textures/materials/RoofingTiles006_1K-PNG/RoofingTiles006_PREVIEW.jpg
-[00:33:38]: Loading texture: resources/textures/materials/Concrete030_1K-PNG/Concrete030_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/grass_side.png
-[00:33:38]: Loading texture: resources/textures/materials/Concrete030_1K-PNG/Concrete030_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/stonepick.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/stone2.png
-[00:33:38]: Loading texture: resources/textures/materials/RoofingTiles006_1K-PNG/RoofingTiles006_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/crosshair.png
-[00:33:38]: Loading texture: resources/textures/materials/Concrete030_1K-PNG/Concrete030_1K_AmbientOcclusion.png
-[00:33:38]: Loading texture: resources/textures/materials/Concrete030_1K-PNG/Concrete030_1K_NormalDX.png
-[00:33:38]: Loading texture: resources/textures/materials/Concrete030_1K-PNG/Concrete030_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/redstone_dust.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/iron_sword.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/cobalt.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/tinpick.png
-[00:33:38]: Loading texture: resources/textures/materials/Concrete030_1K-PNG/Concrete030_1K_Displacement.png
-[00:33:38]: Loading texture: resources/textures/materials/Wood052_1K-PNG/Wood052_1K_NormalGL.png
-[00:33:38]: Loading texture: resources/textures/materials/Wood052_1K-PNG/Wood052_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/crafting_table_top.png
-[00:33:38]: Loading texture: resources/textures/materials/Wood052_1K-PNG/Wood052_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/pine.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/furnace_side.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/clay.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/sand.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Other SIZE_512/1531690192916.jpg
-[00:33:38]: Loading texture: resources/textures/materials/Wood052_1K-PNG/Wood052_1K_Roughness.png
-[00:33:38]: Loading texture: resources/textures/materials/Wood052_1K-PNG/Wood052_1K_NormalDX.png
-[00:33:38]: Loading texture: resources/textures/materials/Wood072_1K-PNG/Wood072_PREVIEW.jpg
-[00:33:38]: Loading texture: resources/textures/materials/Concrete030_1K-PNG/Concrete030_1K_Roughness.png
-[00:33:38]: Loading texture: resources/textures/materials/Wood072_1K-PNG/Wood072_1K_Displacement.png
-[00:33:38]: Loading texture: resources/textures/materials/Wood072_1K-PNG/Wood072_1K_Color.png
-[00:33:38]: Loading texture: resources/textures/materials/Wood052_1K-PNG/Wood052_1K_Displacement.png
-[00:33:38]: Loading texture: resources/textures/materials/Wood072_1K-PNG/Wood072_1K_NormalGL.png
-[00:33:38]: Loading texture: resources/textures/materials/Wood072_1K-PNG/Wood072_1K_NormalDX.png
-[00:33:38]: Loading texture: resources/textures/materials/Fabric048_1K-PNG/Fabric048_1K_Displacement.png
-[00:33:38]: Loading texture: resources/textures/materials/Fabric048_1K-PNG/Fabric048_1K_AmbientOcclusion.png
-[00:33:38]: Loading texture: resources/textures/materials/Fabric048_1K-PNG/Fabric048_1K_NormalGL.png
-[00:33:38]: Loading texture: resources/textures/materials/Fabric048_1K-PNG/Fabric048_1K_Color.png
-[00:33:38]: Loading texture: resources/textures/materials/Fabric048_1K-PNG/Fabric048_1K_Roughness.png
-[00:33:38]: Loading texture: resources/textures/materials/Tiles105_1K-PNG/Tiles105_1K_NormalGL.png
-[00:33:38]: Loading texture: resources/textures/materials/Tiles105_1K-PNG/Tiles105_1K_Roughness.png
-[00:33:38]: Loading texture: resources/textures/materials/Tiles105_1K-PNG/Tiles105_1K_Displacement.png
-[00:33:38]: Loading texture: resources/textures/materials/Fabric048_1K-PNG/Fabric048_1K_NormalDX.png
-[00:33:38]: Loading texture: resources/textures/materials/Tiles105_1K-PNG/Tiles105_PREVIEW.jpg
-[00:33:38]: Loading texture: resources/textures/materials/Tiles105_1K-PNG/Tiles105_1K_AmbientOcclusion.png
-[00:33:38]: Loading texture: resources/textures/materials/Wood072_1K-PNG/Wood072_1K_Roughness.png
-[00:33:38]: Loading texture: resources/textures/materials/Fabric048_1K-PNG/Fabric048_PREVIEW.jpg
-[00:33:38]: Loading texture: resources/textures/materials/Bricks059_1K-PNG/Bricks059_1K_Color.png
-[00:33:38]: Loading texture: resources/textures/materials/Tiles105_1K-PNG/Tiles105_1K_Color.png
-[00:33:38]: Loading texture: resources/textures/materials/Bricks059_1K-PNG/Bricks059_1K_Roughness.png
-[00:33:38]: Loading texture: resources/textures/materials/Tiles105_1K-PNG/Tiles105_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/stone_sword.png
-[00:33:38]: Loading texture: resources/textures/materials/Bricks059_1K-PNG/Bricks059_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/grassy3.png
-[00:33:38]: Loading texture: resources/textures/materials/Bricks059_1K-PNG/Bricks059_PREVIEW.jpg
-[00:33:38]: Loading texture: resources/textures/materials/Bricks059_1K-PNG/Bricks059_1K_NormalDX.png
-[00:33:38]: Loading texture: resources/textures/materials/Bricks059_1K-PNG/Bricks059_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/gold_ingot.png
-[00:33:38]: Loading texture: resources/textures/materials/Tiles093_1K-PNG/Tiles093_1K_NormalDX.png
-[00:33:38]: Loading texture: resources/textures/materials/Bricks059_1K-PNG/Bricks059_1K_AmbientOcclusion.png
-[00:33:38]: Loading texture: resources/textures/materials/Tiles093_1K-PNG/Tiles093_1K_NormalGL.png
-[00:33:38]: Loading texture: resources/textures/materials/Tiles093_1K-PNG/Tiles093_1K_Roughness.png
-[00:33:38]: Loading texture: resources/textures/materials/Tiles093_1K-PNG/Tiles093_1K_AmbientOcclusion.png
-[00:33:38]: Loading texture: resources/textures/materials/Tiles093_1K-PNG/Tiles093_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/oak.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/flower_red.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/gold_ore.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/wood_axe.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/void.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/diamond_axe.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/iron_ore.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/woodenpick.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/copperpick.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/stone_shovel.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/tnt_side.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Other SIZE_512/1540168411469.jpg
-[00:33:38]: Loading texture: resources/textures/materials/Bricks058_1K-PNG/Bricks058_1K_NormalDX.png
-[00:33:38]: Loading texture: resources/textures/materials/Tiles093_1K-PNG/Tiles093_PREVIEW.jpg
-[00:33:38]: Loading texture: resources/textures/materials/Bricks058_1K-PNG/Bricks058_PREVIEW.jpg
-[00:33:38]: Loading texture: resources/textures/materials/Bricks058_1K-PNG/Bricks058_1K_Roughness.png
-[00:33:38]: Loading texture: resources/textures/materials/Tiles093_1K-PNG/Tiles093_1K_Displacement.png
-[00:33:38]: Loading texture: resources/textures/materials/Bricks058_1K-PNG/Bricks058_1K_Displacement.png
-[00:33:38]: Loading texture: resources/textures/materials/Marble020_1K-PNG/Marble020_1K_NormalDX.png
-[00:33:38]: Loading texture: resources/textures/materials/Bricks058_1K-PNG/Bricks058_1K_AmbientOcclusion.png
-[00:33:38]: Loading texture: resources/textures/materials/Marble020_1K-PNG/Marble020_1K_NormalGL.png
-[00:33:38]: Loading texture: resources/textures/materials/Marble020_1K-PNG/Marble020_PREVIEW.jpg
-[00:33:38]: Loading texture: resources/textures/materials/Bricks058_1K-PNG/Bricks058_1K_Color.png
-[00:33:38]: Loading texture: resources/textures/materials/Marble020_1K-PNG/Marble020_1K_Roughness.png
-[00:33:38]: Loading texture: resources/textures/materials/Marble020_1K-PNG/Marble020_1K_Displacement.png
-[00:33:38]: Loading texture: resources/textures/materials/Bricks058_1K-PNG/Bricks058_1K_NormalGL.png
-[00:33:38]: Loading texture: resources/textures/materials/Marble020_1K-PNG/Marble020_1K_Color.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor046_1K-PNG/WoodFloor046_1K_Color.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor046_1K-PNG/WoodFloor046_1K_NormalDX.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor046_1K-PNG/WoodFloor046_PREVIEW.jpg
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor046_1K-PNG/WoodFloor046_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Other SIZE_512/1540138132856.jpg
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor040_1K-PNG/WoodFloor040_1K_Displacement.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor046_1K-PNG/WoodFloor046_1K_Roughness.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor046_1K-PNG/WoodFloor046_1K_NormalGL.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor040_1K-PNG/WoodFloor040_1K_AmbientOcclusion.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor040_1K-PNG/WoodFloor040_1K_NormalGL.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor040_1K-PNG/WoodFloor040_PREVIEW.jpg
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor040_1K-PNG/WoodFloor040_1K_Roughness.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor040_1K-PNG/WoodFloor040_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/bookshelf.png
-[00:33:38]: Loading texture: resources/textures/materials/Rock041_1K-PNG/Rock041_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/double_plant_grass_top.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/emerald_ore.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/planks.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/coal.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/break3.png
-[00:33:38]: Loading texture: resources/textures/materials/Rock041_1K-PNG/Rock041_1K_NormalDX.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor040_1K-PNG/WoodFloor040_1K_NormalDX.png
-[00:33:38]: Loading texture: resources/textures/materials/Rock041_1K-PNG/Rock041_1K_AmbientOcclusion.png
-[00:33:38]: Loading texture: resources/textures/materials/Rock041_1K-PNG/Rock041_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/diamondpick.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/furnace_top.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/tnt_top.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/break4.png
-[00:33:38]: Loading texture: resources/textures/materials/Rock041_1K-PNG/Rock041_1K_NormalGL.png
-[00:33:38]: Loading texture: resources/textures/materials/PavingStones107_1K-PNG/PavingStones107_1K_Color.png
-[00:33:38]: Loading texture: resources/textures/materials/PavingStones107_1K-PNG/PavingStones107_1K_Displacement.png
-[00:33:38]: Loading texture: resources/textures/materials/Rock041_1K-PNG/Rock041_1K_Color.png
-[00:33:38]: Loading texture: resources/textures/materials/PavingStones107_1K-PNG/PavingStones107_1K_AmbientOcclusion.png
-[00:33:38]: Loading texture: resources/textures/materials/PavingStones107_1K-PNG/PavingStones107_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/break5.png
-[00:33:38]: Loading texture: resources/textures/materials/Rock041_1K-PNG/Rock041_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/diamond_sword.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/crafting_table_side.png
-[00:33:38]: Loading texture: resources/textures/materials/PavingStones107_1K-PNG/PavingStones107_1K_NormalGL.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor043_1K-PNG/WoodFloor043_PREVIEW.jpg
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor043_1K-PNG/WoodFloor043_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Other SIZE_512/1540141453773.jpg
-[00:33:38]: Loading texture: resources/textures/materials/PavingStones107_1K-PNG/PavingStones107_1K_NormalDX.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor043_1K-PNG/WoodFloor043_1K_Displacement.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor043_1K-PNG/WoodFloor043_1K_Roughness.png
-[00:33:38]: Loading texture: resources/textures/materials/PavingStones107_1K-PNGodFloor043_1K_Roughness.png
-s.png
-[00:33:38]: Loading texture: resources/textures/materials/PavingStones099_1K-PNG/PavingStones099_PREVIEW.jpg
-[00:33:38]: Loading texture: resources/textures/materials/PavingStones099_1K-PNG/PavingStones099_1K_NormalGL.png
-[00:33:38]: Loading texture: resources/textures/materials/PavingStones099_1K-PNG/PavingStones099_1K_NormalDX.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor043_1K-PNG/WoodFloor043_1K_Metalness.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor043_1K-PNG/WoodFloor043_1K_Color.png
-[00:33:38]: Loading texture: resources/textures/materials/PavingStones099_1K-PNG/PavingStones099_1K_Roughness.png
-[00:33:38]: Loading texture: resources/textures/materials/PavingStones099_1K-PNG/PavingStones099_1K_Color.png
-[00:33:38]: Loading texture: resources/textures/materials/PavingStones099_1K-PNG/PavingStones099_1K_Displacement.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor043_1K-PNG/WoodFloor043_1K_AmbientOcclusion.png
-[00:33:38]: Loading texture: resources/textures/materials/WoodFloor043_1K-PNG/WoodFloor043_1K_NormalGL.png
-[00:33:38]: Loading texture: resources/textures/materials/Bricks060_1K-PNG/Bricks060_PREVIEW.jpg
-[00:33:38]: Loading texture: resources/textures/materials/Bricks060_1K-PNG/Bricks060_1K_AmbientOcclusion.png
-[00:33:38]: Loading texture: resources/textures/materials/Bricks060_1K-PNG/Bricks060_1K_Displacement.png
-[00:33:38]: Loading texture: resources/textures/materials/Bricks060_1K-PNG/Bricks060_1K_Color.png
-[00:33:38]: Loading texture: resources/textures/materials/Bricks060_1K-PNG/Bricks060_1K_NormalGL.png
-[[00:33:38]]::  oading texture: resources/textures/materials/Wood051_1K-PNG/Wood051_PREVIEW.jpg
-[[00:33:38]]::  oading texture: resources/textures/materials/Wood051_1K-PNG/Wood051_PREVIEW.jpg
-Loading texture: resources/textures/materials/Wood051_1K-PNG/Wood051_1K_NormalDX.png
-[00:33:38]: Loading texture: resources/textures/materials/Wood051_1K-PNG/Wood051_1K_Roughness.png
-[00:33:38]: Loading texture: resources/textures/materials/Wood051_1K-PNG/Wood051_1K_NormalGL.png
-[00:33:38]: Loading texture: resources/textures/materials/Bricks060_1K-PNG/Bricks060_1K_Roughness.png
-[00:33:38]: Loading texture: resources/textures/materials/Wood051_1K-PNG/Wood051_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/coal_block.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/snow.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/iron_ingot.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/iron_axe.png
-[00:33:38]: Loading texture: resources/textures/materials/Wood051_1K-PNG/Wood051_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/crafting_table_front.png
-[00:33:38]: Loading texture: resources/textures/materials/Bricks060_1K-PNG/Bricks060_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/darkstone.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/glass.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/iron_shovel.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/furnace_front_off.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/bluestone.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/error.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/flower_yellow.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/brick.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/break8.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/break9.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/tallgrass.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/diamond_ore.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/diamond_shovel.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/stone_axe.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/chest_side.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/dirt.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/grass.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/outline.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/break0.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/sticks.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/break1.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/wood_sword.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/grey.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Other SIZE_512/1540046285552.jpg
-[00:33:38]: Loaded texture: resources/textures/atlas/Other SIZE_512/1534874238973.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Other SIZE_512/1539289916387.jpg
-[00:33:38]: Loaded texture: resources/textures/atlas/Other SIZE_512/1534366775880.png
-[00:33:38]: Loaded texture: resources/textures/materials/Rock044_1K-PNG/Rock044_1K_AmbientOcclusion.png
-[00:33:38]: Loaded texture: resources/textures/materials/Gravel023_1K-PNG/Gravel023_1K_AmbientOcclusion.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/playerimage.png
-[00:33:38]: Loaded texture: resources/textures/materials/Tiles107_1K-PNG/Tiles107_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/Gravel023_1K-PNG/Gravel023_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/materials/Marble023_1K-PNG/Marble023_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor041_1K-PNG/WoodFloor041_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/materials/Rock044_1K-PNG/Rock044_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/materials/Tiles107_1K-PNG/Tiles107_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/materials/Rock048_1K-PNG/Rock048_1K_AmbientOcclusion.png
-[00:33:38]: Loaded texture: resources/textures/materials/Marble023_1K-PNG/Marble023_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/Tiles107_1K-PNG/Tiles107_1K_AmbientOcclusion.png
-[00:33:38]: Loaded texture: resources/textures/materials/Rock035_1K-PNG/Rock035_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/materials/PaintedPlaster017_1K-PNG/PaintedPlaster017_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/materials/Rock048_1K-PNG/Rock048_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/materials/Asphalt021_1K-PNG/Asphalt021_1K_AmbientOcclusion.png
-[00:33:38]: Loaded texture: resources/textures/materials/Asphalt021_1K-PNG/Asphalt021_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/Gravel023_1K-PNG/Gravel023_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor048_1K-PNG/WoodFloor048_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/Concrete031_1K-PNG/Concrete031_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/Bricks074_1K-PNG/Bricks074_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/materials/Rock048_1K-PNG/Rock048_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/materials/Marble016_1K-PNG/Marble016_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/materials/Rock044_1K-PNG/Rock044_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/materials/Marble016_1K-PNG/Marble016_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor042_1K-PNG/WoodFloor042_1K_AmbientOcclusion.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor048_1K-PNG/WoodFloor048_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/materials/Marble012_1K-PNG/Marble012_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/materials/Tiles107_1K-PNG/Tiles107_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/materials/Rock047_1K-PNG/Rock047_1K_AmbientOcclusion.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor044_1K-PNG/WoodFloor044_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor042_1K-PNG/WoodFloor042_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor044_1K-PNG/WoodFloor044_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor042_1K-PNG/WoodFloor042_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor044_1K-PNG/WoodFloor044_1K_AmbientOcclusion.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor044_1K-PNG/WoodFloor044_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/materials/Asphalt021_1K-PNG/Asphalt021_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor044_1K-PNG/WoodFloor044_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/Rock044_1K-PNG/Rock044_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/PaintedPlaster017_1K-PNG/PaintedPlaster017_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor048_1K-PNG/WoodFloor048_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/materials/Concrete030_1K-PNG/Concrete030_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Other SIZE_512/1539212443187.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Other SIZE_512/1539850671705.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor041_1K-PNG/WoodFloor041_1K_AmbientOcclusion.png
-[00:33:38]: Loaded texture: resources/textures/materials/Rock035_1K-PNG/Rock035_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/materials/Tiles105_1K-PNG/Tiles105_1K_AmbientOcclusion.png
-[00:33:38]: Loaded texture: resources/textures/materials/Rock048_1K-PNG/Rock048_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/Asphalt021_1K-PNG/Asphalt021_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/materials/RoofingTiles006_1K-PNG/RoofingTiles006_1K_AmbientOcclusion.png
-[00:33:38]: Loaded texture: resources/textures/materials/Rock035_1K-PNG/Rock035_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/Wood072_1K-PNG/Wood072_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor048_1K-PNG/WoodFloor048_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/materials/Marble016_1K-PNG/Marble016_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/Concrete031_1K-PNG/Concrete031_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor044_1K-PNG/WoodFloor044_1K_Metalness.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor042_1K-PNG/WoodFloor042_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/materials/Tiles107_1K-PNG/Tiles107_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/materials/Bricks059_1K-PNG/Bricks059_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor042_1K-PNG/WoodFloor042_1K_Metalness.png
-[00:33:38]: Loaded texture: resources/textures/materials/Tiles093_1K-PNG/Tiles093_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor041_1K-PNG/WoodFloor041_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/materials/Tiles105_1K-PNG/Tiles105_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/Tiles093_1K-PNG/Tiles093_1K_AmbientOcclusion.png
-[00:33:38]: Loaded texture: resources/textures/materials/Tiles105_1K-PNG/Tiles105_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/materials/Tiles105_1K-PNG/Tiles105_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/materials/Wood072_1K-PNG/Wood072_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor041_1K-PNG/WoodFloor041_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/PaintedPlaster017_1K-PNG/PaintedPlaster017_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/materials/Gravel023_1K-PNG/Gravel023_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/materials/Bricks058_1K-PNG/Bricks058_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/materials/Bricks074_1K-PNG/Bricks074_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/materials/Rock041_1K-PNG/Rock041_1K_AmbientOcclusion.png
-[00:33:38]: Loaded texture: resources/textures/materials/Wood052_1K-PNG/Wood052_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/materials/Bricks059_1K-PNG/Bricks059_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/Rock048_1K-PNG/Rock048_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor041_1K-PNG/WoodFloor041_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/materials/Bricks058_1K-PNG/Bricks058_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/materials/Rock044_1K-PNG/Rock044_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor046_1K-PNG/WoodFloor046_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/Rock041_1K-PNG/Rock041_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/materials/Concrete031_1K-PNG/Concrete031_1K_AmbientOcclusion.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor043_1K-PNG/WoodFloor043_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor043_1K-PNG/WoodFloor043_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/materials/PavingStones107_1K-PNG/PavingStones107_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/materials/Bricks058_1K-PNG/Bricks058_1K_AmbientOcclusion.png
-[00:33:38]: Loaded texture: resources/textures/materials/PavingStones099_1K-PNG/PavingStones099_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/Marble012_1K-PNG/Marble012_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor040_1K-PNG/WoodFloor040_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/materials/PavingStones099_1K-PNG/PavingStones099_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/materials/Marble012_1K-PNG/Marble012_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/materials/Bricks060_1K-PNG/Bricks060_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/PavingStones107_1K-PNG/PavingStones107_1K_AmbientOcclusion.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor040_1K-PNG/WoodFloor040_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/Wood052_1K-PNG/Wood052_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/materials/Bricks060_1K-PNG/Bricks060_1K_AmbientOcclusion.png
-[00:33:38]: Loaded texture: resources/textures/materials/PavingStones107_1K-PNG/PavingStones107_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/materials/Wood051_1K-PNG/Wood051_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor046_1K-PNG/WoodFloor046_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/materials/Bricks074_1K-PNG/Bricks074_1K_AmbientOcclusion.png
-[00:33:38]: Loaded texture: resources/textures/materials/Rock041_1K-PNG/Rock041_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/materials/Bricks059_1K-PNG/Bricks059_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor040_1K-PNG/WoodFloor040_1K_AmbientOcclusion.png
-[00:33:38]: Loaded texture: resources/textures/materials/Rock035_1K-PNG/Rock035_1K_AmbientOcclusion.png
-[00:33:38]: Loaded texture: resources/textures/materials/Bricks058_1K-PNG/Bricks058_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/Bricks059_1K-PNG/Bricks059_1K_AmbientOcclusion.png
-[00:33:38]: Loaded texture: resources/textures/materials/Wood072_1K-PNG/Wood072_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/materials/PavingStones107_1K-PNG/PavingStones107_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor043_1K-PNG/WoodFloor043_1K_Metalness.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor042_1K-PNG/WoodFloor042_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/materials/Marble016_1K-PNG/Marble016_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/materials/Wood051_1K-PNG/Wood051_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/materials/Wood052_1K-PNG/Wood052_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/PaintedPlaster017_1K-PNG/PaintedPlaster017_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/Fabric048_1K-PNG/Fabric048_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/RoofingTiles006_1K-PNG/RoofingTiles006_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor042_1K-PNG/WoodFloor042_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/RoofingTiles006_1K-PNG/RoofingTiles006_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/Fabric048_1K-PNG/Fabric048_1K_AmbientOcclusion.png
-[00:33:38]: Loaded texture: resources/textures/materials/Bricks074_1K-PNG/Bricks074_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/Rock047_1K-PNG/Rock047_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor043_1K-PNG/WoodFloor043_1K_AmbientOcclusion.png
-[00:33:38]: Loaded texture: resources/textures/materials/Marble020_1K-PNG/Marble020_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/Concrete030_1K-PNG/Concrete030_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor040_1K-PNG/WoodFloor040_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/materials/Tiles093_1K-PNG/Tiles093_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor043_1K-PNG/WoodFloor043_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/Rock041_1K-PNG/Rock041_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/materials/Fabric048_1K-PNG/Fabric048_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/materials/Concrete030_1K-PNG/Concrete030_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor044_1K-PNG/WoodFloor044_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/materials/Marble023_1K-PNG/Marble023_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/materials/Bricks059_1K-PNG/Bricks059_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/materials/Concrete030_1K-PNG/Concrete030_1K_AmbientOcclusion.png
-[00:33:38]: Loaded texture: resources/textures/materials/Rock047_1K-PNG/Rock047_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/materials/Wood051_1K-PNG/Wood051_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/materials/Bricks060_1K-PNG/Bricks060_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/materials/Gravel023_1K-PNG/Gravel023_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/materials/Bricks074_1K-PNG/Bricks074_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor046_1K-PNG/WoodFloor046_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/materials/Bricks074_1K-PNG/Bricks074_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/materials/PavingStones107_1K-PNG/PavingStones107_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/materials/Marble020_1K-PNG/Marble020_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/materials/Tiles093_1K-PNG/Tiles093_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/materials/RoofingTiles006_1K-PNG/RoofingTiles006_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/materials/PavingStones099_1K-PNG/PavingStones099_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/materials/Marble012_1K-PNG/Marble012_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/materials/Rock035_1K-PNG/Rock035_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/materials/Concrete030_1K-PNG/Concrete030_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor043_1K-PNG/WoodFloor043_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/materials/PaintedPlaster017_1K-PNG/PaintedPlaster017_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/materials/Marble023_1K-PNG/Marble023_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/materials/Rock041_1K-PNG/Rock041_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/Rock041_1K-PNG/Rock041_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor043_1K-PNG/WoodFloor043_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/materials/Tiles105_1K-PNG/Tiles105_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/materials/Wood052_1K-PNG/Wood052_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/materials/Rock047_1K-PNG/Rock047_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/materials/Tiles093_1K-PNG/Tiles093_PREVIEW.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/Bricks060_1K-PNG/Bricks060_1K_Roughness.png
-[00:33:38]: Loaded texture: resources/textures/materials/Bricks058_1K-PNG/Bricks058_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor040_1K-PNG/WoodFloor040_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/materials/Wood072_1K-PNG/Wood072_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/materials/RoofingTiles006_1K-PNG/RoofingTiles006_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/materials/Marble020_1K-PNG/Marble020_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/materials/Marble020_1K-PNG/Marble020_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/materials/Rock047_1K-PNG/Rock047_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/materials/Wood051_1K-PNG/Wood051_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor044_1K-PNG/WoodFloor044_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/materials/Marble012_1K-PNG/Marble012_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/materials/Fabric048_1K-PNG/Fabric048_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/materials/Concrete031_1K-PNG/Concrete031_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/materials/RoofingTiles006_1K-PNG/RoofingTiles006_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/materials/Concrete031_1K-PNG/Concrete031_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/materials/PavingStones099_1K-PNG/PavingStones099_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/materials/Rock041_1K-PNG/Rock041_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/materials/PaintedPlaster017_1K-PNG/PaintedPlaster017_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor042_1K-PNG/WoodFloor042_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor046_1K-PNG/WoodFloor046_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/materials/Marble016_1K-PNG/Marble016_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/materials/Marble023_1K-PNG/Marble023_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/materials/Marble020_1K-PNG/Marble020_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor041_1K-PNG/WoodFloor041_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/materials/Concrete030_1K-PNG/Concrete030_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/materials/Bricks059_1K-PNG/Bricks059_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor043_1K-PNG/WoodFloor043_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Other SIZE_512/1539376727340.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor048_1K-PNG/WoodFloor048_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/materials/Marble023_1K-PNG/Marble023_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/materials/Marble012_1K-PNG/Marble012_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/materials/Wood051_1K-PNG/Wood051_1K_Displacement.png
-[00:33:38]: Loaded texture: resources/textures/materials/Tiles107_1K-PNG/Tiles107_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/materials/Fabric048_1K-PNG/Fabric048_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor040_1K-PNG/WoodFloor040_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/materials/Marble016_1K-PNG/Marble016_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/materials/Marble020_1K-PNG/Marble020_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/materials/Rock035_1K-PNG/Rock035_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/materials/Wood052_1K-PNG/Wood052_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/materials/PavingStones107_1K-PNG/PavingStones107_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor041_1K-PNG/WoodFloor041_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/materials/Tiles105_1K-PNG/Tiles105_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/materials/Bricks060_1K-PNG/Bricks060_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/materials/Rock048_1K-PNG/Rock048_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/materials/Concrete031_1K-PNG/Concrete031_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/materials/Tiles093_1K-PNG/Tiles093_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/materials/Rock047_1K-PNG/Rock047_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/materials/Tiles093_1K-PNG/Tiles093_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/materials/Bricks058_1K-PNG/Bricks058_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/materials/PavingStones099_1K-PNG/PavingStones099_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor048_1K-PNG/WoodFloor048_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor046_1K-PNG/WoodFloor046_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/materials/Tiles105_1K-PNG/Tiles105_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/materials/Concrete030_1K-PNG/Concrete030_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/materials/Rock044_1K-PNG/Rock044_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/materials/Wood052_1K-PNG/Wood052_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/materials/Tiles107_1K-PNG/Tiles107_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/materials/Wood051_1K-PNG/Wood051_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/atlas/Other SIZE_512/1540139171163.jpg
-[00:33:38]: Loaded texture: resources/textures/materials/Rock044_1K-PNG/Rock044_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor040_1K-PNG/WoodFloor040_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/materials/Bricks060_1K-PNG/Bricks060_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/materials/Rock048_1K-PNG/Rock048_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/materials/Gravel023_1K-PNG/Gravel023_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/materials/Concrete031_1K-PNG/Concrete031_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/materials/Asphalt021_1K-PNG/Asphalt021_1K_Color.png
-[00:33:38]: Loaded texture: resources/textures/materials/Bricks059_1K-PNG/Bricks059_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/materials/Wood072_1K-PNG/Wood072_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/materials/Bricks058_1K-PNG/Bricks058_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/materials/RoofingTiles006_1K-PNG/RoofingTiles006_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/materials/PavingStones107_1K-PNG/PavingStones107_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/materials/Gravel023_1K-PNG/Gravel023_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/materials/PavingStones099_1K-PNG/PavingStones099_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/materials/Fabric048_1K-PNG/Fabric048_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/materials/Asphalt021_1K-PNG/Asphalt021_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/materials/Bricks074_1K-PNG/Bricks074_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/materials/Bricks060_1K-PNG/Bricks060_1K_NormalDX.png
-[00:33:38]: Loaded texture: resources/textures/materials/Rock035_1K-PNG/Rock035_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/materials/Asphalt021_1K-PNG/Asphalt021_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/materials/WoodFloor046_1K-PNG/WoodFloor046_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/materials/Wood072_1K-PNG/Wood072_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/materials/Rock047_1K-PNG/Rock047_1K_NormalGL.png
-[00:33:38]: Loaded texture: resources/textures/materials/Fabric048_1K-PNG/Fabric048_1K_NormalGL.png
+[12:14:51]: Loading texture: resources/textures/512.png
+[12:14:51]: Loading texture: resources/textures/1531688878833.png
+[12:14:51]: Loading texture: resources/textures/512.png
+[12:14:51]: Loading texture: resources/textures/icon/icon16.png
+[12:14:51]: Loading texture: resources/textures/icon/G-Sm6d0qIwQxUGHIp-m2WBI3hKOWHiiZHByMUrOg0tRX4FcyZLsIASzgBAV_W0W-l1AzlcO2XnXGi9eJEv4foFkbxyyHgmbMnyu-.png
+[12:14:51]: Loading texture: resources/textures/icon/icon32.png
+[12:14:51]: Loading texture: resources/textures/atlas/Other SIZE_512/1540146676067.png
+[12:14:51]: Loading texture: resources/textures/atlas/Other SIZE_512/1531696571587.jpg
+[12:14:51]: Loading texture: resources/textures/atlas/Other SIZE_512/1540142141108.png
+[12:14:51]: Loading texture: resources/textures/atlas/Other SIZE_512/1534681516009.png
+[12:14:51]: Loading texture: resources/textures/atlas/Other SIZE_512/1540093100131.jpg
+[12:14:51]: Loading texture: resources/textures/atlas/Other SIZE_512/1534874238973.png
+[12:14:51]: Loading texture: resources/textures/atlas/Other SIZE_512/1540142120113.jpg
+[12:14:51]: Loading texture: resources/textures/atlas/Other SIZE_512/1531688878833.png
+[12:14:51]: Loading texture: resources/textures/atlas/Other SIZE_512/1540142141108.jpg
+[12:14:51]: Loading texture: resources/textures/atlas/Other SIZE_512/1539376727340.jpg
+[12:14:51]: Loading texture: resources/textures/atlas/Other SIZE_512/1540139171163.jpg
+[12:14:51]: Loading texture: resources/textures/atlas/Other SIZE_512/1540141942289.jpg
+[12:14:51]: Loading texture: resources/textures/atlas/Other SIZE_512/1532305305099.jpg
+[12:14:51]: Loading texture: resources/textures/atlas/Other SIZE_512/1540160287192.jpg
+[12:14:51]: Loading texture: resources/textures/atlas/Other SIZE_512/1540139655460.jpg
+[12:14:51]: Loaded texture: resources/textures/icon/icon32.png
+[12:14:51]: Loading texture: resources/textures/atlas/Other SIZE_512/1530192462674.jpg
+[12:14:51]: Loading texture: resources/textures/atlas/Other SIZE_512/1534366775880.png
+[12:14:51]: Loading texture: resources/textures/atlas/Other SIZE_512/1531692584494.jpg
+[12:14:51]: Loading texture: resources/textures/atlas/Other SIZE_512/1540493760334.png
+[12:14:51]: Loading texture: resources/textures/atlas/Other SIZE_512/1540333513771.jpg
+[12:14:51]: Loading texture: resources/textures/atlas/Other SIZE_512/1540138132856.jpg
+[12:14:51]: Loading texture: resources/textures/atlas/Other SIZE_512/1200px-bi_flag-svg.png
+[12:14:51]: Loading texture: resources/textures/atlas/Other SIZE_512/1539213130067.jpg
+[12:14:51]: Loading texture: resources/textures/atlas/Other SIZE_512/1539289916387.jpg
+[12:14:51]: Loading texture: resources/textures/atlas/Other SIZE_512/1540046285552.jpg
+[12:14:51]: Loading texture: resources/textures/atlas/Other SIZE_512/1540168411469.jpg
+[12:14:51]: Loading texture: resources/textures/atlas/Other SIZE_512/1539850671705.jpg
+[12:14:51]: Loading texture: resources/textures/atlas/Other SIZE_512/1539212443187.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/break7.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/planks_oak.png
+[12:14:51]: Loading texture: resources/textures/atlas/Other SIZE_512/1531690192916.jpg
+[12:14:51]: Loading texture: resources/textures/atlas/Other SIZE_512/1540141453773.jpg
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/leaves_oak.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/grass_top.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/cobble.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/stone3.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/chest_front.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/break6.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/chest_top.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/grassy2.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/furnace_front_on.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/break2.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/copper_ore.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/willpick.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/coal_ore.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/will.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/will.png
+ge.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/redstone_ore.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/glowstone.png
+[12:14:51]: Loaded texture: resources/textures/icon/icon16.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/grassy3.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Other SIZE_512/1540146676067.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Other SIZE_512/1540142141108.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/stone.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Other SIZE_512/1540142120113.jpg
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/wood_shovel.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/emerald.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/iron_sword.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/tnt_bottom.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/grass_side.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/redstone_dust.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/cobalt.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/diamond.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/stone2.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/stone2.png
+
+t.[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/stonepick.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/tinpick.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/pine.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/clay.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/crafting_table_top.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/gold_ingot.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/stone_sword.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/break3.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/break3.png
+e.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/flower_red.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/oak.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/gold_ore.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/void.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/copperpick.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/break7.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/wood_axe.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/diamond_axe.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/iron_ore.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/woodenpick.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/ironpick.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/planks_oak.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/sand.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/tnt_side.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/bookshelf.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Other SIZE_512/1540093100131.jpg
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/double_plant_grass_top.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/emerald_ore.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/planks.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/coal.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/diamondpick.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/stone_shovel.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/break5.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/tnt_top.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/crafting_table_side.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/coal_block.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/glass.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/diamond_sword.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/break4.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/darkstone.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/grey.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/break9.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/furnace_front_off.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/iron_ingot.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/sticks.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/break8.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/crafting_table_front.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/snow.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/furnace_top.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/brick.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/grass.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/bluestone.pngn[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/iron_shovel.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/iron_axe.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/error.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/break0.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/flower_yellow.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/diamond_shovel.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/wood_sword.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/break1.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/outline.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/stone_axe.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/chest_side.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/diamond_ore.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/dirt.png
+[12:14:51]: Loading texture: resources/textures/materials/Asphalt021_1K-PNG/Asphalt021_1K_Color.png
+[12:14:51]: Loading texture: resources/textures/materials/Asphalt021_1K-PNG/Asphalt021_PREVIEW.jpg
+[12:14:51]: Loading texture: resources/textures/materials/Asphalt021_1K-PNG/Asphalt021_1K_Displacement.png
+[12:14:51]: Loading texture: resources/textures/materials/Asphalt021_1K-PNG/Asphalt021_1K_Roughness.png
+[12:14:51]: Loading texture: resources/textures/materials/Asphalt021_1K-PNG/Asphalt021_1K_AmbientOcclusion.png
+[12:14:51]: Loading texture: resources/textures/materials/Asphalt021_1K-PNG/Asphalt021_1K_NormalGL.png
+[12:14:51]: Loading texture: resources/textures/atlas/Minecraft Textures SIZE_16/tallgrass.png
+[12:14:51]: Loading texture: resources/textures/materials/Rock044_1K-PNG/Rock044_1K_Displacement.png
+[12:14:51]: Loading texture: resources/textures/materials/Rock044_1K-PNG/Rock044_1K_Color.png
+[12:14:51]: Loading texture: resources/textures/materials/Asphalt021_1K-PNG/Asphalt021_1K_NormalDX.png
+[12:14:51]: Loading texture: resources/textures/materials/Rock044_1K-PNG/Rock044_1K_AmbientOcclusion.png
+[12:14:51]: Loading texture: resources/textures/materials/Rock044_1K-PNG/Rock044_1K_NormalDX.png
+[12:14:51]: Loading texture: resources/textures/materials/Rock044_1K-PNG/Rock044_PREVIEW.jpg
+[12:14:51]: Loading texture: resources/textures/materials/Rock044_1K-PNG/Rock044_1K_Roughness.png
+[12:14:51]: Loading texture: resources/textures/materials/Rock044_1K-PNG/Rock044_1K_NormalGL.png
+[12:14:51]: Loading texture: resources/textures/materials/Gravel023_1K-PNG/Gravel023_1K_NormalGL.png
+[12:14:51]: Loading texture: resources/textures/materials/Gravel023_1K-PNG/Gravel023_1K_AmbientOcclusion.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Other SIZE_512/1540160287192.jpg
+[12:14:51]: Loading texture: resources/textures/materials/Gravel023_1K-PNG/Gravel023_1K_Displacement.png
+[12:14:51]: Loading texture: resources/textures/materials/Gravel023_1K-PNG/Gravel023_PREVIEW.jpg
+[12:14:51]: Loading texture: resources/textures/materials/Gravel023_1K-PNG/Gravel023_1K_Roughness.png
+[12:14:51]: Loading texture: resources/textures/materials/Gravel023_1K-PNG/Gravel023_1K_NormalDX.png
+[12:14:51]: Loading texture: resources/textures/materials/Gravel023_1K-PNG/Gravel023_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/grass_top.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/leaves_oak.png
+[12:14:51]: Loading texture: resources/textures/materials/Tiles107_1K-PNG/Tiles107_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/cobble.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/stone3.png
+[12:14:51]: Loading texture: resources/textures/materials/Tiles107_1K-PNG/Tiles107_1K_Color.png
+[12:14:51]: Loading texture: resources/textures/materials/Tiles107_1K-PNG/Tiles107_PREVIEW.jpg
+[[12:14:51: Loadin]]:  Loading texture: resources/textures/materials/Tiles107_1K-PNG/Tiles107_1K_NormalGL.png
+Loading texture: resources/textures/materials/Rock048_1K-PNG/Rock048_PREVIEW.jpg
+[[12:14:51: Loadin]]:  Loading texture: resources/textures/materials/Tiles107_1K-PNG/Tiles107_1K_NormalGL.png
+[12:14:51]: Loading texture: resources/textures/materials/Rock048_1K-PNG/Rock048_1K_Displacement.png
+[12:14:51]: Loading texture: resources/textures/materials/Tiles107_1K-PNG/Tiles107_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/chest_front.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/chest_top.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/break6.png
+[12:14:51]: Loading texture: resources/textures/materials/Rock048_1K-PNG/Rock048_1K_Color.png
+[12:14:51]: Loading texture: resources/textures/materials/Rock048_1K-PNG/Rock048_1K_NormalDX.png
+[12:14:51]: Loading texture: resources/textures/materials/Tiles107_1K-PNG/Tiles107_1K_AmbientOcclusion.png
+[12:14:51]: Loading texture: resources/textures/materials/Rock048_1K-PNG/Rock048_1K_AmbientOcclusion.png
+[12:14:51]: Loading texture: resources/textures/materials/Tiles107_1K-PNG/Tiles107_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/furnace_front_on.png
+[12:14:51]: Loading texture: resources/textures/materials/Rock048_1K-PNG/Rock048_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/copper_ore.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor041_1K-PNG/WoodFloor041_1K_NormalDX.png
+[12:14:51]: Loading texture: resources/textures/materials/Rock048_1K-PNG/Rock048_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/break2.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor041_1K-PNG/WoodFloor041_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/willpick.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/grassy2.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor041_1K-PNG/WoodFloor041_1K_Roughness.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor041_1K-PNG/WoodFloor041_1K_Displacement.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor041_1K-PNG/WoodFloor041_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/coal_ore.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor041_1K-PNG/WoodFloor041_1K_AmbientOcclusion.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/will.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/redstone_ore.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/glowstone.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/grassy3.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor041_1K-PNG/WoodFloor041_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Other SIZE_512/1540139655460.jpg
+[12:14:51]: Loading texture: resources/textures/materials/Marble023_1K-PNG/Marble023_PREVIEW.jpg
+[12:14:51]: Loading texture: resources/textures/materials/Marble023_1K-PNG/Marble023_1K_NormalDX.png
+[12:14:51]: Loading texture: resources/textures/materials/Marble016_1K-PNG/Marble016_1K_NormalGL.png
+[12:14:51]: Loading texture: resources/textures/materials/Marble023_1K-PNG/Marble023_1K_Displacement.png
+[12:14:51]: Loading texture: resources/textures/materials/Marble023_1K-PNG/Marble023_1K_NormalGL.png
+[12:14:51]: Loading texture: resources/textures/materials/Marble023_1K-PNG/Marble023_1K_Color.png
+[12:14:51]: Loading texture: resources/textures/materials/Marble016_1K-PNG/Marble016_1K_Displacement.png
+[12:14:51]: Loading texture: resources/textures/materials/Marble016_1K-PNG/Marble016_PREVIEW.jpg
+[12:14:51]: Loading texture: resources/textures/materials/Marble016_1K-PNG/Marble016_1K_Color.png
+[12:14:51]: Loading texture: resources/textures/materials/Marble016_1K-PNG/Marble016_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Other SIZE_512/1540141942289.jpg
+[12:14:51]: Loading texture: resources/textures/materials/Marble023_1K-PNG/Marble023_1K_Roughness.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor048_1K-PNG/WoodFloor048_1K_NormalGL.png
+[12:14:51]: Loading texture: resources/textures/materials/Marble016_1K-PNG/Marble016_1K_Roughness.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor048_1K-PNG/WoodFloor048_1K_NormalDX.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor048_1K-PNG/WoodFloor048_1K_Color.png
+[12:14:51]: Loading texture: resources/textures/materials/Concrete031_1K-PNG/Concrete031_1K_NormalGL.png
+[12:14:51]: Loading texture: resources/textures/materials/Concrete031_1K-PNG/Concrete031_PREVIEW.jpg
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor048_1K-PNG/WoodFloor048_1K_Roughness.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor048_1K-PNG/WoodFloor048_PREVIEW.jpg
+[12:14:51]: Loading texture: resources/textures/materials/Concrete031_1K-PNG/Concrete031_1K_AmbientOcclusion.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor048_1K-PNG/WoodFloor048_1K_Displacement.png
+[12:14:51]: Loading texture: resources/textures/materials/Concrete031_1K-PNG/Concrete031_1K_Displacement.png
+[12:14:51]: Loading texture: resources/textures/materials/Concrete031_1K-PNG/Concrete031_1K_NormalDX.png
+[12:14:51]: Loading texture: resources/textures/materials/Marble012_1K-PNG/Marble012_1K_Displacement.png
+[12:14:51]: Loading texture: resources/textures/materials/Marble012_1K-PNG/Marble012_1K_NormalGL.png
+[12:14:51]: Loading texture: resources/textures/materials/Marble012_1K-PNG/Marble012_1K_NormalDX.png
+[12:14:51]: Loading texture: resources/textures/materials/Marble012_1K-PNG/Marble012_PREVIEW.jpg
+[12:14:51]: Loading texture: resources/textures/materials/Marble012_1K-PNG/Marble012_1K_Roughness.png
+[12:14:51]: Loading texture: resources/textures/materials/Marble012_1K-PNG/Marble012_1K_Color.png
+[12:14:51]: Loading texture: resources/textures/materials/Rock035_1K-PNG/Rock035_1K_NormalDX.png
+[12:14:51]: Loading texture: resources/textures/materials/Rock035_1K-PNG/Rock035_PREVIEW.jpg
+[12:14:51]: Loading texture: resources/textures/materials/Rock035_1K-PNG/Rock035_1K_Displacement.png
+[12:14:51]: Loading texture: resources/textures/materials/Rock035_1K-PNG/Rock035_1K_NormalGL.png
+[12:14:51]: Loading texture: resources/textures/materials/Rock035_1K-PNG/Rock035_1K_Roughness.png
+[12:14:51]: Loading texture: resources/textures/materials/Rock035_1K-PNG/Rock035_1K_Color.png
+[12:14:51]: Loading texture: resources/textures/materials/Rock035_1K-PNG/Rock035_1K_AmbientOcclusion.png
+[12:14:51]: Loading texture: resources/textures/materials/PaintedPlaster017_1K-PNG/PaintedPlaster017_1K_Color.png
+[12:14:51]: Loading texture: resources/textures/materials/PaintedPlaster017_1K-PNG/PaintedPlaster017_PREVIEW.jpg
+[12:14:51]: Loading texture: resources/textures/materials/PaintedPlaster017_1K-PNG/PaintedPlaster017_1K_NormalGL.png
+[12:14:51]: Loading texture: resources/textures/materials/PaintedPlaster017_1K-PNG/PaintedPlaster017_1K_NormalDX.png
+[12:14:51]: Loading texture: resources/textures/materials/PaintedPlaster017_1K-PNG/PaintedPlaster017_1K_Displacement.png
+[12:14:51]: Loading texture: resources/textures/materials/PaintedPlaster017_1K-PNG/PaintedPlaster017_1K_Roughness.png
+[12:14:51]: Loading texture: resources/textures/materials/Bricks074_1K-PNG/Bricks074_1K_Color.png
+[12:14:51]: Loading texture: resources/textures/materials/Bricks074_1K-PNG/Bricks074_1K_NormalDX.png
+[12:14:51]: Loading texture: resources/textures/materials/Bricks074_1K-PNG/Bricks074_1K_Roughness.png
+[12:14:51]: Loading texture: resources/textures/materials/Bricks074_1K-PNG/Bricks074_1K_AmbientOcclusion.png
+[12:14:51]: Loading texture: resources/textures/materials/Bricks074_1K-PNG/Bricks074_PREVIEW.jpg
+[12:14:51]: Loading texture: resources/textures/materials/Bricks074_1K-PNG/Bricks074_1K_Displacement.png
+[12:14:51]: Loading texture: resources/textures/materials/Bricks074_1K-PNG/Bricks074_1K_NormalGL.png
+[12:14:51]: Loading texture: resources/textures/materials/Rock047_1K-PNG/Rock047_1K_Roughness.png
+[12:14:51]: Loading texture: resources/textures/materials/Rock047_1K-PNG/Rock047_1K_NormalGL.png
+[12:14:51]: Loading texture: resources/textures/materials/Rock047_1K-PNG/Rock047_1K_NormalDX.png
+[12:14:51]: Loading texture: resources/textures/materials/Rock047_1K-PNG/Rock047_1K_Color.png
+[12:14:51]: Loading texture: resources/textures/materials/Concrete031_1K-PNG/Concrete031_1K_Color.png
+[12:14:51]: Loading texture: resources/textures/materials/Rock047_1K-PNG/Rock047_1K_Displacement.png
+[12:14:51]: Loading texture: resources/textures/materials/Rock047_1K-PNG/Rock047_1K_AmbientOcclusion.png
+[12:14:51]: Loading texture: resources/textures/materials/Concrete031_1K-PNG/Concrete031_1K_Roughness.png
+[12:14:51]: Loading texture: resources/textures/materials/Rock047_1K-PNG/Rock047_PREVIEW.jpg
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor042_1K-PNG/WoodFloor042_1K_NormalDX.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor042_1K-PNG/WoodFloor042_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/wood_shovel.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor042_1K-PNG/WoodFloor042_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/emerald.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/iron_sword.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor042_1K-PNG/WoodFloor042_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/tnt_bottom.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor042_1K-PNG/WoodFloor042_1K_Metalness.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor042_1K-PNG/WoodFloor042_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Other SIZE_512/1540142141108.jpg
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor042_1K-PNG/WoodFloor042_1K_AmbientOcclusion.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor042_1K-PNG/WoodFloor042_PREVIEW.jpg
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor044_1K-PNG/WoodFloor044_1K_Displacement.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor044_1K-PNG/WoodFloor044_1K_Roughness.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor044_1K-PNG/WoodFloor044_1K_NormalDX.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor044_1K-PNG/WoodFloor044_1K_AmbientOcclusion.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor044_1K-PNG/WoodFloor044_1K_MetalntOcclusi[12:14:51]: Loading texture: resources/textures/materials/RoofingTiles006_1K-PNG/RoofingTiles006_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/grass_side.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/redstone_dust.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/cobalt.png
+[12:14:51]: Loading texture: resources/textures/materials/RoofingTiles006_1K-PNG/RoofingTiles006_PREVIEW.jpg
+[12:14:51]: Loading texture: resources/textures/materials/RoofingTiles006_1K-PNG/RoofingTiles006_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/stone2.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor044_1K-PNG/WoodFloor044_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/diamond.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/crosshair.png
+[12:14:51]: Loading texture: resources/textures/materials/RoofingTiles006_1K-PNG/RoofingTiles006_1K_NormalDX.png
+[12:14:51]: Loading texture: resources/textures/materials/RoofingTiles006_1K-PNG/RoofingTiles006_1K_AmbientOcclusion.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor044_1K-PNG/WoodFloor044_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/stonepick.png
+[12:14:51]: Loading texture: resources/textures/materials/RoofingTiles006_1K-PNG/RoofingTiles006_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/pine.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor044_1K-PNG/WoodFloor044_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/tinpick.png
+[12:14:51]: Loading texture: resources/textures/materials/Concrete030_1K-PNG/Concrete030_1K_NormalGL.png
+[12:14:51]: Loading texture: resources/textures/materials/Concrete030_1K-PNG/Concrete030_1K_AmbientOcclusion.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/clay.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/crafting_table_top.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/stone_sword.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/gold_ingot.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/furnace_side.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/oak.png
+[12:14:51]: Loading texture: resources/textures/materials/RoofingTiles006_1K-PNG/RoofingTiles006_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/flower_red.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/gold_ore.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/void.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/copperpick.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/wood_axe.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/break3.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/diamond_axe.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/iron_ore.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/stone.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/sand.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/woodenpick.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/ironpick.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Other SIZE_512/1531692584494.jpg
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/tnt_side.png
+[12:14:51]: Loading texture: resources/textures/materials/Concrete030_1K-PNG/Concrete030_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/bookshelf.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/emerald_ore.png
+[12:14:51]: Loading texture: resources/textures/materials/Concrete030_1K-PNG/Concrete030_PREVIEW.jpg
+[12:14:51]: Loading texture: resources/textures/materials/Concrete030_1K-PNG/Concrete030_1K_Displacement.png
+[12:14:51]: Loading texture: resources/textures/materials/Concrete030_1K-PNG/Concrete030_1K_Color.png
+[12:14:51]: Loading texture: resources/textures/materials/Concrete030_1K-PNG/Concrete030_1K_Roughness.png
+[12:14:51]: Loading texture: resources/textures/materials/Wood052_1K-PNG/Wood052_1K_Color.png
+[12:14:51]: Loading texture: resources/textures/materials/Wood052_1K-PNG/Wood052_1K_NormalGL.png
+[]: Loading texture: resources/textures/materials/Wood052_1K-PNG/Wood052_1K_Displacement.png
+12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/double_plant_grass_top.png
+[]: Loading texture: resources/textures/materials/Wood052_1K-PNG/Wood052_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/512.png
+[12:14:51]: Loading texture: resources/textures/materials/Wood052_1K-PNG/Wood052_PREVIEW.jpg
+[12:14:51]: Loading texture: resources/textures/materials/Wood052_1K-PNG/Wood052_1K_NormalDX.png
+[12:14:51]: Loading texture: resources/textures/materials/Wood072_1K-PNG/Wood072_PREVIEW.jpg
+[12:14:51]: Loading texture: resources/textures/materials/Wood052_1K-PNG/Wood052_1K_Roughness.png
+[12:14:51]: Loading texture: resources/textures/materials/Wood072_1K-PNG/Wood072_1K_Displacement.png
+[12:14:51]: Loading texture: resources/textures/materials/Wood072_1K-PNG/Wood072_1K_Color.png
+[12:14:51]: Loading texture: resources/textures/materials/Wood072_1K-PNG/Wood072_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/diamondpick.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/coal.png
+[12:14:51]: Loading texture: resources/textures/materials/Wood072_1K-PNG/Wood072_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/stone_shovel.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/tnt_top.png
+[12:14:51]: Loading texture: resources/textures/materials/Wood072_1K-PNG/Wood072_1K_Roughness.png
+[12:14:51]: Loading texture: resources/textures/materials/Fabric048_1K-PNG/Fabric048_1K_AmbientOcclusion.png
+[12:14:51]: Loading texture: resources/textures/materials/Fabric048_1K-PNG/Fabric048_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/crafting_table_side.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/coal_block.png
+[12:14:51]: Loading texture: resources/textures/materials/Fabric048_1K-PNG/Fabric048_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/break5.png
+[12:14:51]: Loading texture: resources/textures/materials/Fabric048_1K-PNG/Fabric048_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/glass.png
+[12:14:51]: Loading texture: resources/textures/materials/Fabric048_1K-PNG/Fabric048_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/diamond_sword.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/darkstone.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/grey.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/furnace_front_off.png
+[12:14:51]: Loading texture: resources/textures/materials/Tiles105_1K-PNG/Tiles105_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/iron_ingot.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/break4.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/sticks.png
+[12:14:51]: Loading texture: resources/textures/materials/Fabric048_1K-PNG/Fabric048_1K_NormalDX.png
+[12:14:51]: Loading texture: resources/textures/materials/Fabric048_1K-PNG/Fabric048_1K_Color.png
+[12:14:51]: Loading texture: resources/textures/materials/Tiles105_1K-PNG/Tiles105_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/crafting_table_front.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/break9.png
+[12:14:51]: Loading texture: resources/textures/materials/Tiles105_1K-PNG/Tiles105_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/snow.png
+[12:14:51]: Loading texture: resources/textures/materials/Tiles105_1K-PNG/Tiles105_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/furnace_top.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/brick.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/grass.png
+[12:14:51]: Loading texture: resources/textures/materials/Tiles105_1K-PNG/Tiles105_1K_Displacement.png
+[12:14:51]: Loading texture: resources/textures/materials/Tiles105_1K-PNG/Tiles105_1K_Displacement.png
+png
+[12:14:51]: Loaded texture: resources/textures/atlas/Other SIZE_512/1532305305099.jpg
+[12:14:51]: Loading texture: resources/textures/materials/Tiles105_1K-PNG/Tiles105_1K_NormalDX.png
+[12:14:51]: Loading texture: resources/textures/materials/Bricks059_1K-PNG/Bricks059_1K_AmbientOcclusion.png
+[12:14:51]: Loading texture: resources/textures/materials/Bricks059_1K-PNG/Bricks059_1K_Color.png
+[12:14:51]: Loading texture: resources/textures/materials/Bricks059_1K-PNG/Bricks059_1K_Displacement.png
+[12:14:51]: Loading texture: resources/textures/materials/Bricks059_1K-PNG/Bricks059_1K_NormalDX.png
+[12:14:51]: Loading texture: resources/textures/materials/Bricks059_1K-PNG/Bricks059_1K_Roughness.png
+[12:14:51]: Loading texture: resources/textures/materials/Bricks059_1K-PNG/Bricks059_1K_NormalGL.png
+[12:14:51]: Loading texture: resources/textures/materials/Tiles093_1K-PNG/Tiles093_1K_NormalDX.png
+[12:14:51]: Loading texture: resources/textures/materials/Tiles093_1K-PNG/Tiles093_1K_NormalGL.png
+[12:14:51]: Loading texture: resources/textures/materials/Tiles093_1K-PNG/Tiles093_PREVIEW.jpg
+[12:14:51]: Loading texture: resources/textures/materials/Tiles093_1K-PNG/Tiles093_1K_Roughness.png
+[12:14:51]: Loading texture: resources/textures/materials/Bricks059_1K-PNG/Bricks059_PREVIEW.jpg
+[12:14:51]: Loading texture: resources/textures/materials/Tiles093_1K-PNG/Tiles093_1K_AmbientOcclusion.png
+[12:14:51]: Loading texture: resources/textures/materials/Tiles093_1K-PNG/Tiles093_1K_Displacement.png
+[12:14:51]: Loading texture: resources/textures/materials/Bricks058_1K-PNG/Bricks058_1K_NormalDX.png
+[12:14:51]: Loading texture: resources/textures/materials/Tiles093_1K-PNG/Tiles093_1K_Color.png
+[12:14:51]: Loading texture: resources/textures/materials/Bricks058_1K-PNG/Bricks058_1K_NormalGL.png
+[12:14:51]: Loading texture: resources/textures/materials/Bricks058_1K-PNG/Bricks058_1K_Displacement.png
+[12:14:51]: Loading texture: resources/textures/materials/Bricks058_1K-PNG/Bricks058_1K_Roughness.png
+[12:14:51]: Loading texture: resources/textures/materials/Bricks058_1K-PNG/Bricks058_1K_Color.png
+[12:14:51]: Loading texture: resources/textures/materials/Marble020_1K-PNG/Marble020_1K_Roughness.png
+[12:14:51]: Loading texture: resources/textures/materials/Marble020_1K-PNG/Marble020_1K_NormalDX.png
+[12:14:51]: Loading texture: resources/textures/materials/Bricks058_1K-PNG/Bricks058_PREVIEW.jpg
+[12:14:51]: Loading texture: resources/textures/materials/Bricks058_1K-PNG/Bricks058_1K_AmbientOcclusion.png
+[12:14:51]: Loading texture: resources/textures/materials/Marble020_1K-PNG/Marble020_1K_Color.png
+[12:14:51]: Loading texture: resources/textures/materials/Marble020_1K-PNG/Marble020_1K_NormalGL.png
+[12:14:51]: Loading texture: resources/textures/materials/Marble020_1K-PNG/Marble020_PREVIEW.jpg
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor046_1K-PNG/WoodFloor046_1K_Color.png
+[12:14:51]: Loading texture: resources/textures/materials/Marble020_1K-PNG/Marble020_1K_Displacement.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor046_1K-PNG/WoodFloor046_1K_Roughness.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor046_1K-PNG/WoodFloor046_PREVIEW.jpg
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor046_1K-PNG/WoodFloor046_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/iron_shovel.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/planks.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/iron_axe.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/bluestone.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/error.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/flower_yellow.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor046_1K-PNG/WoodFloor046_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/diamond_shovel.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/break0.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/wood_sword.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/stone_axe.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor040_1K-PNG/WoodFloor040_1K_AmbientOcclusion.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/diamond_ore.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor046_1K-PNG/WoodFloor046_1K_NormalGL.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor040_1K-PNG/WoodFloor040_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/break8.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor040_1K-PNG/WoodFloor040_1K_Displacement.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor040_1K-PNG/WoodFloor040_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/break1.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor040_1K-PNG/WoodFloor040_1K_Color.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor040_1K-PNG/WoodFloor040_1K_NormalDX.png
+[12:14:51]: Loading texture: resources/textures/materials/Rock041_1K-PNG/Rock041_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/chest_side.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/outline.png
+[12:14:51]: Loading texture: resources/textures/materials/Rock041_1K-PNG/Rock041_1K_AmbientOcclusion.png
+[12:14:51]: Loading texture: resources/textures/materials/Rock041_1K-PNG/Rock041_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/dirt.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Other SIZE_512/1534681516009.png
+[12:14:51]: Loading texture: resources/textures/materials/Rock041_1K-PNG/Rock041_1K_Color.png
+[12:14:51]: Loading texture: resources/textures/materials/Rock041_1K-PNG/Rock041_1K_Displacement.png
+[12:14:51]: Loading texture: resources/textures/materials/Rock041_1K-PNG/Rock041_1K_NormalDX.png
+[12:14:51]: Loading texture: resources/textures/materials/PavingStones107_1K-PNG/PavingStones107_1K_Displacement.png
+[12:14:51]: Loading texture: resources/textures/materials/PavingStones107_1K-PNG/PavingStones107_1K_AmbientOcclusion.png
+[12:14:51]: Loading texture: resources/textures/materials/PavingStones107_1K-PNG/PavingStones107_1K_Color.png
+[12:14:51]: Loading texture: resources/textures/materials/PavingStones107_1K-PNG/PavingStones107_1K_Roughness.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor040_1K-PNG/WoodFloor040_PREVIEW.jpg
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor043_1K-PNG/WoodFloor043_1K_Metalness.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor043_1K-PNG/WoodFloor043_PREVIEW.jpg
+[12:14:51]: Loading texture: resources/textures/materials/PavingStones107_1K-PNG/PavingStones107_1K_NormalGL.png
+[12:14:51]: Loading texture: resources/textures/materials/PavingStones107_1K-PNG/PavingStones107_1K_NormalDX.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor043_1K-PNG/WoodFloor043_1K_Color.png
+[12:14:5112:14:51]::  Loading texture: resources/textures/materials/WoodFloor043_1K-PNG/WoodFloor043_1K_AmbientOcclusion
+
+[12:14:5112:14:51]::  Loading texture: resources/textures/materials/WoodFloor043_1K-PNG/WoodFloor043_1K_AmbientOcclusion
+
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor043_1K-PNG/WoodFloor043_1K_Roughness.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor043_1K-PNG/WoodFloor043_1K_NormalGL.png
+[12:14:51]: Loading texture: resources/textures/materials/WoodFloor043_1K-PNG/WoodFloor043_1K_NormalDX.png
+[12:14:51]: Loading texture: resources/textures/materials/Rock041_1K-PNG/Rock041_1K_NormalGL.png
+[12:14:51]: Loading texture: resources/textures/materials/PavingStones107_1K-PNG/PavingStones107_PREVIEW.jpg
+[12:14:51]: Loading texture: resources/textures/materials/PavingStones099_1K-PNG/PavingStones099_1K_NormalDX.png
+[12:14:51]: Loading texture: resources/textures/materials/PavingStones099_1K-PNG/PavingStones099_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Other SIZE_512/1530192462674.jpg
+[12:14:51]: Loading texture: resources/textures/materials/PavingStones099_1K-PNG/PavingStones099_1K_Color.png
+[12:14:51]: Loading texture: resources/textures/materials/PavingStones099_1K-PNG/PavingStones099_1K_Roughness.png
+[12:14:51]: Loading texture: resources/textures/materials/PavingStones099_1K-PNG/PavingStones099_PREVIEW.jpg
+[12:14:51]: Loading texture: resources/textures/materials/Bricks060_1K-PNG/Bricks060_PREVIEW.jpg
+[12:14:51]: Loading texture: resources/textures/materials/Bricks060_1K-PNG/Bricks060_1K_Color.png
+[12:14:51]: Loading texture: resources/textures/materials/Bricks060_1K-PNG/Bricks060_1K_AmbientOcclusion.png
+[12:14:51]: Loading texture: resources/textures/materials/Bricks060_1K-PNG/Bricks060_1K_NormalGL.png
+[12:14:51]: Loading texture: resources/textures/materials/Bricks060_1K-PNG/Bricks060_1K_NormalDX.png
+[12:14:51]: Loading texture: resources/textures/materials/Bricks060_1K-PNG/Bricks060_1K_Displacement.png
+[12:14:51]: Loading texture: resources/textures/materials/Wood051_1K-PNG/Wood051_1K_NormalDX.png
+[12:14:51]: Loading texture: resources/textures/materials/Wood051_1K-PNG/Wood051_1K_Roughness.png
+[12:14:51]: Loading texture: resources/textures/materials/Wood051_1K-PNG/Wood051_PREVIEW.jpg
+[12:14:51]: Loading texture: resources/textures/materials/PavingStones099_1K-PNG/PavingStones099_1K_NormalGL.png
+[12:14:51]: Loading texture: resources/textures/materials/Wood051_1K-PNG/Wood051_1K_NormalGL.png
+[12:14:51]: Loading texture: resources/textures/materials/Bricks060_1K-PNG/Bricks060_1K_Roughness.png
+[12:14:51]: Loading texture: resources/textures/materials/Wood051_1K-PNG/Wood051_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Other SIZE_512/1531690192916.jpg
+[12:14:51]: Loading texture: resources/textures/materials/Wood051_1K-PNG/Wood051_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/icon/G-Sm6d0qIwQxUGHIp-m2WBI3hKOWHiiZHByMUrOg0tRX4FcyZLsIASzgBAV_W0W-l1AzlcO2XnXGi9eJEv4foFkbxyyHgmbMnyu-.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Other SIZE_512/1540168411469.jpg
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/tallgrass.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Other SIZE_512/1531688878833.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Other SIZE_512/1540493760334.png
+[12:14:51]: Loaded texture: resources/textures/1531688878833.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Other SIZE_512/1540333513771.jpg
+[12:14:51]: Loaded texture: resources/textures/atlas/Other SIZE_512/1200px-bi_flag-svg.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Other SIZE_512/1540141453773.jpg
+[12:14:51]: Loaded texture: resources/textures/atlas/Other SIZE_512/1531696571587.jpg
+[12:14:51]: Loaded texture: resources/textures/512.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Other SIZE_512/1540046285552.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/Rock044_1K-PNG/Rock044_1K_AmbientOcclusion.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Other SIZE_512/1534874238973.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Other SIZE_512/1540138132856.jpg
+[12:14:51]: Loaded texture: resources/textures/atlas/Other SIZE_512/1539213130067.jpg
+[12:14:51]: Loaded texture: resources/textures/atlas/Other SIZE_512/1539289916387.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/Rock048_1K-PNG/Rock048_1K_AmbientOcclusion.png
+[12:14:51]: Loaded texture: resources/textures/materials/Concrete031_1K-PNG/Concrete031_1K_AmbientOcclusion.png
+[12:14:51]: Loaded texture: resources/textures/materials/Rock044_1K-PNG/Rock044_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor042_1K-PNG/WoodFloor042_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/materials/Tiles107_1K-PNG/Tiles107_1K_AmbientOcclusion.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor044_1K-PNG/WoodFloor044_1K_Metalness.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor044_1K-PNG/WoodFloor044_1K_AmbientOcclusion.png
+[12:14:51]: Loaded texture: resources/textures/materials/Tiles107_1K-PNG/Tiles107_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/materials/Gravel023_1K-PNG/Gravel023_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/materials/RoofingTiles006_1K-PNG/RoofingTiles006_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/Gravel023_1K-PNG/Gravel023_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/Rock044_1K-PNG/Rock044_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/Asphalt021_1K-PNG/Asphalt021_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/Tiles107_1K-PNG/Tiles107_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor042_1K-PNG/WoodFloor042_1K_Metalness.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Other SIZE_512/1534366775880.png
+[12:14:51]: Loaded texture: resources/textures/materials/Tiles105_1K-PNG/Tiles105_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor042_1K-PNG/WoodFloor042_1K_AmbientOcclusion.png
+[12:14:51]: Loaded texture: resources/textures/materials/PaintedPlaster017_1K-PNG/PaintedPlaster017_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Other SIZE_512/1539212443187.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor044_1K-PNG/WoodFloor044_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor041_1K-PNG/WoodFloor041_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Minecraft Textures SIZE_16/playerimage.png
+[12:14:51]: Loaded texture: resources/textures/materials/Rock048_1K-PNG/Rock048_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/Fabric048_1K-PNG/Fabric048_1K_AmbientOcclusion.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor041_1K-PNG/WoodFloor041_1K_AmbientOcclusion.png
+[12:14:51]: Loaded texture: resources/textures/materials/Fabric048_1K-PNG/Fabric048_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor042_1K-PNG/WoodFloor042_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/materials/Tiles093_1K-PNG/Tiles093_1K_AmbientOcclusion.png
+[12:14:51]: Loaded texture: resources/textures/materials/Marble016_1K-PNG/Marble016_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor048_1K-PNG/WoodFloor048_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/materials/Marble023_1K-PNG/Marble023_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/materials/Marble020_1K-PNG/Marble020_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/materials/Gravel023_1K-PNG/Gravel023_1K_AmbientOcclusion.png
+[12:14:51]: Loaded texture: resources/textures/materials/Rock047_1K-PNG/Rock047_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/materials/Rock041_1K-PNG/Rock041_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/materials/Concrete031_1K-PNG/Concrete031_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/PaintedPlaster017_1K-PNG/PaintedPlaster017_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor046_1K-PNG/WoodFloor046_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/materials/Rock041_1K-PNG/Rock041_1K_AmbientOcclusion.png
+[12:14:51]: Loaded texture: resources/textures/materials/Bricks058_1K-PNG/Bricks058_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/materials/Marble016_1K-PNG/Marble016_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/materials/Rock048_1K-PNG/Rock048_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/materials/PavingStones107_1K-PNG/PavingStones107_1K_AmbientOcclusion.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor041_1K-PNG/WoodFloor041_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/materials/Rock041_1K-PNG/Rock041_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor043_1K-PNG/WoodFloor043_1K_Metalness.png
+[12:14:51]: Loaded texture: resources/textures/materials/Rock035_1K-PNG/Rock035_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor043_1K-PNG/WoodFloor043_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor043_1K-PNG/WoodFloor043_1K_AmbientOcclusion.png
+[12:14:51]: Loaded texture: resources/textures/materials/Rock047_1K-PNG/Rock047_1K_AmbientOcclusion.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor041_1K-PNG/WoodFloor041_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/PavingStones107_1K-PNG/PavingStones107_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor040_1K-PNG/WoodFloor040_1K_AmbientOcclusion.png
+[12:14:51]: Loaded texture: resources/textures/materials/Marble023_1K-PNG/Marble023_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/Rock041_1K-PNG/Rock041_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor048_1K-PNG/WoodFloor048_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/Bricks058_1K-PNG/Bricks058_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor044_1K-PNG/WoodFloor044_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/Marble016_1K-PNG/Marble016_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/Asphalt021_1K-PNG/Asphalt021_1K_AmbientOcclusion.png
+[12:14:51]: Loaded texture: resources/textures/materials/PavingStones099_1K-PNG/PavingStones099_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/materials/Bricks060_1K-PNG/Bricks060_1K_AmbientOcclusion.png
+[12:14:51]: Loaded texture: resources/textures/materials/Marble012_1K-PNG/Marble012_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor043_1K-PNG/WoodFloor043_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/materials/RoofingTiles006_1K-PNG/RoofingTiles006_1K_AmbientOcclusion.png
+[12:14:51]: Loaded texture: resources/textures/materials/Marble020_1K-PNG/Marble020_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/Concrete030_1K-PNG/Concrete030_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/materials/Tiles093_1K-PNG/Tiles093_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor044_1K-PNG/WoodFloor044_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/materials/Wood052_1K-PNG/Wood052_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/RoofingTiles006_1K-PNG/RoofingTiles006_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/materials/Rock035_1K-PNG/Rock035_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/Asphalt021_1K-PNG/Asphalt021_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/materials/Bricks074_1K-PNG/Bricks074_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/Asphalt021_1K-PNG/Asphalt021_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/materials/Tiles105_1K-PNG/Tiles105_1K_AmbientOcclusion.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor040_1K-PNG/WoodFloor040_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/materials/Tiles105_1K-PNG/Tiles105_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/materials/Wood051_1K-PNG/Wood051_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/Concrete030_1K-PNG/Concrete030_1K_AmbientOcclusion.png
+[12:14:51]: Loaded texture: resources/textures/materials/Rock044_1K-PNG/Rock044_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor043_1K-PNG/WoodFloor043_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/Wood052_1K-PNG/Wood052_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor042_1K-PNG/WoodFloor042_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/Tiles105_1K-PNG/Tiles105_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/PaintedPlaster017_1K-PNG/PaintedPlaster017_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/materials/Rock035_1K-PNG/Rock035_1K_AmbientOcclusion.png
+[12:14:51]: Loaded texture: resources/textures/materials/Gravel023_1K-PNG/Gravel023_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/materials/Concrete030_1K-PNG/Concrete030_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor040_1K-PNG/WoodFloor040_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/Bricks059_1K-PNG/Bricks059_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/Bricks059_1K-PNG/Bricks059_1K_AmbientOcclusion.png
+[12:14:51]: Loaded texture: resources/textures/materials/Fabric048_1K-PNG/Fabric048_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/materials/Bricks074_1K-PNG/Bricks074_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/materials/Tiles107_1K-PNG/Tiles107_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/materials/Concrete031_1K-PNG/Concrete031_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/materials/PavingStones099_1K-PNG/PavingStones099_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/materials/Bricks074_1K-PNG/Bricks074_1K_AmbientOcclusion.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor044_1K-PNG/WoodFloor044_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/materials/PavingStones099_1K-PNG/PavingStones099_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/materials/Marble012_1K-PNG/Marble012_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/materials/Wood072_1K-PNG/Wood072_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/Marble012_1K-PNG/Marble012_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/Rock041_1K-PNG/Rock041_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/Marble023_1K-PNG/Marble023_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor046_1K-PNG/WoodFloor046_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/PaintedPlaster017_1K-PNG/PaintedPlaster017_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor042_1K-PNG/WoodFloor042_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/materials/Bricks058_1K-PNG/Bricks058_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/Tiles093_1K-PNG/Tiles093_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor048_1K-PNG/WoodFloor048_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/materials/Bricks059_1K-PNG/Bricks059_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/materials/Concrete031_1K-PNG/Concrete031_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/materials/Wood051_1K-PNG/Wood051_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor043_1K-PNG/WoodFloor043_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/materials/Bricks060_1K-PNG/Bricks060_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/RoofingTiles006_1K-PNG/RoofingTiles006_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/materials/Rock047_1K-PNG/Rock047_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/Tiles105_1K-PNG/Tiles105_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/materials/Tiles093_1K-PNG/Tiles093_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/materials/PavingStones099_1K-PNG/PavingStones099_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor043_1K-PNG/WoodFloor043_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/materials/Marble023_1K-PNG/Marble023_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/materials/Rock048_1K-PNG/Rock048_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/materials/Bricks060_1K-PNG/Bricks060_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/materials/Wood072_1K-PNG/Wood072_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/materials/Rock048_1K-PNG/Rock048_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/materials/Marble012_1K-PNG/Marble012_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/materials/Concrete031_1K-PNG/Concrete031_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/materials/Wood052_1K-PNG/Wood052_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/materials/Tiles093_1K-PNG/Tiles093_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/materials/Rock044_1K-PNG/Rock044_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/materials/Bricks060_1K-PNG/Bricks060_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/materials/PavingStones107_1K-PNG/PavingStones107_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/materials/PaintedPlaster017_1K-PNG/PaintedPlaster017_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Other SIZE_512/1539850671705.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/Bricks058_1K-PNG/Bricks058_1K_AmbientOcclusion.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor041_1K-PNG/WoodFloor041_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor040_1K-PNG/WoodFloor040_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/materials/Rock047_1K-PNG/Rock047_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/materials/Wood052_1K-PNG/Wood052_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/materials/Rock047_1K-PNG/Rock047_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/materials/Concrete030_1K-PNG/Concrete030_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/materials/Fabric048_1K-PNG/Fabric048_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/materials/Bricks058_1K-PNG/Bricks058_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/materials/Concrete030_1K-PNG/Concrete030_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/materials/Bricks059_1K-PNG/Bricks059_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/materials/Marble016_1K-PNG/Marble016_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor040_1K-PNG/WoodFloor040_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/materials/Wood051_1K-PNG/Wood051_1K_Roughness.png
+[12:14:51]: Loaded texture: resources/textures/materials/PavingStones107_1K-PNG/PavingStones107_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor042_1K-PNG/WoodFloor042_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/materials/Bricks059_1K-PNG/Bricks059_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/materials/Wood051_1K-PNG/Wood051_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor043_1K-PNG/WoodFloor043_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/materials/Fabric048_1K-PNG/Fabric048_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/materials/Bricks074_1K-PNG/Bricks074_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor046_1K-PNG/WoodFloor046_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/materials/Marble020_1K-PNG/Marble020_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/materials/PavingStones099_1K-PNG/PavingStones099_PREVIEW.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/Marble020_1K-PNG/Marble020_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/materials/Rock035_1K-PNG/Rock035_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/materials/Wood072_1K-PNG/Wood072_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor042_1K-PNG/WoodFloor042_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/materials/RoofingTiles006_1K-PNG/RoofingTiles006_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/materials/Rock035_1K-PNG/Rock035_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/materials/PavingStones107_1K-PNG/PavingStones107_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/materials/Wood072_1K-PNG/Wood072_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/materials/Rock041_1K-PNG/Rock041_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor044_1K-PNG/WoodFloor044_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/materials/Gravel023_1K-PNG/Gravel023_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/materials/Bricks074_1K-PNG/Bricks074_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor046_1K-PNG/WoodFloor046_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/materials/Tiles107_1K-PNG/Tiles107_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor048_1K-PNG/WoodFloor048_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Other SIZE_512/1539376727340.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/PaintedPlaster017_1K-PNG/PaintedPlaster017_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/materials/Marble020_1K-PNG/Marble020_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor044_1K-PNG/WoodFloor044_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/materials/Marble020_1K-PNG/Marble020_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/materials/Bricks060_1K-PNG/Bricks060_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/materials/Wood051_1K-PNG/Wood051_1K_Displacement.png
+[12:14:51]: Loaded texture: resources/textures/materials/PavingStones107_1K-PNG/PavingStones107_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/materials/Marble023_1K-PNG/Marble023_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/materials/Asphalt021_1K-PNG/Asphalt021_1K_Color.png
+[12:14:51]: Loaded texture: resources/textures/materials/Concrete031_1K-PNG/Concrete031_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/materials/Marble012_1K-PNG/Marble012_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/materials/Marble016_1K-PNG/Marble016_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/materials/Marble012_1K-PNG/Marble012_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor041_1K-PNG/WoodFloor041_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/materials/Bricks058_1K-PNG/Bricks058_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/materials/Wood051_1K-PNG/Wood051_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/materials/Wood052_1K-PNG/Wood052_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/materials/Rock041_1K-PNG/Rock041_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/materials/Concrete030_1K-PNG/Concrete030_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/materials/Tiles105_1K-PNG/Tiles105_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/materials/Marble023_1K-PNG/Marble023_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor040_1K-PNG/WoodFloor040_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor041_1K-PNG/WoodFloor041_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/materials/Tiles093_1K-PNG/Tiles093_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/materials/Asphalt021_1K-PNG/Asphalt021_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/materials/RoofingTiles006_1K-PNG/RoofingTiles006_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/materials/Rock048_1K-PNG/Rock048_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/materials/Rock044_1K-PNG/Rock044_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/materials/Rock044_1K-PNG/Rock044_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/materials/RoofingTiles006_1K-PNG/RoofingTiles006_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/materials/Tiles105_1K-PNG/Tiles105_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/materials/Bricks074_1K-PNG/Bricks074_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/materials/Bricks059_1K-PNG/Bricks059_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor048_1K-PNG/WoodFloor048_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/materials/PavingStones107_1K-PNG/PavingStones107_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/materials/Marble016_1K-PNG/Marble016_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/materials/Tiles107_1K-PNG/Tiles107_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor040_1K-PNG/WoodFloor040_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/materials/Bricks074_1K-PNG/Bricks074_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/materials/Wood072_1K-PNG/Wood072_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/materials/PavingStones099_1K-PNG/PavingStones099_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/materials/Bricks060_1K-PNG/Bricks060_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/materials/Rock047_1K-PNG/Rock047_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor048_1K-PNG/WoodFloor048_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/atlas/Other SIZE_512/1540139171163.jpg
+[12:14:51]: Loaded texture: resources/textures/materials/Concrete030_1K-PNG/Concrete030_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/materials/Rock035_1K-PNG/Rock035_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/materials/Concrete031_1K-PNG/Concrete031_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/materials/Gravel023_1K-PNG/Gravel023_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/materials/Bricks059_1K-PNG/Bricks059_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor046_1K-PNG/WoodFloor046_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/materials/Rock035_1K-PNG/Rock035_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/materials/Tiles107_1K-PNG/Tiles107_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/materials/Asphalt021_1K-PNG/Asphalt021_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/materials/Gravel023_1K-PNG/Gravel023_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/materials/Wood072_1K-PNG/Wood072_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/materials/Rock047_1K-PNG/Rock047_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/materials/Tiles093_1K-PNG/Tiles093_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/materials/Bricks060_1K-PNG/Bricks060_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/materials/Rock048_1K-PNG/Rock048_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/materials/Wood052_1K-PNG/Wood052_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/materials/Bricks058_1K-PNG/Bricks058_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/materials/WoodFloor046_1K-PNG/WoodFloor046_1K_NormalDX.png
+[12:14:51]: Loaded texture: resources/textures/materials/Fabric048_1K-PNG/Fabric048_1K_NormalGL.png
+[12:14:51]: Loaded texture: resources/textures/materials/Fabric048_1K-PNG/Fabric048_1K_NormalDX.png
