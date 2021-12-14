@@ -1,7 +1,6 @@
 package com.game.engine.display;
 
 import com.game.engine.VAOLoader;
-import com.game.engine.TextureLoader;
 import com.game.engine.camera.CreativeFirstPerson;
 import com.game.engine.datatypes.ogl.Texture;
 import com.game.engine.datatypes.ogl.obj.VAO;
@@ -9,6 +8,7 @@ import com.game.engine.renderer.EntityRenderer;
 import com.game.engine.threading.GameRegistry;
 import com.game.engine.tools.models.OBJLoader;
 import com.game.engine.world.Entity;
+import com.game.engine.world.World;
 
 /**
  * @author brett
@@ -20,21 +20,22 @@ public class TestDisplay extends IDisplay {
 	
 	//private ArrayList<Entity> e = new ArrayList<Entity>();
 	public CreativeFirstPerson camera;
-	public EntityRenderer renderer;
+	public World world;
 	public VAO vao;
 	public Texture texture;
 	
 	@Override
 	public void onCreate() {
 		this.camera = new CreativeFirstPerson();
-		this.renderer = new EntityRenderer(this.camera);
+		this.world = new World(camera);
+		
 		this.vao = VAOLoader.loadToVAO(OBJLoader.loadOBJ("depression"));
-		this.texture = GameRegistry.textures.get("resources/textures/512.png");
-		this.renderer.ents.add(new Entity().setModel(VAOLoader.loadToVAO(OBJLoader.loadOBJ("hmmmmtriangles"))).setTexture(texture).setPosition(0, 0, 0));
-		this.renderer.ents.add(new Entity().setModel(vao).setTexture(texture).setPosition(25, 0, 0));
-		this.renderer.ents.add(new Entity().setModel(vao).setTexture(texture).setPosition(-25, 0, 0));
-		this.renderer.ents.add(new Entity().setModel(vao).setTexture(texture).setPosition(0, 0, 25));
-		this.renderer.ents.add(new Entity().setModel(vao).setTexture(texture).setPosition(0, 0, -25));
+		this.texture = GameRegistry.getTexture("resources/textures/512.png");
+		this.world.addEntityToWorld(new Entity().setModel(VAOLoader.loadToVAO(OBJLoader.loadOBJ("hmmmmtriangles"))).setTexture(texture).setPosition(0, 0, 0));
+		this.world.addEntityToWorld(new Entity().setModel(vao).setTexture(texture).setPosition(25, 0, 0));
+		this.world.addEntityToWorld(new Entity().setModel(vao).setTexture(texture).setPosition(-25, 0, 0));
+		this.world.addEntityToWorld(new Entity().setModel(vao).setTexture(texture).setPosition(0, 0, 25));
+		this.world.addEntityToWorld(new Entity().setModel(vao).setTexture(texture).setPosition(0, 0, -25));
 		//World.preinit();
 	}
 
@@ -52,8 +53,7 @@ public class TestDisplay extends IDisplay {
 	@Override
 	public void render() {
 		
-		this.camera.move();
-		this.renderer.render();
+		this.world.render();
 		
 		//World.render();
 		//World.update();

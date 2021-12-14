@@ -24,15 +24,10 @@ import static org.lwjgl.glfw.GLFW.glfwGetWindowSize;
 import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
-import static org.lwjgl.glfw.GLFW.glfwSetCursorPosCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetInputMode;
-import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
-import static org.lwjgl.glfw.GLFW.glfwSetMouseButtonCallback;
-import static org.lwjgl.glfw.GLFW.glfwSetScrollCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowIcon;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowPos;
-import static org.lwjgl.glfw.GLFW.glfwSetWindowSizeCallback;
 import static org.lwjgl.glfw.GLFW.glfwShowWindow;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
@@ -58,12 +53,15 @@ import org.lwjgl.system.MemoryStack;
 import com.game.engine.ProjectionMatrix;
 import com.game.engine.TextureLoader;
 import com.game.engine.renderer.SyncSave;
+import com.game.engine.renderer.ui.UIMaster;
+import com.game.engine.threading.GameRegistry;
 import com.game.engine.threading.Threading;
 import com.game.engine.tools.Logger;
 import com.game.engine.tools.RescaleEvent;
 import com.game.engine.tools.SettingsLoader;
 import com.game.engine.tools.icon.GLIcon;
 import com.game.engine.tools.input.InputMaster;
+import com.spinyowl.legui.system.context.CallbackKeeper;
 
 public class DisplayManager {
 
@@ -120,6 +118,8 @@ public class DisplayManager {
 				ly = mouseY;
 				InputMaster.update();
 				
+				UIMaster.render();
+				
 				glfwSwapBuffers(window);
 				glfwPollEvents();
 				long end = getCurrentTime();
@@ -164,42 +164,6 @@ public class DisplayManager {
 		window = glfwCreateWindow(WIDTH, HEIGHT, "Total Femboy Donamania - V" + gameVersion + " // Trapdoor V" + engineVersion, NULL, NULL);
 		if ( window == NULL )
 			throw new RuntimeException("Failed to create the GLFW window");
-		
-		glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
-			if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE ) {
-				glfwSetInputMode(window, GLFW_CURSOR, glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
-				isMouseGrabbed = glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED ? true : false;
-			}
-			if ( action == GLFW_PRESS )
-				InputMaster.keyPressed(key);
-			if ( action == GLFW_RELEASE )
-				InputMaster.keyReleased(key);
-		});
-		
-		glfwSetMouseButtonCallback(window, (window, button, action, mods) -> {
-			if ( action == GLFW_PRESS )
-				InputMaster.mousePressed(button);
-			if ( action == GLFW_RELEASE )
-				InputMaster.mouseReleased(button);
-		});
-		
-		glfwSetWindowSizeCallback(window, (window, x, y) -> {
-			DisplayManager.WIDTH = x;
-			DisplayManager.HEIGHT = y;
-			GL11.glViewport(0, 0, x, y); 
-			ProjectionMatrix.updateProjectionMatrix();
-			for (int i = 0; i < rescales.size(); i++)
-				rescales.get(i).rescale();
-		});
-		
-		glfwSetScrollCallback(window, (window, x, y) -> {
-			InputMaster.scrollMoved((int)y);
-		});
-		
-		glfwSetCursorPosCallback(window, (window, x, y) -> {
-			DisplayManager.mouseX = x;
-			DisplayManager.mouseY = y;
-		});
 		
 		// FUCKING WHY
 		// THEY DEPRECATE LWJGL 2
@@ -253,11 +217,49 @@ public class DisplayManager {
 			System.exit(-1);
 		}
 		setMouseGrabbed(isMouseGrabbed);
+		GameRegistry.init();
+		
+		UIMaster.init(window);
+		CallbackKeeper keeper = UIMaster.getInitl().getCallbackKeeper();
+		keeper.getChainKeyCallback().add((window, key, scancode, action, mods) -> {
+			if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE ) {
+				glfwSetInputMode(window, GLFW_CURSOR, glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
+				isMouseGrabbed = glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED ? true : false;
+			}
+			if ( action == GLFW_PRESS )
+				InputMaster.keyPressed(key);
+			if ( action == GLFW_RELEASE )
+				InputMaster.keyReleased(key);
+		});
+		keeper.getChainMouseButtonCallback().add((window, button, action, mods) -> {
+			if ( action == GLFW_PRESS )
+				InputMaster.mousePressed(button);
+			if ( action == GLFW_RELEASE )
+				InputMaster.mouseReleased(button);
+		});
+		keeper.getChainWindowSizeCallback().add((window, x, y) -> {
+			DisplayManager.WIDTH = x;
+			DisplayManager.HEIGHT = y;
+			GL11.glViewport(0, 0, x, y);
+			UIMaster.updateScreenSize();
+			ProjectionMatrix.updateProjectionMatrix();
+			for (int i = 0; i < rescales.size(); i++)
+				rescales.get(i).rescale();
+		});
+		keeper.getChainScrollCallback().add((window, x, y) -> {
+			InputMaster.scrollMoved((int)y);
+		});
+		keeper.getChainCursorPosCallback().add((window, x, y) -> {
+			DisplayManager.mouseX = x;
+			DisplayManager.mouseY = y;
+		});
 	}
 
 	public static void closeDisplay() {
 		for (int i = 0; i < allDisplays.size(); i++)
 			allDisplays.get(i).onDestory();
+		
+		UIMaster.quit();
 		
 		glfwFreeCallbacks(window);
 		glfwDestroyWindow(window);

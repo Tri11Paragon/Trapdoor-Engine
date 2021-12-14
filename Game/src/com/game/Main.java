@@ -5,6 +5,7 @@ import java.lang.management.MemoryMXBean;
 import java.lang.management.OperatingSystemMXBean;
 import java.lang.management.RuntimeMXBean;
 import java.lang.management.ThreadMXBean;
+import java.util.ArrayList;
 
 import com.game.engine.display.DisplayManager;
 import com.game.engine.display.IDisplay;
@@ -38,6 +39,18 @@ public class Main {
 	public static int processors = 8;
 	
 	public static void main(String[] args) {
+		ArrayList<String> strr = new ArrayList<String>();
+		// mvn clean compile assembly:single 
+		
+		//https://mkyong.com/maven/how-to-create-a-manifest-file-with-maven/
+		// https://github.com/SpinyOwl/legui
+		
+		gb(strr, "", 3);
+		
+		for (int i = 0; i < strr.size(); i++) {
+			System.out.println(strr.get(i));
+		}
+		
 		// decode data supplied through the command line
 		CommandLineInput.decode(args);
 		
@@ -114,6 +127,15 @@ public class Main {
 		
 		// close the file stream
 		Logger.close();
+	}
+	
+	public static void gb(ArrayList<String> strarr, String str, int n) {
+		if (n == 0) {
+			strarr.add(str);
+		} else {
+			gb(strarr, str + "0", n-1);
+			gb(strarr, str + "1", n-1);
+		}
 	}
 	
 	public static String reverse(String str) {

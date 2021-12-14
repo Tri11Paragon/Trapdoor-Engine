@@ -15,7 +15,7 @@ public class Threading {
 	//private static ThreadPoolExecutor pool;
 	private static ExecutorService pool;
 	private static Queue<Runnable> mainRuns = new ArrayDeque<Runnable>();
-	private static Integer h = 0;
+	private static volatile int h = 0;
 	
 	public static void init(int systemCores) {
 		//pool = new ThreadPoolExecutor(systemCores, systemCores, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
@@ -45,27 +45,21 @@ public class Threading {
 	
 	public static boolean isEmpty() {
 		// triple check bullshit lol
-		return mainRuns.size() == 0 && h == 0;
+		return mainRuns.size() == 0 && h <= 0;
 	}
 	
 	public static void d() {
 		if (mainRuns.size() == 0) {
-			synchronized (h) {
-				h--;
-			}
+			h--;
 		}
 	}
 	
 	public static void execute(DualExecution execute) {
 		pool.submit(() -> {
-			synchronized (h) {
-				h++;
-			}
+			h++;
 			execute.run();
 			mainRuns.add(execute.main());
-			synchronized (h) {
-				h--;
-			}
+			h--;
 		});
 	}
 	

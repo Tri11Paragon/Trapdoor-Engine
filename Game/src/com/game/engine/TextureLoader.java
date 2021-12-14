@@ -385,6 +385,38 @@ public class TextureLoader {
 		return new TextureData(buffer, width, height, channels, fileName);
 	}
 	
+	public static void loadToArray(String loc) {
+		// image data storage.
+		ByteBuffer buffer = null;
+		try {
+			// decoder for the image files
+			int[] w = new int[1];
+			int[] h = new int[1];
+			int[] ch = new int[1];
+
+			buffer = STBImage.stbi_load(loc, w, h, ch, 4);
+			
+			System.out.println("byte[] errorBytes = {");
+			for (int i = 0; i < buffer.capacity(); i++) {
+				System.out.print(buffer.get());
+				if (i != buffer.capacity()-1)
+					System.out.print(",");
+				if (i % 32 == 31)
+					System.out.println();
+			}
+			System.out.println("};");
+			System.out.println(w[0]);
+			System.out.println(h[0]);
+			
+		} catch (Exception e) {
+			// we had issue loading texture. exit the game.
+			e.printStackTrace();
+			System.err.println("Tried to load texture " + loc + ", didn't work");
+			System.exit(-1);
+		}
+
+	}
+	
 	public static void cleanup() {
 		for(int texture:textures)
 			GL11.glDeleteTextures(texture);

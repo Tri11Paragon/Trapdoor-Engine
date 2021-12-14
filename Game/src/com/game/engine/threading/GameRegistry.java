@@ -23,14 +23,24 @@ import com.game.engine.tools.Logger;
  */
 public class GameRegistry {
 
+	private static Texture errorTexture;
+	
 	private static HashMap<String, String> allowedFormats = new HashMap<String, String>();
 	
-	public static Map<String, TextureData> textureDatas = Collections.synchronizedMap(new HashMap<String, TextureData>());
+	private static Map<String, TextureData> textureDatas = Collections.synchronizedMap(new HashMap<String, TextureData>());
 	
-	public static Map<String, Texture> textures = Collections.synchronizedMap(new HashMap<String, Texture>());
-	public static Map<String, Texture> texturesMaterials = Collections.synchronizedMap(new HashMap<String, Texture>());
-	public static Map<String, Integer> textureAtlas = Collections.synchronizedMap(new HashMap<String, Integer>());
-	public static Map<String, Integer> textureInteralAtlas = Collections.synchronizedMap(new HashMap<String, Integer>());
+	private static Map<String, Texture> textures = Collections.synchronizedMap(new HashMap<String, Texture>());
+	private static Map<String, Texture> texturesMaterials = Collections.synchronizedMap(new HashMap<String, Texture>());
+	private static Map<String, Integer> textureAtlas = Collections.synchronizedMap(new HashMap<String, Integer>());
+	private static Map<String, Integer> textureInteralAtlas = Collections.synchronizedMap(new HashMap<String, Integer>());
+	
+	public static void init() {
+		// TODO: this
+		//errorTexture = TextureLoader.loadTextureI("resources/textures/error/error3.png", 
+		//		new TextureData(ErrorImage.getBuffer(), ErrorImage.width, ErrorImage.height, 3, "resources/textures/error/error3.png"), 
+		//		TextureLoader.TEXTURE_LOD, GL11.GL_LINEAR, TextureLoader.MINMAG_MIPMAP_FILTER);
+		errorTexture = TextureLoader.loadTexture("error/error3.png");
+	}
 	
 	public static void registerMaterialTexture(String file) {
 		// I wonder if this is bad?
@@ -88,6 +98,11 @@ public class GameRegistry {
 				GameRegistry.registerMaterialTexture("resources/textures/" + haha[1]);
 			}
 		});
+	}
+	
+	public static Texture getTexture(String name) {
+		Texture t = textures.get(name);
+		return t == null ? errorTexture : t;
 	}
 	
 	/**

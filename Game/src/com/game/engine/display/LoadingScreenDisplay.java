@@ -19,7 +19,7 @@ public class LoadingScreenDisplay extends IDisplay {
 	@Override
 	public void onCreate() {
 		GameRegistry.registerMaterialTexture("resources/textures/512.png");
-		GameRegistry.registerMaterialTextureFolder("resources/textures/");
+		GameRegistry.registerMaterialTextureFolder("resources/textures/materials/");
 		
 		
 		test = new TestDisplay();
@@ -36,7 +36,7 @@ public class LoadingScreenDisplay extends IDisplay {
 		// TODO: splash screen / logo
 		
 		// make sure we have loaded all assets and the splash screen has existed for some time.
-		if (Threading.isEmpty() && System.currentTimeMillis() - time > TIME) {
+		if ((Threading.isEmpty() && System.currentTimeMillis() - time > TIME)) {
 			DisplayManager.createDisplay(test);
 			DisplayManager.changeDisplay(test);
 		}

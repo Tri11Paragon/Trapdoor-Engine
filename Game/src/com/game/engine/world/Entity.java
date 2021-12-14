@@ -28,96 +28,104 @@ public class Entity {
 		
 	}
 	
-	public float getX() {
+	public synchronized float getX() {
 		return x;
 	}
-	public Entity setX(float x) {
+	public synchronized Entity setX(float x) {
 		this.x = x;
 		return this;
 	}
-	public float getY() {
+	public synchronized float getY() {
 		return y;
 	}
-	public Entity setY(float y) {
+	public synchronized Entity setY(float y) {
 		this.y = y;
 		return this;
 	}
-	public float getZ() {
+	public synchronized float getZ() {
 		return z;
 	}
-	public Entity setZ(float z) {
+	public synchronized Entity setZ(float z) {
 		this.z = z;
 		return this;
 	}
-	public float getYaw() {
+	public synchronized float getYaw() {
 		return yaw;
 	}
-	public Entity setYaw(float yaw) {
+	public synchronized Entity setYaw(float yaw) {
 		this.yaw = yaw;
 		return this;
 	}
-	public float getPitch() {
+	public synchronized float getPitch() {
 		return pitch;
 	}
-	public Entity setPitch(float pitch) {
+	public synchronized Entity setPitch(float pitch) {
 		this.pitch = pitch;
 		return this;
 	}
-	public float getRoll() {
+	public synchronized float getRoll() {
 		return roll;
 	}
-	public Entity setRoll(float roll) {
+	public synchronized Entity setRoll(float roll) {
 		this.roll = roll;
 		return this;
 	}
 	public VAO getModel() {
-		return model;
+		synchronized (model) {
+			return model;
+		}
 	}
 	public Entity setModel(VAO model) {
-		this.model = model;
-		return this;
+		synchronized (model) {
+			this.model = model;
+			return this;
+		}
 	}
 	public Texture getTexture() {
-		return texture;
+		synchronized (texture) {
+			return texture;
+		}
 	}
 	public Entity setTexture(Texture texture) {
-		this.texture = texture;
-		return this;
+		synchronized (texture) {
+			this.texture = texture;
+			return this;
+		}
 	}
-	public float getSx() {
+	public synchronized float getSx() {
 		return sx;
 	}
-	public Entity setSx(float sx) {
+	public synchronized Entity setSx(float sx) {
 		this.sx = sx;
 		return this;
 	}
-	public float getSy() {
+	public synchronized float getSy() {
 		return sy;
 	}
-	public Entity setSy(float sy) {
+	public synchronized Entity setSy(float sy) {
 		this.sy = sy;
 		return this;
 	}
-	public float getSz() {
+	public synchronized float getSz() {
 		return sz;
 	}
-	public Entity setSz(float sz) {
+	public synchronized Entity setSz(float sz) {
 		this.sz = sz;
 		return this;
 	}
-	public Entity setScale(float s) {
+	public synchronized Entity setScale(float s) {
 		this.sx = s;
 		this.sy = s;
 		this.sz = s;
 		return this;
 	}
-	public Entity setPosition(float x, float y, float z) {
+	public synchronized Entity setPosition(float x, float y, float z) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
 		return this;
 	}
-	public Entity addPosition(float x, float y, float z) {
+	public synchronized Entity addPosition(float x, float y, float z) {
 		this.x += x;
 		this.y += y;
 		this.z += z;

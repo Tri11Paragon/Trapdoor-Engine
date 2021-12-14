@@ -23,16 +23,16 @@ import com.game.engine.world.Entity;
 public class EntityRenderer {
 	
 	private EntityShader shader;
-	public List<Entity> ents = new ArrayList<Entity>();
+	private List<Entity> ents;
 	private ICamera c;
 	
-	public EntityRenderer(ICamera c) {
+	public EntityRenderer(ICamera c, ArrayList<Entity> ents) {
 		this.shader = new EntityShader("entity.vs", "entity.fs");
 		this.shader.start();
 		this.shader.loadProjectionMatrix(ProjectionMatrix.projectionMatrix);
 		this.shader.stop();
 		this.c = c;
-		
+		this.ents = ents;
 	}
 	
 	public void render() {
