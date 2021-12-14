@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.game.engine.camera.Camera;
 import com.game.engine.datatypes.util.NdHashMap;
+import com.game.engine.display.DisplayManager;
 import com.game.engine.renderer.EntityRenderer;
 
 /**
@@ -14,6 +15,11 @@ import com.game.engine.renderer.EntityRenderer;
  */
 public class World {
 
+	private static long lastFrameTime;
+	private static double delta;
+	
+	private static Thread physics;
+	
 	private Camera c;
 	private EntityRenderer renderer;
 	
@@ -25,6 +31,13 @@ public class World {
 		// entitiesinworld is shared memory between the renderer and the world object.
 		this.renderer = new EntityRenderer(c, entitiesInWorld);
 		this.c = c;
+		/*physics = new Thread(() -> {
+			while (DisplayManager.displayOpen) {
+				
+				
+			}
+		});
+		physics.start();*/
 	}
 	
 	/**

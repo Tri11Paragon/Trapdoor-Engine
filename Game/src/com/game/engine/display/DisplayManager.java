@@ -89,7 +89,7 @@ public class DisplayManager {
 	// mouse
 	public static double mouseX,mouseY;
 	private static double lx, ly;
-	public static boolean isMouseGrabbed = true;
+	public static boolean isMouseGrabbed = false;
 	
 	// classes needing to change when the window resizes
 	public static List<RescaleEvent> rescales = new ArrayList<RescaleEvent>();
@@ -122,6 +122,9 @@ public class DisplayManager {
 				
 				glfwSwapBuffers(window);
 				glfwPollEvents();
+				
+				UIMaster.processEvents();
+				
 				long end = getCurrentTime();
 				long time = start - end;
 				time = time < 0 ? 0 : time;

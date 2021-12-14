@@ -10,7 +10,7 @@ import com.game.engine.threading.Threading;
  */
 public class LoadingScreenDisplay extends IDisplay {
 
-	public static final int TIME = 0;
+	public static final int TIME = 50;
 	
 	public TestDisplay test;
 	
@@ -19,7 +19,9 @@ public class LoadingScreenDisplay extends IDisplay {
 	@Override
 	public void onCreate() {
 		GameRegistry.registerMaterialTexture("resources/textures/512.png");
-		GameRegistry.registerMaterialTextureFolder("resources/textures/materials/");
+		GameRegistry.registerMaterialTexture("resources/textures/yes.png");
+		//GameRegistry.registerMaterialTextureFolder("resources/textures/materials/");
+		
 		
 		
 		test = new TestDisplay();
