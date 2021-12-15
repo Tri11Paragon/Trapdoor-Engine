@@ -5,6 +5,8 @@ import java.util.Queue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.game.engine.display.DisplayManager;
+
 /**
  * @author brett
  * @date Nov. 28, 2021
@@ -23,7 +25,12 @@ public class Threading {
 	}
 	
 	public static void cleanup() {
+		System.out.println("Threadpool shutting down! ");
 		pool.shutdown();
+		pool.shutdownNow();
+		pool = null;
+		mainRuns = null;
+		DisplayManager.exited++;
 	}
 	
 	/**
@@ -58,7 +65,8 @@ public class Threading {
 		pool.submit(() -> {
 			h++;
 			execute.run();
-			mainRuns.add(execute.main());
+			if (mainRuns != null)
+				mainRuns.add(execute.main());
 			h--;
 		});
 	}

@@ -58,6 +58,14 @@ public class VAOLoader {
 	private static List<Integer> vaos = new ArrayList<Integer>();
 	private static List<Integer> vbos = new ArrayList<Integer>();
 	
+	public static int getVAOS() {
+		return vaos.size();
+	}
+	
+	public static int getVBOS() {
+		return vbos.size();
+	}
+	
 	public static VAO loadToVAO(float[] data, int[] indicies) {
 		int vao = createVAO();
 		

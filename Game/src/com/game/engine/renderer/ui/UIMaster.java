@@ -1,5 +1,7 @@
 package com.game.engine.renderer.ui;
 
+import org.joml.Vector2i;
+
 import com.game.engine.display.DisplayManager;
 import com.spinyowl.legui.DefaultInitializer;
 import com.spinyowl.legui.animation.AnimatorProvider;
@@ -11,6 +13,7 @@ import com.spinyowl.legui.listener.MouseClickEventListener;
 import com.spinyowl.legui.listener.processor.EventProcessorProvider;
 import com.spinyowl.legui.style.border.SimpleLineBorder;
 import com.spinyowl.legui.style.color.ColorConstants;
+import com.spinyowl.legui.style.font.FontRegistry;
 import com.spinyowl.legui.system.context.Context;
 import com.spinyowl.legui.system.layout.LayoutManager;
 import com.spinyowl.legui.system.renderer.Renderer;
@@ -56,6 +59,10 @@ public class UIMaster {
 		renderer.initialize();
 	    context = initializer.getContext();
 	    context.updateGlfwWindow();
+	    context.setPixelRatio(1);
+	    
+	    FontRegistry.registerFont("orbitron-light", "resources/fonts/orbitron-light.otf");
+	    FontRegistry.registerFont("orbitron-medium", "resources/fonts/orbitron-medium.otf");
 	}
 
 	public static DefaultInitializer getInitl() {
@@ -66,8 +73,15 @@ public class UIMaster {
 		return frame;
 	}
 
+	private static Vector2i windowSize = new Vector2i();
+	
 	public static void updateScreenSize() {
-		//frame.setSize(DisplayManager.WIDTH, DisplayManager.HEIGHT);
+		windowSize.x = DisplayManager.WIDTH;
+		windowSize.y = DisplayManager.HEIGHT;
+		context.setWindowSize(windowSize);
+		context.setFramebufferSize(windowSize);
+
+		frame.setSize(windowSize.x, windowSize.y);
 	}
 
 	public static void render() {

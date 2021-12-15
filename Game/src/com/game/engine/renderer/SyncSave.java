@@ -115,6 +115,7 @@ public class SyncSave {
 	}
 	
 	private static long variableYieldTime, lastTime;
+	private static long variableYieldTime2, lastTime2;
 	
 	/**
      * An accurate sync method that adapts automatically
@@ -158,6 +159,45 @@ public class SyncSave {
             else if (overSleep < variableYieldTime - 200*1000) {
                 // decrease by 2 microseconds
                 variableYieldTime = Math.max(variableYieldTime - 2*1000, 0);
+            }
+        }
+    }
+    
+    public static void syncPhy(int fps) {
+        if (fps <= 0) return;
+         
+        long sleepTime = 1000000000 / fps; // nanoseconds to sleep this frame
+        // yieldTime + remainder micro & nano seconds if smaller than sleepTime
+        long yieldTime = Math.min(sleepTime, variableYieldTime2 + sleepTime % (1000*1000));
+        long overSleep = 0; // time the sync goes over by
+         
+        try {
+            while (true) {
+                long t = System.nanoTime() - lastTime2;
+                 
+                if (t < sleepTime - yieldTime) {
+                    Thread.sleep(1);
+                }else if (t < sleepTime) {
+                    // burn the last few CPU cycles to ensure accuracy
+                    Thread.yield();
+                }else {
+                    overSleep = t - sleepTime;
+                    break; // exit while loop
+                }
+            }
+        } catch (InterruptedException e) {
+        	e.printStackTrace();
+        }finally{
+        	lastTime2 = System.nanoTime() - Math.min(overSleep, sleepTime);
+           
+            // auto tune the time sync should yield
+            if (overSleep > variableYieldTime2) {
+                // increase by 200 microseconds (1/5 a ms)
+                variableYieldTime2 = Math.min(variableYieldTime2 + 200*1000, sleepTime);
+            }
+            else if (overSleep < variableYieldTime2 - 200*1000) {
+                // decrease by 2 microseconds
+                variableYieldTime2 = Math.max(variableYieldTime2 - 2*1000, 0);
             }
         }
     }

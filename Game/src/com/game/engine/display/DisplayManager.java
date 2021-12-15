@@ -53,6 +53,7 @@ import org.lwjgl.system.MemoryStack;
 import com.game.engine.ProjectionMatrix;
 import com.game.engine.TextureLoader;
 import com.game.engine.renderer.SyncSave;
+import com.game.engine.renderer.ui.DebugInfo;
 import com.game.engine.renderer.ui.UIMaster;
 import com.game.engine.threading.GameRegistry;
 import com.game.engine.threading.Threading;
@@ -61,12 +62,14 @@ import com.game.engine.tools.RescaleEvent;
 import com.game.engine.tools.SettingsLoader;
 import com.game.engine.tools.icon.GLIcon;
 import com.game.engine.tools.input.InputMaster;
+import com.game.engine.world.World;
 import com.spinyowl.legui.system.context.CallbackKeeper;
 
 public class DisplayManager {
 
 	public static final String gameVersion = "0.0A";
 	public static final String engineVersion = "0.1A";
+	public static final String title = "Total Femboy Donamania - V" + gameVersion + " // Trapdoor V" + engineVersion;
 	
 	// temp color
 	private static final float RED = 0.5444f;
@@ -80,6 +83,11 @@ public class DisplayManager {
 		
 	private static long lastFrameTime;
 	private static double delta;
+	private static double frameTimeMs,frameTimeS;
+	private static double fps;
+	private static long lastDebugUpdate;
+	private static long lastPUpdate;
+	public static long exited = 0;
 	
 	public static int WIDTH = 1280;
 	public static int HEIGHT = 720;
@@ -98,8 +106,10 @@ public class DisplayManager {
 	private static IDisplay currentDisplay; 
 	private static List<IDisplay> allDisplays = new ArrayList<IDisplay>();
 	
-	// display updating
+	// debugger nonsense
+	private static DebugInfo debugInfoLayer;
 	
+	// display updating
 	public static void updateDisplay() {
 		while(!GLFW.glfwWindowShouldClose(DisplayManager.window)) {
 			try {
@@ -138,6 +148,18 @@ public class DisplayManager {
 				long currentFrameTime = getCurrentTime();
 				delta = currentFrameTime - lastFrameTime;
 				lastFrameTime = currentFrameTime;
+				frameTimeMs = delta / 1000000d;
+				frameTimeS = delta / 1000000000d;
+				fps = 1000/frameTimeMs;
+				long currentTime = System.currentTimeMillis();
+				if (currentTime - lastDebugUpdate > 1000) {
+					lastDebugUpdate = currentTime;
+					debugInfoLayer.updateInfo();
+				}
+				if (currentTime - lastPUpdate > 100) {
+					debugInfoLayer.update();
+				}
+				debugInfoLayer.update();
 				//System.out.println(getFrameTimeMilis() + " :: " + 1000/getFrameTimeMilis() + " (" + 0 + ") :: " + 1000);
 			} catch (Exception e) {e.printStackTrace();}
 		}
@@ -164,7 +186,7 @@ public class DisplayManager {
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 		
 		
-		window = glfwCreateWindow(WIDTH, HEIGHT, "Total Femboy Donamania - V" + gameVersion + " // Trapdoor V" + engineVersion, NULL, NULL);
+		window = glfwCreateWindow(WIDTH, HEIGHT, title, NULL, NULL);
 		if ( window == NULL )
 			throw new RuntimeException("Failed to create the GLFW window");
 		
@@ -256,6 +278,11 @@ public class DisplayManager {
 			DisplayManager.mouseX = x;
 			DisplayManager.mouseY = y;
 		});
+		keeper.getChainWindowCloseCallback().add((window) -> {
+			displayOpen = false;
+		});
+		debugInfoLayer = new DebugInfo();
+		InputMaster.registerKeyListener(debugInfoLayer);
 	}
 
 	public static void closeDisplay() {
@@ -317,29 +344,29 @@ public class DisplayManager {
 	}
 
 	public static double getFrameTimeMilisF() {
-		return delta / 1000000d;
+		return frameTimeMs;
 	}
 	
 	public static double getFrameTimeMilis() {
-		//if (Thread.currentThread().getId() == mainThreadID)
-			return delta / 1000000d;
-		//else
-		//	return World.getFrameTimeMilis();
+		if (Thread.currentThread().getId() == mainThreadID)
+			return frameTimeMs;
+		else
+			return World.getFrameTimeMilis();
 	}
 
 	public static double getFrameTimeSecondsF() {
-		return delta / 1000000000d;
+		return frameTimeS;
 	}
 	
 	public static double getFrameTimeSeconds() {
-		//if (Thread.currentThread().getId() == mainThreadID)
-			return delta / 1000000000d;
-		//else
-		//	return World.getFrameTimeSeconds();
+		if (Thread.currentThread().getId() == mainThreadID)
+			return frameTimeS;
+		else
+			return World.getFrameTimeSeconds();
 	}
 	
 	public static double getFPS() {
-		return 1000000000d / delta;
+		return fps;
 	}
 	
 	public static void enableCulling() {

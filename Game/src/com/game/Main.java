@@ -127,6 +127,11 @@ public class Main {
 		
 		// close the file stream
 		Logger.close();
+		
+		while (DisplayManager.exited < 2) 
+			Thread.yield();
+		System.out.println("Goodbye!");
+		System.exit(0);
 	}
 	
 	public static void gb(ArrayList<String> strarr, String str, int n) {

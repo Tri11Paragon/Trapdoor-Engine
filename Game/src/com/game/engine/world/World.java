@@ -6,6 +6,7 @@ import com.game.engine.camera.Camera;
 import com.game.engine.datatypes.util.NdHashMap;
 import com.game.engine.display.DisplayManager;
 import com.game.engine.renderer.EntityRenderer;
+import com.game.engine.renderer.SyncSave;
 
 /**
  * @author brett
@@ -17,6 +18,9 @@ public class World {
 
 	private static long lastFrameTime;
 	private static double delta;
+	private static double frameTimeMs,frameTimeS;
+	private static double fps;
+	public static int entityCount;
 	
 	private static Thread physics;
 	
@@ -31,13 +35,28 @@ public class World {
 		// entitiesinworld is shared memory between the renderer and the world object.
 		this.renderer = new EntityRenderer(c, entitiesInWorld);
 		this.c = c;
-		/*physics = new Thread(() -> {
+		
+		World w = this;
+		
+		if (physics != null)
+			throw new RuntimeException("Hey for some reason multiple worlds are attempting to be created. This is not currently supported.");
+		physics = new Thread(() -> {
 			while (DisplayManager.displayOpen) {
+				w.update();
 				
+				SyncSave.syncPhy(DisplayManager.FPS_MAX);
 				
+				long currentFrameTime = System.nanoTime();
+				delta = currentFrameTime - lastFrameTime;
+				lastFrameTime = currentFrameTime;
+				frameTimeMs = delta / 1000000d;
+				frameTimeS = delta / 1000000000d;
+				fps = 1000d/frameTimeMs;
 			}
+			System.out.println("Physics thread exiting! ");
+			DisplayManager.exited++;
 		});
-		physics.start();*/
+		physics.start();
 	}
 	
 	/**
@@ -52,7 +71,7 @@ public class World {
 	 * called by the physics thread
 	 */
 	public void update() {
-		
+		entityCount = entitiesInWorld.size();
 	}
 	
 	public void addEntityToWorld(Entity e) {
@@ -66,6 +85,18 @@ public class World {
 			this.entitiesAtPos.set(x, y, z, el);
 		}
 		el.add(e);
+	}
+	
+	public static double getFrameTimeMilis() {
+		return frameTimeMs;
+	}
+
+	public static double getFrameTimeSeconds() {
+		return frameTimeS;
+	}
+	
+	public static double getFPS() {
+		return fps;
 	}
 	
 }

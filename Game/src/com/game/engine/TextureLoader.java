@@ -41,6 +41,10 @@ public class TextureLoader {
 	
 	private static List<Integer> textures = new ArrayList<Integer>();
 	private static List<ByteBuffer> textureBuffers = new ArrayList<ByteBuffer>();
+	
+	public static int getTextures() {
+		return textures.size();
+	}
 
 	/**
 	 * does all the texture atlas stuff.
