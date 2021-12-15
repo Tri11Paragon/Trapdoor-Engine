@@ -116,7 +116,7 @@ public class DisplayManager {
 				long start = getCurrentTime();
 				GL11.glEnable(GL11.GL_DEPTH_TEST);
 				GL11.glClearColor(RED, GREEN, BLUE, 1.0f);
-				GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+				GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
 				GL11.glEnable(GL13.GL_BLEND);
 				GL13.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 				GL11.glEnable(GL11.GL_CULL_FACE);
@@ -243,6 +243,8 @@ public class DisplayManager {
 		}
 		setMouseGrabbed(isMouseGrabbed);
 		GameRegistry.init();
+		
+		//glfwWindowHint(GLFW.GLFW_DOUBLEBUFFER, GLFW_TRUE);
 		
 		UIMaster.init(window);
 		CallbackKeeper keeper = UIMaster.getInitl().getCallbackKeeper();

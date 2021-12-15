@@ -30,7 +30,7 @@ public class DebugInfo implements IKeyState {
 	private Label physics;
 	private Label physicsThreadFPS;
 	
-	private boolean enabled = true;
+	private boolean enabled = false;
 	private StringBuilder builder;
 	
 	public DebugInfo() {
