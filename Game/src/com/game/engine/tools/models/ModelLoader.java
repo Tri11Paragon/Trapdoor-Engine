@@ -64,8 +64,6 @@ public class ModelLoader {
 		String texturePath = path.dataString();
 		Texture t = TextureLoader.loadTexture(texturesDir + "/" + texturePath);
 		
-		
-		
 		Vector4f ambient = Material.DEFAULT_AMBIENT;
 		int result = Assimp.aiGetMaterialColor(material, Assimp.AI_MATKEY_COLOR_AMBIENT, Assimp.aiTextureType_NONE, 0, color);
 		if (result == 0)

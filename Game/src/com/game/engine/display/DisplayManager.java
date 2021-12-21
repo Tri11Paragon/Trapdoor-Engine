@@ -88,6 +88,7 @@ public class DisplayManager {
 	private static long lastDebugUpdate;
 	private static long lastPUpdate;
 	public static long exited = 0;
+	public static long createdThreads = 0;
 	
 	public static int WIDTH = 1280;
 	public static int HEIGHT = 720;

@@ -199,7 +199,7 @@ public class TextureLoader {
 		} catch (Exception e) {return nullTexture;}
 	}
 	
-	public static int loadSpecialTextureATLAS(ArrayList<TextureData> textures) {
+	public static int loadSpecialTextureATLAS(List<TextureData> textures) {
 		try {
 			//for more detail on array textures
 			//https://www.khronos.org/opengl/wiki/Array_Texture

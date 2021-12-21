@@ -20,6 +20,7 @@ public class Threading {
 	private static volatile int h = 0;
 	
 	public static void init(int systemCores) {
+		DisplayManager.createdThreads++;
 		//pool = new ThreadPoolExecutor(systemCores, systemCores, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 		pool = Executors.newCachedThreadPool();
 	}
@@ -61,6 +62,10 @@ public class Threading {
 		}
 	}
 	
+	public static void addToMains(Runnable r) {
+		mainRuns.add(r);
+	}
+	
 	public static void execute(DualExecution execute) {
 		pool.submit(() -> {
 			h++;
@@ -72,7 +77,11 @@ public class Threading {
 	}
 	
 	public static void execute(Runnable runnable) {
-		pool.submit(runnable);
+		pool.submit(() -> {
+			h++;
+			runnable.run();
+			h--;
+		});
 	}
 	
 }

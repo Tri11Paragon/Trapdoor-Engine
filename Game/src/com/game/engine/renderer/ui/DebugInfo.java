@@ -86,6 +86,8 @@ public class DebugInfo implements IKeyState {
 		layer.add(physicsThreadFPS);
 		
 		UIMaster.getMasterFrame().addLayer(layer);
+		
+		//UIMaster.getMasterFrame().getContainer().add(layer);
 		layer.setEnabled(enabled);
 		layer.getStyle().setDisplay(enabled == true ? DisplayType.MANUAL : DisplayType.NONE);
 	}

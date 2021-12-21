@@ -38,7 +38,7 @@ public class Main {
 	public static boolean verbose = true;
 	public static int processors = 8;
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		ArrayList<String> strr = new ArrayList<String>();
 		// mvn clean compile assembly:single 
 		
@@ -128,8 +128,8 @@ public class Main {
 		// close the file stream
 		Logger.close();
 		
-		while (DisplayManager.exited < 2) 
-			Thread.yield();
+		while (DisplayManager.exited < DisplayManager.createdThreads) 
+			Thread.sleep(16);
 		System.out.println("Goodbye!");
 		System.exit(0);
 	}

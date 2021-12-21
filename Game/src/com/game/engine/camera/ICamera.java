@@ -1,7 +1,10 @@
 package com.game.engine.camera;
 
+import org.joml.Matrix4f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
+
+import com.game.engine.tools.math.Maths;
 
 /**
 *
@@ -17,8 +20,13 @@ public abstract class ICamera {
 	protected float pitch;
 	protected float yaw;
 	protected float roll;
+	protected Matrix4f viewMatrix;
 	
 	public abstract void move();
+	
+	public void updateViewMatrix() {
+		this.viewMatrix = Maths.createViewMatrix(this);
+	}
 	
 	/**
 	 * Getters and Setters below --------------------------
@@ -83,6 +91,10 @@ public abstract class ICamera {
 
 	public void invertPitch() {
 		pitch = -pitch;
+	}
+	
+	public Matrix4f getViewMatrix() {
+		return viewMatrix;
 	}
 	
 }

@@ -6,8 +6,8 @@ import com.game.engine.datatypes.ogl.Texture;
 import com.game.engine.datatypes.ogl.obj.VAO;
 import com.game.engine.threading.GameRegistry;
 import com.game.engine.tools.models.OBJLoader;
-import com.game.engine.world.Entity;
 import com.game.engine.world.World;
+import com.game.engine.world.entities.Entity;
 
 /**
  * @author brett
@@ -30,12 +30,12 @@ public class TestDisplay extends IDisplay {
 		
 		this.vao = VAOLoader.loadToVAO(OBJLoader.loadOBJ("depression"));
 		this.texture = GameRegistry.getTexture("resources/textures/512.png");
-		this.world.addEntityToWorld(new Entity().setModel(VAOLoader.loadToVAO(OBJLoader.loadOBJ("power model"))).setTexture(texture).setPosition(0, 0, 0));
-		this.world.addEntityToWorld(new Entity().setModel(vao).setTexture(texture).setPosition(25, 0, 0));
-		this.world.addEntityToWorld(new Entity().setModel(vao).setTexture(texture).setPosition(-25, 0, 0));
-		this.world.addEntityToWorld(new Entity().setModel(vao).setTexture(texture).setPosition(0, 0, 25));
-		this.world.addEntityToWorld(new Entity().setModel(vao).setTexture(texture).setPosition(0, 0, -25));
-		this.world.addEntityToWorld(new Entity().setModel(VAOLoader.loadToVAO(OBJLoader.loadOBJ("hellolosers"))).setTexture(GameRegistry.getTexture("resources/textures/yes.png")).setPosition(5, 5, 5));
+		this.world.addStaticEntityToWorld(new Entity().setModel(VAOLoader.loadToVAO(OBJLoader.loadOBJ("power model"))).setTexture(texture).setPosition(0, 0.0f, 0));
+		this.world.addStaticEntityToWorld(new Entity().setModel(vao).setTexture(texture).setPosition(25, 0, 0).setColliderCentered(1));
+		this.world.addStaticEntityToWorld(new Entity().setModel(vao).setTexture(texture).setPosition(-25, 0, 0).setColliderCentered(1));
+		this.world.addStaticEntityToWorld(new Entity().setModel(vao).setTexture(texture).setPosition(0, 0, 25).setColliderCentered(1));
+		this.world.addStaticEntityToWorld(new Entity().setModel(vao).setTexture(texture).setPosition(0, 0, -25).setColliderCentered(1));
+		this.world.addStaticEntityToWorld(new Entity().setModel(VAOLoader.loadToVAO(OBJLoader.loadOBJ("hellolosers"))).setTexture(GameRegistry.getTexture("resources/textures/yes.png")).setPosition(5, 5, 5));
 		//World.preinit();
 	}
 

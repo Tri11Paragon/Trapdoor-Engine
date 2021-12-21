@@ -24,6 +24,35 @@ public class CreativeFirstPerson extends Camera{
 	
 	@Override
 	public void move() {
+		final float speedd = 30f;
+		
+		if (Mouse.isGrabbed()) {
+			pitch += Mouse.getDY() * turnSpeed/100;
+			yaw += Mouse.getDX() * turnSpeed/100;
+		}
+		
+		if (Keyboard.isKeyDown(Keyboard.KEY_LEFT))
+			yaw += -speedd * turnSpeed * DisplayManager.getFrameTimeSeconds();
+		if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT))
+			yaw += speedd * turnSpeed * DisplayManager.getFrameTimeSeconds();
+		if (Keyboard.isKeyDown(Keyboard.KEY_UP))
+			pitch += -speedd * turnSpeed * DisplayManager.getFrameTimeSeconds();
+		if (Keyboard.isKeyDown(Keyboard.KEY_DOWN))
+			pitch += speedd * turnSpeed * DisplayManager.getFrameTimeSeconds();
+		
+		if (this.pitch > 90)
+			this.pitch = 90;
+		if (this.pitch < -90)
+			this.pitch = -90;
+		if (this.yaw < -360)
+			this.yaw = 0;
+		if (this.yaw > 360)
+			this.yaw = 0;
+		
+		
+		boolean b = true;
+		if (b)
+			return;
 		if (!Mouse.isGrabbed())
 			return;
 		if (Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_ALT))
@@ -56,31 +85,6 @@ public class CreativeFirstPerson extends Camera{
 			
 		if (Keyboard.isKeyDown(Keyboard.LEFT_SHIFT))
 			moveAtY = (float) (-speed * DisplayManager.getFrameTimeSeconds());
-		
-		float speed = 30f;
-		
-		if (Mouse.isGrabbed()) {
-			pitch += Mouse.getDY() * turnSpeed/100;
-			yaw += Mouse.getDX() * turnSpeed/100;
-		}
-		
-		if (Keyboard.isKeyDown(Keyboard.KEY_LEFT))
-			yaw += -speed * turnSpeed * DisplayManager.getFrameTimeSeconds();
-		if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT))
-			yaw += speed * turnSpeed * DisplayManager.getFrameTimeSeconds();
-		if (Keyboard.isKeyDown(Keyboard.KEY_UP))
-			pitch += -speed * turnSpeed * DisplayManager.getFrameTimeSeconds();
-		if (Keyboard.isKeyDown(Keyboard.KEY_DOWN))
-			pitch += speed * turnSpeed * DisplayManager.getFrameTimeSeconds();
-		
-		if (this.pitch > 90)
-			this.pitch = 90;
-		if (this.pitch < -90)
-			this.pitch = -90;
-		if (this.yaw < -360)
-			this.yaw = 0;
-		if (this.yaw > 360)
-			this.yaw = 0;
 		
 		// TODO: remove this shit
 		double prez = 1000000d;

@@ -13,7 +13,7 @@ import com.game.engine.camera.ICamera;
 import com.game.engine.datatypes.ogl.obj.VAO;
 import com.game.engine.shaders.EntityShader;
 import com.game.engine.tools.math.Maths;
-import com.game.engine.world.Entity;
+import com.game.engine.world.entities.Entity;
 
 /**
  * @author laptop
@@ -37,12 +37,13 @@ public class EntityRenderer {
 	
 	public void render() {
 		shader.start();
-		shader.loadViewMatrix(Maths.createViewMatrix(c));
+		shader.loadViewMatrix(c.getViewMatrix());
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);	
 		
 		for (Entity entity : ents) {
-			entity.update();
 			VAO mod = entity.getModel();
+			if (mod == null)
+				continue;
 			GL30.glBindVertexArray(mod.getVaoID());
 			GL20.glEnableVertexAttribArray(0);
 			GL20.glEnableVertexAttribArray(1);

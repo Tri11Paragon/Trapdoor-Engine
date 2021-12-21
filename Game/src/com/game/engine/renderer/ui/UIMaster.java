@@ -17,6 +17,7 @@ import com.spinyowl.legui.style.font.FontRegistry;
 import com.spinyowl.legui.system.context.Context;
 import com.spinyowl.legui.system.layout.LayoutManager;
 import com.spinyowl.legui.system.renderer.Renderer;
+import com.spinyowl.legui.theme.Themes;
 
 /**
  * @author laptop
@@ -63,6 +64,8 @@ public class UIMaster {
 	    
 	    FontRegistry.registerFont("orbitron-light", "resources/fonts/orbitron-light.otf");
 	    FontRegistry.registerFont("orbitron-medium", "resources/fonts/orbitron-medium.otf");
+	    
+	    Themes.setDefaultTheme(Themes.FLAT_DARK);;
 	}
 
 	public static DefaultInitializer getInitl() {
