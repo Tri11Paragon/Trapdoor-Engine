@@ -12,7 +12,9 @@ import com.game.engine.world.World;
  */
 public class Entity {
 	
-	private float x,y,z, lx, ly, lz, nx, ny, nz;
+	private float x,y,z, lx, ly, lz;
+	private volatile float nx, ny, nz;
+	private float vx, vy, vz;
 	private float yaw,pitch,roll;
 	private float sx=1,sy=1,sz=1;
 	private VAO model;
@@ -196,20 +198,38 @@ public class Entity {
 		//entityPositionUpdated = true;
 		return this;
 	}
-	public Entity addPosition(float x, float y, float z) {
+	public synchronized Entity addPosition(float x, float y, float z) {
 		this.lx = this.x;
 		this.ly = this.y;
 		this.lz = this.z;
 		
-		this.nx = this.x + x;
-		this.ny = this.y + y;
-		this.nz = this.z + z;
+		this.nx = this.nx + x;
+		this.ny = this.ny + y;
+		this.nz = this.nz + z;
 		
 		//this.x += x;
 		//this.y += y;
 		//this.z += z;
 		entityPositionUpdated = true;
 		return this;
+	}
+	
+	// called by world
+	public void applyVelocity() {
+		if (this.vx != 0 || this.vy != 0 || this.vz != 0) {
+			this.nx += this.vx * World.getFrameTimeSeconds();
+			this.ny += this.vy * World.getFrameTimeSeconds();
+			this.nz += this.vz * World.getFrameTimeSeconds();
+			this.entityPositionUpdated = true;
+			System.out.println(this.nx + " " + this.entityPositionUpdated);
+		}
+	}
+	
+	// also a world function
+	public void updateNCoords() {
+		this.nx = this.x;
+		this.ny = this.y;
+		this.nz = this.z;
 	}
 	/**
 	 * this function is for the world ONLY
@@ -235,6 +255,47 @@ public class Entity {
 		return this;
 	}
 	
+	public Entity setVelocity(float x, float y, float z) {
+		this.vx = x;
+		this.vy = y;
+		this.vz = z;
+		return this;
+	}
+	
+	public synchronized Entity addVelocity(float x, float y, float z) {
+		this.vx += x;
+		this.vy += y;
+		this.vz += z;
+		return this;
+	}
+	
+	public float getVx() {
+		return vx;
+	}
+
+	public Entity setVx(float vx) {
+		this.vx = vx;
+		return this;
+	}
+
+	public float getVy() {
+		return vy;
+	}
+
+	public Entity setVy(float vy) {
+		this.vy = vy;
+		return this;
+	}
+
+	public float getVz() {
+		return vz;
+	}
+
+	public Entity setVz(float vz) {
+		this.vz = vz;
+		return this;
+	}
+
 	public float getLX() {
 		return lx;
 	}

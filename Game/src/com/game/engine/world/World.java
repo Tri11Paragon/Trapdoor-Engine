@@ -71,6 +71,8 @@ public class World {
 				for (int i = 0; i < entitiesInWorld.size(); i++) {
 					Entity a = entitiesInWorld.get(i);
 					a.update();
+					// apply the velocity
+					a.applyVelocity();
 					// only need to check collision on an entity if it has updated its position right
 					if (a.isUpdated()) {
 						// store the last safe position
@@ -129,62 +131,48 @@ public class World {
 							// this really needs to be redone lol
 							for (int cu = 0; cu < MAX_STEPS; cu++) {
 								// have fun with this gay function
-								// O(n^2)? no more like O(n^4)
-								boolean collided = false;
 								
 								// otherwise we are moving and need to safely apply it
-								a.addPositionWorld(stepX, 0, 0);
+								a.addPositionWorld(stepX, stepY, stepZ);
 								for (int j = 0; j < entitiesInWorld.size(); j++) {
 									Entity b = entitiesInWorld.get(j);
 									if (a == b)
 										continue;
 									AABB bbA = a.getCollider();
 									AABB bbB = b.getCollider();
-									if (bbA.intersects(bbB)) {
-										collided = true;
-										break;
-									}
-								}
-								if (collided) { 
-									a.addPositionWorld(-stepX, 0, 0);
-								}
-								collided = false;
-								
-								a.addPositionWorld(0, stepY, 0);
-								for (int j = 0; j < entitiesInWorld.size(); j++) {
-									Entity b = entitiesInWorld.get(j);
-									if (a == b)
+									if (!bbA.intersects(bbB))
 										continue;
-									AABB bbA = a.getCollider();
-									AABB bbB = b.getCollider();
-									if (bbA.intersects(bbB)) {
-										collided = true;
-										break;
+									else {
+										// this isn't perfect but is better then checking each axis individually
+										// as that is much more expensive
+										// first check if its the change in x that is causing this collision
+										a.addPositionWorld(-stepX, 0, 0);
+										bbA = a.getCollider();
+										// if it isn't then undo and move to y
+										if (bbA.intersects(bbB)) {
+											a.addPositionWorld(stepX, 0, 0);
+											
+											// check y
+											a.addPositionWorld(0, -stepY, 0);
+											bbA = a.getCollider();
+											if (bbA.intersects(bbB)) {
+												a.addPositionWorld(0, stepY, 0);
+												
+												// if not y check z
+												a.addPositionWorld(0, 0, -stepZ);
+												bbA = a.getCollider();
+												if (bbA.intersects(bbB)) {
+													// this should never be reached
+													a.addPositionWorld(0, 0, stepZ);
+												}
+											}
+										}
 									}
 								}
-								if (collided) { 
-									a.addPositionWorld(0, -stepY, 0);
-								}
-								collided = false;
-								
-								a.addPositionWorld(0, 0, stepZ);
-								for (int j = 0; j < entitiesInWorld.size(); j++) {
-									Entity b = entitiesInWorld.get(j);
-									if (a == b)
-										continue;
-									AABB bbA = a.getCollider();
-									AABB bbB = b.getCollider();
-									if (bbA.intersects(bbB)) {
-										collided = true;
-										break;
-									}
-								}
-								if (collided) { 
-									a.addPositionWorld(0, 0, -stepZ);
-								}
-								collided = false;
 							}
 						}
+						// once we have applied the position change, reset the N vector
+						a.updateNCoords();
 						a.clearUpdate();
 					}
 				}

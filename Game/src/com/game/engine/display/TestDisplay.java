@@ -31,7 +31,7 @@ public class TestDisplay extends IDisplay {
 		this.vao = VAOLoader.loadToVAO(OBJLoader.loadOBJ("depression"));
 		this.texture = GameRegistry.getTexture("resources/textures/512.png");
 		this.world.addStaticEntityToWorld(new Entity().setModel(VAOLoader.loadToVAO(OBJLoader.loadOBJ("power model"))).setTexture(texture).setPosition(0, 0.0f, 0));
-		this.world.addStaticEntityToWorld(new Entity().setModel(vao).setTexture(texture).setPosition(25, 0, 0).setColliderCentered(1));
+		this.world.addEntityToWorld(new Entity().setModel(vao).setTexture(texture).setPosition(25, 0, 0).setColliderCentered(1).setVelocity(5.0f, 0, 0));
 		this.world.addStaticEntityToWorld(new Entity().setModel(vao).setTexture(texture).setPosition(-25, 0, 0).setColliderCentered(1));
 		this.world.addStaticEntityToWorld(new Entity().setModel(vao).setTexture(texture).setPosition(0, 0, 25).setColliderCentered(1));
 		this.world.addStaticEntityToWorld(new Entity().setModel(vao).setTexture(texture).setPosition(0, 0, -25).setColliderCentered(1));
