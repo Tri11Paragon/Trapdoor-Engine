@@ -1,5 +1,7 @@
 package com.game.engine.renderer.ui;
 
+import java.text.DecimalFormat;
+
 import org.lwjgl.glfw.GLFW;
 
 import com.game.engine.TextureLoader;
@@ -17,6 +19,8 @@ import com.spinyowl.legui.style.Style.DisplayType;
  * 
  */
 public class DebugInfo implements IKeyState {
+	
+	public static float x,y,z;
 
 	private Layer layer;
 	
@@ -29,6 +33,8 @@ public class DebugInfo implements IKeyState {
 	
 	private Label physics;
 	private Label physicsThreadFPS;
+	
+	private Label playerPosition;
 	
 	private boolean enabled = false;
 	private StringBuilder builder;
@@ -49,33 +55,42 @@ public class DebugInfo implements IKeyState {
 		physics = new Label("Physics Info:");
 		physicsThreadFPS = new Label("UPS " + World.getFPS() + " Updatetime (ms): " + World.getFrameTimeMilis());
 		
+		playerPosition = new Label("X: 0 | Y: 0 | Z: 0");
+		
 		final float size = 16;
 		final float padding = 5;
 		final float offsetY = 25;
 		
 		gameVersion.setPosition(0, calcPosY(size * 1.3f, padding, 10));
 		gameVersion.getStyle().setFontSize(size * 1.3f);
-		gameVersion.getStyle().setFont("orbitron-light");
+		gameVersion.getStyle().setFont("mono");
 		
-		mainRenderings.setPosition(0, calcPosY(size * 1.2f, padding , offsetY));
+		calcPosY(size, padding, offsetY);
+		mainRenderings.setPosition(0, calcPosY(size, padding , offsetY));
 		mainRenderings.getStyle().setFontSize(size * 1.2f);
-		mainRenderings.getStyle().setFont("orbitron-light");
+		mainRenderings.getStyle().setFont("mono");
 		mainThreadFPS.setPosition(0, calcPosY(size, padding, offsetY));
 		mainThreadFPS.getStyle().setFontSize(size);
-		mainThreadFPS.getStyle().setFont("orbitron-light");
+		mainThreadFPS.getStyle().setFont("mono");
 		entityCount.setPosition(0, calcPosY(size, padding, offsetY));
 		entityCount.getStyle().setFontSize(size);
-		entityCount.getStyle().setFont("orbitron-light");
+		entityCount.getStyle().setFont("mono");
 		renderCount.setPosition(0, calcPosY(size, padding, offsetY));
 		renderCount.getStyle().setFontSize(size);
-		renderCount.getStyle().setFont("orbitron-light");
+		renderCount.getStyle().setFont("mono");
 		
-		physics.setPosition(0, calcPosY(size * 1.2f, padding, offsetY));
+		calcPosY(size, padding, offsetY);
+		physics.setPosition(0, calcPosY(size, padding, offsetY));
 		physics.getStyle().setFontSize(size * 1.2f);
-		physics.getStyle().setFont("orbitron-light");
-		physicsThreadFPS.setPosition(0, calcPosY(size * 1.2f, padding, offsetY));
+		physics.getStyle().setFont("mono");
+		physicsThreadFPS.setPosition(0, calcPosY(size, padding, offsetY));
 		physicsThreadFPS.getStyle().setFontSize(size);
-		physicsThreadFPS.getStyle().setFont("orbitron-light");
+		physicsThreadFPS.getStyle().setFont("mono");
+		
+		calcPosY(size, padding, offsetY);
+		playerPosition.setPosition(0, calcPosY(size, padding, offsetY));
+		playerPosition.getStyle().setFontSize(size);
+		playerPosition.getStyle().setFont("mono");
 		
 		layer.add(gameVersion);
 		layer.add(mainRenderings);
@@ -84,6 +99,7 @@ public class DebugInfo implements IKeyState {
 		layer.add(renderCount);
 		layer.add(physics);
 		layer.add(physicsThreadFPS);
+		layer.add(playerPosition);
 		
 		UIMaster.getMasterFrame().addLayer(layer);
 		
@@ -102,9 +118,13 @@ public class DebugInfo implements IKeyState {
 		return offsetY + size * last + padding * last++;
 	}
 	
-	private double round(double d) {
-		int i = (int) (d * 1000);
-		return i / 1000d;
+	private final DecimalFormat df = new DecimalFormat("#.###");
+	private String round(double d) {
+		return df.format(d);
+	}
+	
+	private void includeSpace(StringBuilder sb, String x) {
+		sb.append(x);
 	}
 	
 	/**
@@ -152,12 +172,20 @@ public class DebugInfo implements IKeyState {
 	}
 	
 	/**
-	 * called every 100ms
+	 * called every 250ms
 	 */
 	public void update() {
 		if (!enabled)
 			return;
 		
+		builder = new StringBuilder();
+		builder.append("X:  ");
+		includeSpace(builder, round(x));
+		builder.append(" | Y: ");
+		includeSpace(builder, round(y));
+		builder.append(" | Z: ");
+		includeSpace(builder, round(z));
+		playerPosition.getTextState().setText(builder.toString());
 	}
 	
 	@Override

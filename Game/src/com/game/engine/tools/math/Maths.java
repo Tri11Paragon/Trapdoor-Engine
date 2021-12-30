@@ -3,6 +3,8 @@ package com.game.engine.tools.math;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
+import javax.vecmath.Matrix3f;
+
 import org.joml.Matrix4f;
 import org.joml.Vector2d;
 import org.joml.Vector2f;
@@ -211,6 +213,30 @@ public class Maths {
 		if (roll != 0)
 			matrix.rotate(roll, rz);
 		return matrix;
+	}
+	
+	public static Matrix4f createTransformationMatrix(float x, float y, float z, Matrix3f rotmatrix, float sx, float sy, float sz) {
+		matrix.identity();
+		matrix.translate(x, y, z);
+		if (sx != 1 || sy != 1 || sz != 1)
+			matrix.scale(sx, sy, sz);
+		matrix.mul(create4x4FromPhys(rotmatrix));
+		return matrix;
+	}
+	
+	private static Matrix4f data = new Matrix4f();
+	private static Matrix4f create4x4FromPhys(Matrix3f rot) {
+		data.identity();
+		data.m00(rot.m00);
+		data.m01(rot.m01);
+		data.m02(rot.m02);
+		data.m10(rot.m10);
+		data.m11(rot.m11);
+		data.m12(rot.m12);
+		data.m20(rot.m20);
+		data.m21(rot.m21);
+		data.m22(rot.m22);
+		return data;
 	}
 	
 	public static Matrix4f createTransformationMatrix(Vector3f translation) {

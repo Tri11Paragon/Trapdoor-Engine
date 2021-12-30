@@ -51,7 +51,7 @@ public class EntityRenderer {
 			
 			shader.loadTranslationMatrix(Maths.createTransformationMatrix(
 					entity.getX(), entity.getY(), entity.getZ(), 
-					entity.getYaw(), entity.getPitch(), entity.getRoll(), 
+					entity.getRotationMatrix(), 
 					entity.getSx(), entity.getSy(), entity.getSz()));
 			
 			GL11.glBindTexture(GL11.GL_TEXTURE_2D, entity.getTexture().getID());

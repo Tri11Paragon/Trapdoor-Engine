@@ -157,7 +157,7 @@ public class DisplayManager {
 					lastDebugUpdate = currentTime;
 					debugInfoLayer.updateInfo();
 				}
-				if (currentTime - lastPUpdate > 100) {
+				if (currentTime - lastPUpdate > 250) {
 					debugInfoLayer.update();
 				}
 				debugInfoLayer.update();

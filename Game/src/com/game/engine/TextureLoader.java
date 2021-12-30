@@ -169,23 +169,28 @@ public class TextureLoader {
 			// Min and Mag filter is for when a texture is upscaled or downscaled.
 			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, minmag_filter); 
 	        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, minmag_filter); 
-			
+	        
+	        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT); 
+	        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT); 
+
+			// Min and Mag filter is for when a texture is upscaled or downscaled.
+			// im pretty sure i only need to call this ^ but i'd like to make sure that
+			// the mipmaps use the same filters.
+			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, minmag_mipmap);
+			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, minmag_mipmap);
+			// this bias is how fast a texture loses detail (LOD = level of detail)
+			// > 0 = less detail
+			GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_LOD_BIAS, bias);
+			// applies anisotropic filtering and makes sure that the graphics card supports
+			// this level of AF
+			float amount = Math.min(SettingsLoader.AF, GL11.glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
+			GL11.glTexParameterf(GL11.GL_TEXTURE_2D, EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT, amount);
+	        
 	        // put the texture data into the texture buffer.
 			GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, d.getWidth(), d.getHeight(), 0, d.getChannels() == 4 ? GL11.GL_RGBA : GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, d.getBuffer());
 	        
 	        // generates the mipmaps
 			GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
-			// Min and Mag filter is for when a texture is upscaled or downscaled.
-			// im pretty sure i only need to call this ^ but i'd like to make sure that
-			// the mipmaps use the same filters.
-			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, minmag_mipmap); 
-	        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, minmag_mipmap); 
-	        // this bias is how fast a texture loses detail (LOD = level of detail)
-			// > 0 = less detail
-			GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_LOD_BIAS, bias);
-			// applies anisotropic filtering and makes sure that the graphics card supports this level of AF
-			float amount = Math.min(SettingsLoader.AF, GL11.glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
-			GL11.glTexParameterf(GL11.GL_TEXTURE_2D, EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT, amount);
 			
 			Texture t = new Texture(id, d.getWidth(), d.getHeight(), d.getChannels());
 			if (texture != null) {

@@ -30,13 +30,28 @@ public class TestDisplay extends IDisplay {
 		
 		this.vao = VAOLoader.loadToVAO(OBJLoader.loadOBJ("depression"));
 		this.texture = GameRegistry.getTexture("resources/textures/512.png");
-		this.world.addStaticEntityToWorld(new Entity().setModel(VAOLoader.loadToVAO(OBJLoader.loadOBJ("power model"))).setTexture(texture).setPosition(0, 0.0f, 0));
-		this.world.addEntityToWorld(new Entity().setModel(vao).setTexture(texture).setPosition(25, 0, 0).setColliderCentered(1).setVelocity(5.0f, 0, 0));
-		this.world.addStaticEntityToWorld(new Entity().setModel(vao).setTexture(texture).setPosition(-25, 0, 0).setColliderCentered(1));
-		this.world.addStaticEntityToWorld(new Entity().setModel(vao).setTexture(texture).setPosition(0, 0, 25).setColliderCentered(1));
-		this.world.addStaticEntityToWorld(new Entity().setModel(vao).setTexture(texture).setPosition(0, 0, -25).setColliderCentered(1));
-		this.world.addStaticEntityToWorld(new Entity().setModel(VAOLoader.loadToVAO(OBJLoader.loadOBJ("hellolosers"))).setTexture(GameRegistry.getTexture("resources/textures/yes.png")).setPosition(5, 5, 5));
-		//World.preinit();
+		this.world.addEntityToWorld(new Entity().setModel(VAOLoader.loadToVAO(OBJLoader.loadOBJ("power model"))).setTexture(texture).setPosition(0, -10.0f, 0));
+		this.world.addEntityToWorld(new Entity().setModel(vao).setTexture(texture).setPosition(25, 0, 0));
+		this.world.addEntityToWorld(new Entity().setModel(vao).setTexture(texture).setPosition(-25, 0, 0));
+		this.world.addEntityToWorld(new Entity().setModel(vao).setTexture(texture).setPosition(0, 0, 25));
+		this.world.addEntityToWorld(new Entity().setModel(vao).setTexture(texture).setPosition(0, 0, -25));
+		this.world.addEntityToWorld(new Entity().setModel(VAOLoader.loadToVAO(OBJLoader.loadOBJ("hellolosers"))).setTexture(GameRegistry.getTexture("resources/textures/yes.png")).setPosition(5, 5, 5));
+		// add entity
+		this.world.addEntityToWorld(
+				new Entity()
+					// set the model
+					.setModel(
+							// load the model data to the GPU
+							VAOLoader.loadToVAO(
+									// load model data from the disk
+									OBJLoader.loadOBJ("lll3")))
+					// set the texture
+					.setTexture(
+							// get the texture from the preloaded texture assets 
+							// (this will be how models are done soon)
+							GameRegistry.getTexture("resources/textures/yes.png"))
+					// change position
+					.setPosition(15, 5, 25)); 
 	}
 
 	@Override

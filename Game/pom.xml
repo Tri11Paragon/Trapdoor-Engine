@@ -38,6 +38,8 @@
 			</activation>
 			<properties>
 				<lwjgl.natives>natives-linux</lwjgl.natives>
+				<downloadSources>true</downloadSources>
+                <downloadJavadocs>true</downloadJavadocs>
 			</properties>
 		</profile>
 		<profile>
@@ -50,6 +52,8 @@
 			</activation>
 			<properties>
 				<lwjgl.natives>natives-macos</lwjgl.natives>
+				<downloadSources>true</downloadSources>
+                <downloadJavadocs>true</downloadJavadocs>
 			</properties>
 		</profile>
 		<profile>
@@ -62,6 +66,8 @@
 			</activation>
 			<properties>
 				<lwjgl.natives>natives-windows</lwjgl.natives>
+				<downloadSources>true</downloadSources>
+                <downloadJavadocs>true</downloadJavadocs>
 			</properties>
 		</profile>
 		<profile>
@@ -74,6 +80,8 @@
 			</activation>
 			<properties>
 				<lwjgl.natives>natives-windows-x86</lwjgl.natives>
+				<downloadSources>true</downloadSources>
+                <downloadJavadocs>true</downloadJavadocs>
 			</properties>
 		</profile>
 	</profiles>
@@ -91,6 +99,11 @@
 	</dependencyManagement>
 
 	<dependencies>
+		<dependency>
+		    <groupId>cz.advel.jbullet</groupId>
+		    <artifactId>jbullet</artifactId>
+		    <version>20101010-1</version>
+		</dependency>
 		<dependency>
 			<groupId>org.liquidengine</groupId>
 			<artifactId>cbchain</artifactId>

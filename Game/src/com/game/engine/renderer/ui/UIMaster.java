@@ -65,6 +65,8 @@ public class UIMaster {
 	    FontRegistry.registerFont("orbitron-light", "resources/fonts/orbitron-light.otf");
 	    FontRegistry.registerFont("orbitron-medium", "resources/fonts/orbitron-medium.otf");
 	    
+	    FontRegistry.registerFont("mono", "resources/fonts/liberation/LiberationMono-Regular.ttf");
+	    
 	    Themes.setDefaultTheme(Themes.FLAT_DARK);;
 	}
 

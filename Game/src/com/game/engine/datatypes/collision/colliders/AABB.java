@@ -7,7 +7,7 @@ import org.joml.Vector3d;
  * @date Dec. 15, 2021
  * 
  */
-public class AABB {
+public class AABB implements ICollider {
 	
 	private boolean useJavaHash = false;
 	private Vector3d centered = new Vector3d();
@@ -182,6 +182,14 @@ public class AABB {
 
 	public void setUseJavaHash(boolean useJavaHash) {
 		this.useJavaHash = useJavaHash;
+	}
+
+	@Override
+	public boolean intersects(ICollider c) {
+		if (!(c instanceof AABB))
+			return false;
+		AABB o = (AABB) c;
+		return o.intersects(this);
 	}
 	
 }

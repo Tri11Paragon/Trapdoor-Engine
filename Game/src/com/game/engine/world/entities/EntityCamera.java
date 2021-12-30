@@ -4,7 +4,7 @@ import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
 import com.game.engine.camera.Camera;
-import com.game.engine.display.DisplayManager;
+import com.game.engine.renderer.ui.DebugInfo;
 import com.game.engine.tools.input.Keyboard;
 import com.game.engine.tools.input.Mouse;
 
@@ -42,6 +42,9 @@ public class EntityCamera extends Entity {
 		this.pos.x = this.getX();
 		this.pos.y = this.getY();
 		this.pos.z = this.getZ();
+		DebugInfo.x = this.pos.x;
+		DebugInfo.y = this.pos.y;
+		DebugInfo.z = this.pos.z;
 		c.setPosition(pos);
 	}
 	
@@ -55,63 +58,58 @@ public class EntityCamera extends Entity {
 		else
 			speed = 40f;
 		
+		final float timeConstant = (float) 1;
+		
 		if (Keyboard.isKeyDown(Keyboard.KEY_W))
-			moveAtX = (float) (-speed * DisplayManager.getFrameTimeSeconds());
+			moveAtX = (-speed * timeConstant);
 		
 		else if (Keyboard.isKeyDown(Keyboard.KEY_S))
-			moveAtX = (float) (speed * DisplayManager.getFrameTimeSeconds());
+			moveAtX = (speed * timeConstant);
 		else
 			moveAtX = 0;
 			
 		if (Keyboard.isKeyDown(Keyboard.KEY_A))
-			moveatZ = (float) (speed * DisplayManager.getFrameTimeSeconds());
+			moveatZ = (speed * timeConstant);
 		else
 		if (Keyboard.isKeyDown(Keyboard.KEY_D))
-			moveatZ = (float) (-speed * DisplayManager.getFrameTimeSeconds());
+			moveatZ = (-speed * timeConstant);
 		else 
 			moveatZ = 0;
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_SPACE))
-			moveAtY = (float) (speed * DisplayManager.getFrameTimeSeconds());
+			moveAtY = (speed * timeConstant);
 		else
 			moveAtY = 0;
 			
 		if (Keyboard.isKeyDown(Keyboard.LEFT_SHIFT))
-			moveAtY = (float) (-speed * DisplayManager.getFrameTimeSeconds());
+			moveAtY = (-speed * timeConstant);
 		
 		float dx = (float) ((((-((moveAtX) * Math.sin(Math.toRadians(c.getYaw()))  )) + -((moveatZ) * Math.cos(Math.toRadians(c.getYaw())) ))) );
 		float dy = moveAtY;
 		float dz = (float) ( (((moveAtX) * Math.cos(Math.toRadians(c.getYaw()))  ) + -((moveatZ) * Math.sin(Math.toRadians(c.getYaw())) )) );
 		
-		/*float xStep = (dx)/RECUR_AMT;
-		float yStep = (dy)/RECUR_AMT;
-		float zStep = (dz)/RECUR_AMT;
+		applyWithoutBreakingVelocity(dx, dy, dz);
 		
-		float wx = 0, wy = 0, wz = 0;
-		float xb = 0, yb = 0, zb = 0;
-
-		for (int i = 0; i < RECUR_AMT; i++) {
-			wx += xStep;
-			if (world.chunk.getBlock(position.x + (wx), position.y, position.z) == 0) {
-				xb = wx;
-			} else
-				break;
-		}
-		for (int i = 0; i < RECUR_AMT; i++) {
-			wy += yStep;
-			if (world.chunk.getBlock(position.x, position.y + (wy), position.z) == 0) {
-				yb = wy;
-			} else
-				break;
-		}
-		for (int i = 0; i < RECUR_AMT; i++) {
-			wz += zStep;
-			if (world.chunk.getBlock(position.x, position.y, position.z + (wz)) == 0) {
-				zb = wz;
-			} else 
-				break;
-		}*/
-		this.addPosition(dx, dy, dz);
+	}
+	
+	//private final javax.vecmath.Vector3f vel = new javax.vecmath.Vector3f();
+	public void applyWithoutBreakingVelocity(float x, float y, float z) {
+		// TODO: this;
+		/*vel.x = 0;
+		vel.y = 0;
+		vel.z = 0;
+		this.getRigidbody().getLinearVelocity(vel);
+		float vx = vel.x + x, vy = vel.y + y, vz = vel.z + z;
+		
+		if (vx >= x)
+			vel.x = x;
+		if (vy >= y)
+			vel.y = y;
+		if (vz >= z)
+			vel.z = z;
+		
+		this.getRigidbody().setLinearVelocity(vel);*/
+		this.setLinearVelocity(x, y, z);
 	}
 	
 }
