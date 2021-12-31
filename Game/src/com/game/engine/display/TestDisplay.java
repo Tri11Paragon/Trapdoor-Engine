@@ -6,6 +6,7 @@ import com.game.engine.datatypes.ogl.assimp.Model;
 import com.game.engine.threading.GameRegistry;
 import com.game.engine.world.World;
 import com.game.engine.world.entities.Entity;
+import com.game.game.entities.EntityPoop;
 
 /**
  * @author brett
@@ -42,6 +43,14 @@ public class TestDisplay extends IDisplay {
 							GameRegistry.getModel("resources/models/lll3.obj"))
 					// change position
 					.setPosition(15, 5, 25)); 
+		//add poop
+		this.world.addEntityToWorld(
+				new EntityPoop()
+					// set the model
+					.setModel(
+							GameRegistry.getModel("resources/models/poop.obj").setMaterial("resources/textures/poop.png"))
+					// change position
+					.setPosition(-15, -4, -15).setYaw((float) (Math.PI/2)).setScale(0.1f));
 	}
 
 	@Override
