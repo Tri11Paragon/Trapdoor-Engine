@@ -40,10 +40,14 @@ public class Entity {
 	private World world;
 	
 	public Entity() {
+		this(0);
+	}
+	
+	public Entity(float mass) {
 		this.transformOut = new Transform();
 		this.positionStore = new Vector3f();
 		// default no mass (ie collision object, nothing else.
-		RigidBodyConstructionInfo cor = new RigidBodyConstructionInfo(0, new DefaultMotionState(
+		RigidBodyConstructionInfo cor = new RigidBodyConstructionInfo(mass, new DefaultMotionState(
 				new Transform(
 						new Matrix4f(
 								// rotation
@@ -223,11 +227,11 @@ public class Entity {
 	
 	
 	public synchronized Entity setYaw(float yaw) {
-		this.transformOut.basis.rotX(yaw);
+		this.transformOut.basis.rotY(yaw);
 		return this;
 	}
 	public synchronized Entity setPitch(float pitch) {
-		this.transformOut.basis.rotY(pitch);
+		this.transformOut.basis.rotX(pitch);
 		//this.pitch = pitch;
 		return this;
 	}
