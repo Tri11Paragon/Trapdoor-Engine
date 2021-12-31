@@ -18,7 +18,7 @@ public class TestDisplay extends IDisplay {
 	//private ArrayList<Entity> e = new ArrayList<Entity>();
 	public CreativeFirstPerson camera;
 	public World world;
-	public Model vao;
+	public Model cubeModel;
 	public Texture texture;
 	
 	@Override
@@ -26,25 +26,20 @@ public class TestDisplay extends IDisplay {
 		this.camera = new CreativeFirstPerson();
 		this.world = new World(camera);
 		
-		this.vao = GameRegistry.getModel("resources/models/depression.obj");
+		this.cubeModel = GameRegistry.getModel("resources/models/depression.obj").setMaterial(GameRegistry.getMaterial("resources/textures/512.png"));
 		this.texture = GameRegistry.getTexture("resources/textures/512.png");
-		this.world.addEntityToWorld(new Entity().setModel(GameRegistry.getModel("resources/models/power model.obj")).setTexture(texture).setPosition(0, -10.0f, 0));
-		this.world.addEntityToWorld(new Entity().setModel(vao).setTexture(texture).setPosition(25, 0, 0));
-		this.world.addEntityToWorld(new Entity().setModel(vao).setTexture(texture).setPosition(-25, 0, 0));
-		this.world.addEntityToWorld(new Entity().setModel(vao).setTexture(texture).setPosition(0, 0, 25));
-		this.world.addEntityToWorld(new Entity().setModel(vao).setTexture(texture).setPosition(0, 0, -25));
-		this.world.addEntityToWorld(new Entity().setModel(GameRegistry.getModel("resources/models/hellolosers.obj")).setTexture(GameRegistry.getTexture("resources/textures/yes.png")).setPosition(5, 5, 5));
+		this.world.addEntityToWorld(new Entity().setModel(GameRegistry.getModel("resources/models/power model.obj")).setPosition(0, -10.0f, 0));
+		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(25, 0, 0));
+		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(-25, 0, 0));
+		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(0, 0, 25));
+		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(0, 0, -25));
+		this.world.addEntityToWorld(new Entity().setModel(GameRegistry.getModel("resources/models/hellolosers.obj")).setPosition(5, 5, 5));
 		// add entity
 		this.world.addEntityToWorld(
 				new Entity()
 					// set the model
 					.setModel(
 							GameRegistry.getModel("resources/models/lll3.obj"))
-					// set the texture
-					.setTexture(
-							// get the texture from the preloaded texture assets 
-							// (this will be how models are done soon)
-							GameRegistry.getTexture("resources/textures/yes.png"))
 					// change position
 					.setPosition(15, 5, 25)); 
 	}

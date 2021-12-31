@@ -44,6 +44,7 @@ public class EntityRenderer {
 		
 		for (Entity entity : ents) {
 			Model model = entity.getModel();
+			entity.render();
 			if (model == null)
 				continue;
 			Mesh[] meshes = model.getMeshes();

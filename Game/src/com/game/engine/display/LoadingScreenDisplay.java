@@ -57,6 +57,9 @@ public class LoadingScreenDisplay extends IDisplay {
 		GameRegistry.registerTexture("resources/textures/512.png");
 		GameRegistry.registerTexture("resources/textures/yes.png");
 		GameRegistry.registerTexture(GameRegistry.DEFAULT_EMPTY_NORMAL_MAP);
+		
+		GameRegistry.registerMaterial("resources/textures/512.png", GameRegistry.DEFAULT_EMPTY_NORMAL_MAP);
+		
 		GameRegistry.registerModel("resources/models/depression.obj");
 		GameRegistry.registerModel("resources/models/lll3.obj");
 		GameRegistry.registerModel("resources/models/power model.obj");

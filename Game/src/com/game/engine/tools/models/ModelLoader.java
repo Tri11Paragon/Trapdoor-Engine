@@ -29,6 +29,10 @@ public class ModelLoader {
 		return load(path, texturesDir, Assimp.aiProcess_JoinIdenticalVertices | Assimp.aiProcess_Triangulate | Assimp.aiProcess_FixInfacingNormals);
 	}
 	
+	public static Model load(String path) {
+		return load(path, Assimp.aiProcess_JoinIdenticalVertices | Assimp.aiProcess_Triangulate | Assimp.aiProcess_FixInfacingNormals);
+	}
+	
 	public static Model load(String path, Material material) {
 		return load(path, material, Assimp.aiProcess_JoinIdenticalVertices | Assimp.aiProcess_Triangulate | Assimp.aiProcess_FixInfacingNormals);
 	}
@@ -58,6 +62,20 @@ public class ModelLoader {
 			meshes[i] = processMesh(AIMesh.create(aiMeshes.get(i)), materials);
 		
 		return new Model(meshes, materials);
+	}
+	
+	public static Model load(String path, int flags) {
+		AIScene aiScene = Assimp.aiImportFile(path, flags);
+		if (aiScene == null)
+			throw new ModelNotFoundException(path);
+		
+		int numMeshes = aiScene.mNumMeshes();
+		PointerBuffer aiMeshes = aiScene.mMeshes();
+		Mesh[] meshes = new Mesh[numMeshes];
+		for (int i = 0; i < numMeshes; i++)
+			meshes[i] = processMesh(AIMesh.create(aiMeshes.get(i)), null);
+		
+		return new Model(meshes, new Material[] {GameRegistry.getErrorMaterial()});
 	}
 	
 	public static Model load(String path, Material material, int flags) {
@@ -107,15 +125,17 @@ public class ModelLoader {
 	    processTextCoords(mesh, textures);
 	    processIndices(mesh, indices);
 	    
-	    Material m;
-	    int materialIndex = mesh.mMaterialIndex();
-	    if (materialIndex >= 0 && materialIndex < materials.length)
-	    	m = materials[materialIndex];
-	    else {
-	    	if (materials.length == 1)
-	    		m = materials[0];
-	    	else
-	    		m = GameRegistry.getErrorMaterial();
+	    Material m = GameRegistry.getErrorMaterial();
+	    if (materials != null) {
+		    int materialIndex = mesh.mMaterialIndex();
+		    if (materialIndex >= 0 && materialIndex < materials.length)
+		    	m = materials[materialIndex];
+		    else {
+		    	if (materials.length == 1)
+		    		m = materials[0];
+		    	else
+		    		m = GameRegistry.getErrorMaterial();
+		    }
 	    }
 	    
 		return new Mesh(m, toFloatArray(vertices), toFloatArray(textures), toFloatArray(normals), toIntArray(indices));

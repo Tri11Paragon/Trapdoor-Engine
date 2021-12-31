@@ -13,7 +13,6 @@ import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.dynamics.RigidBodyConstructionInfo;
 import com.bulletphysics.linearmath.DefaultMotionState;
 import com.bulletphysics.linearmath.Transform;
-import com.game.engine.datatypes.ogl.Texture;
 import com.game.engine.datatypes.ogl.assimp.Model;
 import com.game.engine.world.World;
 import com.game.engine.world.entities.components.Component;
@@ -244,18 +243,6 @@ public class Entity {
 	public Entity setModel(Model model) {
 		synchronized (model) {
 			this.model = model;
-			return this;
-		}
-	}
-	public Texture getTexture() {
-		return model.getMeshes()[0].getMaterial().getDiffuseTexture();
-	}
-	public Entity setTexture(Texture texture) {
-		synchronized (model) {
-			for (int i = 0; i < model.getMeshes().length; i++) {
-				model.getMeshes()[i].getMaterial().setDiffuseTexture(texture);
-				//model.getMeshes()[i].getMaterial().setDiffuseTexturePath(texture.get);
-			}
 			return this;
 		}
 	}

@@ -91,13 +91,6 @@ public class GameRegistry {
 		return m;
 	}
 	
-	@Deprecated
-	private static Material createEmptyMaterial(String diffusePath, String normalPath) {
-		Material m = new Material(diffusePath, normalPath);
-		materials.put(diffusePath, m);
-		return m;
-	}
-	
 	public static void registerModel(String file) {
 		registerModel(file, "resources/textures");
 	}
@@ -123,7 +116,7 @@ public class GameRegistry {
 			if (Main.verbose)
 				Logger.writeln(rt);
 			
-			GameRegistry.meshes.put(fd, ModelLoader.load(fd, createEmptyMaterial(DEFAULT_EMPTY_NORMAL_MAP, DEFAULT_EMPTY_NORMAL_MAP)));
+			GameRegistry.meshes.put(fd, ModelLoader.load(fd));
 		}, () -> {
 			String fd = file;
 			String rt = "Loaded model: " + fd;
