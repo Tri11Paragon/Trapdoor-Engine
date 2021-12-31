@@ -1,11 +1,9 @@
 package com.game.engine.display;
 
-import com.game.engine.VAOLoader;
 import com.game.engine.camera.CreativeFirstPerson;
 import com.game.engine.datatypes.ogl.Texture;
-import com.game.engine.datatypes.ogl.obj.VAO;
+import com.game.engine.datatypes.ogl.assimp.Model;
 import com.game.engine.threading.GameRegistry;
-import com.game.engine.tools.models.OBJLoader;
 import com.game.engine.world.World;
 import com.game.engine.world.entities.Entity;
 
@@ -20,7 +18,7 @@ public class TestDisplay extends IDisplay {
 	//private ArrayList<Entity> e = new ArrayList<Entity>();
 	public CreativeFirstPerson camera;
 	public World world;
-	public VAO vao;
+	public Model vao;
 	public Texture texture;
 	
 	@Override
@@ -28,23 +26,20 @@ public class TestDisplay extends IDisplay {
 		this.camera = new CreativeFirstPerson();
 		this.world = new World(camera);
 		
-		this.vao = VAOLoader.loadToVAO(OBJLoader.loadOBJ("depression"));
+		this.vao = GameRegistry.getModel("resources/models/depression.obj");
 		this.texture = GameRegistry.getTexture("resources/textures/512.png");
-		this.world.addEntityToWorld(new Entity().setModel(VAOLoader.loadToVAO(OBJLoader.loadOBJ("power model"))).setTexture(texture).setPosition(0, -10.0f, 0));
+		this.world.addEntityToWorld(new Entity().setModel(GameRegistry.getModel("resources/models/power model.obj")).setTexture(texture).setPosition(0, -10.0f, 0));
 		this.world.addEntityToWorld(new Entity().setModel(vao).setTexture(texture).setPosition(25, 0, 0));
 		this.world.addEntityToWorld(new Entity().setModel(vao).setTexture(texture).setPosition(-25, 0, 0));
 		this.world.addEntityToWorld(new Entity().setModel(vao).setTexture(texture).setPosition(0, 0, 25));
 		this.world.addEntityToWorld(new Entity().setModel(vao).setTexture(texture).setPosition(0, 0, -25));
-		this.world.addEntityToWorld(new Entity().setModel(VAOLoader.loadToVAO(OBJLoader.loadOBJ("hellolosers"))).setTexture(GameRegistry.getTexture("resources/textures/yes.png")).setPosition(5, 5, 5));
+		this.world.addEntityToWorld(new Entity().setModel(GameRegistry.getModel("resources/models/hellolosers.obj")).setTexture(GameRegistry.getTexture("resources/textures/yes.png")).setPosition(5, 5, 5));
 		// add entity
 		this.world.addEntityToWorld(
 				new Entity()
 					// set the model
 					.setModel(
-							// load the model data to the GPU
-							VAOLoader.loadToVAO(
-									// load model data from the disk
-									OBJLoader.loadOBJ("lll3")))
+							GameRegistry.getModel("resources/models/lll3.obj"))
 					// set the texture
 					.setTexture(
 							// get the texture from the preloaded texture assets 

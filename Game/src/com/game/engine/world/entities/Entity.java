@@ -14,7 +14,7 @@ import com.bulletphysics.dynamics.RigidBodyConstructionInfo;
 import com.bulletphysics.linearmath.DefaultMotionState;
 import com.bulletphysics.linearmath.Transform;
 import com.game.engine.datatypes.ogl.Texture;
-import com.game.engine.datatypes.ogl.obj.VAO;
+import com.game.engine.datatypes.ogl.assimp.Model;
 import com.game.engine.world.World;
 import com.game.engine.world.entities.components.Component;
 
@@ -27,8 +27,7 @@ public class Entity {
 	
 	//private float x,y,z;
 	private float sx=1,sy=1,sz=1;
-	private VAO model;
-	private Texture texture;
+	private Model model;
 	
 	// physics stuff
 	private RigidBody rigidbody;
@@ -239,23 +238,24 @@ public class Entity {
 		return this;
 	}
 
-	public VAO getModel() {
+	public Model getModel() {
 		return model;
 	}
-	public Entity setModel(VAO model) {
+	public Entity setModel(Model model) {
 		synchronized (model) {
 			this.model = model;
 			return this;
 		}
 	}
 	public Texture getTexture() {
-		synchronized (texture) {
-			return texture;
-		}
+		return model.getMeshes()[0].getMaterial().getDiffuseTexture();
 	}
 	public Entity setTexture(Texture texture) {
-		synchronized (texture) {
-			this.texture = texture;
+		synchronized (model) {
+			for (int i = 0; i < model.getMeshes().length; i++) {
+				model.getMeshes()[i].getMaterial().setDiffuseTexture(texture);
+				//model.getMeshes()[i].getMaterial().setDiffuseTexturePath(texture.get);
+			}
 			return this;
 		}
 	}

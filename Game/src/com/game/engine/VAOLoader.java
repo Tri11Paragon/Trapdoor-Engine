@@ -12,6 +12,8 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL33;
 
 import com.game.engine.datatypes.ogl.obj.VAO;
+import com.game.engine.datatypes.ogl.assimp.Mesh;
+import com.game.engine.datatypes.ogl.assimp.Model;
 import com.game.engine.datatypes.ogl.obj.ModelData;
 import com.game.engine.tools.Logger;
 
@@ -128,6 +130,32 @@ public class VAOLoader {
 		unbindVAO();
 		// return the model
 		return new VAO(vaoID, vbos, indices.length);
+	}
+	
+	public static void loadToVAO(Model model) {
+		Mesh[] meshes = model.getMeshes();
+		for (int i = 0; i < meshes.length; i++) {
+			Mesh mesh = meshes[i];
+			// create the VAO
+			int vaoID = createVAO();
+			// get the indices
+			int[] indices = mesh.getIndices();
+			// bind the indices buffer
+			bindIndicesBuffer(indices);
+			/**
+			 * I should note its not actually storing the data itself into the VAO, but a pointer to the VBO
+			 * you still need to enable the VBO when rendering.
+			 */
+			// store data into the vao
+			int[] vbos = new int[3];
+			vbos[0] = storeDataInAttributeList(0,3,mesh.getVertices());
+			vbos[1] = storeDataInAttributeList(1,2,mesh.getTextures());
+			vbos[2] = storeDataInAttributeList(2,3,mesh.getNormals());
+			// unbind the VAO
+			unbindVAO();
+			// return the model
+			mesh.assignVAO(new VAO(vaoID, vbos, indices.length));
+		}
 	}
 
 	/**

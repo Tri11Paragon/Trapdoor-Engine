@@ -10,6 +10,8 @@ import org.lwjgl.opengl.GL30;
 
 import com.game.engine.ProjectionMatrix;
 import com.game.engine.camera.ICamera;
+import com.game.engine.datatypes.ogl.assimp.Mesh;
+import com.game.engine.datatypes.ogl.assimp.Model;
 import com.game.engine.datatypes.ogl.obj.VAO;
 import com.game.engine.shaders.EntityShader;
 import com.game.engine.tools.math.Maths;
@@ -41,26 +43,32 @@ public class EntityRenderer {
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);	
 		
 		for (Entity entity : ents) {
-			VAO mod = entity.getModel();
-			if (mod == null)
+			Model model = entity.getModel();
+			if (model == null)
 				continue;
-			GL30.glBindVertexArray(mod.getVaoID());
-			GL20.glEnableVertexAttribArray(0);
-			GL20.glEnableVertexAttribArray(1);
-			GL20.glEnableVertexAttribArray(2);
-			
-			shader.loadTranslationMatrix(Maths.createTransformationMatrix(
-					entity.getX(), entity.getY(), entity.getZ(), 
-					entity.getRotationMatrix(), 
-					entity.getSx(), entity.getSy(), entity.getSz()));
-			
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, entity.getTexture().getID());
-			GL11.glDrawElements(GL11.GL_TRIANGLES, mod.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
-			
-			GL20.glDisableVertexAttribArray(0);
-			GL20.glDisableVertexAttribArray(1);
-			GL20.glDisableVertexAttribArray(2);
-			GL30.glBindVertexArray(0);
+			Mesh[] meshes = model.getMeshes();
+			for (int i = 0; i < meshes.length; i++) {
+				VAO mod = meshes[i].getVAO();
+				if (mod == null)
+					continue;
+				GL30.glBindVertexArray(mod.getVaoID());
+				GL20.glEnableVertexAttribArray(0);
+				GL20.glEnableVertexAttribArray(1);
+				GL20.glEnableVertexAttribArray(2);
+				
+				shader.loadTranslationMatrix(Maths.createTransformationMatrix(
+						entity.getX(), entity.getY(), entity.getZ(), 
+						entity.getRotationMatrix(), 
+						entity.getSx(), entity.getSy(), entity.getSz()));
+				
+				GL11.glBindTexture(GL11.GL_TEXTURE_2D, meshes[i].getMaterial().getDiffuseTexture().getID());
+				GL11.glDrawElements(GL11.GL_TRIANGLES, mod.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+				
+				GL20.glDisableVertexAttribArray(0);
+				GL20.glDisableVertexAttribArray(1);
+				GL20.glDisableVertexAttribArray(2);
+				GL30.glBindVertexArray(0);
+			}
 		}
 		shader.stop();
 	}

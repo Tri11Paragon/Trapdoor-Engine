@@ -1,8 +1,7 @@
 package com.game.engine.datatypes.ogl.assimp;
 
-import org.joml.Vector4f;
-
 import com.game.engine.datatypes.ogl.Texture;
+import com.game.engine.threading.GameRegistry;
 
 /**
  * @author brett
@@ -11,61 +10,52 @@ import com.game.engine.datatypes.ogl.Texture;
  */
 public class Material {
 	
-	public static final Vector4f DEFAULT_AMBIENT = new Vector4f();
-	public static final Vector4f DEFAULT_DIFFUSE = new Vector4f();
-	public static final Vector4f DEFAULT_SPECULAR = new Vector4f();
+	private String diffuseTexturePath;
+	private String normalTexturePath;
 	
 	private Texture diffuseTexture;
 	private Texture normalTexture;
-	private Texture bumpTexture;
-	private Texture specularTexture;
-	private Texture ambientTexture;
-	private Texture lightmapTexture;
-	private Texture shinnyTexture;
-	private Vector4f ambient;
-	private Vector4f diffuse;
-	private Vector4f specular;
 	
-	public Material(Texture t, Vector4f ambient, Vector4f diffuse, Vector4f specular) {
-		super();
-		this.diffuseTexture = t;
-		this.ambient = ambient;
-		this.diffuse = diffuse;
-		this.specular = specular;
+	public Material(String diffuseTexture, String normalMapTexture) {
+		this.diffuseTexturePath = diffuseTexture;
+		this.normalTexturePath = normalMapTexture;
+	}
+	
+	public void loadTexturesFromGameRegistry() {
+		this.diffuseTexture = GameRegistry.getTexture(diffuseTexturePath);
+		this.normalTexture = GameRegistry.getTexture(normalTexturePath);
 	}
 
-	public Texture getNormal() {
-		return normalTexture;
+	public String getDiffuseTexturePath() {
+		return diffuseTexturePath;
 	}
 
-	public Material setNormal(Texture normal) {
-		this.normalTexture = normal;
-		return this;
+	public void setDiffuseTexturePath(String diffuseTexturePath) {
+		this.diffuseTexturePath = diffuseTexturePath;
 	}
 
-	public Texture getBump() {
-		return bumpTexture;
+	public String getNormalTexturePath() {
+		return normalTexturePath;
 	}
 
-	public Material setBump(Texture bump) {
-		this.bumpTexture = bump;
-		return this;
+	public void setNormalTexturePath(String normalTexturePath) {
+		this.normalTexturePath = normalTexturePath;
 	}
 
-	public Texture getTexture() {
+	public Texture getDiffuseTexture() {
 		return diffuseTexture;
 	}
 
-	public Vector4f getAmbient() {
-		return ambient;
+	public void setDiffuseTexture(Texture diffuseTexture) {
+		this.diffuseTexture = diffuseTexture;
 	}
 
-	public Vector4f getDiffuse() {
-		return diffuse;
+	public Texture getNormalTexture() {
+		return normalTexture;
 	}
 
-	public Vector4f getSpecular() {
-		return specular;
+	public void setNormalTexture(Texture normalTexture) {
+		this.normalTexture = normalTexture;
 	}
 	
 }

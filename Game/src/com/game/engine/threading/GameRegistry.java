@@ -6,15 +6,20 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.lwjgl.opengl.GL11;
 
 import com.game.Main;
 import com.game.engine.TextureLoader;
+import com.game.engine.VAOLoader;
 import com.game.engine.datatypes.ogl.Texture;
 import com.game.engine.datatypes.ogl.TextureData;
+import com.game.engine.datatypes.ogl.assimp.Material;
+import com.game.engine.datatypes.ogl.assimp.Model;
 import com.game.engine.display.LoadingScreenDisplay;
 import com.game.engine.tools.Logger;
+import com.game.engine.tools.models.ModelLoader;
 
 /**
  * @author brett
@@ -25,17 +30,33 @@ import com.game.engine.tools.Logger;
  */
 public class GameRegistry {
 
+	public static final String DEFAULT_EMPTY_NORMAL_MAP = "resources/textures/error/default_normal.png";
 	private static Texture errorTexture;
+	private static Texture defaultNormalTexture;
+	private static Material errorMaterial;
+	private static Model errorModel;
 	
-	private static HashMap<String, String> allowedFormats = new HashMap<String, String>();
+	private static final HashMap<String, String> allowedFormats = new HashMap<String, String>();
 	
-	private static Map<String, TextureData> textureDatas = Collections.synchronizedMap(new HashMap<String, TextureData>());
+	/*
+	 * Data(s) and Lock(s)
+	 */
+	private static final Map<String, TextureData> textureDatas = Collections.synchronizedMap(new HashMap<String, TextureData>());
+	private static final Map<String, Integer> textureLocks = Collections.synchronizedMap(new HashMap<String, Integer>());
+	private static final Map<String, Integer> meshLocks = Collections.synchronizedMap(new HashMap<String, Integer>());
 	
-	private static Map<String, Texture> textures = Collections.synchronizedMap(new HashMap<String, Texture>());
-	private static Map<String, Texture> texturesMaterials = Collections.synchronizedMap(new HashMap<String, Texture>());
+	/*
+	 * important entity related storage
+	 */
+	private static final Map<String, Texture> textures = Collections.synchronizedMap(new HashMap<String, Texture>());
+	private static final Map<String, Material> materials = Collections.synchronizedMap(new HashMap<String, Material>());
+	private static final Map<String, Model> meshes = Collections.synchronizedMap(new HashMap<String, Model>());
 	
-	private static Map<String, Integer> textureAtlas = Collections.synchronizedMap(new HashMap<String, Integer>());
-	private static Map<String, Integer> textureInteralAtlas = Collections.synchronizedMap(new HashMap<String, Integer>());
+	/*
+	 * texture atlases
+	 */
+	private static final Map<String, Integer> textureAtlas = Collections.synchronizedMap(new HashMap<String, Integer>());
+	private static final Map<String, Integer> textureInteralAtlas = Collections.synchronizedMap(new HashMap<String, Integer>());
 	
 	public static void init() {
 		// TODO: this
@@ -43,9 +64,83 @@ public class GameRegistry {
 		//		new TextureData(ErrorImage.getBuffer(), ErrorImage.width, ErrorImage.height, 3, "resources/textures/error/error3.png"), 
 		//		TextureLoader.TEXTURE_LOD, GL11.GL_LINEAR, TextureLoader.MINMAG_MIPMAP_FILTER);
 		errorTexture = TextureLoader.loadTexture("error/error3.png");
+		defaultNormalTexture = TextureLoader.loadTexture("error/default_normal.png");
+		errorMaterial = new Material("resources/textures/error/error3.png", DEFAULT_EMPTY_NORMAL_MAP);
+		
+		errorMaterial.setDiffuseTexture(errorTexture);
+		errorMaterial.setNormalTexture(defaultNormalTexture);
+		
+		errorModel = ModelLoader.load("resources/models/error.obj", errorMaterial);
+		
+		GameRegistry.materials.put("resources/textures/error/error3.png", errorMaterial);
+		GameRegistry.materials.put("error/error3.png", errorMaterial);
 	}
 	
-	public static void registerMaterialTexture(String file) {
+	public static void onLoadingComplete() {
+		for (Entry<String, Material> m : materials.entrySet()) {
+			m.getValue().loadTexturesFromGameRegistry();
+		}
+	}
+	
+	public static Material registerMaterial(String diffusePath, String normalPath) {
+		Material m = materials.get(diffusePath);
+		if (m == null) {
+			m = new Material(diffusePath, normalPath);
+			materials.put(diffusePath, m);
+		}
+		return m;
+	}
+	
+	@Deprecated
+	private static Material createEmptyMaterial(String diffusePath, String normalPath) {
+		Material m = new Material(diffusePath, normalPath);
+		materials.put(diffusePath, m);
+		return m;
+	}
+	
+	public static void registerModel(String file) {
+		registerModel(file, "resources/textures");
+	}
+	
+	public static void registerModel(String file, String texturesDir) {
+		LoadingScreenDisplay.max();
+		
+		Threading.execute(new DualExecution(() -> {
+			String fd = file;
+			// we already loaded the file
+			if (GameRegistry.meshes.get(fd) != null || GameRegistry.meshLocks.get(fd) != null)
+				return;
+			GameRegistry.meshLocks.put(fd, 1);
+			
+			String textureLocation = texturesDir;
+			
+			char[] tc = textureLocation.toCharArray();
+			if (tc[tc.length-1] == '/')
+				textureLocation = textureLocation.substring(0, tc.length-1);
+			
+			String rt = "Loading model: " + fd;
+			LoadingScreenDisplay.info.getTextState().setText(rt);
+			if (Main.verbose)
+				Logger.writeln(rt);
+			
+			GameRegistry.meshes.put(fd, ModelLoader.load(fd, createEmptyMaterial(DEFAULT_EMPTY_NORMAL_MAP, DEFAULT_EMPTY_NORMAL_MAP)));
+		}, () -> {
+			String fd = file;
+			String rt = "Loaded model: " + fd;
+			LoadingScreenDisplay.info.getTextState().setText(rt);
+			if (Main.verbose)
+				Logger.writeln(rt);
+			
+			Model m = GameRegistry.meshes.get(fd);
+			VAOLoader.loadToVAO(m);
+			
+			LoadingScreenDisplay.progress();
+		}));
+	}
+	
+	public static void registerTexture(String file) {
+		if (!file.contains("."))
+			return;
 		LoadingScreenDisplay.max();
 		// I wonder if this is bad?
 		// like accessing memory from threads which is local
@@ -53,29 +148,33 @@ public class GameRegistry {
 		Threading.execute(new DualExecution(() -> {
 			String fd = file;
 			// we already loaded the file
-			if (GameRegistry.textureDatas.get(fd) != null)
+			if (GameRegistry.textureDatas.get(fd) != null || GameRegistry.textureLocks.get(fd) != null)
 				return;
+			GameRegistry.textureLocks.put(fd, 1);
+			
 			String rt = "Loading texture: " + fd;
 			LoadingScreenDisplay.info.getTextState().setText(rt);
 			if (Main.verbose)
-				Logger.writeln("Loading texture: " + fd);
+				Logger.writeln(rt);
 			GameRegistry.textureDatas.put(fd, TextureLoader.decodeTextureToSize(fd, false, true, 0, 0));
 		}, () -> {
 			String fd = file;
+			
 			String rt = "Loaded texture: " + fd;
 			LoadingScreenDisplay.info.getTextState().setText(rt);
 			if (Main.verbose)
-				Logger.writeln("Loaded texture: " + fd);
-			Texture t = TextureLoader.loadTextureI(fd, GameRegistry.textureDatas.get(fd), TextureLoader.TEXTURE_LOD, GL11.GL_LINEAR, TextureLoader.MINMAG_MIPMAP_FILTER);
+				Logger.writeln(rt);
+			
+			Texture t = TextureLoader.loadTextureI(fd,GameRegistry.textureDatas.get(fd), TextureLoader.TEXTURE_LOD, GL11.GL_LINEAR, TextureLoader.MINMAG_MIPMAP_FILTER);
 			GameRegistry.textures.put(fd, t);
-			GameRegistry.texturesMaterials.put(fd, t);
-			LoadingScreenDisplay.progress();;
+			LoadingScreenDisplay.progress();
 		}));
 	}
 	
 	/**
 	 * loads all the textures in a folder and its subfolders
 	 */
+	@Deprecated
 	public static void registerMaterialTextureFolder(String fold) {
 		// fucking cancer way of doing this
 		if (allowedFormats.size() == 0) {
@@ -104,7 +203,7 @@ public class GameRegistry {
 				File f = textures.get(i);
 				String path = f.getAbsolutePath();
 				String[] haha = path.split("resources\\/textures\\/");
-				GameRegistry.registerMaterialTexture("resources/textures/" + haha[1]);
+				GameRegistry.registerTexture("resources/textures/" + haha[1]);
 			}
 		});
 	}
@@ -114,6 +213,7 @@ public class GameRegistry {
 	 * It should be noted that every texture in this folder and its subfolders will be loaded into a single array
 	 * @param fold the folder and its subfolders to load
 	 */
+	@Deprecated
 	public static void reigsterMaterialFolderAsArrays(String fold) {
 		if (allowedFormats.size() == 0) {
 			allowedFormats.put("png", "");
@@ -179,11 +279,29 @@ public class GameRegistry {
 	}
 	
 	/**
-	 * @param name path to the texture
+	 * @param file path to the texture
 	 * @return a singular texture which was loaded into memory
 	 */
-	public static Texture getTexture(String name) {
-		Texture t = textures.get(name);
+	public static Texture getTexture(String file) {
+		Texture t = textures.get(file);
+		return t == null ? errorTexture : t;
+	}
+	
+	public static Model getModel(String file) {
+		Model m = meshes.get(file);
+		return m == null ? errorModel : m;
+	}
+	
+	/**
+	 * Tries to the the texture, if none is found it will be waited for.
+	 * @param name path to the texture
+	 * @return a singular texture which has been loaded into gpu memory.
+	 */
+	public static Texture getTextureBlocking(String name) {
+		Texture t = null;
+		while ((t = textures.get(name)) == null) {
+			try {Thread.sleep(1);} catch (InterruptedException e) {e.printStackTrace();}
+		}
 		return t == null ? errorTexture : t;
 	}
 	
@@ -211,6 +329,19 @@ public class GameRegistry {
 	 */
 	public static int getTexturePosInArray(String path) {
 		return textureInteralAtlas.get(path);
+	}
+	
+	/**
+	 * @param diffuse diffuse texture path for this material
+	 * @return the material associated with the specified diffuse texture
+	 */
+	public static Material getMaterial(String diffuse) {
+		Material m = materials.get(diffuse);
+		return m == null ? errorMaterial : m;
+	}
+	
+	public static Material getErrorMaterial() {
+		return errorMaterial;
 	}
 	
 	/**

@@ -54,8 +54,13 @@ public class LoadingScreenDisplay extends IDisplay {
 		test = new TestDisplay();
 		time = System.currentTimeMillis();
 		
-		GameRegistry.registerMaterialTexture("resources/textures/512.png");
-		GameRegistry.registerMaterialTexture("resources/textures/yes.png");
+		GameRegistry.registerTexture("resources/textures/512.png");
+		GameRegistry.registerTexture("resources/textures/yes.png");
+		GameRegistry.registerTexture(GameRegistry.DEFAULT_EMPTY_NORMAL_MAP);
+		GameRegistry.registerModel("resources/models/depression.obj");
+		GameRegistry.registerModel("resources/models/lll3.obj");
+		GameRegistry.registerModel("resources/models/power model.obj");
+		GameRegistry.registerModel("resources/models/hellolosers.obj");
 		//GameRegistry.registerMaterialTextureFolder("resources/textures/materials/");
 		//GameRegistry.reigsterMaterialFolderAsArrays("resources/textures/materials/");
 	}
@@ -85,6 +90,7 @@ public class LoadingScreenDisplay extends IDisplay {
 	public void onLeave() {
 		layer.setEnabled(false);
 		layer.getStyle().setDisplay(layer.isEnabled() == true ? DisplayType.MANUAL : DisplayType.NONE);
+		GameRegistry.onLoadingComplete();
 	}
 
 	@Override
