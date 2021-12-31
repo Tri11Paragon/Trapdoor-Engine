@@ -5,6 +5,7 @@ import com.bulletphysics.collision.shapes.SphereShape;
 import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.linearmath.DefaultMotionState;
 import com.bulletphysics.linearmath.Transform;
+import com.game.engine.tools.input.Keyboard;
 import com.game.engine.world.entities.Entity;
 
 public class EntityPoop extends Entity{
@@ -18,7 +19,8 @@ public class EntityPoop extends Entity{
 	@Override
 	public void update() {
 		super.update(); // need this for overriding functions
-		this.setLinearVelocity(5, 0, 5);
+		if (Keyboard.isKeyDown(Keyboard.Q))
+			this.applyCentralForce(1, 0, 0);
 	}
 	
 }

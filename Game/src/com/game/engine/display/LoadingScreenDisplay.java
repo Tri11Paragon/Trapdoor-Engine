@@ -3,6 +3,7 @@ package com.game.engine.display;
 import com.game.engine.renderer.ui.UIMaster;
 import com.game.engine.threading.GameRegistry;
 import com.game.engine.threading.Threading;
+import com.game.game.displays.MainMenuDisplay;
 import com.spinyowl.legui.component.Label;
 import com.spinyowl.legui.component.Layer;
 import com.spinyowl.legui.component.ProgressBar;
@@ -35,7 +36,7 @@ public class LoadingScreenDisplay extends IDisplay {
 		MAX++;
 	}
 	
-	public TestDisplay test;
+	public IDisplay singlePlayer;
 	
 	private long time;
 	
@@ -51,7 +52,7 @@ public class LoadingScreenDisplay extends IDisplay {
 	public void onCreate() {		
 		createUI();
 		
-		test = new TestDisplay();
+		singlePlayer = new MainMenuDisplay();
 		time = System.currentTimeMillis();
 		
 		GameRegistry.registerTexture("resources/textures/512.png");
@@ -85,8 +86,8 @@ public class LoadingScreenDisplay extends IDisplay {
 		
 		// make sure we have loaded all assets and the splash screen has existed for some time.
 		if ((Threading.isEmpty() && System.currentTimeMillis() - time > TIME) && bar.getValue() >= 98) {
-			DisplayManager.createDisplay(test);
-			DisplayManager.changeDisplay(test);
+			DisplayManager.createDisplay(singlePlayer);
+			DisplayManager.changeDisplay(singlePlayer);
 		}
 		if (System.currentTimeMillis() - time > (TIME+50) * 5)
 			Threading.d();
