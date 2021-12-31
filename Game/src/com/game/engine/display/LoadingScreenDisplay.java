@@ -61,8 +61,8 @@ public class LoadingScreenDisplay extends IDisplay {
 		GameRegistry.registerModel("resources/models/lll3.obj");
 		GameRegistry.registerModel("resources/models/power model.obj");
 		GameRegistry.registerModel("resources/models/hellolosers.obj");
-		//GameRegistry.registerMaterialTextureFolder("resources/textures/materials/");
-		//GameRegistry.reigsterMaterialFolderAsArrays("resources/textures/materials/");
+
+		
 	}
 
 	@Override

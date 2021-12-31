@@ -68,7 +68,7 @@ import com.spinyowl.legui.system.context.CallbackKeeper;
 public class DisplayManager {
 
 	public static final String gameVersion = "0.0A";
-	public static final String engineVersion = "0.1A";
+	public static final String engineVersion = "0.2A";
 	public static final String title = "Total Femboy Donamania - V" + gameVersion + " // Trapdoor V" + engineVersion;
 	
 	// temp color
