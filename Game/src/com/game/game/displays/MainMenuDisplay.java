@@ -1,9 +1,8 @@
 package com.game.game.displays;
 
-import org.joml.Vector4f;
-
 import com.game.engine.display.DisplayManager;
 import com.game.engine.display.IDisplay;
+import com.game.engine.display.TestDisplay;
 import com.game.engine.renderer.ui.UIMaster;
 import com.spinyowl.legui.component.Button;
 import com.spinyowl.legui.component.Label;
@@ -17,8 +16,6 @@ import com.spinyowl.legui.event.MouseClickEvent;
 import com.spinyowl.legui.listener.CursorEnterEventListener;
 import com.spinyowl.legui.listener.MouseClickEventListener;
 import com.spinyowl.legui.style.Style.DisplayType;
-import com.spinyowl.legui.style.border.SimpleLineBorder;
-import com.spinyowl.legui.style.color.ColorConstants;
 import com.spinyowl.legui.style.shadow.Shadow;
 
 public class MainMenuDisplay extends IDisplay {
@@ -44,6 +41,7 @@ public class MainMenuDisplay extends IDisplay {
 		layer.add(title);
 
 		IDisplay display = new SinglePlayerDisplay();
+		IDisplay display2 = new TestDisplay();
 
 		Button sp = new Button();
 		sp.getStyle().setShadow(new Shadow());
@@ -63,6 +61,19 @@ public class MainMenuDisplay extends IDisplay {
 		sp.setPosition(69, 420);
 		layer.add(sp);
 		
+		Button tester = new Button();
+		tester.getStyle().setShadow(new Shadow());
+		tester.getTextState().setText("Engine Test");
+		tester.getListenerMap().addListener(MouseClickEvent.class, (MouseClickEventListener) event -> {
+			if (event.getAction() != MouseClickEvent.MouseClickAction.RELEASE)
+				return;
+			DisplayManager.createDisplay(display2);
+			DisplayManager.changeDisplay(display2);
+		});
+		tester.setSize(100, 100);
+		tester.setPosition(420, 420);
+		layer.add(tester);
+		
 		Widget shadowWidget = new Widget(20, 310, 200, 120);
 		Slider blurSlider = new Slider(110, 5 + 20 * 2, 80, 10);
 		shadowWidget.getContainer().add(blurSlider);
@@ -75,7 +86,7 @@ public class MainMenuDisplay extends IDisplay {
 
 	@Override
 	public void onSwitch() {
-
+		
 		layer.setEnabled(true);
 		layer.getStyle().setDisplay(layer.isEnabled() == true ? DisplayType.MANUAL : DisplayType.NONE);
 

@@ -55,20 +55,13 @@ public class LoadingScreenDisplay extends IDisplay {
 		singlePlayer = new MainMenuDisplay();
 		time = System.currentTimeMillis();
 		
-		GameRegistry.registerTexture("resources/textures/512.png");
-		GameRegistry.registerTexture("resources/textures/yes.png");
-		GameRegistry.registerTexture("resources/textures/poop.png");
-		GameRegistry.registerTexture(GameRegistry.DEFAULT_EMPTY_NORMAL_MAP);
+		GameRegistry.registerTexture("resources/textures/character Texture.png");
 		
-		GameRegistry.registerMaterial("resources/textures/512.png", GameRegistry.DEFAULT_EMPTY_NORMAL_MAP);
-		GameRegistry.registerMaterial("resources/textures/poop.png", GameRegistry.DEFAULT_EMPTY_NORMAL_MAP);
-		
-		GameRegistry.registerModel("resources/models/depression.obj");
-		GameRegistry.registerModel("resources/models/lll3.obj");
-		GameRegistry.registerModel("resources/models/power model.obj");
-		GameRegistry.registerModel("resources/models/hellolosers.obj");
+		GameRegistry.registerModel("resources/models/depression.dae");
+		GameRegistry.registerModel("resources/models/model.dae");
+		GameRegistry.registerModel("resources/models/test object.dae");
 
-		GameRegistry.registerModel("resources/models/poop.obj");
+		GameRegistry.registerModel("resources/models/poop.dae");
 		
 	}
 

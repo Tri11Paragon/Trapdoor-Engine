@@ -1,5 +1,8 @@
 package com.game.engine.datatypes.ogl.assimp;
 
+import org.joml.Vector3f;
+import org.joml.Vector4f;
+
 import com.game.engine.datatypes.ogl.Texture;
 import com.game.engine.threading.GameRegistry;
 
@@ -10,15 +13,20 @@ import com.game.engine.threading.GameRegistry;
  */
 public class Material {
 	
+	public static final Vector4f DEFAULT_COLOUR = new Vector4f();
+	
 	private String diffuseTexturePath;
 	private String normalTexturePath;
+	
+	private Vector3f colorInformation;
 	
 	private Texture diffuseTexture;
 	private Texture normalTexture;
 	
-	public Material(String diffuseTexture, String normalMapTexture) {
+	public Material(String diffuseTexture, String normalMapTexture, Vector3f colorInformation) {
 		this.diffuseTexturePath = diffuseTexture;
 		this.normalTexturePath = normalMapTexture;
+		this.colorInformation = colorInformation;
 	}
 	
 	public void loadTexturesFromGameRegistry() {
@@ -30,16 +38,8 @@ public class Material {
 		return diffuseTexturePath;
 	}
 
-	public void setDiffuseTexturePath(String diffuseTexturePath) {
-		this.diffuseTexturePath = diffuseTexturePath;
-	}
-
 	public String getNormalTexturePath() {
 		return normalTexturePath;
-	}
-
-	public void setNormalTexturePath(String normalTexturePath) {
-		this.normalTexturePath = normalTexturePath;
 	}
 
 	public Texture getDiffuseTexture() {
@@ -56,6 +56,10 @@ public class Material {
 
 	public void setNormalTexture(Texture normalTexture) {
 		this.normalTexture = normalTexture;
+	}
+	
+	public Vector3f getColorInformation() {
+		return this.colorInformation;
 	}
 	
 }

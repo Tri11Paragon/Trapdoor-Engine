@@ -6,8 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-
+import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 
 import com.game.Main;
@@ -20,6 +19,7 @@ import com.game.engine.datatypes.ogl.assimp.Model;
 import com.game.engine.display.LoadingScreenDisplay;
 import com.game.engine.tools.Logger;
 import com.game.engine.tools.models.ModelLoader;
+import com.spinyowl.legui.style.font.FontRegistry;
 
 /**
  * @author brett
@@ -50,6 +50,7 @@ public class GameRegistry {
 	 */
 	private static final Map<String, Texture> textures = Collections.synchronizedMap(new HashMap<String, Texture>());
 	private static final Map<String, Material> materials = Collections.synchronizedMap(new HashMap<String, Material>());
+	private static final ArrayList<Material> registeredMaterials = new ArrayList<Material>();
 	private static final Map<String, Model> meshes = Collections.synchronizedMap(new HashMap<String, Model>());
 	
 	/*
@@ -59,35 +60,39 @@ public class GameRegistry {
 	private static final Map<String, Integer> textureInteralAtlas = Collections.synchronizedMap(new HashMap<String, Integer>());
 	
 	public static void init() {
-		// TODO: this
-		//errorTexture = TextureLoader.loadTextureI("resources/textures/error/error3.png", 
-		//		new TextureData(ErrorImage.getBuffer(), ErrorImage.width, ErrorImage.height, 3, "resources/textures/error/error3.png"), 
-		//		TextureLoader.TEXTURE_LOD, GL11.GL_LINEAR, TextureLoader.MINMAG_MIPMAP_FILTER);
 		errorTexture = TextureLoader.loadTexture("error/error3.png");
 		defaultNormalTexture = TextureLoader.loadTexture("error/default_normal.png");
-		errorMaterial = new Material("resources/textures/error/error3.png", DEFAULT_EMPTY_NORMAL_MAP);
+		errorMaterial = new Material("resources/textures/error/error3.png", DEFAULT_EMPTY_NORMAL_MAP, new Vector3f());
 		
 		errorMaterial.setDiffuseTexture(errorTexture);
 		errorMaterial.setNormalTexture(defaultNormalTexture);
 		
-		errorModel = ModelLoader.load("resources/models/error.obj", errorMaterial);
+		errorModel = ModelLoader.load("resources/models/error.dae");
+		VAOLoader.loadToVAO(errorModel);
 		
 		GameRegistry.materials.put("resources/textures/error/error3.png", errorMaterial);
 		GameRegistry.materials.put("error/error3.png", errorMaterial);
 	}
 	
 	public static void onLoadingComplete() {
-		for (Entry<String, Material> m : materials.entrySet()) {
-			m.getValue().loadTexturesFromGameRegistry();
+		for (Material m : registeredMaterials) {
+			m.loadTexturesFromGameRegistry();
 		}
 	}
 	
-	public static Material registerMaterial(String diffusePath, String normalPath) {
+	public static Material registerMaterial(String diffusePath, String normalPath, Vector3f colorInformation) {
 		Material m = materials.get(diffusePath);
 		if (m == null) {
-			m = new Material(diffusePath, normalPath);
+			m = new Material(diffusePath, normalPath, colorInformation);
 			materials.put(diffusePath, m);
 		}
+		registeredMaterials.add(m);
+		return m;
+	}
+	
+	public static Material registerMaterial2(String diffusePath, String normalPath, Vector3f colorInformation) {
+		Material m = new Material(diffusePath, normalPath, colorInformation);
+		registeredMaterials.add(m);
 		return m;
 	}
 	
@@ -101,8 +106,10 @@ public class GameRegistry {
 		Threading.execute(new DualExecution(() -> {
 			String fd = file;
 			// we already loaded the file
-			if (GameRegistry.meshes.get(fd) != null || GameRegistry.meshLocks.get(fd) != null)
+			if (GameRegistry.meshes.get(fd) != null || GameRegistry.meshLocks.get(fd) != null) {
+				LoadingScreenDisplay.progress();
 				return;
+			}
 			GameRegistry.meshLocks.put(fd, 1);
 			
 			String textureLocation = texturesDir;
@@ -116,7 +123,7 @@ public class GameRegistry {
 			if (Main.verbose)
 				Logger.writeln(rt);
 			
-			GameRegistry.meshes.put(fd, ModelLoader.load(fd));
+			GameRegistry.meshes.put(fd, ModelLoader.load(fd, "resources/textures/"));
 		}, () -> {
 			String fd = file;
 			String rt = "Loaded model: " + fd;
@@ -141,8 +148,10 @@ public class GameRegistry {
 		Threading.execute(new DualExecution(() -> {
 			String fd = file;
 			// we already loaded the file
-			if (GameRegistry.textureDatas.get(fd) != null || GameRegistry.textureLocks.get(fd) != null)
+			if (GameRegistry.textureDatas.get(fd) != null || GameRegistry.textureLocks.get(fd) != null) {
+				LoadingScreenDisplay.progress();
 				return;
+			}
 			GameRegistry.textureLocks.put(fd, 1);
 			
 			String rt = "Loading texture: " + fd;
@@ -335,6 +344,10 @@ public class GameRegistry {
 	
 	public static Material getErrorMaterial() {
 		return errorMaterial;
+	}
+	
+	public static void registerFont(String name, String path) {
+		FontRegistry.registerFont(name, path);
 	}
 	
 	/**

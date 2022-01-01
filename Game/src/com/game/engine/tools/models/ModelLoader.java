@@ -3,7 +3,10 @@ package com.game.engine.tools.models;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 import org.lwjgl.PointerBuffer;
+import org.lwjgl.assimp.AIColor4D;
 import org.lwjgl.assimp.AIFace;
 import org.lwjgl.assimp.AIMaterial;
 import org.lwjgl.assimp.AIMesh;
@@ -25,16 +28,19 @@ import com.game.engine.threading.GameRegistry;
  */
 public class ModelLoader {
 	
+	// TODO: Maybe use the transform and have individual transforms per submesh?
+	public static final int DEFAULT_FLAGS = Assimp.aiProcess_JoinIdenticalVertices | Assimp.aiProcess_Triangulate | Assimp.aiProcess_FixInfacingNormals | Assimp.aiProcess_PreTransformVertices;
+	
 	public static Model load(String path, String texturesDir) {
-		return load(path, texturesDir, Assimp.aiProcess_JoinIdenticalVertices | Assimp.aiProcess_Triangulate | Assimp.aiProcess_FixInfacingNormals);
+		return load(path, texturesDir, DEFAULT_FLAGS);
 	}
 	
 	public static Model load(String path) {
-		return load(path, Assimp.aiProcess_JoinIdenticalVertices | Assimp.aiProcess_Triangulate | Assimp.aiProcess_FixInfacingNormals);
+		return load(path, DEFAULT_FLAGS);
 	}
 	
 	public static Model load(String path, Material material) {
-		return load(path, material, Assimp.aiProcess_JoinIdenticalVertices | Assimp.aiProcess_Triangulate | Assimp.aiProcess_FixInfacingNormals);
+		return load(path, material, DEFAULT_FLAGS);
 	}
 	
 	/**
@@ -69,6 +75,12 @@ public class ModelLoader {
 		if (aiScene == null)
 			throw new ModelNotFoundException(path);
 		
+		int numMaterials = aiScene.mNumMaterials();
+		PointerBuffer aiMaterials = aiScene.mMaterials();
+		Material[] materials = new Material[numMaterials];
+		for (int i = 0; i < numMaterials; i++)
+			materials[i] = processMaterial(AIMaterial.create(aiMaterials.get(i)), "resources/textures");
+		
 		int numMeshes = aiScene.mNumMeshes();
 		PointerBuffer aiMeshes = aiScene.mMeshes();
 		Mesh[] meshes = new Mesh[numMeshes];
@@ -96,22 +108,62 @@ public class ModelLoader {
 	}
 	
 	private static Material processMaterial(AIMaterial material, String texturesDir) {
-		// TODO: what happens when this is null?
+		if (texturesDir.endsWith("/"))
+			texturesDir = texturesDir.substring(0, texturesDir.length()-1);
+		
+		AIColor4D colour = AIColor4D.create();
+		
 		AIString path = AIString.calloc();
 		Assimp.aiGetMaterialTexture(material, Assimp.aiTextureType_DIFFUSE, 0, path, (IntBuffer) null, null, null, null, null, null);
-		String texturePath = texturesDir + "/" + path.dataString();
-		GameRegistry.registerTexture(texturePath);
+		String materialTexturePath = path.dataString();
 		
-		AIString normalPath = AIString.calloc();
-		Assimp.aiGetMaterialTexture(material, Assimp.aiTextureType_NORMALS, 0, normalPath, (IntBuffer) null, null, null, null, null, null);
-		String normalTexturePath = texturesDir + "/" + normalPath.dataString();
-		
-		if (normalTexturePath != null && normalTexturePath.length() > 0) {
-			GameRegistry.registerTexture(normalTexturePath);
-		} else
-			normalTexturePath = GameRegistry.DEFAULT_EMPTY_NORMAL_MAP;
-		
-		return GameRegistry.registerMaterial(texturePath, normalTexturePath);
+		if (materialTexturePath != null && materialTexturePath.length() > 0) {
+			if (materialTexturePath.contains("resources/textures")) {
+				String[] tmp = materialTexturePath.split("resources/textures");
+				materialTexturePath = tmp[1];
+			}
+			
+			String texturePath = texturesDir + "/" + materialTexturePath;
+			GameRegistry.registerTexture(texturePath);
+			
+			Vector4f ambient = Material.DEFAULT_COLOUR;
+		    int result = Assimp.aiGetMaterialColor(material, Assimp.AI_MATKEY_COLOR_AMBIENT, Assimp.aiTextureType_NONE, 0, colour);
+		    if (result == 0) {
+		        ambient = new Vector4f(colour.r(), colour.g(), colour.b(), colour.a());
+		    }
+
+		    Vector4f diffuse = Material.DEFAULT_COLOUR;
+		    result = Assimp.aiGetMaterialColor(material, Assimp.AI_MATKEY_COLOR_DIFFUSE, Assimp.aiTextureType_NONE, 0, colour);
+		    if (result == 0) {
+		        diffuse = new Vector4f(colour.r(), colour.g(), colour.b(), colour.a());
+		    }
+
+		    Vector4f specular = Material.DEFAULT_COLOUR;
+		    result = Assimp.aiGetMaterialColor(material, Assimp.AI_MATKEY_COLOR_SPECULAR, Assimp.aiTextureType_NONE, 0, colour);
+		    if (result == 0) {
+		        specular = new Vector4f(colour.r(), colour.g(), colour.b(), colour.a());
+		    }
+
+			
+			AIString normalPath = AIString.calloc();
+			Assimp.aiGetMaterialTexture(material, Assimp.aiTextureType_NORMALS, 0, normalPath, (IntBuffer) null, null, null, null, null, null);
+			String normalTexture = normalPath.dataString();
+			String normalTexturePath = texturesDir + "/" + normalTexture;
+			
+			if (normalTexture != null && normalTexture.length() > 0) {
+				GameRegistry.registerTexture(normalTexturePath);
+				System.out.println(normalTexture);
+			} else
+				normalTexturePath = GameRegistry.DEFAULT_EMPTY_NORMAL_MAP;
+			
+			return GameRegistry.registerMaterial2(texturePath, normalTexturePath, new Vector3f(average(diffuse), average(specular), average(ambient)));
+		}
+		// can't load texture, meaning we need to load error material
+		return GameRegistry.getErrorMaterial();
+	}
+	
+	private static float average(Vector4f vec) {
+		return (vec.x + vec.y + vec.z + vec.w) / 4f;
 	}
 	
 	private static Mesh processMesh(AIMesh mesh, Material[] materials) {
@@ -133,8 +185,6 @@ public class ModelLoader {
 		    else {
 		    	if (materials.length == 1)
 		    		m = materials[0];
-		    	else
-		    		m = GameRegistry.getErrorMaterial();
 		    }
 	    }
 	    

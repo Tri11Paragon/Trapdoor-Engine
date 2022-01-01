@@ -27,9 +27,9 @@ public class TestDisplay extends IDisplay {
 		this.camera = new CreativeFirstPerson();
 		this.world = new World(camera);
 		
-		this.cubeModel = GameRegistry.getModel("resources/models/depression.obj").setMaterial(GameRegistry.getMaterial("resources/textures/512.png"));
+		this.cubeModel = GameRegistry.getModel("resources/models/depression.dae");
 		this.texture = GameRegistry.getTexture("resources/textures/512.png");
-		this.world.addEntityToWorld(new Entity().setModel(GameRegistry.getModel("resources/models/power model.obj")).setPosition(0, -10.0f, 0));
+		this.world.addEntityToWorld(new Entity().setModel(GameRegistry.getModel("resources/models/test object.dae")).setPosition(0, -10.0f, 0));
 		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(25, 0, 0));
 		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(-25, 0, 0));
 		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(0, 0, 25));
@@ -48,7 +48,7 @@ public class TestDisplay extends IDisplay {
 				new EntityPoop()
 					// set the model
 					.setModel(
-							GameRegistry.getModel("resources/models/poop.obj").setMaterial("resources/textures/poop.png"))
+							GameRegistry.getModel("resources/models/poop.dae"))
 					// change position
 					.setPosition(-15, -4, -15).setYaw((float) (Math.PI/2)).setScale(0.1f));
 	}

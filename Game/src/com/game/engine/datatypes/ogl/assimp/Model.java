@@ -22,6 +22,7 @@ public class Model {
 	 * @param m material to set to
 	 */
 	public Model setMaterial(Material m) {
+		System.err.println("IT'S UNLIKELY THAT YOU NEED THE SET MATERIAL FUNCTION.\n\t PLEASE CONSIDER WHAT YOU ARE DOING!");
 		for (int i = 0; i < meshes.length; i++)
 			meshes[i].setMaterial(m);
 		return this;
@@ -33,6 +34,7 @@ public class Model {
 	 * @return
 	 */
 	public Model setMaterial(String m) {
+		System.err.println("IT'S UNLIKELY THAT YOU NEED THE SET MATERIAL FUNCTION.\n\t PLEASE CONSIDER WHAT YOU ARE DOING!");
 		for (int i = 0; i < meshes.length; i++)
 			meshes[i].setMaterial(GameRegistry.getMaterial(m));
 		return this;
