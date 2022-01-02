@@ -40,6 +40,7 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.joml.Vector3f;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -72,11 +73,6 @@ public class DisplayManager {
 	public static final String gameName = "Total Femboy Donamania";
 	public static final String engineName = "Trapdoor";
 	public static final String title = gameName + " - V" + gameVersion + " // " + engineName + " V" + engineVersion;
-	
-	// temp color
-	private static final float RED = 0.5444f;
-	private static final float GREEN = 0.62f;
-	private static final float BLUE = 0.69f;
 	
 	// window
 	public static long window;
@@ -118,7 +114,8 @@ public class DisplayManager {
 			try {
 				long start = getCurrentTime();
 				GL11.glEnable(GL11.GL_DEPTH_TEST);
-				GL11.glClearColor(RED, GREEN, BLUE, 1.0f);
+				Vector3f skyColor = currentDisplay.getSkyColor();
+				GL11.glClearColor(skyColor.x, skyColor.y, skyColor.z, 1.0f);
 				GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
 				GL11.glEnable(GL13.GL_BLEND);
 				GL13.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);

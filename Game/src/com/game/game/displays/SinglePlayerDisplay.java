@@ -20,7 +20,7 @@ public class SinglePlayerDisplay extends IDisplay{
 				new EntityPoop()
 					// set the model
 					.setModel(
-							GameRegistry.getModel("resources/models/poop.obj").setMaterial("resources/textures/poop.png"))
+							GameRegistry.getModel("resources/models/poop.dae"))
 					// change position
 					.setPosition(-15, -4, -15).setYaw((float) (Math.PI/2)).setScale(0.1f));
 	}
