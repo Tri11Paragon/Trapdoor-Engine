@@ -22,7 +22,9 @@ public class SinglePlayerDisplay extends IDisplay{
 					.setModel(
 							GameRegistry.getModel("resources/models/poop.dae"))
 					// change position
-					.setPosition(-15, -4, -15).setYaw((float) (Math.PI/2)).setScale(0.1f));
+					.setPosition(0, 0, -10).setYaw((float) (Math.PI/2)).setScale(0.1f));
+		
+		this.setSkyColor(0, 0, 0);
 	}
 
 	@Override

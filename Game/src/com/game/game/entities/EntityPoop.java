@@ -11,7 +11,7 @@ public class EntityPoop extends Entity{
 	
 	public EntityPoop() {
 		super();
-		RigidBody a = new RigidBody(1, new DefaultMotionState(new Transform()), new SphereShape(5));
+		RigidBody a = new RigidBody(10, new DefaultMotionState(new Transform()), new SphereShape(2));
 		this.setRigidbody(a);
 	}
 	
@@ -19,7 +19,7 @@ public class EntityPoop extends Entity{
 	public void update() {
 		super.update(); // need this for overriding functions
 		if (Keyboard.isKeyDown(Keyboard.Q))
-			this.applyCentralForce(1, 0, 0);
+			this.applyCentralForce(100, 0, 0);
 	}
 	
 }
