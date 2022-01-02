@@ -37,7 +37,7 @@ public class ScreenShot implements IKeyState {
 
 		@Override
 		public void onKeyReleased(int keys) {
-			if (Keyboard.isKeyDown(GLFW.GLFW_KEY_F2)) {
+			if (keys == GLFW.GLFW_KEY_F2) {
 				// number of bytes per image
 				// 4 fits nicely inside a int but you really only need 3 as there won't be any alpha.
 				// also wikipedia says that pngs are in 4 byte chunks
@@ -88,7 +88,7 @@ public class ScreenShot implements IKeyState {
 				try {
 					// write the image to a file.
 					ImageIO.write(ss, "PNG", iff);
-				} catch (IOException e) {}
+				} catch (IOException e) {e.printStackTrace();}
 			}
 		}
 	

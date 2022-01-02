@@ -56,32 +56,11 @@ public class TestDisplay extends IDisplay {
 	@Override
 	public void onSwitch() {
 		
-		
-		
 	}
-
-	float z = 0;
-	float dir = 0.01f;
-	float c = 0;
 	
 	@Override
 	public void render() {
-		
 		this.world.render();
-		
-		//World.render();
-		//World.update();
-		
-		//for (int i = 0; i < e.size(); i++) {
-		//	Entity ee = e.get(i);
-		//	ee.setRotation((float) (ee.getRotation() + Math.sin(Math.toRadians((c/180) + 60 * DisplayManager.getFrameTimeSeconds()))));
-		//	if (ee.getPosition().y < 500) {
-		//		ee.setPosition(ee.x(), (float) (Math.sin(Math.toRadians((c+ee.x())%360)) * 150));
-		//	}
-		//}
-		
-		//c += 120 * DisplayManager.getFrameTimeSeconds();
-		//c %= 360;
 	}
 
 	@Override

@@ -69,7 +69,9 @@ public class DisplayManager {
 
 	public static final String gameVersion = "0.0A";
 	public static final String engineVersion = "0.2A";
-	public static final String title = "Total Femboy Donamania - V" + gameVersion + " // Trapdoor V" + engineVersion;
+	public static final String gameName = "Total Femboy Donamania";
+	public static final String engineName = "Trapdoor";
+	public static final String title = gameName + " - V" + gameVersion + " // " + engineName + " V" + engineVersion;
 	
 	// temp color
 	private static final float RED = 0.5444f;

@@ -18,6 +18,8 @@ import com.game.engine.datatypes.ogl.assimp.Material;
 import com.game.engine.datatypes.ogl.assimp.Model;
 import com.game.engine.display.LoadingScreenDisplay;
 import com.game.engine.tools.Logger;
+import com.game.engine.tools.ScreenShot;
+import com.game.engine.tools.input.InputMaster;
 import com.game.engine.tools.models.ModelLoader;
 import com.spinyowl.legui.style.font.FontRegistry;
 
@@ -72,6 +74,8 @@ public class GameRegistry {
 		
 		GameRegistry.materials.put("resources/textures/error/error3.png", errorMaterial);
 		GameRegistry.materials.put("error/error3.png", errorMaterial);
+		
+		InputMaster.registerKeyListener(new ScreenShot());
 	}
 	
 	public static void onLoadingComplete() {

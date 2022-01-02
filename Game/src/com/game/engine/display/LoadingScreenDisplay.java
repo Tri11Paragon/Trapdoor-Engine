@@ -63,6 +63,8 @@ public class LoadingScreenDisplay extends IDisplay {
 
 		GameRegistry.registerModel("resources/models/poop.dae");
 		
+		GameRegistry.registerFont("bettergrade", "resources/fonts/bettergrade/BetterGrade-519DV.ttf");
+		
 	}
 
 	@Override

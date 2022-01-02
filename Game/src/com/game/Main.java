@@ -36,20 +36,20 @@ public class Main {
 	public static String username = null;
 	public static String password = null;
 	public static boolean verbose = true;
+	public static boolean devMode = false;
 	public static int processors = 8;
 	
 	public static void main(String[] args) throws InterruptedException {
-		ArrayList<String> strr = new ArrayList<String>();
 		// mvn clean compile assembly:single 
 		
 		//https://mkyong.com/maven/how-to-create-a-manifest-file-with-maven/
 		// https://github.com/SpinyOwl/legui
 		
-		gb(strr, "", 3);
+		//gb(strr, "", 3);
 		
-		for (int i = 0; i < strr.size(); i++) {
-			System.out.println(strr.get(i));
-		}
+		//for (int i = 0; i < strr.size(); i++) {
+		//	System.out.println(strr.get(i));
+		//}
 		
 		// decode data supplied through the command line
 		CommandLineInput.decode(args);
@@ -69,6 +69,15 @@ public class Main {
 		
 		CommandLineInput.registerCommandLineProcessor('v', (String data) -> {
 			verbose = false;
+		});
+		
+		// enable developer mode
+		CommandLineInput.registerCommandLineProcessor('d', (String data) -> {
+			devMode = true;
+		});
+		
+		CommandLineInput.registerCommandLineProcessor("dev", (String data) -> {
+			devMode = true;
 		});
 		
 		// assign the variables.
