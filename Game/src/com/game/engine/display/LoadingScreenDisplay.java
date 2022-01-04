@@ -87,6 +87,11 @@ public class LoadingScreenDisplay extends IDisplay {
 		if (System.currentTimeMillis() - time > (TIME+50) * 5)
 			Threading.d();
 	}
+	
+	@Override
+	public void update() {
+		
+	}
 
 	@Override
 	public void onLeave() {
@@ -131,6 +136,8 @@ public class LoadingScreenDisplay extends IDisplay {
 	            	info.setPosition(w2 - info.getTextState().getTextWidth()/2, h2 + 96);
 	            });
 	    
+	    layer.setEnabled(false);
+		layer.getStyle().setDisplay(layer.isEnabled() == true ? DisplayType.MANUAL : DisplayType.NONE);
 		UIMaster.getMasterFrame().addLayer(layer);
 	}
 	

@@ -4,7 +4,6 @@ import org.lwjgl.opengl.GL11;
 
 import com.game.engine.camera.ICamera;
 import com.karl.Engine.openglObjects.Vao;
-import com.karl.Engine.utils.OpenGlUtils;
 
 public class SkyboxRenderer {
 
@@ -50,10 +49,10 @@ public class SkyboxRenderer {
 	private void prepare(ICamera camera) {
 		shader.start();
 		shader.loadViewMatrix(camera.getViewMatrix());
-		OpenGlUtils.disableBlending();
-		OpenGlUtils.enableDepthTesting(true);
-		OpenGlUtils.cullBackFaces(true);
-		OpenGlUtils.antialias(false);
+		//OpenGlUtils.disableBlending();
+		//OpenGlUtils.enableDepthTesting(true);
+		//OpenGlUtils.cullBackFaces(true);
+		//OpenGlUtils.antialias(false);
 	}
 
 }

@@ -63,7 +63,6 @@ import com.game.engine.tools.RescaleEvent;
 import com.game.engine.tools.SettingsLoader;
 import com.game.engine.tools.icon.GLIcon;
 import com.game.engine.tools.input.InputMaster;
-import com.game.engine.world.World;
 import com.spinyowl.legui.system.context.CallbackKeeper;
 
 public class DisplayManager {
@@ -292,6 +291,7 @@ public class DisplayManager {
 			allDisplays.get(i).onDestory();
 		
 		UIMaster.quit();
+		ProjectionMatrix.cleanShaders();
 		
 		glfwFreeCallbacks(window);
 		glfwDestroyWindow(window);
@@ -321,6 +321,10 @@ public class DisplayManager {
 		ProjectionMatrix.updateProjectionMatrix();
 	}
 	
+	public static IDisplay getCurrentDisplay() {
+		return currentDisplay;
+	}
+	
 	/*
 	 * Helper functions
 	 */
@@ -345,7 +349,7 @@ public class DisplayManager {
 		return System.nanoTime();
 	}
 
-	public static double getFrameTimeMilisF() {
+	public static double getFrameTimeMilisR() {
 		return frameTimeMs;
 	}
 	
@@ -353,10 +357,10 @@ public class DisplayManager {
 		if (Thread.currentThread().getId() == mainThreadID)
 			return frameTimeMs;
 		else
-			return World.getFrameTimeMilis();
+			return Threading.getFrameTimeMilis();
 	}
 
-	public static double getFrameTimeSecondsF() {
+	public static double getFrameTimeSecondsR() {
 		return frameTimeS;
 	}
 	
@@ -364,7 +368,7 @@ public class DisplayManager {
 		if (Thread.currentThread().getId() == mainThreadID)
 			return frameTimeS;
 		else
-			return World.getFrameTimeSeconds();
+			return Threading.getFrameTimeSeconds();
 	}
 	
 	public static double getFPS() {

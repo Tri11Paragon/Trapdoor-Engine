@@ -20,6 +20,9 @@ public abstract class IDisplay {
 	// called on every render update
 	public abstract void render();
 	
+	// called on every physics update
+	public abstract void update();
+	
 	// called when this display is left
 	public abstract void onLeave();
 	

@@ -1,8 +1,15 @@
 package com.game.engine.world.entities;
 
+import javax.vecmath.Matrix4f;
+import javax.vecmath.Quat4f;
+
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
+import com.bulletphysics.collision.shapes.BoxShape;
+import com.bulletphysics.dynamics.RigidBody;
+import com.bulletphysics.linearmath.DefaultMotionState;
+import com.bulletphysics.linearmath.Transform;
 import com.game.engine.camera.Camera;
 import com.game.engine.renderer.ui.DebugInfo;
 import com.game.engine.tools.input.Keyboard;
@@ -28,8 +35,19 @@ public class EntityCamera extends Entity {
 	private Camera c;
 	
 	public EntityCamera(Camera c) {
+		super();
 		this.c = c;
 		pos = new Vector3f();
+		this.setRigidbody(new RigidBody(50, new DefaultMotionState(
+				new Transform(
+						new Matrix4f(
+								// rotation
+								new Quat4f(0,0,0,1),
+								// position, + w
+								new javax.vecmath.Vector3f(0,0,0), 1.0f
+								)
+						)
+				), new BoxShape(new javax.vecmath.Vector3f(0.75f, 0.75f, 0.75f))) );
 	}
 	
 	@Override

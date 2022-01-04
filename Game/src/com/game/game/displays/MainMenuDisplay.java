@@ -47,6 +47,7 @@ public class MainMenuDisplay extends IDisplay {
 		layer.add(title);
 
 		IDisplay display = new SinglePlayerDisplay();
+		DisplayManager.createDisplay(display);
 
 		Button sp = new Button();
 		sp.getTextState().setText("Start Game");
@@ -54,7 +55,6 @@ public class MainMenuDisplay extends IDisplay {
 		sp.getListenerMap().addListener(MouseClickEvent.class, (MouseClickEventListener) event -> {
 			if (event.getAction() != MouseClickEvent.MouseClickAction.RELEASE)
 				return;
-			DisplayManager.createDisplay(display);
 			DisplayManager.changeDisplay(display);
 		});
 		sp.setSize(456, 48);
@@ -74,13 +74,14 @@ public class MainMenuDisplay extends IDisplay {
 			layer.add(lb);
 			
 			IDisplay display2 = new TestDisplay();
+			DisplayManager.createDisplay(display2);
+			
 			Button tester = new Button();
 			tester.getStyle().setShadow(new Shadow());
 			tester.getTextState().setText("Engine Test");
 			tester.getListenerMap().addListener(MouseClickEvent.class, (MouseClickEventListener) event -> {
 				if (event.getAction() != MouseClickEvent.MouseClickAction.RELEASE)
 					return;
-				DisplayManager.createDisplay(display2);
 				DisplayManager.changeDisplay(display2);
 			});
 			tester.setSize(456, 48);
@@ -88,13 +89,14 @@ public class MainMenuDisplay extends IDisplay {
 			layer.add(tester);
 			
 			IDisplay display3 = new ModelEditorDisplay();
+			DisplayManager.createDisplay(display3);
+			
 			Button materials = new Button();
 			materials.getStyle().setShadow(new Shadow());
 			materials.getTextState().setText("Model viewer / Material Editor");
 			materials.getListenerMap().addListener(MouseClickEvent.class, (MouseClickEventListener) event -> {
 				if (event.getAction() != MouseClickEvent.MouseClickAction.RELEASE)
 					return;
-				DisplayManager.createDisplay(display3);
 				DisplayManager.changeDisplay(display3);
 			});
 			materials.setSize(456, 48);
@@ -109,6 +111,9 @@ public class MainMenuDisplay extends IDisplay {
 				(e) -> shadowWidget.getStyle().getShadow().setBlur(blurSlider.getValue()));
 		//layer.add(shadowWidget);
 
+		// make sure the layer is disabled until this screen is switched it
+		layer.setEnabled(false);
+		layer.getStyle().setDisplay(layer.isEnabled() == true ? DisplayType.MANUAL : DisplayType.NONE);
 		UIMaster.getMasterFrame().addLayer(layer);
 	}
 	
@@ -131,6 +136,11 @@ public class MainMenuDisplay extends IDisplay {
 	public void render() {
 		// TODO Auto-generated method stub
 
+	}
+	
+	@Override
+	public void update() {
+		
 	}
 
 	@Override

@@ -67,6 +67,12 @@ public class ProjectionMatrix {
 		//SinglePlayer.genBuffers();
     }
 	
+	public static void cleanShaders () {
+		for (Entry<Integer, WorldShader> s : shaders.entrySet()) {
+			s.getValue().cleanUp();
+		}
+	}
+	
 	public static int addShader(WorldShader shader) {
 		shaders.put(lastIndex, shader);
 		lastIndex++;

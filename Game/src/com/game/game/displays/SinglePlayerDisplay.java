@@ -4,6 +4,7 @@ import com.game.engine.camera.CreativeFirstPerson;
 import com.game.engine.display.IDisplay;
 import com.game.engine.threading.GameRegistry;
 import com.game.engine.world.World;
+import com.game.engine.world.entities.EntityCamera;
 import com.game.game.entities.EntityPoop;
 
 public class SinglePlayerDisplay extends IDisplay{
@@ -15,6 +16,8 @@ public class SinglePlayerDisplay extends IDisplay{
 	public void onCreate() {
 		this.camera = new CreativeFirstPerson();
 		this.world = new World(camera);
+		
+		this.world.addEntityToWorld(new EntityCamera(this.camera));
 		
 		this.world.addEntityToWorld(
 				new EntityPoop()
@@ -37,6 +40,11 @@ public class SinglePlayerDisplay extends IDisplay{
 	public void render() {
 		// TODO Auto-generated method stub
 		this.world.render();
+	}
+	
+	@Override
+	public void update() {
+		this.world.update();
 	}
 
 	@Override

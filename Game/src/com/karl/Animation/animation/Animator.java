@@ -80,7 +80,7 @@ public class Animator {
 	 * reset, causing the animation to loop.
 	 */
 	private void increaseAnimationTime() {
-		animationTime += DisplayManager.getFrameTimeSecondsF();
+		animationTime += DisplayManager.getFrameTimeSecondsR();
 		if (animationTime > currentAnimation.getLength()) {
 			this.animationTime %= currentAnimation.getLength();
 		}

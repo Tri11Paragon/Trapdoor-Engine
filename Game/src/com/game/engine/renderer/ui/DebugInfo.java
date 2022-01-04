@@ -7,6 +7,7 @@ import org.lwjgl.glfw.GLFW;
 import com.game.engine.TextureLoader;
 import com.game.engine.VAOLoader;
 import com.game.engine.display.DisplayManager;
+import com.game.engine.threading.Threading;
 import com.game.engine.tools.input.IKeyState;
 import com.game.engine.world.World;
 import com.spinyowl.legui.component.Label;
@@ -53,7 +54,7 @@ public class DebugInfo implements IKeyState {
 		renderCount = new Label("VAO: " + VAOLoader.getVAOS() + " VBO: " + VAOLoader.getVBOS() + " Textures: " + TextureLoader.getTextures());
 		
 		physics = new Label("Physics Info:");
-		physicsThreadFPS = new Label("UPS " + World.getFPS() + " Updatetime (ms): " + World.getFrameTimeMilis());
+		physicsThreadFPS = new Label("UPS " + Threading.getFPS() + " Updatetime (ms): " + Threading.getFrameTimeMilis());
 		
 		playerPosition = new Label("X: 0 | Y: 0 | Z: 0");
 		
@@ -156,9 +157,9 @@ public class DebugInfo implements IKeyState {
 		
 		builder = new StringBuilder();
 		builder.append("UPS  ");
-		builder.append((int)World.getFPS());
+		builder.append((int)Threading.getFPS());
 		builder.append("  Updatetime (ms):  ");
-		builder.append(round(World.getFrameTimeMilis()));
+		builder.append(round(Threading.getFrameTimeMilis()));
 		physicsThreadFPS.getTextState().setText(builder.toString());
 	}
 	

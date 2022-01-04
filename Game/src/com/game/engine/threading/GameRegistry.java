@@ -6,6 +6,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 
@@ -352,6 +355,14 @@ public class GameRegistry {
 	
 	public static void registerFont(String name, String path) {
 		FontRegistry.registerFont(name, path);
+	}
+	
+	public static Set<Entry<String, Model>> getModelEntries() {
+		return meshes.entrySet();
+	}
+	
+	public static Model getErrorModel() {
+		return errorModel;
 	}
 	
 	/**
