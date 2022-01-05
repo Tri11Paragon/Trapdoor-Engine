@@ -4,6 +4,7 @@ import com.game.engine.camera.CreativeFirstPerson;
 import com.game.engine.display.IDisplay;
 import com.game.engine.threading.GameRegistry;
 import com.game.engine.world.World;
+import com.game.engine.world.entities.Entity;
 import com.game.engine.world.entities.EntityCamera;
 import com.game.game.entities.EntityPoop;
 
@@ -20,12 +21,14 @@ public class SinglePlayerDisplay extends IDisplay{
 		this.world.addEntityToWorld(new EntityCamera(this.camera));
 		
 		this.world.addEntityToWorld(
-				new EntityPoop()
+				new Entity()
 					// set the model
 					.setModel(
 							GameRegistry.getModel("resources/models/poop.dae"))
 					// change position
-					.setPosition(0, 0, -10).setYaw((float) (Math.PI/2)).setScale(0.1f));
+					.setPosition(0, 0, -10));
+		this.world.addEntityToWorld(new Entity().setModel(
+				GameRegistry.getModel("resources/models/chess/w_king.dae")).setPosition(10, 0, -10));
 		
 		this.setSkyColor(0, 0, 0);
 	}
