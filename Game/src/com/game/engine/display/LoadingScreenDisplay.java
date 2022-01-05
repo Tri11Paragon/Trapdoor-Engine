@@ -60,6 +60,7 @@ public class LoadingScreenDisplay extends IDisplay {
 		GameRegistry.registerModel("resources/models/depression.dae");
 		GameRegistry.registerModel("resources/models/model.dae");
 		GameRegistry.registerModel("resources/models/test object.dae");
+		GameRegistry.registerModel("resources/models/supercube.dae");
 
 		GameRegistry.registerModel("resources/models/poop.dae");
 		

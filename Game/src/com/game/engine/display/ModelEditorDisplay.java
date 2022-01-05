@@ -6,17 +6,24 @@ import java.util.Map.Entry;
 
 import com.game.engine.camera.Camera;
 import com.game.engine.camera.RotatingCamera;
+import com.game.engine.datatypes.ogl.assimp.Material;
+import com.game.engine.datatypes.ogl.assimp.Mesh;
 import com.game.engine.datatypes.ogl.assimp.Model;
 import com.game.engine.renderer.ui.UIMaster;
 import com.game.engine.threading.GameRegistry;
 import com.game.engine.world.World;
 import com.game.engine.world.entities.Entity;
+import com.spinyowl.legui.component.Label;
 import com.spinyowl.legui.component.Layer;
 import com.spinyowl.legui.component.RadioButton;
 import com.spinyowl.legui.component.RadioButtonGroup;
 import com.spinyowl.legui.component.ScrollablePanel;
+import com.spinyowl.legui.component.SelectBox;
+import com.spinyowl.legui.component.TextInput;
 import com.spinyowl.legui.component.Widget;
 import com.spinyowl.legui.component.event.component.ChangeSizeEvent;
+import com.spinyowl.legui.component.event.selectbox.SelectBoxChangeSelectionEventListener;
+import com.spinyowl.legui.component.event.textinput.TextInputContentChangeEvent;
 import com.spinyowl.legui.event.MouseClickEvent;
 import com.spinyowl.legui.event.WindowSizeEvent;
 import com.spinyowl.legui.style.Style.DisplayType;
@@ -32,6 +39,7 @@ public class ModelEditorDisplay extends IDisplay {
 	private World world;
 	private Layer layer;
 	private Model currentModel;
+	private Material currentMaterial;
 	private ArrayList<RadioButton> buttons = new ArrayList<RadioButton>();
 	private Entity e;
 	
@@ -45,6 +53,7 @@ public class ModelEditorDisplay extends IDisplay {
 		Set<Entry<String, Model>> en = GameRegistry.getModelEntries();
 		
 		currentModel = GameRegistry.getErrorModel();
+		currentMaterial = GameRegistry.getErrorMaterial();
 		e = new Entity();
 		e.setModel(currentModel);
 		e.setPosition(0, 0, 0);
@@ -55,9 +64,10 @@ public class ModelEditorDisplay extends IDisplay {
 		
 		Widget materialsWidget = new Widget("Material Editor");
 		materialsWidget.setCloseable(false);
-		materialsWidget.setSize(256, 512);
-		materialsWidget.setPosition(DisplayManager.WIDTH - 256 - 25, 25);
-		materialsWidget.getContainer().setSize(256, 512);
+		materialsWidget.setResizable(false);
+		materialsWidget.setSize(512, 256);
+		materialsWidget.setPosition(DisplayManager.WIDTH - 512 - 25, 25);
+		materialsWidget.getContainer().setSize(512, 256);
 		
 		materialsWidget.getListenerMap().addListener((WindowSizeEvent.class), (WindowSizeEventListener) -> {
 			materialsWidget.setPosition(WindowSizeEventListener.getWidth() - materialsWidget.getSize().x - 25, 25);
@@ -65,15 +75,56 @@ public class ModelEditorDisplay extends IDisplay {
 		
 		ScrollablePanel matPanel = new ScrollablePanel();
 		matPanel.setAutoResize(false);
-		matPanel.setSize(256, 512);
-		matPanel.getContainer().setSize(256, 512);
+		matPanel.setSize(512, 256);
+		matPanel.getContainer().setSize(512, 256);
+		
+		Label diffuseTextureLabel = new Label("Diffuse Texture: ");
+		diffuseTextureLabel.setPosition(5, 54);
+		matPanel.getContainer().add(diffuseTextureLabel);
+		
+		TextInput diffuseTexture = new TextInput();
+		diffuseTexture.setPosition(120, 50);
+		diffuseTexture.setSize(356, diffuseTextureLabel.getSize().y + 5);
+		diffuseTexture.getListenerMap().addListener((TextInputContentChangeEvent.class), l -> {
+			currentMaterial.setDiffuseTexturePath(l.getNewValue());
+			currentMaterial.setDiffuseTexture(GameRegistry.getTexture(l.getNewValue()));
+		});
+		matPanel.getContainer().add(diffuseTexture);
+		
+		Label normalTextureLabel = new Label("Normal Texture: ");
+		normalTextureLabel.setPosition(5, 82);
+		matPanel.getContainer().add(normalTextureLabel);
+		
+		TextInput normalTexture = new TextInput();
+		normalTexture.setPosition(120, 78);
+		normalTexture.setSize(356, normalTextureLabel.getSize().y + 5);
+		diffuseTexture.getListenerMap().addListener((TextInputContentChangeEvent.class), l -> {
+			currentMaterial.setNormalTexturePath(l.getNewValue());
+			currentMaterial.setNormalTexture(GameRegistry.getTexture(l.getNewValue()));
+		});
+		matPanel.getContainer().add(normalTexture);
 		
 		
 		
+		SelectBox<Object> selectMesh = new SelectBox<Object>(5, 10, 512, 32);
+		selectMesh.addSelectBoxChangeSelectionEventListener( (SelectBoxChangeSelectionEventListener<Object>) event -> {
+					if (event.getNewValue() instanceof String) 
+						return;
+					Mesh newObject = (Mesh) event.getNewValue();
+					currentMaterial = newObject.getMaterial();
+					
+					diffuseTexture.getTextState().setText(currentMaterial.getDiffuseTexturePath());
+					
+					
+				});
+		
+		
+		matPanel.getContainer().add(selectMesh);
 		materialsWidget.getContainer().add(matPanel);
 		layer.add(materialsWidget);
 		
 		Widget modelsWidget = new Widget("Model Select");
+		modelsWidget.setResizable(false);
 		modelsWidget.setCloseable(false);
 		modelsWidget.setSize(256, 512);
 		modelsWidget.setPosition(25, 25);
@@ -99,9 +150,21 @@ public class ModelEditorDisplay extends IDisplay {
 			b.getTextState().setText(m.getKey().replace("resources/models/", ""));
 			
 			b.getListenerMap().addListener(MouseClickEvent.class, (MouseClickEventListener) -> {
+				diffuseTexture.getTextState().setText("");
+				
 				Model associatedModel = m.getValue();
 				currentModel = associatedModel;
 				e.setModel(currentModel);
+				// remove old materials
+				for (int ir = 0; ir < selectMesh.getSelectBoxElements().size(); ir++) {
+					selectMesh.removeElement(ir);
+				}
+				selectMesh.addElement("Select Material");
+				// add the new ones
+				for (int ir = 0; ir < currentModel.getMeshes().length; ir++) {
+					selectMesh.addElement(currentModel.getMeshes()[ir]);
+				}
+				currentMaterial = currentModel.getMaterials()[0];
 			});
 			
 			b.setRadioButtonGroup(radioButtonGroup);

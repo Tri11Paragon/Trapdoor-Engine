@@ -72,7 +72,7 @@ public class GameRegistry {
 		errorMaterial.setDiffuseTexture(errorTexture);
 		errorMaterial.setNormalTexture(defaultNormalTexture);
 		
-		errorModel = ModelLoader.load("resources/models/error.dae");
+		errorModel = ModelLoader.load("resources/models/error.dae", "resources/textures/");
 		VAOLoader.loadToVAO(errorModel);
 		
 		GameRegistry.materials.put("resources/textures/error/error3.png", errorMaterial);

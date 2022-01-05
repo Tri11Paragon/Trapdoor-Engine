@@ -15,10 +15,10 @@ public class RotatingCamera extends Camera {
 	private static final float speed = 40f;
 	private static final float turnSpeedYaw = 5.0f;
 	private static final float turnSpeedPitch = 5.0f;
-	private static final float minDistance = 10;
+	private static final float minDistance = 1;
 	
 	private float angleAround;
-	private float distance = minDistance;
+	private float distance = Math.max(minDistance, 10);
 	
 	@Override
 	public void move() {

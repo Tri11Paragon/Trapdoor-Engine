@@ -49,6 +49,10 @@ public class Material {
 	public void setDiffuseTexture(Texture diffuseTexture) {
 		this.diffuseTexture = diffuseTexture;
 	}
+	
+	public void setDiffuseTexturePath(String texture) {
+		this.diffuseTexturePath = texture;
+	}
 
 	public Texture getNormalTexture() {
 		return normalTexture;
@@ -56,6 +60,10 @@ public class Material {
 
 	public void setNormalTexture(Texture normalTexture) {
 		this.normalTexture = normalTexture;
+	}
+	
+	public void setNormalTexturePath(String texture) {
+		this.normalTexturePath = texture;
 	}
 	
 	public Vector3f getColorInformation() {

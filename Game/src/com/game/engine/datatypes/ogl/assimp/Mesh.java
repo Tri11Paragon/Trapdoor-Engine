@@ -60,4 +60,9 @@ public class Mesh {
 		return indices;
 	}
 	
+	@Override
+	public String toString() {
+		return this.material.getDiffuseTexturePath();
+	}
+	
 }

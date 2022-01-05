@@ -35,14 +35,6 @@ public class ModelLoader {
 		return load(path, texturesDir, DEFAULT_FLAGS);
 	}
 	
-	public static Model load(String path) {
-		return load(path, DEFAULT_FLAGS);
-	}
-	
-	public static Model load(String path, Material material) {
-		return load(path, material, DEFAULT_FLAGS);
-	}
-	
 	/**
 	 * Warning: this function must be called after the loader is created.
 	 * @param path
@@ -67,44 +59,7 @@ public class ModelLoader {
 		for (int i = 0; i < numMeshes; i++)
 			meshes[i] = processMesh(AIMesh.create(aiMeshes.get(i)), materials);
 		
-		return new Model(meshes, materials);
-	}
-	
-	public static Model load(String path, int flags) {
-		AIScene aiScene = Assimp.aiImportFile(path, flags);
-		if (aiScene == null)
-			throw new ModelNotFoundException(path);
-		
-		int numMaterials = aiScene.mNumMaterials();
-		PointerBuffer aiMaterials = aiScene.mMaterials();
-		Material[] materials = new Material[numMaterials];
-		for (int i = 0; i < numMaterials; i++)
-			materials[i] = processMaterial(AIMaterial.create(aiMaterials.get(i)), "resources/textures");
-		
-		int numMeshes = aiScene.mNumMeshes();
-		PointerBuffer aiMeshes = aiScene.mMeshes();
-		Mesh[] meshes = new Mesh[numMeshes];
-		for (int i = 0; i < numMeshes; i++)
-			meshes[i] = processMesh(AIMesh.create(aiMeshes.get(i)), null);
-		
-		return new Model(meshes, new Material[] {GameRegistry.getErrorMaterial()});
-	}
-	
-	public static Model load(String path, Material material, int flags) {
-		AIScene aiScene = Assimp.aiImportFile(path, flags);
-		if (aiScene == null)
-			throw new ModelNotFoundException(path);
-		
-		Material[] materials = new Material[1];
-		materials[0] = material;
-		
-		int numMeshes = aiScene.mNumMeshes();
-		PointerBuffer aiMeshes = aiScene.mMeshes();
-		Mesh[] meshes = new Mesh[numMeshes];
-		for (int i = 0; i < numMeshes; i++)
-			meshes[i] = processMesh(AIMesh.create(aiMeshes.get(i)), materials);
-		
-		return new Model(meshes, materials);
+		return new Model(meshes, materials, aiScene, path);
 	}
 	
 	private static Material processMaterial(AIMaterial material, String texturesDir) {
@@ -123,7 +78,7 @@ public class ModelLoader {
 				materialTexturePath = tmp[1];
 			}
 			
-			String texturePath = texturesDir + "/" + materialTexturePath;
+			String texturePath = (texturesDir + "/" + materialTexturePath).replace("//", "/");
 			GameRegistry.registerTexture(texturePath);
 			
 			Vector4f ambient = Material.DEFAULT_COLOUR;
@@ -148,7 +103,7 @@ public class ModelLoader {
 			AIString normalPath = AIString.calloc();
 			Assimp.aiGetMaterialTexture(material, Assimp.aiTextureType_NORMALS, 0, normalPath, (IntBuffer) null, null, null, null, null, null);
 			String normalTexture = normalPath.dataString();
-			String normalTexturePath = texturesDir + "/" + normalTexture;
+			String normalTexturePath = (texturesDir + "/" + normalTexture).replace("//", "/");
 			
 			if (normalTexture != null && normalTexture.length() > 0) {
 				GameRegistry.registerTexture(normalTexturePath);
