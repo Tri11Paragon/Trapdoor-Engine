@@ -9,6 +9,10 @@ import org.joml.Vector3f;
  */
 public abstract class IDisplay {
 	
+	public IDisplay() {
+		
+	}
+	
 	private final Vector3f skyColor = new Vector3f(0.5444f, 0.62f, 0.69f);
 	
 	// called when the game loads

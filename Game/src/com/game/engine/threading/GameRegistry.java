@@ -42,6 +42,7 @@ public class GameRegistry {
 	private static Model errorModel;
 	
 	private static final HashMap<String, String> allowedFormats = new HashMap<String, String>();
+	//private static final ArrayList<IDisplay> registeredDisplays = new ArrayList<IDisplay>();
 	
 	/*
 	 * Data(s) and Lock(s)
@@ -375,5 +376,14 @@ public class GameRegistry {
 		System.arraycopy(b, 0, r, a.length, b.length);
 		return r;
 	}
+	
+	/*public static void registerIDisplay(IDisplay display) {
+		registeredDisplays.add(display);
+	}
+	
+	public static void doPreRegister() {
+		for (int i = 0; i < registeredDisplays.size(); i++)
+			registeredDisplays.get(i).preRegister();
+	}*/
 	
 }

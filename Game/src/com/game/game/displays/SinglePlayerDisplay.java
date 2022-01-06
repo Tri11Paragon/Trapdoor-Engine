@@ -6,7 +6,6 @@ import com.game.engine.threading.GameRegistry;
 import com.game.engine.world.World;
 import com.game.engine.world.entities.Entity;
 import com.game.engine.world.entities.EntityCamera;
-import com.game.game.entities.EntityPoop;
 
 public class SinglePlayerDisplay extends IDisplay{
 	
@@ -67,6 +66,6 @@ public class SinglePlayerDisplay extends IDisplay{
 	public void onDestory() {
 		// TODO Auto-generated method stub
 		
-	}	
+	}
 	
 }

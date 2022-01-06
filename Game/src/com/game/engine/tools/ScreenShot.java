@@ -15,7 +15,6 @@ import org.lwjgl.opengl.GL11;
 
 import com.game.engine.display.DisplayManager;
 import com.game.engine.tools.input.IKeyState;
-import com.game.engine.tools.input.Keyboard;
 
 /**
 *
