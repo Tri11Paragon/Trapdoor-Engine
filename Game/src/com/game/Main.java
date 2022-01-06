@@ -36,7 +36,7 @@ public class Main {
 	public static String username = null;
 	public static String password = null;
 	public static boolean verbose = true;
-	public static boolean devMode = false;
+	public static boolean devMode = true;
 	public static int processors = 8;
 	
 	public static void main(String[] args) throws InterruptedException {
