@@ -32,7 +32,7 @@ public class SinglePlayerDisplay extends IDisplay{
 		this.world.addEntityToWorld(new Entity().setModel(
 				GameRegistry.getModel("resources/models/chess/w_knight.dae")).setPosition(-5, 0, -10));
 		this.world.addEntityToWorld(new Entity().setModel(
-				GameRegistry.getModel("resources/models/chess/w_rook.dae")).setPosition(7, 0, -10));
+				GameRegistry.getModel("resources/models/chess/w_rook.dae")).setPosition(8, 0, -10));
 		this.world.addEntityToWorld(new Entity().setModel(
 				GameRegistry.getModel("resources/models/chess/w_rook.dae")).setPosition(-7, 0, -10));
 		
