@@ -47,11 +47,14 @@ public class ModelLoader {
 		if (aiScene == null)
 			throw new ModelNotFoundException(path);
 		
-		int numMaterials = aiScene.mNumMaterials();
-		PointerBuffer aiMaterials = aiScene.mMaterials();
-		Material[] materials = new Material[numMaterials];
-		for (int i = 0; i < numMaterials; i++)
-			materials[i] = processMaterial(AIMaterial.create(aiMaterials.get(i)), texturesDir);
+		Material[] materials = MaterialFSFormater.loadMaterialsFromFile(path);
+		if (materials == null) {
+			int numMaterials = aiScene.mNumMaterials();
+			PointerBuffer aiMaterials = aiScene.mMaterials();
+			materials = new Material[numMaterials];
+			for (int i = 0; i < numMaterials; i++)
+				materials[i] = processMaterial(AIMaterial.create(aiMaterials.get(i)), texturesDir);
+		}
 		
 		int numMeshes = aiScene.mNumMeshes();
 		PointerBuffer aiMeshes = aiScene.mMeshes();

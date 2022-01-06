@@ -187,7 +187,8 @@ public class TextureLoader {
 			GL11.glTexParameterf(GL11.GL_TEXTURE_2D, EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT, amount);
 	        
 	        // put the texture data into the texture buffer.
-			GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, d.getWidth(), d.getHeight(), 0, d.getChannels() == 4 ? GL11.GL_RGBA : GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, d.getBuffer());
+			// TODO: fix non alpha channel loading
+			GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, d.getChannels() == 4 ? GL11.GL_RGBA : GL11.GL_RGB, d.getWidth(), d.getHeight(), 0, d.getChannels() == 4 ? GL11.GL_RGBA : GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, d.getBuffer());
 	        
 	        // generates the mipmaps
 			GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);

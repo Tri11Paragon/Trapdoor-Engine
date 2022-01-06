@@ -160,7 +160,7 @@ public class DisplayManager {
 				}
 				debugInfoLayer.update();
 				//System.out.println(getFrameTimeMilis() + " :: " + 1000/getFrameTimeMilis() + " (" + 0 + ") :: " + 1000);
-			} catch (Exception e) {e.printStackTrace();}
+			} catch (Exception e) {e.printStackTrace(); System.exit(-1);}
 		}
 	}
 	

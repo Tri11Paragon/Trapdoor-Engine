@@ -64,6 +64,9 @@ public class LoadingScreenDisplay extends IDisplay {
 
 		GameRegistry.registerModel("resources/models/poop.dae");
 		GameRegistry.registerModel("resources/models/chess/w_king.dae");
+		GameRegistry.registerModel("resources/models/chess/w_king_bt.dae");
+		GameRegistry.registerModel("resources/models/chess/w_king_bt2.dae");
+		GameRegistry.registerModel("resources/models/chess/w_king_bt3.dae");
 		
 		
 		GameRegistry.registerFont("bettergrade", "resources/fonts/bettergrade/BetterGrade-519DV.ttf");
