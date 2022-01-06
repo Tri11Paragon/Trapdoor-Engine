@@ -20,15 +20,10 @@ public class SinglePlayerDisplay extends IDisplay{
 		
 		this.world.addEntityToWorld(new EntityCamera(this.camera));
 		
-		this.world.addEntityToWorld(
-				new Entity()
-					// set the model
-					.setModel(
-							GameRegistry.getModel("resources/models/poop.dae"))
-					// change position
-					.setPosition(0, 0, -10));
 		this.world.addEntityToWorld(new Entity().setModel(
-				GameRegistry.getModel("resources/models/chess/w_king.dae")).setPosition(10, 0, -10));
+				GameRegistry.getModel("resources/models/chess/w_king.dae")).setPosition(3, 0, -10));
+		this.world.addEntityToWorld(new Entity().setModel(
+				GameRegistry.getModel("resources/models/chess/w_queen.dae")).setPosition(-3, 0, -10));
 		
 		this.setSkyColor(0, 0, 0);
 	}
