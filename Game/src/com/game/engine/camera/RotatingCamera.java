@@ -13,12 +13,14 @@ import com.game.engine.tools.input.Mouse;
 public class RotatingCamera extends Camera {
 	
 	private static final float speed = 40f;
+	private static final float vertSpeed = 20f;
 	private static final float turnSpeedYaw = 5.0f;
 	private static final float turnSpeedPitch = 5.0f;
 	private static final float minDistance = 1;
 	
 	private float angleAround;
 	private float distance = Math.max(minDistance, 10);
+	private float height = 2.5f;
 	
 	@Override
 	public void move() {
@@ -41,6 +43,8 @@ public class RotatingCamera extends Camera {
 		
 		if (InputMaster.scrolledLastFrame && Keyboard.isKeyDown(Keyboard.KEY_LEFT_SHIFT))
 			distance += InputMaster.lastScrollState * DisplayManager.getFrameTimeSeconds() * speed;
+		if (InputMaster.scrolledLastFrame && Keyboard.isKeyDown(Keyboard.KEY_LEFT_CONTROL))
+			height += InputMaster.lastScrollState * DisplayManager.getFrameTimeSeconds() * vertSpeed;
 		
 		if (distance < minDistance)
 			distance = minDistance;
@@ -70,7 +74,7 @@ public class RotatingCamera extends Camera {
 	private void calculateCameraPosition(float horizDistance, float verticDistance) {
 		float theta = angleAround;
 		position.x = (float) (horizDistance * Math.sin(Math.toRadians(theta)));
-		position.y = (float) (verticDistance) + 2.5f;
+		position.y = (float) (verticDistance) + height;
 		position.z = (float) (horizDistance * Math.cos(Math.toRadians(theta)));
 	}
 	

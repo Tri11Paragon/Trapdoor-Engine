@@ -1,0 +1,865 @@
+
+
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <meta charset="utf-8"/>
+    <title>LearnOpenGL - Framebuffers</title>	<!--<title>Learn OpenGL, extensive tutorial resource for learning Modern OpenGL</title>-->
+    <link rel="shortcut icon" type="image/ico" href="/favicon.ico"  />
+    <meta name="description" content="Learn OpenGL . com provides good and clear modern 3.3+ OpenGL tutorials with clear examples. A great resource to learn modern OpenGL aimed at beginners.">
+	<meta name="fragment" content="!">
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-51879160-1', 'learnopengl.com');
+      ga('send', 'pageview');
+
+    </script>
+    <!--<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-7855791439695850",
+              enable_page_level_ads: true
+         });
+    </script>
+	<script async='async' src='https://www.googletagservices.com/tag/js/gpt.js'></script>
+	<script>
+	  var googletag = googletag || {};
+	  googletag.cmd = googletag.cmd || [];
+	</script>
+	<script>
+	  googletag.cmd.push(function() {
+		googletag.defineSlot('/8491498/learnopengl_video', [300, 225], 'div-gpt-ad-1540574378241-0').addService(googletag.pubads());
+		googletag.pubads().enableSingleRequest();
+		googletag.pubads().collapseEmptyDivs();
+		googletag.enableServices();
+	  });
+	</script>
+    <script type="text/javascript" src="//cdn.thisiswaldo.com/static/js/1681.js"></script>
+	<script src="/js/jquery-1.11.0.min.js"></script>
+	<script src="/js/hoverintent.js"></script>
+	<link rel="stylesheet" type="text/css" href="/layout.css">
+    <link rel="stylesheet" type="text/css" href="/js/styles/obsidian.css">
+    <script src="/js/highlight.pack.js"></script>    
+    <script src="/js/functions.js"></script>
+    <script type="text/javascript" src="/js/mathjax/MathJax.js?config=TeX-AMS_HTML"></script>
+    <script>
+    // Has to be loaded last due to content bug 
+    MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+    </script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script>  
+        $(document).ready(function() {
+            // check if user visited from the old # based urls, re-direct to ?p= form
+            if(window.location.hash)
+            {
+                var name = window.location.hash.substring(2);
+                // name = name.replace(/-/g," ");
+                var index = name.indexOf('#'); // Remove any hash fragments from the url (Disquss adds hash fragments for comments, but results in 404 pages)
+                if(index >= 0)
+                    name = name.substring(0, index);
+                
+                window.location.href = "https://learnopengl.com/" + name;
+            } else {
+                    // Check if data has been succesfully loaded, if so: change title bar as ajax hash fragment
+                    var title = $('#content-url').text();
+                  
+                    // Refresh syntax highlighting
+                    // $('pre').each(function(i, e) {hljs.highlightBlock(e)});
+                  
+                    // Reset DISQUS
+                    // if(title == '/dev/')
+                        // title = '';
+                    // alert('hoi');
+					
+					// place video tag
+					if(title != '') {
+						var videoad = "%3Cdiv id=\'waldo-tag-12074\'%3E %3Cscript%3Egoogletag.cmd.push(function() {googletag.display(\'waldo-tag-12074\'); }); %3C/script%3E%3C/div%3E";
+						$('#content p:nth-of-type(3)').after(unescape(videoad));
+					}
+					
+                    // Adjust ads for correct bottom positioning based on content size
+                    window.setTimeout(function() {  
+                        AdPositioning();
+                     }, 3000);
+                  
+                  
+                    // set API resets after time-out (once content is properly loaded)
+                    window.setTimeout(function() {  
+                        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);       
+                        MathJax.Hub.Queue(["resetEquationNumbers", MathJax.InputJax.TeX]);
+                        
+                        var page_url = title == "" ? "http://www.learnopengl.com/" : "http://www.learnopengl.com/" + title;
+                        if(typeof DISQUS !== 'undefined') {                                              
+                            DISQUS.reset({
+                              reload: true,
+                              config: function () {  
+                                this.page.identifier = title;  
+                                this.page.url = page_url;
+                              }
+                            });
+                            $('#disqus_thread').show();
+                        }
+                           // Refresh callbacks on <function> tags
+                        SetFunctionTagCallbacks();        
+                    }, 1000);
+                                        
+                    // Zet ook de juiste button op 'selected'
+                    $('#nav li span, #nav li a').removeClass('selected');                
+                    if(title != '')
+                    {                    
+                        $('#nav li[id=\'' + title + '\']').children('span, a').addClass('selected');
+                    }
+                    // En open menu waar nodig
+                    var parents = $('#nav span.selected, #nav a.selected').parents('li').children('span.closed, a.closed');
+                    var index = 0;
+                    for(index = parents.length - 1; index >= 0; index--)
+                    {             
+                        
+                        var id = $(parents[index]).attr("id").replace( /^\D+/g, '');
+                        MenuClick(id, false);
+                    }                          
+                
+            }
+        });
+		// var initialized = false;
+        // window.onpopstate = function() {
+            // if(initialized)
+                // LoadPage();
+			// else
+				// initialized = true;
+        // };
+        
+        // Set up DISQUS
+        // $(document).ready(function() {
+            var disqus_shortname = 'learnopengl';
+            (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();           
+        // });
+    </script>
+</head>
+<body>
+<a href="https://learnopengl.com">
+<div id="header">
+</div>
+</a>
+
+<div id="supercontainer">
+    <!-- 728x90/320x50 -->
+    <div id="header_ad">
+        <div id="waldo-tag-6194"></div>
+    </div>
+    <div id="rightad_container">
+        <div id="rightad">
+            <!-- /8491498/learnopengl_video -->
+            <!--<div id='div-gpt-ad-1540574378241-0' style='height:225px; width:300px;'>
+			<script>
+			googletag.cmd.push(function() { googletag.display('div-gpt-ad-1540574378241-0'); });
+			</script>
+			</div>            
+            <br/>-->
+			<!-- place in-content -->
+			<!--<div id='waldo-tag-12074'>
+			 <script>
+			   googletag.cmd.push(function() { googletag.display('waldo-tag-12074'); });
+			 </script>
+			</div>-->
+           
+            <div id="waldo-tag-1715"></div>
+        </div>
+
+        <div id="admessage">
+            If you're running AdBlock, please consider whitelisting this site if you'd like to support LearnOpenGL; and no worries, I won't be mad if you don't :)
+            <!--<br/><br/>
+            Also, check out this little local multiplayer-only game I've made: <a href="https://store.steampowered.com/app/983590/Tank_Blazers/" target="_blank">Tank Blazers</a>.
+            <br/>
+            <a href="https://store.steampowered.com/app/983590/Tank_Blazers" target="_blank"><img src="/img/tank_blazers.jpg"  style="width:278px; margin-top: 9px; margin-left: -3px;"/></a>-->
+        </div>
+        
+        <div id="rightonethirdad">
+            <div id="waldo-tag-2246"></div>
+        </div>
+        
+        <div id="rightbottomad">            
+			<div id="waldo-tag-2247"></div>								
+        </div>
+    </div>
+    <div id="container">
+        <div id="loading"></div>
+<script> 
+$(document).ready(function() {
+$('#menu-item4').mousedown(function() { MenuClick(4, true) });
+$('#menu-item48').mousedown(function() { MenuClick(48, true) });
+$('#menu-item56').mousedown(function() { MenuClick(56, true) });
+$('#menu-item63').mousedown(function() { MenuClick(63, true) });
+$('#menu-item100').mousedown(function() { MenuClick(100, true) });
+$('#menu-item102').mousedown(function() { MenuClick(102, true) });
+$('#menu-item113').mousedown(function() { MenuClick(113, true) });
+$('#menu-item116').mousedown(function() { MenuClick(116, true) });
+$('#menu-item78').mousedown(function() { MenuClick(78, true) });
+$('#menu-item81').mousedown(function() { MenuClick(81, true) });
+$('#menu-item85').mousedown(function() { MenuClick(85, true) });
+$('#menu-item125').mousedown(function() { MenuClick(125, true) });
+$('#menu-item128').mousedown(function() { MenuClick(128, true) });
+$('#menu-item129').mousedown(function() { MenuClick(129, true) });
+$('#menu-item133').mousedown(function() { MenuClick(133, true) });
+$('#menu-item134').mousedown(function() { MenuClick(134, true) });
+$('#menu-item138').mousedown(function() { MenuClick(138, true) });
+}); 
+</script>   
+    <div id="nav">
+         <div id="social">
+            <a href="https://github.com/JoeyDeVries/LearnOpenGL" target="_blank">
+                    <img src="/img/github.png" class="social_ico">
+            </a>
+             <!-- <a href="https://www.facebook.com/Learnopengl-2199631333595544/" target="_blank">
+                <img src="/img/facebook.png" class="social_ico">
+            </a>-->
+            <a href="https://twitter.com/JoeyDeVriez" target="_blank">
+                <img src="/img/twitter.png" class="social_ico">
+            </a>
+          
+        </div>
+    <img src='img/nav-button_bottom-arrow.png' style='display: none'><ol><li id='Introduction'><a id="menu-item1" href="https://learnopengl.com/Introduction">Introduction </a></li><li id='Getting-started'><span id="menu-item4" class="closed">Getting started </span><ol id="menu-items-of4" style="display:none;"><li id='Getting-started/OpenGL'><a id="menu-item49" href="https://learnopengl.com/Getting-started/OpenGL">OpenGL </a></li><li id='Getting-started/Creating-a-window'><a id="menu-item5" href="https://learnopengl.com/Getting-started/Creating-a-window">Creating a window </a></li><li id='Getting-started/Hello-Window'><a id="menu-item6" href="https://learnopengl.com/Getting-started/Hello-Window">Hello Window </a></li><li id='Getting-started/Hello-Triangle'><a id="menu-item38" href="https://learnopengl.com/Getting-started/Hello-Triangle">Hello Triangle </a></li><li id='Getting-started/Shaders'><a id="menu-item39" href="https://learnopengl.com/Getting-started/Shaders">Shaders </a></li><li id='Getting-started/Textures'><a id="menu-item40" href="https://learnopengl.com/Getting-started/Textures">Textures </a></li><li id='Getting-started/Transformations'><a id="menu-item43" href="https://learnopengl.com/Getting-started/Transformations">Transformations </a></li><li id='Getting-started/Coordinate-Systems'><a id="menu-item44" href="https://learnopengl.com/Getting-started/Coordinate-Systems">Coordinate Systems </a></li><li id='Getting-started/Camera'><a id="menu-item47" href="https://learnopengl.com/Getting-started/Camera">Camera </a></li><li id='Getting-started/Review'><a id="menu-item50" href="https://learnopengl.com/Getting-started/Review">Review </a></li></ol></li><li id='Lighting'><span id="menu-item48" class="closed">Lighting </span><ol id="menu-items-of48" style="display:none;"><li id='Lighting/Colors'><a id="menu-item51" href="https://learnopengl.com/Lighting/Colors">Colors </a></li><li id='Lighting/Basic-Lighting'><a id="menu-item52" href="https://learnopengl.com/Lighting/Basic-Lighting">Basic Lighting </a></li><li id='Lighting/Materials'><a id="menu-item53" href="https://learnopengl.com/Lighting/Materials">Materials </a></li><li id='Lighting/Lighting-maps'><a id="menu-item54" href="https://learnopengl.com/Lighting/Lighting-maps">Lighting maps </a></li><li id='Lighting/Light-casters'><a id="menu-item55" href="https://learnopengl.com/Lighting/Light-casters">Light casters </a></li><li id='Lighting/Multiple-lights'><a id="menu-item58" href="https://learnopengl.com/Lighting/Multiple-lights">Multiple lights </a></li><li id='Lighting/Review'><a id="menu-item57" href="https://learnopengl.com/Lighting/Review">Review </a></li></ol></li><li id='Model-Loading'><span id="menu-item56" class="closed">Model Loading </span><ol id="menu-items-of56" style="display:none;"><li id='Model-Loading/Assimp'><a id="menu-item59" href="https://learnopengl.com/Model-Loading/Assimp">Assimp </a></li><li id='Model-Loading/Mesh'><a id="menu-item60" href="https://learnopengl.com/Model-Loading/Mesh">Mesh </a></li><li id='Model-Loading/Model'><a id="menu-item61" href="https://learnopengl.com/Model-Loading/Model">Model </a></li></ol></li><li id='Advanced-OpenGL'><span id="menu-item63" class="closed">Advanced OpenGL </span><ol id="menu-items-of63" style="display:none;"><li id='Advanced-OpenGL/Depth-testing'><a id="menu-item72" href="https://learnopengl.com/Advanced-OpenGL/Depth-testing">Depth testing </a></li><li id='Advanced-OpenGL/Stencil-testing'><a id="menu-item73" href="https://learnopengl.com/Advanced-OpenGL/Stencil-testing">Stencil testing </a></li><li id='Advanced-OpenGL/Blending'><a id="menu-item74" href="https://learnopengl.com/Advanced-OpenGL/Blending">Blending </a></li><li id='Advanced-OpenGL/Face-culling'><a id="menu-item77" href="https://learnopengl.com/Advanced-OpenGL/Face-culling">Face culling </a></li><li id='Advanced-OpenGL/Framebuffers'><a id="menu-item65" href="https://learnopengl.com/Advanced-OpenGL/Framebuffers">Framebuffers </a></li><li id='Advanced-OpenGL/Cubemaps'><a id="menu-item66" href="https://learnopengl.com/Advanced-OpenGL/Cubemaps">Cubemaps </a></li><li id='Advanced-OpenGL/Advanced-Data'><a id="menu-item69" href="https://learnopengl.com/Advanced-OpenGL/Advanced-Data">Advanced Data </a></li><li id='Advanced-OpenGL/Advanced-GLSL'><a id="menu-item67" href="https://learnopengl.com/Advanced-OpenGL/Advanced-GLSL">Advanced GLSL </a></li><li id='Advanced-OpenGL/Geometry-Shader'><a id="menu-item68" href="https://learnopengl.com/Advanced-OpenGL/Geometry-Shader">Geometry Shader </a></li><li id='Advanced-OpenGL/Instancing'><a id="menu-item70" href="https://learnopengl.com/Advanced-OpenGL/Instancing">Instancing </a></li><li id='Advanced-OpenGL/Anti-Aliasing'><a id="menu-item75" href="https://learnopengl.com/Advanced-OpenGL/Anti-Aliasing">Anti Aliasing </a></li></ol></li><li id='Advanced-Lighting'><span id="menu-item100" class="closed">Advanced Lighting </span><ol id="menu-items-of100" style="display:none;"><li id='Advanced-Lighting/Advanced-Lighting'><a id="menu-item101" href="https://learnopengl.com/Advanced-Lighting/Advanced-Lighting">Advanced Lighting </a></li><li id='Advanced-Lighting/Gamma-Correction'><a id="menu-item110" href="https://learnopengl.com/Advanced-Lighting/Gamma-Correction">Gamma Correction </a></li><li id='Advanced-Lighting/Shadows'><span id="menu-item102" class="closed">Shadows </span><ol id="menu-items-of102" style="display:none;"><li id='Advanced-Lighting/Shadows/Shadow-Mapping'><a id="menu-item103" href="https://learnopengl.com/Advanced-Lighting/Shadows/Shadow-Mapping">Shadow Mapping </a></li><li id='Advanced-Lighting/Shadows/Point-Shadows'><a id="menu-item104" href="https://learnopengl.com/Advanced-Lighting/Shadows/Point-Shadows">Point Shadows </a></li></ol></li><li id='Advanced-Lighting/Normal-Mapping'><a id="menu-item106" href="https://learnopengl.com/Advanced-Lighting/Normal-Mapping">Normal Mapping </a></li><li id='Advanced-Lighting/Parallax-Mapping'><a id="menu-item107" href="https://learnopengl.com/Advanced-Lighting/Parallax-Mapping">Parallax Mapping </a></li><li id='Advanced-Lighting/HDR'><a id="menu-item111" href="https://learnopengl.com/Advanced-Lighting/HDR">HDR </a></li><li id='Advanced-Lighting/Bloom'><a id="menu-item112" href="https://learnopengl.com/Advanced-Lighting/Bloom">Bloom </a></li><li id='Advanced-Lighting/Deferred-Shading'><a id="menu-item108" href="https://learnopengl.com/Advanced-Lighting/Deferred-Shading">Deferred Shading </a></li><li id='Advanced-Lighting/SSAO'><a id="menu-item109" href="https://learnopengl.com/Advanced-Lighting/SSAO">SSAO </a></li></ol></li><li id='PBR'><span id="menu-item113" class="closed">PBR </span><ol id="menu-items-of113" style="display:none;"><li id='PBR/Theory'><a id="menu-item114" href="https://learnopengl.com/PBR/Theory">Theory </a></li><li id='PBR/Lighting'><a id="menu-item115" href="https://learnopengl.com/PBR/Lighting">Lighting </a></li><li id='PBR/IBL'><span id="menu-item116" class="closed">IBL </span><ol id="menu-items-of116" style="display:none;"><li id='PBR/IBL/Diffuse-irradiance'><a id="menu-item117" href="https://learnopengl.com/PBR/IBL/Diffuse-irradiance">Diffuse irradiance </a></li><li id='PBR/IBL/Specular-IBL'><a id="menu-item118" href="https://learnopengl.com/PBR/IBL/Specular-IBL">Specular IBL </a></li></ol></li></ol></li><li id='In-Practice'><span id="menu-item78" class="closed">In Practice </span><ol id="menu-items-of78" style="display:none;"><li id='In-Practice/Debugging'><a id="menu-item79" href="https://learnopengl.com/In-Practice/Debugging">Debugging </a></li><li id='In-Practice/Text-Rendering'><a id="menu-item80" href="https://learnopengl.com/In-Practice/Text-Rendering">Text Rendering </a></li><li id='In-Practice/2D-Game'><span id="menu-item81" class="closed">2D Game </span><ol id="menu-items-of81" style="display:none;"><li id='In-Practice/2D-Game/Breakout'><a id="menu-item82" href="https://learnopengl.com/In-Practice/2D-Game/Breakout">Breakout </a></li><li id='In-Practice/2D-Game/Setting-up'><a id="menu-item88" href="https://learnopengl.com/In-Practice/2D-Game/Setting-up">Setting up </a></li><li id='In-Practice/2D-Game/Rendering-Sprites'><a id="menu-item83" href="https://learnopengl.com/In-Practice/2D-Game/Rendering-Sprites">Rendering Sprites </a></li><li id='In-Practice/2D-Game/Levels'><a id="menu-item84" href="https://learnopengl.com/In-Practice/2D-Game/Levels">Levels </a></li><li id='In-Practice/2D-Game/Collisions'><span id="menu-item85" class="closed">Collisions </span><ol id="menu-items-of85" style="display:none;"><li id='In-Practice/2D-Game/Collisions/Ball'><a id="menu-item95" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Ball">Ball </a></li><li id='In-Practice/2D-Game/Collisions/Collision-detection'><a id="menu-item96" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Collision-detection">Collision detection </a></li><li id='In-Practice/2D-Game/Collisions/Collision-resolution'><a id="menu-item97" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Collision-resolution">Collision resolution </a></li></ol></li><li id='In-Practice/2D-Game/Particles'><a id="menu-item89" href="https://learnopengl.com/In-Practice/2D-Game/Particles">Particles </a></li><li id='In-Practice/2D-Game/Postprocessing'><a id="menu-item90" href="https://learnopengl.com/In-Practice/2D-Game/Postprocessing">Postprocessing </a></li><li id='In-Practice/2D-Game/Powerups'><a id="menu-item91" href="https://learnopengl.com/In-Practice/2D-Game/Powerups">Powerups </a></li><li id='In-Practice/2D-Game/Audio'><a id="menu-item94" href="https://learnopengl.com/In-Practice/2D-Game/Audio">Audio </a></li><li id='In-Practice/2D-Game/Render-text'><a id="menu-item92" href="https://learnopengl.com/In-Practice/2D-Game/Render-text">Render text </a></li><li id='In-Practice/2D-Game/Final-thoughts'><a id="menu-item93" href="https://learnopengl.com/In-Practice/2D-Game/Final-thoughts">Final thoughts </a></li></ol></li></ol></li><li id='Guest-Articles'><span id="menu-item125" class="closed">Guest Articles </span><ol id="menu-items-of125" style="display:none;"><li id='Guest-Articles/How-to-publish'><a id="menu-item126" href="https://learnopengl.com/Guest-Articles/How-to-publish">How to publish </a></li><li id='Guest-Articles/2020'><span id="menu-item128" class="closed">2020 </span><ol id="menu-items-of128" style="display:none;"><li id='Guest-Articles/2020/OIT'><span id="menu-item129" class="closed">OIT </span><ol id="menu-items-of129" style="display:none;"><li id='Guest-Articles/2020/OIT/Introduction'><a id="menu-item130" href="https://learnopengl.com/Guest-Articles/2020/OIT/Introduction">Introduction </a></li><li id='Guest-Articles/2020/OIT/Weighted-Blended'><a id="menu-item132" href="https://learnopengl.com/Guest-Articles/2020/OIT/Weighted-Blended">Weighted Blended </a></li></ol></li><li id='Guest-Articles/2020/Skeletal-Animation'><a id="menu-item131" href="https://learnopengl.com/Guest-Articles/2020/Skeletal-Animation">Skeletal Animation </a></li></ol></li><li id='Guest-Articles/2021'><span id="menu-item133" class="closed">2021 </span><ol id="menu-items-of133" style="display:none;"><li id='Guest-Articles/2021/CSM'><a id="menu-item137" href="https://learnopengl.com/Guest-Articles/2021/CSM">CSM </a></li><li id='Guest-Articles/2021/Scene'><span id="menu-item134" class="closed">Scene </span><ol id="menu-items-of134" style="display:none;"><li id='Guest-Articles/2021/Scene/Scene-Graph'><a id="menu-item135" href="https://learnopengl.com/Guest-Articles/2021/Scene/Scene-Graph">Scene Graph </a></li><li id='Guest-Articles/2021/Scene/Frustum-Culling'><a id="menu-item136" href="https://learnopengl.com/Guest-Articles/2021/Scene/Frustum-Culling">Frustum Culling </a></li></ol></li><li id='Guest-Articles/2021/Tessellation'><span id="menu-item138" class="closed">Tessellation </span><ol id="menu-items-of138" style="display:none;"><li id='Guest-Articles/2021/Tessellation/Height-map'><a id="menu-item139" href="https://learnopengl.com/Guest-Articles/2021/Tessellation/Height-map">Height map </a></li></ol></li></ol></li></ol></li><li id='Code-repository'><a id="menu-item99" href="https://learnopengl.com/Code-repository">Code repository </a></li><li id='Translations'><a id="menu-item119" href="https://learnopengl.com/Translations">Translations </a></li><li id='About'><a id="menu-item2" href="https://learnopengl.com/About">About </a></li></ol>		<div id="menu_book">
+            <a href="https://geni.us/learnopengl" target="_blank"><img src="/book/below_menu.png" class="clean"/></a>
+        </div>
+       <div id="donate">
+            <a href="https://www.paypal.me/learnopengl/" target="_blank">
+                <div id="donate_img"></div>
+                <img style="display: none" src="/img/donate_button_hover.png"/>
+                <!--<img id="donate_img" src="img/patreon.png"/>-->
+            </a>
+          <!--<div id="alipay">
+            <img style="width: 150px;" class="clean" src="/img/alipay_logo.png"/>
+            <img style="width: 150px; margin-top: 5px" src="/img/alipay.png"/>
+          </div>-->
+        </div> 
+		<!--
+		<div class="btc">
+			<h3>BTC</h3>
+			<p>
+				1CLGKgmBSuYJ1nnvDGAepVTKNNDpUjfpRa
+			</p>
+			<img src="/img/btc_qr.png"/>
+        </div> 
+		<div class="btc">
+			<h3>ETH/ERC20</h3>
+			<p>
+				0x1de59bd9e52521a46309474f8372531533bd7c43
+			</p>
+			<img src="/img/erc20_qr.png"/>
+        </div>       
+		!-->
+        <div id="ad">
+							<!--<div id="waldo-tag-1684"></div>-->
+			        </div>
+      
+        <div id="lefttwothirdad">
+            <div id="waldo-tag-2245"></div>
+        </div>
+    </div>
+    
+    <div id="content">
+    <h1 id="content-title">Framebuffers</h1>
+<h1 id="content-url" style='display:none;'>Advanced-OpenGL/Framebuffers</h1>
+<p>
+  So far we've used several types of screen buffers: a color buffer for writing color values, a depth buffer to write and test depth information, and finally a stencil buffer that allows us to discard certain fragments based on some condition. The combination of these buffers is stored somewhere in GPU memory and is called a <def>framebuffer</def>. OpenGL gives us the flexibility to define our own framebuffers and thus define our own color (and optionally a depth and stencil) buffer.  
+</p>
+
+<p>
+  The rendering operations we've done so far were all done on top of the render buffers attached to the <def>default framebuffer</def>. The default framebuffer is created and configured when you create your window (GLFW does this for us). By creating our own framebuffer we can get an additional target to render to.
+</p>
+
+<p>
+  The application of framebuffers may not immediately make sense, but rendering your scene to a different framebuffer allows us to use that result to create mirrors in a scene, or do cool post-processing effects for example. First we'll discuss how they actually work and then we'll use them by implementing those cool post-processing effects.
+</p>
+
+<h2>Creating a framebuffer</h2>
+<p>
+  Just like any other object in OpenGL we can create a framebuffer object (abbreviated to FBO) by using a function called <fun><function id='76'>glGenFramebuffers</function></fun>:
+</p>
+
+<pre class="cpp"><code>
+unsigned int fbo;
+<function id='76'>glGenFramebuffers</function>(1, &fbo);
+</code></pre>
+
+<p>
+  This pattern of object creation and usage is something we've seen dozens of times now so their usage functions are similar to all the other object's we've seen: first we create a framebuffer object, bind it as the active framebuffer, do some operations, and unbind the framebuffer. To bind the framebuffer we use <fun><function id='77'>glBindFramebuffer</function></fun>:
+</p>
+
+<pre><code>
+<function id='77'>glBindFramebuffer</function>(GL_FRAMEBUFFER, fbo);  
+</code></pre>
+
+<p>
+  By binding to the <var>GL_FRAMEBUFFER</var> target all the next <em>read</em> and <em>write</em> framebuffer operations will affect the currently bound framebuffer. It is also possible to bind a framebuffer to a read or write target specifically by binding to <var>GL_READ_FRAMEBUFFER</var> or <var>GL_DRAW_FRAMEBUFFER</var> respectively. The framebuffer bound to <var>GL_READ_FRAMEBUFFER</var> is then used for all read operations like <fun><function id='78'>glReadPixels</function></fun> and the framebuffer bound to <var>GL_DRAW_FRAMEBUFFER</var> is used as the destination for rendering, clearing and other write operations. Most of the times you won't need to make this distinction though and you generally bind to both with <var>GL_FRAMEBUFFER</var>. 
+</p>
+
+<p>
+  Unfortunately, we can't use our framebuffer yet because it is not <def>complete</def>. For a framebuffer to be complete the following requirements have to be satisfied: 
+</p>
+
+<ul>
+  <li>We have to attach at least one buffer (color, depth or stencil buffer).</li>
+  <li>There should be at least one color attachment.</li>
+  <li>All attachments should be complete as well (reserved memory).</li>
+  <li>Each buffer should have the same number of samples.</li>
+</ul>
+
+<p>
+  Don't worry if you don't know what samples are, we'll get to those in a <a href="https://learnopengl.com/Advanced-OpenGL/Anti-Aliasing" target="_blank">later</a> chapter.
+</p>
+
+<p>
+  From the requirements it should be clear that we need to create some kind of attachment for the framebuffer and attach this attachment to the framebuffer. After we've completed all requirements we can check if we actually successfully completed the framebuffer by calling <fun><function id='79'>glCheckFramebufferStatus</function></fun> with <var>GL_FRAMEBUFFER</var>. It then checks the currently bound framebuffer and returns any of <a href="https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/%67lCheckFramebufferStatus.xhtml" target="_blank">these</a> values found in the specification. If it returns <var>GL_FRAMEBUFFER_COMPLETE</var> we're good to go:
+</p>
+
+<pre><code>
+if(<function id='79'>glCheckFramebufferStatus</function>(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE)
+  // execute victory dance
+</code></pre>
+
+<p>
+  All subsequent rendering operations will now render to the attachments of the currently bound framebuffer. Since our framebuffer is not the default framebuffer, the rendering commands will have no impact on the visual output of your window. For this reason it is called <def>off-screen rendering</def> when rendering to a different framebuffer. If you want all rendering operations to have a visual impact again on the main window we need to make the default framebuffer active by binding to <code>0</code>:
+</p>
+
+<pre class="cpp"><code>
+<function id='77'>glBindFramebuffer</function>(GL_FRAMEBUFFER, 0);   
+</code></pre>
+
+<p>
+  When we're done with all framebuffer operations, do not forget to delete the framebuffer object:
+</p>
+
+<pre class="cpp"><code>
+<function id='80'>glDeleteFramebuffers</function>(1, &fbo);  
+</code></pre>
+
+<p>
+  Now before the completeness check is executed we need to attach one or more attachments to the framebuffer. An <def>attachment</def> is a memory location that can act as a buffer for the framebuffer, think of it as an image. When creating an attachment we have two options to take: textures or <def>renderbuffer</def> objects. 
+</p>
+
+<h3>Texture attachments</h3>
+<p>
+  When attaching a texture to a framebuffer, all rendering commands will write to the texture as if it was a normal color/depth or stencil buffer. The advantage of using textures is that the render output is stored inside the texture image that we can then easily use in our shaders.
+</p>
+
+<p>
+  Creating a texture for a framebuffer is roughly the same as creating a normal texture:
+</p>
+
+<pre class="cpp"><code>
+unsigned int texture;
+<function id='50'>glGenTextures</function>(1, &texture);
+<function id='48'>glBindTexture</function>(GL_TEXTURE_2D, texture);
+  
+<function id='52'>glTexImage2D</function>(GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
+<function id='15'>glTexParameter</function>i(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+<function id='15'>glTexParameter</function>i(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);  
+</code></pre>
+
+<p>
+  The main differences here is that we set the dimensions equal to the screen size (although this is not required) and we pass <code>NULL</code> as the texture's <code>data</code> parameter. For this texture, we're only allocating memory and not actually filling it. Filling the texture will happen as soon as we render to the framebuffer. Also note that we do not care about any of the wrapping methods or mipmapping since we won't be needing those in most cases.
+</p>
+
+<note>
+ If you want to render your whole screen to a texture of a smaller or larger size you need to call <fun><function id='22'>glViewport</function></fun> again (before rendering to your framebuffer) with the new dimensions of your texture, otherwise render commands will only fill part of the texture.
+</note>
+
+<p>
+  Now that we've created a texture, the last thing we need to do is actually attach it to the framebuffer:
+</p>
+
+<pre class="cpp"><code>
+<function id='81'>glFramebufferTexture2D</function>(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);  
+</code></pre>
+
+<p>
+  The <fun><function id='81'>glFrameBufferTexture2D</function></fun> function has the following parameters:
+</p>
+
+<ul>
+  <li><code>target</code>: the framebuffer type we're targeting (draw, read or both).</li>
+  <li><code>attachment</code>: the type of attachment we're going to attach. Right now we're attaching a color attachment. Note that the <code>0</code> at the end suggests we can attach more than 1 color attachment. We'll get to that in a later chapter.</li>
+  <li><code>textarget</code>: the type of the texture you want to attach.</li>
+  <li><code>texture</code>: the actual texture to attach.</li>
+  <li><code>level</code>: the mipmap level. We keep this at <code>0</code>.</li>
+</ul>
+
+<p>
+  Next to the color attachments we can also attach a depth and a stencil texture to the framebuffer object. To attach a depth attachment we specify the attachment type as <var>GL_DEPTH_ATTACHMENT</var>. Note that the texture's <def>format</def> and <def>internalformat</def> type should then become <var>GL_DEPTH_COMPONENT</var> to reflect the depth buffer's storage format. To attach a stencil buffer you use <var>GL_STENCIL_ATTACHMENT</var> as the second argument and specify the texture's formats as <var>GL_STENCIL_INDEX</var>.
+</p>
+
+<p>
+  It is also possible to attach both a depth buffer and a stencil buffer as a single texture. Each 32 bit value of the texture then contains 24 bits of depth information and 8 bits of stencil information. To attach a depth and stencil buffer as one texture we use the <var>GL_DEPTH_STENCIL_ATTACHMENT</var> type and configure the texture's formats to contain combined depth and stencil values. An example of attaching a depth and stencil buffer as one texture to the framebuffer is given below:
+</p>
+
+
+<pre class="cpp"><code>
+<function id='52'>glTexImage2D</function>(
+  GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, 800, 600, 0, 
+  GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, NULL
+);
+
+<function id='81'>glFramebufferTexture2D</function>(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, texture, 0);  
+</code></pre>
+
+<h3>Renderbuffer object attachments</h3>
+<p>
+  <def>Renderbuffer objects</def> were introduced to OpenGL after textures as a possible type of framebuffer attachment, Just like a texture image, a renderbuffer object is an actual buffer e.g. an array of bytes, integers, pixels or whatever. However, a renderbuffer object can not be directly read from. This gives it the added advantage that OpenGL can do a few memory optimizations that can give it a performance edge over textures for off-screen rendering to a framebuffer. 
+</p>
+
+<p>
+  Renderbuffer objects store all the render data directly into their buffer without any conversions to texture-specific formats, making them faster as a writeable storage medium. You cannot read from them directly, but it is possible to read from them via the slow <fun><function id='78'>glReadPixels</function></fun>. This returns a specified area of pixels from the currently bound framebuffer, but not directly from the attachment itself.  
+</p>
+
+<p>
+  Because their data is in a native format they are quite fast when writing data or copying data to other buffers. Operations like switching buffers are therefore quite fast when using renderbuffer objects. The <fun><function id='24'>glfwSwapBuffers</function></fun> function we've been using at the end of each frame may as well be implemented with renderbuffer objects: we simply write to a renderbuffer image, and swap to the other one at the end. Renderbuffer objects are perfect for these kind of operations. 
+</p>
+
+<p>
+  Creating a renderbuffer object looks similar to the framebuffer's code:
+</p>
+
+<pre class="cpp"><code>
+unsigned int rbo;
+<function id='82'>glGenRenderbuffers</function>(1, &rbo);
+</code></pre>
+
+<p>
+  And similarly we want to bind the renderbuffer object so all subsequent renderbuffer operations affect the current <var>rbo</var>:
+</p>
+
+<pre><code>
+<function id='83'>glBindRenderbuffer</function>(GL_RENDERBUFFER, rbo);  
+</code></pre>
+
+<p>
+  Since renderbuffer objects are write-only they are often used as depth and stencil attachments, since most of the time we don't really need to read values from them, but we do care about depth and stencil testing. We <strong>need</strong> the depth and stencil values for testing, but don't need to <em>sample</em> these values so a renderbuffer object suits this perfectly. When we're not sampling from these buffers, a renderbuffer object is generally preferred. 
+</p>
+
+<p>
+  Creating a depth and stencil renderbuffer object is done by calling the <fun><function id='88'>glRenderbufferStorage</function></fun> function:
+</p>
+
+<pre class="cpp"><code>
+<function id='88'>glRenderbufferStorage</function>(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 800, 600);
+</code></pre>
+
+<p>
+  Creating a renderbuffer object is similar to texture objects, the difference being that this object is specifically designed to be used as a framebuffer attachment, instead of a general purpose data buffer like a texture. Here we've chosen <var>GL_DEPTH24_STENCIL8</var> as the internal format, which holds both the depth and stencil buffer with 24 and 8 bits respectively.
+</p>
+
+<p>
+  The last thing left to do is to actually attach the renderbuffer object:
+</p>
+
+<pre><code>
+<function id='89'>glFramebufferRenderbuffer</function>(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);  
+</code></pre>
+
+<p>
+  Renderbuffer objects can be more efficient for use in your off-screen render projects, but it is important to realize when to use renderbuffer objects and when to use textures. The general rule is that if you never need to sample data from a specific buffer, it is wise to use a renderbuffer object for that specific buffer. If you need to sample data from a specific buffer like colors or depth values, you should use a texture attachment instead. 
+</p>
+
+<h2>Rendering to a texture</h2>
+<p>
+  Now that we know how framebuffers (sort of) work it's time to put them to good use. We're going to render the scene into a color texture attached to a framebuffer object we created and then draw this texture over a simple quad that spans the whole screen. The visual output is then exactly the same as without a framebuffer, but this time it's all printed on top of a single quad. Now why is this useful? In the next section we'll see why.
+</p>
+
+<p>
+  First thing to do is to create an actual framebuffer object and bind it, this is all relatively straightforward:
+</p>
+
+<pre class="cpp"><code>
+unsigned int framebuffer;
+<function id='76'>glGenFramebuffers</function>(1, &framebuffer);
+<function id='77'>glBindFramebuffer</function>(GL_FRAMEBUFFER, framebuffer);    
+</code></pre>
+
+<p>
+  Next we create a texture image that we attach as a color attachment to the framebuffer. We set the texture's dimensions equal to the width and height of the window and keep its data uninitialized:
+</p>
+
+<pre><code>
+// generate texture
+unsigned int textureColorbuffer;
+<function id='50'>glGenTextures</function>(1, &textureColorbuffer);
+<function id='48'>glBindTexture</function>(GL_TEXTURE_2D, textureColorbuffer);
+<function id='52'>glTexImage2D</function>(GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+<function id='15'>glTexParameter</function>i(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+<function id='15'>glTexParameter</function>i(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+<function id='48'>glBindTexture</function>(GL_TEXTURE_2D, 0);
+
+// attach it to currently bound framebuffer object
+<function id='81'>glFramebufferTexture2D</function>(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);  
+</code></pre>
+
+<p>
+  We also want to make sure OpenGL is able to do depth testing (and optionally stencil testing) so we have to make sure to add a depth (and stencil) attachment to the framebuffer. Since we'll only be sampling the color buffer and not the other buffers we can create a renderbuffer object for this purpose. 
+</p>
+
+<p>
+  Creating a renderbuffer object isn't too hard. The only thing we have to remember is that we're creating it as a depth <strong>and</strong> stencil attachment renderbuffer object. We set its <em>internal format</em> to <var>GL_DEPTH24_STENCIL8</var> which is enough precision for our purposes:
+</p>
+
+<pre class="cpp"><code>
+unsigned int rbo;
+<function id='82'>glGenRenderbuffers</function>(1, &rbo);
+<function id='83'>glBindRenderbuffer</function>(GL_RENDERBUFFER, rbo); 
+<function id='88'>glRenderbufferStorage</function>(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 800, 600);  
+<function id='83'>glBindRenderbuffer</function>(GL_RENDERBUFFER, 0);
+</code></pre>
+
+<p>
+  Once we've allocated enough memory for the renderbuffer object we can unbind the renderbuffer.
+</p>
+
+<p>
+  Then, as a final step before we complete the framebuffer, we attach the renderbuffer object to the depth <strong>and</strong> stencil attachment of the framebuffer:
+</p>
+
+<pre><code>
+<function id='89'>glFramebufferRenderbuffer</function>(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+</code></pre>
+
+<p>
+  Then we want to check if the framebuffer is complete and if it's not, we print an error message.
+</p>
+
+<pre class="cpp"><code>
+if(<function id='79'>glCheckFramebufferStatus</function>(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	std::cout &lt;&lt; "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" &lt;&lt; std::endl;
+<function id='77'>glBindFramebuffer</function>(GL_FRAMEBUFFER, 0);  
+</code></pre>
+
+<p>
+  Be sure to unbind the framebuffer to make sure we're not accidentally rendering to the wrong framebuffer.
+</p>
+
+<p>
+  Now that the framebuffer is complete, all we need to do to render to the framebuffer's buffers instead of the default framebuffers is to simply bind the framebuffer object. All subsequent render commands will then influence the currently bound framebuffer. All the depth and stencil operations will also read from the currently bound framebuffer's depth and stencil attachments if they're available. If you were to omit a depth buffer for example, all depth testing operations will no longer work.
+</p>
+
+<p>
+  So, to draw the scene to a single texture we'll have to take the following steps:
+</p>
+
+<ol>
+  <li>Render the scene as usual with the new framebuffer bound as the active framebuffer.</li>
+  <li>Bind to the default framebuffer.</li>
+  <li>Draw a quad that spans the entire screen with the new framebuffer's color buffer as its texture.</li>
+</ol>
+
+<p>
+  We'll render the same scene we've used in the <a href="https://learnopengl.com/Advanced-OpenGL/Depth-testing" target="_blank">depth testing</a> chapter, but this time with the old-school <a href="https://learnopengl.com/img/textures/container.jpg" target="_blank">container</a> texture.
+</p>
+
+<p>
+  To render the quad we're going to create a fresh set of simple shaders. We're not going to include fancy matrix transformations since we'll be supplying the <a href="/code_viewer.php?code=advanced/framebuffers_quad_vertices" target="_blank">vertex coordinates as normalized device coordinates</a> so we can directly forward them as output of the vertex shader. The vertex shader looks like this:
+</p>
+
+<pre><code>
+#version 330 core
+layout (location = 0) in vec2 aPos;
+layout (location = 1) in vec2 aTexCoords;
+
+out vec2 TexCoords;
+
+void main()
+{
+    gl_Position = vec4(aPos.x, aPos.y, 0.0, 1.0); 
+    TexCoords = aTexCoords;
+}  
+</code></pre>
+
+<p>
+  Nothing too fancy. The fragment shader is even more basic since the only thing we have to do is sample from a texture:
+</p>
+
+<pre><code>
+#version 330 core
+out vec4 FragColor;
+  
+in vec2 TexCoords;
+
+uniform sampler2D screenTexture;
+
+void main()
+{ 
+    FragColor = texture(screenTexture, TexCoords);
+}
+</code></pre>
+
+<p>
+  It is then up to you to create and configure a VAO for the screen quad. A single render iteration of the framebuffer procedure has the following structure:
+</p>
+
+<pre><code>
+// first pass
+<function id='77'>glBindFramebuffer</function>(GL_FRAMEBUFFER, framebuffer);
+<function id='13'><function id='10'>glClear</function>Color</function>(0.1f, 0.1f, 0.1f, 1.0f);
+<function id='10'>glClear</function>(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // we're not using the stencil buffer now
+<function id='60'>glEnable</function>(GL_DEPTH_TEST);
+DrawScene();	
+  
+// second pass
+<function id='77'>glBindFramebuffer</function>(GL_FRAMEBUFFER, 0); // back to default
+<function id='13'><function id='10'>glClear</function>Color</function>(1.0f, 1.0f, 1.0f, 1.0f); 
+<function id='10'>glClear</function>(GL_COLOR_BUFFER_BIT);
+  
+screenShader.use();  
+<function id='27'>glBindVertexArray</function>(quadVAO);
+glDisable(GL_DEPTH_TEST);
+<function id='48'>glBindTexture</function>(GL_TEXTURE_2D, textureColorbuffer);
+<function id='1'>glDrawArrays</function>(GL_TRIANGLES, 0, 6);  
+</code></pre>
+
+<p>
+  There are a few things to note. First, since each framebuffer we're using has its own set of buffers, we want to clear each of those buffers with the appropriate bits set by calling <fun><function id='10'>glClear</function></fun>. Second, when drawing the quad, we're disabling depth testing since we want to make sure the quad always renders in front of everything else; we'll have to enable depth testing again when we draw the normal scene though.
+</p>
+
+<p>
+  There are quite some steps that could go wrong here, so if you have no output, try to debug where possible and re-read the relevant sections of the chapter. If everything did work out successfully you'll get a visual result that looks like this:
+</p>
+
+<img src="/img/advanced/framebuffers_screen_texture.png" alt="An image of a 3D scene in OpenGL rendered to a texture via framebuffers"/>
+
+<p>
+  The left shows the visual output, exactly the same as we've seen in the <a href="https://learnopengl.com/Advanced-OpenGL/Depth-testing" target="_blank">depth testing</a> chapter, but this time rendered on a simple quad. If we render the scene in wireframe it's obvious we've only drawn a single quad in the default framebuffer.
+</p>
+
+<p>
+  You can find the source code of the application <a href="/code_viewer_gh.php?code=src/4.advanced_opengl/5.1.framebuffers/framebuffers.cpp" target="_blank">here</a>.
+</p>
+
+<p>
+  So what was the use of this again? Well, because we can now freely access each of the pixels of the completely rendered scene as a single texture image, we can create some interesting effects in the fragment shader. 
+</p>
+
+<h1>Post-processing</h1>
+<p>
+  Now that the entire scene is rendered to a single texture we can create cool <def>post-processing</def> effects by manipulating the scene texture. In this section we'll show you some of the more popular post-processing effects and how you may create your own with some added creativity.
+</p>
+
+<p>
+  Let's start with one of the simplest post-processing effects.
+</p>
+
+<h3>Inversion</h3>
+<p>
+  We have access to each of the colors of the render output so it's not so hard to return the inverse of these colors in the fragment shader. We can take the color of the screen texture and inverse it by subtracting it from <code>1.0</code>:
+</p>
+
+<pre><code>
+void main()
+{
+    FragColor = vec4(vec3(1.0 - texture(screenTexture, TexCoords)), 1.0);
+}  
+</code></pre>
+
+<p>
+  While inversion is a relatively simple post-processing effect it already creates funky results:
+</p>
+
+<img src="/img/advanced/framebuffers_inverse.png" class="clean" alt="Post-processing image of a 3D scene in OpenGL with inversed colors"/>
+
+<p>
+  The entire scene now has all its colors inversed with a single line of code in the fragment shader. Pretty cool huh?
+</p>
+
+<h3>Grayscale</h3>
+<p>
+  Another interesting effect is to remove all colors from the scene except the white, gray and black colors; effectively grayscaling the entire image. An easy way to do this is by taking all the color components and averaging their results:
+</p>
+
+<pre><code>
+void main()
+{
+    FragColor = texture(screenTexture, TexCoords);
+    float average = (FragColor.r + FragColor.g + FragColor.b) / 3.0;
+    FragColor = vec4(average, average, average, 1.0);
+}   
+</code></pre>
+
+<p>
+  This already creates pretty good results, but the human eye tends to be more sensitive to green colors and the least to blue. So to get the most physically accurate results we'll need to use weighted channels:
+</p>
+
+<pre><code>
+void main()
+{
+    FragColor = texture(screenTexture, TexCoords);
+    float average = 0.2126 * FragColor.r + 0.7152 * FragColor.g + 0.0722 * FragColor.b;
+    FragColor = vec4(average, average, average, 1.0);
+}   
+</code></pre>
+
+<img src="/img/advanced/framebuffers_grayscale.png" class="clean" alt="Post-processing image of a 3D scene in OpenGL with grayscale colors"/>
+
+<p>
+  You probably won't notice the difference right away, but with more complicated scenes, such a weighted grayscaling effect tends to be more realistic.
+</p>
+
+<h2>Kernel effects</h2>
+<p>
+  Another advantage about doing post-processing on a single texture image is that we can sample color values from other parts of the texture not specific to that fragment. We could for example take a small area around the current texture coordinate and sample multiple texture values around the current texture value. We can then create interesting effects by combining them in creative ways.
+</p>
+
+<p>
+  A <def>kernel</def> (or convolution matrix) is a small matrix-like array of values centered on the current pixel that multiplies surrounding pixel values by its kernel values and adds them all together to form a single value. We're adding a small offset to the texture coordinates in surrounding directions of the current pixel and combine the results based on the kernel. An example of a kernel is given below:
+</p>
+
+\[\begin{bmatrix}2 & 2 & 2 \\ 2 & -15 & 2 \\ 2 & 2 & 2 \end{bmatrix}\]
+
+<p>
+  This kernel takes 8 surrounding pixel values and multiplies them by <code>2</code> and the current pixel by <code>-15</code>. This example kernel multiplies the surrounding pixels by several weights determined in the kernel and balances the result by multiplying the current pixel by a large negative weight.
+</p>
+
+<note>
+  Most kernels you'll find over the internet all sum up to <code>1</code> if you add all the weights together. If they don't add up to <code>1</code> it means that the resulting texture color ends up brighter or darker than the original texture value.
+</note> 
+
+<p>
+  Kernels are an extremely useful tool for post-processing since they're quite easy to use and experiment with, and a lot of examples can be found online. We do have to slightly adapt the fragment shader a bit to actually support kernels. We make the assumption that each kernel we'll be using is a 3x3 kernel (which most kernels are):
+</p>
+
+<pre><code>
+const float offset = 1.0 / 300.0;  
+
+void main()
+{
+    vec2 offsets[9] = vec2[](
+        vec2(-offset,  offset), // top-left
+        vec2( 0.0f,    offset), // top-center
+        vec2( offset,  offset), // top-right
+        vec2(-offset,  0.0f),   // center-left
+        vec2( 0.0f,    0.0f),   // center-center
+        vec2( offset,  0.0f),   // center-right
+        vec2(-offset, -offset), // bottom-left
+        vec2( 0.0f,   -offset), // bottom-center
+        vec2( offset, -offset)  // bottom-right    
+    );
+
+    float kernel[9] = float[](
+        -1, -1, -1,
+        -1,  9, -1,
+        -1, -1, -1
+    );
+    
+    vec3 sampleTex[9];
+    for(int i = 0; i &lt; 9; i++)
+    {
+        sampleTex[i] = vec3(texture(screenTexture, TexCoords.st + offsets[i]));
+    }
+    vec3 col = vec3(0.0);
+    for(int i = 0; i &lt; 9; i++)
+        col += sampleTex[i] * kernel[i];
+    
+    FragColor = vec4(col, 1.0);
+}  
+</code></pre>
+
+<p>
+  In the fragment shader we first create an array of 9 <code>vec2</code> offsets for each surrounding texture coordinate. The offset is a constant value that you could customize to your liking. Then we define the kernel, which in this case is a <def>sharpen</def> kernel that sharpens each color value by sampling all surrounding pixels in an interesting way. Lastly, we add each offset to the current texture coordinate when sampling and multiply these texture values with the weighted kernel values that we add together.
+</p>
+
+<p>
+  This particular sharpen kernel looks like this:
+</p>
+
+<img src="/img/advanced/framebuffers_sharpen.png" class="clean" alt="Post-processing image of a 3D scene in OpenGL with blurred colors"/>
+
+<p>
+  This could be the base of some interesting effects where your player may be on a narcotic adventure.
+</p>
+
+
+<h3>Blur</h3>
+<p>
+  A kernel that creates a <def>blur</def> effect is defined as follows:
+</p>
+
+\[\begin{bmatrix} 1 & 2 & 1 \\ 2 & 4 & 2 \\ 1 & 2 & 1 \end{bmatrix} / 16\]
+
+<p>
+  Because all values add up to 16, directly returning the combined sampled colors would result in an extremely bright color so we have to divide each value of the kernel by <code>16</code>. The resulting kernel array then becomes:
+</p>
+
+<pre><code>
+float kernel[9] = float[](
+    1.0 / 16, 2.0 / 16, 1.0 / 16,
+    2.0 / 16, 4.0 / 16, 2.0 / 16,
+    1.0 / 16, 2.0 / 16, 1.0 / 16  
+);
+</code></pre>
+
+<p>
+  By only changing the kernel array in the fragment shader we can completely change the post-processing effect. It now looks something like this:
+</p>
+
+<img src="/img/advanced/framebuffers_blur.png" class="clean" alt="Post-processing image of a 3D scene in OpenGL with sharpened colors"/>
+
+
+<p>
+  Such a blur effect creates interesting possibilities. We could vary the blur amount over time to create the effect of someone being drunk, or increase the blur whenever the main character is not wearing glasses. Blurring can also be a useful tool for smoothing color values which we'll see use of in later chapters.
+</p>
+
+<p>
+  You can see that once we have such a little kernel implementation in place it is quite easy to create cool post-processing effects. Let's show you a last popular effect to finish this discussion.
+</p>
+
+<h3>Edge detection</h3>
+<p>
+  Below you can find an <def>edge-detection</def> kernel that is similar to the sharpen kernel:
+</p>
+
+\[\begin{bmatrix} 1 & 1 & 1 \\ 1 & -8 & 1 \\ 1 & 1 & 1 \end{bmatrix}\]
+
+<p>
+  This kernel highlights all edges and darkens the rest, which is pretty useful when we only care about edges in an image.
+</p>
+
+<img src="/img/advanced/framebuffers_edge_detection.png" class="clean" alt="Post-processing image of a 3D scene in OpenGL with edge detection filter"/>
+
+<p>
+  It probably does not come as a surprise that kernels like this are used as image-manipulating tools/filters in tools like Photoshop. Because of a graphic card's ability to process fragments with extreme parallel capabilities, we can manipulate images on a per-pixel basis in real-time with relative ease. Image-editing tools therefore tend to use graphics cards for image-processing. 
+</p>
+
+
+<h2>Exercises</h2>
+<ul>
+  <li>Can you use framebuffers to create a rear-view mirror? For this you'll have to draw your scene twice: one with the camera rotated 180 degrees and the other as normal. Try to create a small quad at the top of your screen to apply the mirror texture on, something like <a href="/img/advanced/framebuffers_mirror.png" target="_blank">this</a>; <a href="/code_viewer_gh.php?code=src/4.advanced_opengl/5.2.framebuffers_exercise1/framebuffers_exercise1.cpp" target="_blank">solution</a>.</li>
+  <li>Play around with the kernel values and create your own interesting post-processing effects. Try searching the internet as well for other interesting kernels.</li>
+</ul>
+       
+
+    </div>
+    
+    <div id="hover">
+        HI
+    </div>
+   <!-- 728x90/320x50 sticky footer -->
+<!--<div id="waldo-tag-6196"></div>-->
+
+   <div id="disqus_thread"></div>
+
+    
+
+
+</div> <!-- container div -->
+
+
+</div> <!-- super container div -->
+</body>
+</html>

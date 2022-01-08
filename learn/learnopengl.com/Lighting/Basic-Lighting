@@ -1,0 +1,679 @@
+
+
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <meta charset="utf-8"/>
+    <title>LearnOpenGL - Basic Lighting</title>	<!--<title>Learn OpenGL, extensive tutorial resource for learning Modern OpenGL</title>-->
+    <link rel="shortcut icon" type="image/ico" href="/favicon.ico"  />
+    <meta name="description" content="Learn OpenGL . com provides good and clear modern 3.3+ OpenGL tutorials with clear examples. A great resource to learn modern OpenGL aimed at beginners.">
+	<meta name="fragment" content="!">
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-51879160-1', 'learnopengl.com');
+      ga('send', 'pageview');
+
+    </script>
+    <!--<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-7855791439695850",
+              enable_page_level_ads: true
+         });
+    </script>
+	<script async='async' src='https://www.googletagservices.com/tag/js/gpt.js'></script>
+	<script>
+	  var googletag = googletag || {};
+	  googletag.cmd = googletag.cmd || [];
+	</script>
+	<script>
+	  googletag.cmd.push(function() {
+		googletag.defineSlot('/8491498/learnopengl_video', [300, 225], 'div-gpt-ad-1540574378241-0').addService(googletag.pubads());
+		googletag.pubads().enableSingleRequest();
+		googletag.pubads().collapseEmptyDivs();
+		googletag.enableServices();
+	  });
+	</script>
+    <script type="text/javascript" src="//cdn.thisiswaldo.com/static/js/1681.js"></script>
+	<script src="/js/jquery-1.11.0.min.js"></script>
+	<script src="/js/hoverintent.js"></script>
+	<link rel="stylesheet" type="text/css" href="/layout.css">
+    <link rel="stylesheet" type="text/css" href="/js/styles/obsidian.css">
+    <script src="/js/highlight.pack.js"></script>    
+    <script src="/js/functions.js"></script>
+    <script type="text/javascript" src="/js/mathjax/MathJax.js?config=TeX-AMS_HTML"></script>
+    <script>
+    // Has to be loaded last due to content bug 
+    MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+    </script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script>  
+        $(document).ready(function() {
+            // check if user visited from the old # based urls, re-direct to ?p= form
+            if(window.location.hash)
+            {
+                var name = window.location.hash.substring(2);
+                // name = name.replace(/-/g," ");
+                var index = name.indexOf('#'); // Remove any hash fragments from the url (Disquss adds hash fragments for comments, but results in 404 pages)
+                if(index >= 0)
+                    name = name.substring(0, index);
+                
+                window.location.href = "https://learnopengl.com/" + name;
+            } else {
+                    // Check if data has been succesfully loaded, if so: change title bar as ajax hash fragment
+                    var title = $('#content-url').text();
+                  
+                    // Refresh syntax highlighting
+                    // $('pre').each(function(i, e) {hljs.highlightBlock(e)});
+                  
+                    // Reset DISQUS
+                    // if(title == '/dev/')
+                        // title = '';
+                    // alert('hoi');
+					
+					// place video tag
+					if(title != '') {
+						var videoad = "%3Cdiv id=\'waldo-tag-12074\'%3E %3Cscript%3Egoogletag.cmd.push(function() {googletag.display(\'waldo-tag-12074\'); }); %3C/script%3E%3C/div%3E";
+						$('#content p:nth-of-type(3)').after(unescape(videoad));
+					}
+					
+                    // Adjust ads for correct bottom positioning based on content size
+                    window.setTimeout(function() {  
+                        AdPositioning();
+                     }, 3000);
+                  
+                  
+                    // set API resets after time-out (once content is properly loaded)
+                    window.setTimeout(function() {  
+                        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);       
+                        MathJax.Hub.Queue(["resetEquationNumbers", MathJax.InputJax.TeX]);
+                        
+                        var page_url = title == "" ? "http://www.learnopengl.com/" : "http://www.learnopengl.com/" + title;
+                        if(typeof DISQUS !== 'undefined') {                                              
+                            DISQUS.reset({
+                              reload: true,
+                              config: function () {  
+                                this.page.identifier = title;  
+                                this.page.url = page_url;
+                              }
+                            });
+                            $('#disqus_thread').show();
+                        }
+                           // Refresh callbacks on <function> tags
+                        SetFunctionTagCallbacks();        
+                    }, 1000);
+                                        
+                    // Zet ook de juiste button op 'selected'
+                    $('#nav li span, #nav li a').removeClass('selected');                
+                    if(title != '')
+                    {                    
+                        $('#nav li[id=\'' + title + '\']').children('span, a').addClass('selected');
+                    }
+                    // En open menu waar nodig
+                    var parents = $('#nav span.selected, #nav a.selected').parents('li').children('span.closed, a.closed');
+                    var index = 0;
+                    for(index = parents.length - 1; index >= 0; index--)
+                    {             
+                        
+                        var id = $(parents[index]).attr("id").replace( /^\D+/g, '');
+                        MenuClick(id, false);
+                    }                          
+                
+            }
+        });
+		// var initialized = false;
+        // window.onpopstate = function() {
+            // if(initialized)
+                // LoadPage();
+			// else
+				// initialized = true;
+        // };
+        
+        // Set up DISQUS
+        // $(document).ready(function() {
+            var disqus_shortname = 'learnopengl';
+            (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();           
+        // });
+    </script>
+</head>
+<body>
+<a href="https://learnopengl.com">
+<div id="header">
+</div>
+</a>
+
+<div id="supercontainer">
+    <!-- 728x90/320x50 -->
+    <div id="header_ad">
+        <div id="waldo-tag-6194"></div>
+    </div>
+    <div id="rightad_container">
+        <div id="rightad">
+            <!-- /8491498/learnopengl_video -->
+            <!--<div id='div-gpt-ad-1540574378241-0' style='height:225px; width:300px;'>
+			<script>
+			googletag.cmd.push(function() { googletag.display('div-gpt-ad-1540574378241-0'); });
+			</script>
+			</div>            
+            <br/>-->
+			<!-- place in-content -->
+			<!--<div id='waldo-tag-12074'>
+			 <script>
+			   googletag.cmd.push(function() { googletag.display('waldo-tag-12074'); });
+			 </script>
+			</div>-->
+           
+            <div id="waldo-tag-1715"></div>
+        </div>
+
+        <div id="admessage">
+            If you're running AdBlock, please consider whitelisting this site if you'd like to support LearnOpenGL; and no worries, I won't be mad if you don't :)
+            <!--<br/><br/>
+            Also, check out this little local multiplayer-only game I've made: <a href="https://store.steampowered.com/app/983590/Tank_Blazers/" target="_blank">Tank Blazers</a>.
+            <br/>
+            <a href="https://store.steampowered.com/app/983590/Tank_Blazers" target="_blank"><img src="/img/tank_blazers.jpg"  style="width:278px; margin-top: 9px; margin-left: -3px;"/></a>-->
+        </div>
+        
+        <div id="rightonethirdad">
+            <div id="waldo-tag-2246"></div>
+        </div>
+        
+        <div id="rightbottomad">            
+			<div id="waldo-tag-2247"></div>								
+        </div>
+    </div>
+    <div id="container">
+        <div id="loading"></div>
+<script> 
+$(document).ready(function() {
+$('#menu-item4').mousedown(function() { MenuClick(4, true) });
+$('#menu-item48').mousedown(function() { MenuClick(48, true) });
+$('#menu-item56').mousedown(function() { MenuClick(56, true) });
+$('#menu-item63').mousedown(function() { MenuClick(63, true) });
+$('#menu-item100').mousedown(function() { MenuClick(100, true) });
+$('#menu-item102').mousedown(function() { MenuClick(102, true) });
+$('#menu-item113').mousedown(function() { MenuClick(113, true) });
+$('#menu-item116').mousedown(function() { MenuClick(116, true) });
+$('#menu-item78').mousedown(function() { MenuClick(78, true) });
+$('#menu-item81').mousedown(function() { MenuClick(81, true) });
+$('#menu-item85').mousedown(function() { MenuClick(85, true) });
+$('#menu-item125').mousedown(function() { MenuClick(125, true) });
+$('#menu-item128').mousedown(function() { MenuClick(128, true) });
+$('#menu-item129').mousedown(function() { MenuClick(129, true) });
+$('#menu-item133').mousedown(function() { MenuClick(133, true) });
+$('#menu-item134').mousedown(function() { MenuClick(134, true) });
+$('#menu-item138').mousedown(function() { MenuClick(138, true) });
+}); 
+</script>   
+    <div id="nav">
+         <div id="social">
+            <a href="https://github.com/JoeyDeVries/LearnOpenGL" target="_blank">
+                    <img src="/img/github.png" class="social_ico">
+            </a>
+             <!-- <a href="https://www.facebook.com/Learnopengl-2199631333595544/" target="_blank">
+                <img src="/img/facebook.png" class="social_ico">
+            </a>-->
+            <a href="https://twitter.com/JoeyDeVriez" target="_blank">
+                <img src="/img/twitter.png" class="social_ico">
+            </a>
+          
+        </div>
+    <img src='img/nav-button_bottom-arrow.png' style='display: none'><ol><li id='Introduction'><a id="menu-item1" href="https://learnopengl.com/Introduction">Introduction </a></li><li id='Getting-started'><span id="menu-item4" class="closed">Getting started </span><ol id="menu-items-of4" style="display:none;"><li id='Getting-started/OpenGL'><a id="menu-item49" href="https://learnopengl.com/Getting-started/OpenGL">OpenGL </a></li><li id='Getting-started/Creating-a-window'><a id="menu-item5" href="https://learnopengl.com/Getting-started/Creating-a-window">Creating a window </a></li><li id='Getting-started/Hello-Window'><a id="menu-item6" href="https://learnopengl.com/Getting-started/Hello-Window">Hello Window </a></li><li id='Getting-started/Hello-Triangle'><a id="menu-item38" href="https://learnopengl.com/Getting-started/Hello-Triangle">Hello Triangle </a></li><li id='Getting-started/Shaders'><a id="menu-item39" href="https://learnopengl.com/Getting-started/Shaders">Shaders </a></li><li id='Getting-started/Textures'><a id="menu-item40" href="https://learnopengl.com/Getting-started/Textures">Textures </a></li><li id='Getting-started/Transformations'><a id="menu-item43" href="https://learnopengl.com/Getting-started/Transformations">Transformations </a></li><li id='Getting-started/Coordinate-Systems'><a id="menu-item44" href="https://learnopengl.com/Getting-started/Coordinate-Systems">Coordinate Systems </a></li><li id='Getting-started/Camera'><a id="menu-item47" href="https://learnopengl.com/Getting-started/Camera">Camera </a></li><li id='Getting-started/Review'><a id="menu-item50" href="https://learnopengl.com/Getting-started/Review">Review </a></li></ol></li><li id='Lighting'><span id="menu-item48" class="closed">Lighting </span><ol id="menu-items-of48" style="display:none;"><li id='Lighting/Colors'><a id="menu-item51" href="https://learnopengl.com/Lighting/Colors">Colors </a></li><li id='Lighting/Basic-Lighting'><a id="menu-item52" href="https://learnopengl.com/Lighting/Basic-Lighting">Basic Lighting </a></li><li id='Lighting/Materials'><a id="menu-item53" href="https://learnopengl.com/Lighting/Materials">Materials </a></li><li id='Lighting/Lighting-maps'><a id="menu-item54" href="https://learnopengl.com/Lighting/Lighting-maps">Lighting maps </a></li><li id='Lighting/Light-casters'><a id="menu-item55" href="https://learnopengl.com/Lighting/Light-casters">Light casters </a></li><li id='Lighting/Multiple-lights'><a id="menu-item58" href="https://learnopengl.com/Lighting/Multiple-lights">Multiple lights </a></li><li id='Lighting/Review'><a id="menu-item57" href="https://learnopengl.com/Lighting/Review">Review </a></li></ol></li><li id='Model-Loading'><span id="menu-item56" class="closed">Model Loading </span><ol id="menu-items-of56" style="display:none;"><li id='Model-Loading/Assimp'><a id="menu-item59" href="https://learnopengl.com/Model-Loading/Assimp">Assimp </a></li><li id='Model-Loading/Mesh'><a id="menu-item60" href="https://learnopengl.com/Model-Loading/Mesh">Mesh </a></li><li id='Model-Loading/Model'><a id="menu-item61" href="https://learnopengl.com/Model-Loading/Model">Model </a></li></ol></li><li id='Advanced-OpenGL'><span id="menu-item63" class="closed">Advanced OpenGL </span><ol id="menu-items-of63" style="display:none;"><li id='Advanced-OpenGL/Depth-testing'><a id="menu-item72" href="https://learnopengl.com/Advanced-OpenGL/Depth-testing">Depth testing </a></li><li id='Advanced-OpenGL/Stencil-testing'><a id="menu-item73" href="https://learnopengl.com/Advanced-OpenGL/Stencil-testing">Stencil testing </a></li><li id='Advanced-OpenGL/Blending'><a id="menu-item74" href="https://learnopengl.com/Advanced-OpenGL/Blending">Blending </a></li><li id='Advanced-OpenGL/Face-culling'><a id="menu-item77" href="https://learnopengl.com/Advanced-OpenGL/Face-culling">Face culling </a></li><li id='Advanced-OpenGL/Framebuffers'><a id="menu-item65" href="https://learnopengl.com/Advanced-OpenGL/Framebuffers">Framebuffers </a></li><li id='Advanced-OpenGL/Cubemaps'><a id="menu-item66" href="https://learnopengl.com/Advanced-OpenGL/Cubemaps">Cubemaps </a></li><li id='Advanced-OpenGL/Advanced-Data'><a id="menu-item69" href="https://learnopengl.com/Advanced-OpenGL/Advanced-Data">Advanced Data </a></li><li id='Advanced-OpenGL/Advanced-GLSL'><a id="menu-item67" href="https://learnopengl.com/Advanced-OpenGL/Advanced-GLSL">Advanced GLSL </a></li><li id='Advanced-OpenGL/Geometry-Shader'><a id="menu-item68" href="https://learnopengl.com/Advanced-OpenGL/Geometry-Shader">Geometry Shader </a></li><li id='Advanced-OpenGL/Instancing'><a id="menu-item70" href="https://learnopengl.com/Advanced-OpenGL/Instancing">Instancing </a></li><li id='Advanced-OpenGL/Anti-Aliasing'><a id="menu-item75" href="https://learnopengl.com/Advanced-OpenGL/Anti-Aliasing">Anti Aliasing </a></li></ol></li><li id='Advanced-Lighting'><span id="menu-item100" class="closed">Advanced Lighting </span><ol id="menu-items-of100" style="display:none;"><li id='Advanced-Lighting/Advanced-Lighting'><a id="menu-item101" href="https://learnopengl.com/Advanced-Lighting/Advanced-Lighting">Advanced Lighting </a></li><li id='Advanced-Lighting/Gamma-Correction'><a id="menu-item110" href="https://learnopengl.com/Advanced-Lighting/Gamma-Correction">Gamma Correction </a></li><li id='Advanced-Lighting/Shadows'><span id="menu-item102" class="closed">Shadows </span><ol id="menu-items-of102" style="display:none;"><li id='Advanced-Lighting/Shadows/Shadow-Mapping'><a id="menu-item103" href="https://learnopengl.com/Advanced-Lighting/Shadows/Shadow-Mapping">Shadow Mapping </a></li><li id='Advanced-Lighting/Shadows/Point-Shadows'><a id="menu-item104" href="https://learnopengl.com/Advanced-Lighting/Shadows/Point-Shadows">Point Shadows </a></li></ol></li><li id='Advanced-Lighting/Normal-Mapping'><a id="menu-item106" href="https://learnopengl.com/Advanced-Lighting/Normal-Mapping">Normal Mapping </a></li><li id='Advanced-Lighting/Parallax-Mapping'><a id="menu-item107" href="https://learnopengl.com/Advanced-Lighting/Parallax-Mapping">Parallax Mapping </a></li><li id='Advanced-Lighting/HDR'><a id="menu-item111" href="https://learnopengl.com/Advanced-Lighting/HDR">HDR </a></li><li id='Advanced-Lighting/Bloom'><a id="menu-item112" href="https://learnopengl.com/Advanced-Lighting/Bloom">Bloom </a></li><li id='Advanced-Lighting/Deferred-Shading'><a id="menu-item108" href="https://learnopengl.com/Advanced-Lighting/Deferred-Shading">Deferred Shading </a></li><li id='Advanced-Lighting/SSAO'><a id="menu-item109" href="https://learnopengl.com/Advanced-Lighting/SSAO">SSAO </a></li></ol></li><li id='PBR'><span id="menu-item113" class="closed">PBR </span><ol id="menu-items-of113" style="display:none;"><li id='PBR/Theory'><a id="menu-item114" href="https://learnopengl.com/PBR/Theory">Theory </a></li><li id='PBR/Lighting'><a id="menu-item115" href="https://learnopengl.com/PBR/Lighting">Lighting </a></li><li id='PBR/IBL'><span id="menu-item116" class="closed">IBL </span><ol id="menu-items-of116" style="display:none;"><li id='PBR/IBL/Diffuse-irradiance'><a id="menu-item117" href="https://learnopengl.com/PBR/IBL/Diffuse-irradiance">Diffuse irradiance </a></li><li id='PBR/IBL/Specular-IBL'><a id="menu-item118" href="https://learnopengl.com/PBR/IBL/Specular-IBL">Specular IBL </a></li></ol></li></ol></li><li id='In-Practice'><span id="menu-item78" class="closed">In Practice </span><ol id="menu-items-of78" style="display:none;"><li id='In-Practice/Debugging'><a id="menu-item79" href="https://learnopengl.com/In-Practice/Debugging">Debugging </a></li><li id='In-Practice/Text-Rendering'><a id="menu-item80" href="https://learnopengl.com/In-Practice/Text-Rendering">Text Rendering </a></li><li id='In-Practice/2D-Game'><span id="menu-item81" class="closed">2D Game </span><ol id="menu-items-of81" style="display:none;"><li id='In-Practice/2D-Game/Breakout'><a id="menu-item82" href="https://learnopengl.com/In-Practice/2D-Game/Breakout">Breakout </a></li><li id='In-Practice/2D-Game/Setting-up'><a id="menu-item88" href="https://learnopengl.com/In-Practice/2D-Game/Setting-up">Setting up </a></li><li id='In-Practice/2D-Game/Rendering-Sprites'><a id="menu-item83" href="https://learnopengl.com/In-Practice/2D-Game/Rendering-Sprites">Rendering Sprites </a></li><li id='In-Practice/2D-Game/Levels'><a id="menu-item84" href="https://learnopengl.com/In-Practice/2D-Game/Levels">Levels </a></li><li id='In-Practice/2D-Game/Collisions'><span id="menu-item85" class="closed">Collisions </span><ol id="menu-items-of85" style="display:none;"><li id='In-Practice/2D-Game/Collisions/Ball'><a id="menu-item95" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Ball">Ball </a></li><li id='In-Practice/2D-Game/Collisions/Collision-detection'><a id="menu-item96" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Collision-detection">Collision detection </a></li><li id='In-Practice/2D-Game/Collisions/Collision-resolution'><a id="menu-item97" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Collision-resolution">Collision resolution </a></li></ol></li><li id='In-Practice/2D-Game/Particles'><a id="menu-item89" href="https://learnopengl.com/In-Practice/2D-Game/Particles">Particles </a></li><li id='In-Practice/2D-Game/Postprocessing'><a id="menu-item90" href="https://learnopengl.com/In-Practice/2D-Game/Postprocessing">Postprocessing </a></li><li id='In-Practice/2D-Game/Powerups'><a id="menu-item91" href="https://learnopengl.com/In-Practice/2D-Game/Powerups">Powerups </a></li><li id='In-Practice/2D-Game/Audio'><a id="menu-item94" href="https://learnopengl.com/In-Practice/2D-Game/Audio">Audio </a></li><li id='In-Practice/2D-Game/Render-text'><a id="menu-item92" href="https://learnopengl.com/In-Practice/2D-Game/Render-text">Render text </a></li><li id='In-Practice/2D-Game/Final-thoughts'><a id="menu-item93" href="https://learnopengl.com/In-Practice/2D-Game/Final-thoughts">Final thoughts </a></li></ol></li></ol></li><li id='Guest-Articles'><span id="menu-item125" class="closed">Guest Articles </span><ol id="menu-items-of125" style="display:none;"><li id='Guest-Articles/How-to-publish'><a id="menu-item126" href="https://learnopengl.com/Guest-Articles/How-to-publish">How to publish </a></li><li id='Guest-Articles/2020'><span id="menu-item128" class="closed">2020 </span><ol id="menu-items-of128" style="display:none;"><li id='Guest-Articles/2020/OIT'><span id="menu-item129" class="closed">OIT </span><ol id="menu-items-of129" style="display:none;"><li id='Guest-Articles/2020/OIT/Introduction'><a id="menu-item130" href="https://learnopengl.com/Guest-Articles/2020/OIT/Introduction">Introduction </a></li><li id='Guest-Articles/2020/OIT/Weighted-Blended'><a id="menu-item132" href="https://learnopengl.com/Guest-Articles/2020/OIT/Weighted-Blended">Weighted Blended </a></li></ol></li><li id='Guest-Articles/2020/Skeletal-Animation'><a id="menu-item131" href="https://learnopengl.com/Guest-Articles/2020/Skeletal-Animation">Skeletal Animation </a></li></ol></li><li id='Guest-Articles/2021'><span id="menu-item133" class="closed">2021 </span><ol id="menu-items-of133" style="display:none;"><li id='Guest-Articles/2021/CSM'><a id="menu-item137" href="https://learnopengl.com/Guest-Articles/2021/CSM">CSM </a></li><li id='Guest-Articles/2021/Scene'><span id="menu-item134" class="closed">Scene </span><ol id="menu-items-of134" style="display:none;"><li id='Guest-Articles/2021/Scene/Scene-Graph'><a id="menu-item135" href="https://learnopengl.com/Guest-Articles/2021/Scene/Scene-Graph">Scene Graph </a></li><li id='Guest-Articles/2021/Scene/Frustum-Culling'><a id="menu-item136" href="https://learnopengl.com/Guest-Articles/2021/Scene/Frustum-Culling">Frustum Culling </a></li></ol></li><li id='Guest-Articles/2021/Tessellation'><span id="menu-item138" class="closed">Tessellation </span><ol id="menu-items-of138" style="display:none;"><li id='Guest-Articles/2021/Tessellation/Height-map'><a id="menu-item139" href="https://learnopengl.com/Guest-Articles/2021/Tessellation/Height-map">Height map </a></li></ol></li></ol></li></ol></li><li id='Code-repository'><a id="menu-item99" href="https://learnopengl.com/Code-repository">Code repository </a></li><li id='Translations'><a id="menu-item119" href="https://learnopengl.com/Translations">Translations </a></li><li id='About'><a id="menu-item2" href="https://learnopengl.com/About">About </a></li></ol>		<div id="menu_book">
+            <a href="https://geni.us/learnopengl" target="_blank"><img src="/book/below_menu.png" class="clean"/></a>
+        </div>
+       <div id="donate">
+            <a href="https://www.paypal.me/learnopengl/" target="_blank">
+                <div id="donate_img"></div>
+                <img style="display: none" src="/img/donate_button_hover.png"/>
+                <!--<img id="donate_img" src="img/patreon.png"/>-->
+            </a>
+          <!--<div id="alipay">
+            <img style="width: 150px;" class="clean" src="/img/alipay_logo.png"/>
+            <img style="width: 150px; margin-top: 5px" src="/img/alipay.png"/>
+          </div>-->
+        </div> 
+		<!--
+		<div class="btc">
+			<h3>BTC</h3>
+			<p>
+				1CLGKgmBSuYJ1nnvDGAepVTKNNDpUjfpRa
+			</p>
+			<img src="/img/btc_qr.png"/>
+        </div> 
+		<div class="btc">
+			<h3>ETH/ERC20</h3>
+			<p>
+				0x1de59bd9e52521a46309474f8372531533bd7c43
+			</p>
+			<img src="/img/erc20_qr.png"/>
+        </div>       
+		!-->
+        <div id="ad">
+							<!--<div id="waldo-tag-1684"></div>-->
+			        </div>
+      
+        <div id="lefttwothirdad">
+            <div id="waldo-tag-2245"></div>
+        </div>
+    </div>
+    
+    <div id="content">
+    <h1 id="content-title">Basic Lighting</h1>
+<h1 id="content-url" style='display:none;'>Lighting/Basic-Lighting</h1>
+<p>
+  Lighting in the real world is extremely complicated and depends on way too many factors, something we can't afford to calculate on the limited processing power we have. Lighting in OpenGL is therefore based on approximations of reality using simplified models that are much easier to process and look relatively similar. These lighting models are based on the physics of light as we understand it. One of those models is called the <def>Phong lighting model</def>. The major building blocks of the Phong lighting model consist of 3 components: ambient, diffuse and specular lighting. Below you can see what these lighting components look like on their own and combined:
+</p>
+
+<img src="/img/lighting/basic_lighting_phong.png"/>
+
+<p>  
+  <ul>
+    <li><def>Ambient lighting</def>: even when it is dark there is usually still some light somewhere in the world (the moon, a distant light) so objects are almost never completely dark. To simulate this we use an ambient lighting constant that always gives the object some color.</li>
+    <li><def>Diffuse lighting</def>: simulates the directional impact a light object has on an object. This is the most visually significant component of the lighting model. The more a part of an object faces the light source, the brighter it becomes.</li>
+    <li><def>Specular lighting</def>: simulates the bright spot of a light that appears on shiny objects. Specular highlights are more inclined to the color of the light than the color of the object.</li>
+  </ul>
+</p>
+
+<p>
+  To create visually interesting scenes we want to at least simulate these 3 lighting components. We'll start with the simplest one: <em>ambient lighting</em>.
+</p>
+
+<h1>Ambient lighting</h1>
+<p>
+  Light usually does not come from a single light source, but from many light sources scattered all around us, even when they're not immediately visible. One of the properties of light is that it can scatter and bounce in many directions, reaching spots that aren't directly visible; light can thus <em>reflect</em> on other surfaces and have an indirect impact on the lighting of an object. Algorithms that take this into consideration are called <def>global illumination</def> algorithms, but these are complicated and expensive to calculate.
+</p>
+
+<p>
+  Since we're not big fans of complicated and expensive algorithms we'll start by using a very simplistic model of global illumination, namely <def>ambient lighting</def>. As you've seen in the previous section we use a small constant (light) color that we add to the final resulting color of the object's fragments, thus making it look like there is always some scattered light even when there's not a direct light source.
+</p>
+
+<p>
+  Adding ambient lighting to the scene is really easy. We take the light's color, multiply it with a small constant ambient factor, multiply this with the object's color, and use that as the fragment's color in the cube object's shader:
+</p>
+
+<pre><code>
+void main()
+{
+    float ambientStrength = 0.1;
+    vec3 ambient = ambientStrength * lightColor;
+
+    vec3 result = ambient * objectColor;
+    FragColor = vec4(result, 1.0);
+}  
+</code></pre>
+
+<p>
+  If you'd now run the program, you'll notice that the first stage of lighting is now successfully applied to the object. The object is quite dark, but not completely since ambient lighting is applied (note that the light cube is unaffected because we use a different shader). It should look something like this:
+</p>
+
+<img src="/img/lighting/ambient_lighting.png" class="clean"/>
+
+<h1>Diffuse lighting</h1>
+<p>
+	Ambient lighting by itself doesn't produce the most interesting results, but diffuse lighting however will start to give a significant visual impact on the object. Diffuse lighting gives the object more brightness the closer its fragments are aligned to the light rays from a light source. To give you a better understanding of diffuse lighting take a look at the following image:
+</p>
+
+<img src="/img/lighting/diffuse_light.png" class="clean"/>
+
+<p>
+  To the left we find a light source with a light ray targeted at a single fragment of our object. We  need to measure at what angle the light ray touches the fragment. If the light ray is perpendicular to the object's surface the light has the greatest impact. To measure the angle between the light ray and the fragment we use something called a <def>normal vector</def>, that is a vector  perpendicular to the fragment's surface (here depicted as a yellow arrow); we'll get to that later. The angle between the two vectors can then easily be calculated with the dot product.
+</p>
+
+<p>
+  You may remember from the <a href="https://learnopengl.com/Getting-started/Transformations" target="_blank">transformations</a> chapter that, the lower the angle  between two unit vectors, the more the dot product is inclined towards a value of 1. When the angle between both vectors is 90 degrees, the dot product becomes 0. The same applies to \(\theta\): the larger \(\theta\) becomes, the less of an impact the light should have on the fragment's color.
+</p>
+
+<note>
+  Note that to get (only) the cosine of the angle between both vectors we will work with <em>unit vectors</em> (vectors of length <code>1</code>) so we need to make sure all the vectors are normalized, otherwise the dot product returns more than just the cosine (see <a href="https://learnopengl.com/Getting-started/Transformations" target="_blank">Transformations</a>).
+</note>
+
+<p>
+  The resulting dot product thus returns a scalar that we can use to calculate the light's impact on the fragment's color, resulting in differently lit fragments based on their orientation towards the light.
+</p>
+
+<p>
+  So, what do we need to calculate diffuse lighting:
+  <ul>
+    <li>Normal vector: a vector that is perpendicular to the vertex' surface.</li>
+    <li>The directed light ray: a direction vector that is the difference vector between the light's position and the fragment's position. To calculate this light ray we need the light's position vector and the fragment's position vector.</li>
+  </ul>
+</p>
+
+<h2>Normal vectors</h2>
+<p>
+  A normal vector is a (unit) vector that is perpendicular to the surface of a vertex. Since a vertex by itself has no surface (it's just a single point in space) we retrieve a normal vector by using its surrounding vertices to figure out the surface of the vertex. We can use a little trick to calculate the normal vectors for all the cube's vertices by using the cross product, but since a 3D cube is not a complicated shape we can simply manually add them to the vertex data. The updated vertex data array can be found <a href="/code_viewer.php?code=lighting/basic_lighting_vertex_data" target="_blank">here</a>. Try to visualize that the normals are indeed vectors perpendicular to each plane's surface (a cube consists of 6 planes).
+</p>
+
+<p>
+  Since we added extra data to the vertex array we should update the cube's vertex shader:
+</p>
+
+<pre><code>
+#version 330 core
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec3 aNormal;
+...
+</code></pre>
+
+<p>
+  Now that we added a normal vector to each of the vertices and updated the vertex shader we should update the vertex attribute pointers as well. Note that the light source's cube uses the same vertex array for its vertex data, but the lamp shader has no use of the newly added normal vectors. We don't have to update the lamp's shaders or attribute configurations, but we have to at least modify the vertex attribute pointers to reflect the new vertex array's size:
+</p>
+
+<pre><code>
+<function id='30'>glVertexAttribPointer</function>(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+<function id='29'><function id='60'>glEnable</function>VertexAttribArray</function>(0);
+</code></pre>
+
+<p>
+  We only want to use the first <code>3</code> floats of each vertex and ignore the last <code>3</code> floats so we only need to update the <em>stride</em> parameter to <code>6</code> times the size of a <code>float</code> and we're done.
+</p>
+
+<note>
+   It may look inefficient using vertex data that is not completely used by the lamp shader, but the vertex data is already stored in the GPU's memory from the container object so we don't have to store new data into the GPU's memory. This actually makes it more efficient compared to allocating a new VBO specifically for the lamp.
+</note>
+
+<p>
+ All the lighting calculations are done in the fragment shader so we need to forward the normal vectors from the vertex shader to the fragment shader. Let's do that:
+</p>
+
+<pre><code>
+out vec3 Normal;
+
+void main()
+{
+    gl_Position = projection * view * model * vec4(aPos, 1.0);
+    Normal = aNormal;
+} 
+</code></pre>
+
+<p>
+  What's left to do is declare the corresponding input variable in the fragment shader:
+</p>
+
+<pre><code>
+in vec3 Normal;  
+</code></pre>
+
+<h2>Calculating the diffuse color</h2>
+<p>
+  We now have the normal vector for each vertex, but we still need the light's position vector and the fragment's position vector. Since the light's position is a single static variable we can declare it as a uniform in the fragment shader:
+</p>
+
+<pre><code>
+uniform vec3 lightPos;  
+</code></pre>
+
+<p>
+  And then update the uniform in the render loop (or outside since it doesn't change per frame). We use the <var>lightPos</var> vector declared in the previous chapter as the location of the diffuse light source:
+</p>
+
+<pre><code>
+lightingShader.setVec3("lightPos", lightPos);  
+</code></pre>
+
+<p>
+  Then the last thing we need is the actual fragment's position. We're going to do all the lighting calculations in world space so we want a vertex position that is in world space first. We can accomplish this by multiplying the vertex position attribute with the model matrix only (not the view and projection matrix) to transform it to world space coordinates. This can easily be accomplished in the vertex shader so let's declare an output variable and calculate its world space coordinates:
+</p>
+
+<pre><code>
+out vec3 FragPos;  
+out vec3 Normal;
+  
+void main()
+{
+    gl_Position = projection * view * model * vec4(aPos, 1.0);
+    FragPos = vec3(model * vec4(aPos, 1.0));
+    Normal = aNormal;
+}
+</code></pre>
+
+<p> 
+  And lastly add the corresponding input variable to the fragment shader:
+</p>
+
+<pre><code>
+in vec3 FragPos;  
+</code></pre>
+
+<p>
+  This <code>in</code> variable will be interpolated from the 3 world position vectors of the triangle to form the <var>FragPos</var> vector that is the per-fragment world position.   Now that all the required variables are set we can start the lighting calculations.
+</p>
+
+
+<p>
+  The first thing we need to calculate is the direction vector between the light source and the fragment's position. From the previous section we know that the light's direction vector is the difference vector between the light's position vector and the fragment's position vector. As you may remember from the <a href="https://learnopengl.com/Getting-started/Transformations" target="_blank">transformations</a> chapter we can easily calculate this difference by subtracting both vectors from each other. We also want to make sure all the relevant vectors end up as unit vectors so we normalize both the normal and the resulting direction vector:
+</p>
+
+<pre><code>
+vec3 norm = normalize(Normal);
+vec3 lightDir = normalize(lightPos - FragPos);  
+</code></pre>
+
+<note>
+  When calculating lighting we usually do not care about the magnitude of a vector or their position; we only care about their direction. Because we only care about their direction almost all the calculations are done with unit vectors since it simplifies most calculations (like the dot product). So when doing lighting calculations, make sure you always normalize the relevant vectors to ensure they're actual unit vectors. Forgetting to normalize a vector is a popular mistake.
+</note>
+
+<p>
+  Next we need to calculate the diffuse impact of the light on the current fragment by taking the dot product between the <var>norm</var> and <var>lightDir</var> vectors. The resulting value is then multiplied with the light's color to get the diffuse component, resulting in a darker diffuse component the greater the angle between both vectors:
+</p>
+
+<pre><code>
+float diff = max(dot(norm, lightDir), 0.0);
+vec3 diffuse = diff * lightColor;
+</code></pre>
+
+<p>
+  If the angle between both vectors is greater than <code>90</code> degrees then the result of the dot product will actually become negative and we end up with a negative diffuse component.
+  For that reason we use the <fun>max</fun> function that returns the highest of both its parameters to make sure the diffuse component (and thus the colors) never become negative. Lighting for negative colors is not really defined so it's best to stay away from that, unless you're one of those eccentric artists. 
+</p>
+
+<p>
+  Now that we have both an ambient and a diffuse component we add both colors to each other and then multiply the result with the color of the object to get the resulting fragment's output color:
+</p>
+
+<pre><code>
+vec3 result = (ambient + diffuse) * objectColor;
+FragColor = vec4(result, 1.0);
+</code></pre>
+
+<p>
+  If your application (and shaders) compiled successfully you should see something like this:
+</p>
+
+<img src="/img/lighting/basic_lighting_diffuse.png" class="clean"/>
+
+<p>
+  You can see that with diffuse lighting the cube starts to look like an actual cube again. Try visualizing the normal vectors in your head and move the camera around the cube to see that the larger the angle between the normal vector and the light's direction vector, the darker the fragment becomes.
+</p>
+
+<p>
+  Feel free to compare your source code with the complete source code <a href="/code_viewer_gh.php?code=src/2.lighting/2.1.basic_lighting_diffuse/basic_lighting_diffuse.cpp" target="_blank">here</a> if you're stuck.
+</p>
+
+<h2>One last thing</h2>
+<p>
+  in the previous section we passed the normal vector directly from the vertex shader to the fragment shader. However, the calculations in the fragment shader are all done in world space, so shouldn't we transform the normal vectors to world space coordinates as well? Basically yes, but it's not as simple as simply multiplying it with a model matrix. 
+</p>
+
+<p>
+  First of all, normal vectors are only direction vectors and do not represent a specific position in space. Second, normal vectors do not have a homogeneous coordinate (the <code>w</code> component of a vertex position). This means that translations should not have any effect on the normal vectors. So if we want to multiply the normal vectors with a model matrix we want to remove the translation part of the matrix by taking the upper-left <code>3x3</code> matrix of the model matrix (note that we could also set the <code>w</code> component of a normal vector to <code>0</code> and multiply with the 4x4 matrix). 
+</p>
+
+<p>
+ Second, if the model matrix would perform a non-uniform scale, the vertices would be changed in such a way that the normal vector is not perpendicular to the surface anymore. The following image shows the effect such a model matrix (with non-uniform scaling) has on a normal vector:
+</p>
+
+<img src="/img/lighting/basic_lighting_normal_transformation.png" class="clean"/>
+
+<p>
+  Whenever we apply a non-uniform scale (note: a uniform scale only changes the normal's magnitude, not its direction, which is easily fixed by normalizing it) the normal vectors are not perpendicular to the corresponding surface anymore which distorts the lighting.
+</p>
+
+<p>
+  The trick of fixing this behavior is to use a different model matrix specifically tailored for normal vectors. This matrix is called the <def>normal matrix</def> and uses a few linear algebraic operations to remove the effect of wrongly scaling the normal vectors. If you want to know how this matrix is calculated I suggest the following <a href="http://www.lighthouse3d.com/tutorials/glsl-tutorial/the-normal-matrix/" target="_blank">article</a>. 
+</p>
+
+<p>
+  The normal matrix is defined as 'the transpose of the inverse of the upper-left 3x3 part of the model matrix'. Phew, that's a mouthful and if you don't really understand what that means, don't worry; we haven't discussed inverse and transpose matrices yet. Note that most resources define the normal matrix as derived from the model-view matrix, but since we're working in world space (and not in view space) we will derive it from the model matrix.
+</p>
+
+<p>
+  In the vertex shader we can generate the normal matrix by using the <fun>inverse</fun> and <fun>transpose</fun> functions in the vertex shader that work on any matrix type. Note that we cast the matrix to a 3x3 matrix to ensure it loses its translation properties and that it can multiply with the <code>vec3</code> normal vector:
+</p>
+
+<pre><code>
+Normal = mat3(transpose(inverse(model))) * aNormal;  
+</code></pre>
+
+<warning>
+  Inversing matrices is a costly operation for shaders, so wherever possible try to avoid doing inverse operations since they have to be done on each vertex of your scene. For learning purposes this is fine, but for an efficient application you'll likely want to calculate the normal matrix on the CPU and send it to the shaders via a uniform before drawing (just like the model matrix).
+</warning>
+
+<p>
+  In the diffuse lighting section the lighting was fine because we didn't do any scaling on the object, so there was not really a need to use a normal matrix and we could've just multiplied the normals with the model matrix. If you are doing a non-uniform scale however, it is essential that you multiply your normal vectors with the normal matrix.
+</p>
+
+
+<h1>Specular Lighting</h1>
+<p>
+  If you're not exhausted already by all the lighting talk we can start finishing the Phong lighting model by adding specular highlights.
+</p>
+
+<p>
+  Similar to diffuse lighting, specular lighting is based on the light's direction vector and the object's normal vectors, but this time it is also based on the view direction e.g. from what direction the player is looking at the fragment. Specular lighting is based on the reflective properties of surfaces. If we think of the object's surface as a mirror, the specular lighting is the strongest wherever we would see the light reflected on the surface. You can see this effect in the following image:  
+</p>
+
+<img src="/img/lighting/basic_lighting_specular_theory.png" class="clean"/>
+
+<p>
+  We calculate a reflection vector by reflecting the light direction around the normal vector. Then we calculate the angular distance between this reflection vector and the view direction. The closer the angle between them, the greater the impact of the specular light. The resulting effect is that we see a bit of a highlight when we're looking at the light's direction reflected via the surface. 
+</p>
+
+<p>
+  The view vector is the one extra variable we need for specular lighting which we can calculate using the viewer's world space position and the fragment's position. Then we calculate the specular's intensity, multiply this with the light color and add this to the ambient and diffuse components.
+</p>
+
+<note>
+  We chose to do the lighting calculations in world space, but most people tend to prefer doing lighting in view space. An advantage of view space is that the viewer's position is always at <code>(0,0,0)</code> so you already got the position of the viewer for free. However, I find calculating lighting in world space more intuitive for learning purposes. If you still want to calculate lighting in view space you want to transform all the relevant vectors with the view matrix as well (don't forget to change the normal matrix too).
+</note>
+
+<p>
+  To get the world space coordinates of the viewer we simply take the position vector of the camera object (which is the viewer of course). So let's add another uniform to the fragment shader and pass the camera position vector to the shader:
+</p>
+
+<pre><code>
+uniform vec3 viewPos;
+</code></pre>
+
+<pre><code>
+lightingShader.setVec3("viewPos", camera.Position); 
+</code></pre>
+
+<p>
+  Now that we have all the required variables we can calculate the specular intensity. First we define a specular intensity value to give the specular highlight a medium-bright color so that it doesn't have too much of an impact:
+</p>
+
+<pre><code>
+float specularStrength = 0.5;
+</code></pre>
+
+<p>
+  If we would set this to <code>1.0f</code> we'd get a really bright specular component which is a bit too much for a coral cube. In the <a href="https://learnopengl.com/Lighting/Materials" target="_blank">next</a> chapter we'll talk about properly setting all these lighting intensities and how they affect the objects. Next we calculate the view direction vector and the corresponding reflect vector along the normal axis:
+</p>
+
+<pre><code>
+vec3 viewDir = normalize(viewPos - FragPos);
+vec3 reflectDir = reflect(-lightDir, norm);  
+</code></pre>
+
+<p>
+  Note that we negate the <code>lightDir</code> vector. The <code>reflect</code> function expects the first vector to point <strong>from</strong> the light source towards the fragment's position, but the <code>lightDir</code> vector is currently pointing the other way around: from the fragment  <strong>towards</strong> the light source (this depends on the order of subtraction earlier on when we calculated the <code>lightDir</code> vector). To make sure we get the correct <code>reflect</code> vector we reverse its direction by negating the <code>lightDir</code> vector first. The second argument expects a normal vector so we supply the normalized <code>norm</code> vector.
+</p>
+
+<p>
+  Then what's left to do is to actually calculate the specular component. This is accomplished with the following formula:
+
+<pre><code>
+float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+vec3 specular = specularStrength * spec * lightColor;  
+</code></pre>
+
+<p>
+  We first calculate the dot product between the view direction and the reflect direction (and make sure it's not negative) and then raise it to the power of <code>32</code>. This <code>32</code> value is the <def>shininess</def> value of the highlight. The higher the shininess value of an object, the more it properly reflects the light instead of scattering it all around and thus the smaller the highlight becomes. Below you can see an image that shows the visual impact of different shininess values:
+</p>
+
+<img src="/img/lighting/basic_lighting_specular_shininess.png"/>
+
+<p>
+  We don't want the specular component to be too distracting so we keep the exponent at <code>32</code>. The only thing left to do is to add it to the ambient and diffuse components and multiply the combined result with the object's color:
+</p>
+
+<pre><code>
+vec3 result = (ambient + diffuse + specular) * objectColor;
+FragColor = vec4(result, 1.0);
+</code></pre>
+
+<p>
+	We now calculated all the lighting components of the Phong lighting model. Based on your point of view you should see something like this:
+</p>
+
+<img src="/img/lighting/basic_lighting_specular.png" class="clean"/>
+
+<p>
+  You can find the complete source code of the application <a href="/code_viewer_gh.php?code=src/2.lighting/2.2.basic_lighting_specular/basic_lighting_specular.cpp" target="_blank">here</a>. 
+</p>
+
+<note>
+  <p>
+  In the earlier days of lighting shaders, developers used to implement the Phong lighting model in the vertex shader. The advantage of doing lighting in the vertex shader is that it is a lot more efficient since there are generally a lot less vertices compared to fragments, so the (expensive) lighting calculations are done less frequently. However, the resulting color value in the vertex shader is the resulting lighting color of that vertex only and the color values of the surrounding fragments are then the result of interpolated lighting colors. The result was that the lighting was not very realistic unless large amounts of vertices were used:
+  </p>
+  
+  <img src="/img/lighting/basic_lighting_gouruad.png"/>
+  
+  <p>
+  When the Phong lighting model is implemented in the vertex shader it is called <def>Gouraud shading</def> instead of <def>Phong shading</def>. Note that due to the interpolation the lighting  looks somewhat off. The Phong shading gives much smoother lighting results.
+  </p>
+</note>
+
+<p>
+  By now you should be starting to see just how powerful shaders are. With little information shaders are able to calculate how lighting affects the fragment's colors for all our objects. In the <a href="https://learnopengl.com/Lighting/Materials" target="_blank">next</a> chapters we'll be delving much deeper into what we can do with the lighting model.
+</p>
+
+<h2>Exercises</h2>
+<ul>
+  <li>Right now the light source is a boring static light source that doesn't move. Try to move the light source around the scene over time using either <fun>sin</fun> or <fun>cos</fun>. Watching the lighting change over time gives you a good understanding of Phong's lighting model: <a href="/code_viewer_gh.php?code=src/2.lighting/2.3.basic_lighting_exercise1/basic_lighting_exercise1.cpp" target="_blank">solution</a>. </li>
+  <li>Play around with different ambient, diffuse and specular strengths and see how they impact the result. Also experiment with the shininess factor. Try to comprehend why certain values have a certain visual output.</li>
+  <li>Do Phong shading in view space instead of world space: <a href="/code_viewer_gh.php?code=src/2.lighting/2.4.basic_lighting_exercise2/basic_lighting_exercise2.cpp" target="_blank">solution</a>. </li>
+  <li>Implement Gouraud shading instead of Phong shading. If you did things right the lighting should <a href="/img/lighting/basic_lighting_exercise3.png" target="_blank">look a bit  off</a> (especially the specular highlights) with the cube object. Try to reason why it looks so weird: <a href="/code_viewer_gh.php?code=src/2.lighting/2.5.basic_lighting_exercise3/basic_lighting_exercise3.cpp" target="_blank">solution</a>.</li>
+</ul>
+       
+
+    </div>
+    
+    <div id="hover">
+        HI
+    </div>
+   <!-- 728x90/320x50 sticky footer -->
+<!--<div id="waldo-tag-6196"></div>-->
+
+   <div id="disqus_thread"></div>
+
+    
+
+
+</div> <!-- container div -->
+
+
+</div> <!-- super container div -->
+</body>
+</html>

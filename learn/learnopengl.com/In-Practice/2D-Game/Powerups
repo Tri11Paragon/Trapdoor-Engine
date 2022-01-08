@@ -1,0 +1,684 @@
+
+
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <meta charset="utf-8"/>
+    <title>LearnOpenGL - Powerups</title>	<!--<title>Learn OpenGL, extensive tutorial resource for learning Modern OpenGL</title>-->
+    <link rel="shortcut icon" type="image/ico" href="/favicon.ico"  />
+    <meta name="description" content="Learn OpenGL . com provides good and clear modern 3.3+ OpenGL tutorials with clear examples. A great resource to learn modern OpenGL aimed at beginners.">
+	<meta name="fragment" content="!">
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-51879160-1', 'learnopengl.com');
+      ga('send', 'pageview');
+
+    </script>
+    <!--<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-7855791439695850",
+              enable_page_level_ads: true
+         });
+    </script>
+	<script async='async' src='https://www.googletagservices.com/tag/js/gpt.js'></script>
+	<script>
+	  var googletag = googletag || {};
+	  googletag.cmd = googletag.cmd || [];
+	</script>
+	<script>
+	  googletag.cmd.push(function() {
+		googletag.defineSlot('/8491498/learnopengl_video', [300, 225], 'div-gpt-ad-1540574378241-0').addService(googletag.pubads());
+		googletag.pubads().enableSingleRequest();
+		googletag.pubads().collapseEmptyDivs();
+		googletag.enableServices();
+	  });
+	</script>
+    <script type="text/javascript" src="//cdn.thisiswaldo.com/static/js/1681.js"></script>
+	<script src="/js/jquery-1.11.0.min.js"></script>
+	<script src="/js/hoverintent.js"></script>
+	<link rel="stylesheet" type="text/css" href="/layout.css">
+    <link rel="stylesheet" type="text/css" href="/js/styles/obsidian.css">
+    <script src="/js/highlight.pack.js"></script>    
+    <script src="/js/functions.js"></script>
+    <script type="text/javascript" src="/js/mathjax/MathJax.js?config=TeX-AMS_HTML"></script>
+    <script>
+    // Has to be loaded last due to content bug 
+    MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+    </script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script>  
+        $(document).ready(function() {
+            // check if user visited from the old # based urls, re-direct to ?p= form
+            if(window.location.hash)
+            {
+                var name = window.location.hash.substring(2);
+                // name = name.replace(/-/g," ");
+                var index = name.indexOf('#'); // Remove any hash fragments from the url (Disquss adds hash fragments for comments, but results in 404 pages)
+                if(index >= 0)
+                    name = name.substring(0, index);
+                
+                window.location.href = "https://learnopengl.com/" + name;
+            } else {
+                    // Check if data has been succesfully loaded, if so: change title bar as ajax hash fragment
+                    var title = $('#content-url').text();
+                  
+                    // Refresh syntax highlighting
+                    // $('pre').each(function(i, e) {hljs.highlightBlock(e)});
+                  
+                    // Reset DISQUS
+                    // if(title == '/dev/')
+                        // title = '';
+                    // alert('hoi');
+					
+					// place video tag
+					if(title != '') {
+						var videoad = "%3Cdiv id=\'waldo-tag-12074\'%3E %3Cscript%3Egoogletag.cmd.push(function() {googletag.display(\'waldo-tag-12074\'); }); %3C/script%3E%3C/div%3E";
+						$('#content p:nth-of-type(3)').after(unescape(videoad));
+					}
+					
+                    // Adjust ads for correct bottom positioning based on content size
+                    window.setTimeout(function() {  
+                        AdPositioning();
+                     }, 3000);
+                  
+                  
+                    // set API resets after time-out (once content is properly loaded)
+                    window.setTimeout(function() {  
+                        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);       
+                        MathJax.Hub.Queue(["resetEquationNumbers", MathJax.InputJax.TeX]);
+                        
+                        var page_url = title == "" ? "http://www.learnopengl.com/" : "http://www.learnopengl.com/" + title;
+                        if(typeof DISQUS !== 'undefined') {                                              
+                            DISQUS.reset({
+                              reload: true,
+                              config: function () {  
+                                this.page.identifier = title;  
+                                this.page.url = page_url;
+                              }
+                            });
+                            $('#disqus_thread').show();
+                        }
+                           // Refresh callbacks on <function> tags
+                        SetFunctionTagCallbacks();        
+                    }, 1000);
+                                        
+                    // Zet ook de juiste button op 'selected'
+                    $('#nav li span, #nav li a').removeClass('selected');                
+                    if(title != '')
+                    {                    
+                        $('#nav li[id=\'' + title + '\']').children('span, a').addClass('selected');
+                    }
+                    // En open menu waar nodig
+                    var parents = $('#nav span.selected, #nav a.selected').parents('li').children('span.closed, a.closed');
+                    var index = 0;
+                    for(index = parents.length - 1; index >= 0; index--)
+                    {             
+                        
+                        var id = $(parents[index]).attr("id").replace( /^\D+/g, '');
+                        MenuClick(id, false);
+                    }                          
+                
+            }
+        });
+		// var initialized = false;
+        // window.onpopstate = function() {
+            // if(initialized)
+                // LoadPage();
+			// else
+				// initialized = true;
+        // };
+        
+        // Set up DISQUS
+        // $(document).ready(function() {
+            var disqus_shortname = 'learnopengl';
+            (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();           
+        // });
+    </script>
+</head>
+<body>
+<a href="https://learnopengl.com">
+<div id="header">
+</div>
+</a>
+
+<div id="supercontainer">
+    <!-- 728x90/320x50 -->
+    <div id="header_ad">
+        <div id="waldo-tag-6194"></div>
+    </div>
+    <div id="rightad_container">
+        <div id="rightad">
+            <!-- /8491498/learnopengl_video -->
+            <!--<div id='div-gpt-ad-1540574378241-0' style='height:225px; width:300px;'>
+			<script>
+			googletag.cmd.push(function() { googletag.display('div-gpt-ad-1540574378241-0'); });
+			</script>
+			</div>            
+            <br/>-->
+			<!-- place in-content -->
+			<!--<div id='waldo-tag-12074'>
+			 <script>
+			   googletag.cmd.push(function() { googletag.display('waldo-tag-12074'); });
+			 </script>
+			</div>-->
+           
+            <div id="waldo-tag-1715"></div>
+        </div>
+
+        <div id="admessage">
+            If you're running AdBlock, please consider whitelisting this site if you'd like to support LearnOpenGL; and no worries, I won't be mad if you don't :)
+            <!--<br/><br/>
+            Also, check out this little local multiplayer-only game I've made: <a href="https://store.steampowered.com/app/983590/Tank_Blazers/" target="_blank">Tank Blazers</a>.
+            <br/>
+            <a href="https://store.steampowered.com/app/983590/Tank_Blazers" target="_blank"><img src="/img/tank_blazers.jpg"  style="width:278px; margin-top: 9px; margin-left: -3px;"/></a>-->
+        </div>
+        
+        <div id="rightonethirdad">
+            <div id="waldo-tag-2246"></div>
+        </div>
+        
+        <div id="rightbottomad">            
+			<div id="waldo-tag-2247"></div>								
+        </div>
+    </div>
+    <div id="container">
+        <div id="loading"></div>
+<script> 
+$(document).ready(function() {
+$('#menu-item4').mousedown(function() { MenuClick(4, true) });
+$('#menu-item48').mousedown(function() { MenuClick(48, true) });
+$('#menu-item56').mousedown(function() { MenuClick(56, true) });
+$('#menu-item63').mousedown(function() { MenuClick(63, true) });
+$('#menu-item100').mousedown(function() { MenuClick(100, true) });
+$('#menu-item102').mousedown(function() { MenuClick(102, true) });
+$('#menu-item113').mousedown(function() { MenuClick(113, true) });
+$('#menu-item116').mousedown(function() { MenuClick(116, true) });
+$('#menu-item78').mousedown(function() { MenuClick(78, true) });
+$('#menu-item81').mousedown(function() { MenuClick(81, true) });
+$('#menu-item85').mousedown(function() { MenuClick(85, true) });
+$('#menu-item125').mousedown(function() { MenuClick(125, true) });
+$('#menu-item128').mousedown(function() { MenuClick(128, true) });
+$('#menu-item129').mousedown(function() { MenuClick(129, true) });
+$('#menu-item133').mousedown(function() { MenuClick(133, true) });
+$('#menu-item134').mousedown(function() { MenuClick(134, true) });
+$('#menu-item138').mousedown(function() { MenuClick(138, true) });
+}); 
+</script>   
+    <div id="nav">
+         <div id="social">
+            <a href="https://github.com/JoeyDeVries/LearnOpenGL" target="_blank">
+                    <img src="/img/github.png" class="social_ico">
+            </a>
+             <!-- <a href="https://www.facebook.com/Learnopengl-2199631333595544/" target="_blank">
+                <img src="/img/facebook.png" class="social_ico">
+            </a>-->
+            <a href="https://twitter.com/JoeyDeVriez" target="_blank">
+                <img src="/img/twitter.png" class="social_ico">
+            </a>
+          
+        </div>
+    <img src='img/nav-button_bottom-arrow.png' style='display: none'><ol><li id='Introduction'><a id="menu-item1" href="https://learnopengl.com/Introduction">Introduction </a></li><li id='Getting-started'><span id="menu-item4" class="closed">Getting started </span><ol id="menu-items-of4" style="display:none;"><li id='Getting-started/OpenGL'><a id="menu-item49" href="https://learnopengl.com/Getting-started/OpenGL">OpenGL </a></li><li id='Getting-started/Creating-a-window'><a id="menu-item5" href="https://learnopengl.com/Getting-started/Creating-a-window">Creating a window </a></li><li id='Getting-started/Hello-Window'><a id="menu-item6" href="https://learnopengl.com/Getting-started/Hello-Window">Hello Window </a></li><li id='Getting-started/Hello-Triangle'><a id="menu-item38" href="https://learnopengl.com/Getting-started/Hello-Triangle">Hello Triangle </a></li><li id='Getting-started/Shaders'><a id="menu-item39" href="https://learnopengl.com/Getting-started/Shaders">Shaders </a></li><li id='Getting-started/Textures'><a id="menu-item40" href="https://learnopengl.com/Getting-started/Textures">Textures </a></li><li id='Getting-started/Transformations'><a id="menu-item43" href="https://learnopengl.com/Getting-started/Transformations">Transformations </a></li><li id='Getting-started/Coordinate-Systems'><a id="menu-item44" href="https://learnopengl.com/Getting-started/Coordinate-Systems">Coordinate Systems </a></li><li id='Getting-started/Camera'><a id="menu-item47" href="https://learnopengl.com/Getting-started/Camera">Camera </a></li><li id='Getting-started/Review'><a id="menu-item50" href="https://learnopengl.com/Getting-started/Review">Review </a></li></ol></li><li id='Lighting'><span id="menu-item48" class="closed">Lighting </span><ol id="menu-items-of48" style="display:none;"><li id='Lighting/Colors'><a id="menu-item51" href="https://learnopengl.com/Lighting/Colors">Colors </a></li><li id='Lighting/Basic-Lighting'><a id="menu-item52" href="https://learnopengl.com/Lighting/Basic-Lighting">Basic Lighting </a></li><li id='Lighting/Materials'><a id="menu-item53" href="https://learnopengl.com/Lighting/Materials">Materials </a></li><li id='Lighting/Lighting-maps'><a id="menu-item54" href="https://learnopengl.com/Lighting/Lighting-maps">Lighting maps </a></li><li id='Lighting/Light-casters'><a id="menu-item55" href="https://learnopengl.com/Lighting/Light-casters">Light casters </a></li><li id='Lighting/Multiple-lights'><a id="menu-item58" href="https://learnopengl.com/Lighting/Multiple-lights">Multiple lights </a></li><li id='Lighting/Review'><a id="menu-item57" href="https://learnopengl.com/Lighting/Review">Review </a></li></ol></li><li id='Model-Loading'><span id="menu-item56" class="closed">Model Loading </span><ol id="menu-items-of56" style="display:none;"><li id='Model-Loading/Assimp'><a id="menu-item59" href="https://learnopengl.com/Model-Loading/Assimp">Assimp </a></li><li id='Model-Loading/Mesh'><a id="menu-item60" href="https://learnopengl.com/Model-Loading/Mesh">Mesh </a></li><li id='Model-Loading/Model'><a id="menu-item61" href="https://learnopengl.com/Model-Loading/Model">Model </a></li></ol></li><li id='Advanced-OpenGL'><span id="menu-item63" class="closed">Advanced OpenGL </span><ol id="menu-items-of63" style="display:none;"><li id='Advanced-OpenGL/Depth-testing'><a id="menu-item72" href="https://learnopengl.com/Advanced-OpenGL/Depth-testing">Depth testing </a></li><li id='Advanced-OpenGL/Stencil-testing'><a id="menu-item73" href="https://learnopengl.com/Advanced-OpenGL/Stencil-testing">Stencil testing </a></li><li id='Advanced-OpenGL/Blending'><a id="menu-item74" href="https://learnopengl.com/Advanced-OpenGL/Blending">Blending </a></li><li id='Advanced-OpenGL/Face-culling'><a id="menu-item77" href="https://learnopengl.com/Advanced-OpenGL/Face-culling">Face culling </a></li><li id='Advanced-OpenGL/Framebuffers'><a id="menu-item65" href="https://learnopengl.com/Advanced-OpenGL/Framebuffers">Framebuffers </a></li><li id='Advanced-OpenGL/Cubemaps'><a id="menu-item66" href="https://learnopengl.com/Advanced-OpenGL/Cubemaps">Cubemaps </a></li><li id='Advanced-OpenGL/Advanced-Data'><a id="menu-item69" href="https://learnopengl.com/Advanced-OpenGL/Advanced-Data">Advanced Data </a></li><li id='Advanced-OpenGL/Advanced-GLSL'><a id="menu-item67" href="https://learnopengl.com/Advanced-OpenGL/Advanced-GLSL">Advanced GLSL </a></li><li id='Advanced-OpenGL/Geometry-Shader'><a id="menu-item68" href="https://learnopengl.com/Advanced-OpenGL/Geometry-Shader">Geometry Shader </a></li><li id='Advanced-OpenGL/Instancing'><a id="menu-item70" href="https://learnopengl.com/Advanced-OpenGL/Instancing">Instancing </a></li><li id='Advanced-OpenGL/Anti-Aliasing'><a id="menu-item75" href="https://learnopengl.com/Advanced-OpenGL/Anti-Aliasing">Anti Aliasing </a></li></ol></li><li id='Advanced-Lighting'><span id="menu-item100" class="closed">Advanced Lighting </span><ol id="menu-items-of100" style="display:none;"><li id='Advanced-Lighting/Advanced-Lighting'><a id="menu-item101" href="https://learnopengl.com/Advanced-Lighting/Advanced-Lighting">Advanced Lighting </a></li><li id='Advanced-Lighting/Gamma-Correction'><a id="menu-item110" href="https://learnopengl.com/Advanced-Lighting/Gamma-Correction">Gamma Correction </a></li><li id='Advanced-Lighting/Shadows'><span id="menu-item102" class="closed">Shadows </span><ol id="menu-items-of102" style="display:none;"><li id='Advanced-Lighting/Shadows/Shadow-Mapping'><a id="menu-item103" href="https://learnopengl.com/Advanced-Lighting/Shadows/Shadow-Mapping">Shadow Mapping </a></li><li id='Advanced-Lighting/Shadows/Point-Shadows'><a id="menu-item104" href="https://learnopengl.com/Advanced-Lighting/Shadows/Point-Shadows">Point Shadows </a></li></ol></li><li id='Advanced-Lighting/Normal-Mapping'><a id="menu-item106" href="https://learnopengl.com/Advanced-Lighting/Normal-Mapping">Normal Mapping </a></li><li id='Advanced-Lighting/Parallax-Mapping'><a id="menu-item107" href="https://learnopengl.com/Advanced-Lighting/Parallax-Mapping">Parallax Mapping </a></li><li id='Advanced-Lighting/HDR'><a id="menu-item111" href="https://learnopengl.com/Advanced-Lighting/HDR">HDR </a></li><li id='Advanced-Lighting/Bloom'><a id="menu-item112" href="https://learnopengl.com/Advanced-Lighting/Bloom">Bloom </a></li><li id='Advanced-Lighting/Deferred-Shading'><a id="menu-item108" href="https://learnopengl.com/Advanced-Lighting/Deferred-Shading">Deferred Shading </a></li><li id='Advanced-Lighting/SSAO'><a id="menu-item109" href="https://learnopengl.com/Advanced-Lighting/SSAO">SSAO </a></li></ol></li><li id='PBR'><span id="menu-item113" class="closed">PBR </span><ol id="menu-items-of113" style="display:none;"><li id='PBR/Theory'><a id="menu-item114" href="https://learnopengl.com/PBR/Theory">Theory </a></li><li id='PBR/Lighting'><a id="menu-item115" href="https://learnopengl.com/PBR/Lighting">Lighting </a></li><li id='PBR/IBL'><span id="menu-item116" class="closed">IBL </span><ol id="menu-items-of116" style="display:none;"><li id='PBR/IBL/Diffuse-irradiance'><a id="menu-item117" href="https://learnopengl.com/PBR/IBL/Diffuse-irradiance">Diffuse irradiance </a></li><li id='PBR/IBL/Specular-IBL'><a id="menu-item118" href="https://learnopengl.com/PBR/IBL/Specular-IBL">Specular IBL </a></li></ol></li></ol></li><li id='In-Practice'><span id="menu-item78" class="closed">In Practice </span><ol id="menu-items-of78" style="display:none;"><li id='In-Practice/Debugging'><a id="menu-item79" href="https://learnopengl.com/In-Practice/Debugging">Debugging </a></li><li id='In-Practice/Text-Rendering'><a id="menu-item80" href="https://learnopengl.com/In-Practice/Text-Rendering">Text Rendering </a></li><li id='In-Practice/2D-Game'><span id="menu-item81" class="closed">2D Game </span><ol id="menu-items-of81" style="display:none;"><li id='In-Practice/2D-Game/Breakout'><a id="menu-item82" href="https://learnopengl.com/In-Practice/2D-Game/Breakout">Breakout </a></li><li id='In-Practice/2D-Game/Setting-up'><a id="menu-item88" href="https://learnopengl.com/In-Practice/2D-Game/Setting-up">Setting up </a></li><li id='In-Practice/2D-Game/Rendering-Sprites'><a id="menu-item83" href="https://learnopengl.com/In-Practice/2D-Game/Rendering-Sprites">Rendering Sprites </a></li><li id='In-Practice/2D-Game/Levels'><a id="menu-item84" href="https://learnopengl.com/In-Practice/2D-Game/Levels">Levels </a></li><li id='In-Practice/2D-Game/Collisions'><span id="menu-item85" class="closed">Collisions </span><ol id="menu-items-of85" style="display:none;"><li id='In-Practice/2D-Game/Collisions/Ball'><a id="menu-item95" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Ball">Ball </a></li><li id='In-Practice/2D-Game/Collisions/Collision-detection'><a id="menu-item96" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Collision-detection">Collision detection </a></li><li id='In-Practice/2D-Game/Collisions/Collision-resolution'><a id="menu-item97" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Collision-resolution">Collision resolution </a></li></ol></li><li id='In-Practice/2D-Game/Particles'><a id="menu-item89" href="https://learnopengl.com/In-Practice/2D-Game/Particles">Particles </a></li><li id='In-Practice/2D-Game/Postprocessing'><a id="menu-item90" href="https://learnopengl.com/In-Practice/2D-Game/Postprocessing">Postprocessing </a></li><li id='In-Practice/2D-Game/Powerups'><a id="menu-item91" href="https://learnopengl.com/In-Practice/2D-Game/Powerups">Powerups </a></li><li id='In-Practice/2D-Game/Audio'><a id="menu-item94" href="https://learnopengl.com/In-Practice/2D-Game/Audio">Audio </a></li><li id='In-Practice/2D-Game/Render-text'><a id="menu-item92" href="https://learnopengl.com/In-Practice/2D-Game/Render-text">Render text </a></li><li id='In-Practice/2D-Game/Final-thoughts'><a id="menu-item93" href="https://learnopengl.com/In-Practice/2D-Game/Final-thoughts">Final thoughts </a></li></ol></li></ol></li><li id='Guest-Articles'><span id="menu-item125" class="closed">Guest Articles </span><ol id="menu-items-of125" style="display:none;"><li id='Guest-Articles/How-to-publish'><a id="menu-item126" href="https://learnopengl.com/Guest-Articles/How-to-publish">How to publish </a></li><li id='Guest-Articles/2020'><span id="menu-item128" class="closed">2020 </span><ol id="menu-items-of128" style="display:none;"><li id='Guest-Articles/2020/OIT'><span id="menu-item129" class="closed">OIT </span><ol id="menu-items-of129" style="display:none;"><li id='Guest-Articles/2020/OIT/Introduction'><a id="menu-item130" href="https://learnopengl.com/Guest-Articles/2020/OIT/Introduction">Introduction </a></li><li id='Guest-Articles/2020/OIT/Weighted-Blended'><a id="menu-item132" href="https://learnopengl.com/Guest-Articles/2020/OIT/Weighted-Blended">Weighted Blended </a></li></ol></li><li id='Guest-Articles/2020/Skeletal-Animation'><a id="menu-item131" href="https://learnopengl.com/Guest-Articles/2020/Skeletal-Animation">Skeletal Animation </a></li></ol></li><li id='Guest-Articles/2021'><span id="menu-item133" class="closed">2021 </span><ol id="menu-items-of133" style="display:none;"><li id='Guest-Articles/2021/CSM'><a id="menu-item137" href="https://learnopengl.com/Guest-Articles/2021/CSM">CSM </a></li><li id='Guest-Articles/2021/Scene'><span id="menu-item134" class="closed">Scene </span><ol id="menu-items-of134" style="display:none;"><li id='Guest-Articles/2021/Scene/Scene-Graph'><a id="menu-item135" href="https://learnopengl.com/Guest-Articles/2021/Scene/Scene-Graph">Scene Graph </a></li><li id='Guest-Articles/2021/Scene/Frustum-Culling'><a id="menu-item136" href="https://learnopengl.com/Guest-Articles/2021/Scene/Frustum-Culling">Frustum Culling </a></li></ol></li><li id='Guest-Articles/2021/Tessellation'><span id="menu-item138" class="closed">Tessellation </span><ol id="menu-items-of138" style="display:none;"><li id='Guest-Articles/2021/Tessellation/Height-map'><a id="menu-item139" href="https://learnopengl.com/Guest-Articles/2021/Tessellation/Height-map">Height map </a></li></ol></li></ol></li></ol></li><li id='Code-repository'><a id="menu-item99" href="https://learnopengl.com/Code-repository">Code repository </a></li><li id='Translations'><a id="menu-item119" href="https://learnopengl.com/Translations">Translations </a></li><li id='About'><a id="menu-item2" href="https://learnopengl.com/About">About </a></li></ol>		<div id="menu_book">
+            <a href="https://geni.us/learnopengl" target="_blank"><img src="/book/below_menu.png" class="clean"/></a>
+        </div>
+       <div id="donate">
+            <a href="https://www.paypal.me/learnopengl/" target="_blank">
+                <div id="donate_img"></div>
+                <img style="display: none" src="/img/donate_button_hover.png"/>
+                <!--<img id="donate_img" src="img/patreon.png"/>-->
+            </a>
+          <!--<div id="alipay">
+            <img style="width: 150px;" class="clean" src="/img/alipay_logo.png"/>
+            <img style="width: 150px; margin-top: 5px" src="/img/alipay.png"/>
+          </div>-->
+        </div> 
+		<!--
+		<div class="btc">
+			<h3>BTC</h3>
+			<p>
+				1CLGKgmBSuYJ1nnvDGAepVTKNNDpUjfpRa
+			</p>
+			<img src="/img/btc_qr.png"/>
+        </div> 
+		<div class="btc">
+			<h3>ETH/ERC20</h3>
+			<p>
+				0x1de59bd9e52521a46309474f8372531533bd7c43
+			</p>
+			<img src="/img/erc20_qr.png"/>
+        </div>       
+		!-->
+        <div id="ad">
+							<!--<div id="waldo-tag-1684"></div>-->
+			        </div>
+      
+        <div id="lefttwothirdad">
+            <div id="waldo-tag-2245"></div>
+        </div>
+    </div>
+    
+    <div id="content">
+    <h1 id="content-title">Powerups</h1>
+<h1 id="content-url" style='display:none;'>In-Practice/2D-Game/Powerups</h1>
+<p>
+  Breakout is close to finished, but it would be cool to add at least one more gameplay mechanic so it's not your average standard Breakout clone; what about powerups?
+</p>
+
+<p>
+  The idea is that whenever a brick is destroyed, the brick has a small chance of spawning a powerup block. Such a block will slowly fall downwards and if it collides with the player paddle, an interesting effect occurs based on the type of powerup. For example, one powerup makes the paddle larger, and another powerup allows the ball to pass through objects. We also include several negative powerups that affect the player in a negative way.
+</p>
+
+<p>
+  We can model a powerup as a <fun>GameObject</fun> with a few extra properties. That's why we define a class <fun>PowerUp</fun> that inherits from <fun>GameObject</fun>:
+</p>
+
+<pre><code>
+const glm::vec2 SIZE(60.0f, 20.0f);
+const glm::vec2 VELOCITY(0.0f, 150.0f);
+
+class PowerUp : public GameObject 
+{
+public:
+    // powerup state
+    std::string Type;
+    float       Duration;	
+    bool        Activated;
+    // constructor
+    PowerUp(std::string type, glm::vec3 color, float duration, 
+            glm::vec2 position, Texture2D texture) 
+        : GameObject(position, SIZE, texture, color, VELOCITY), 
+          Type(type), Duration(duration), Activated() 
+    { }
+};  
+</code></pre>
+
+<p>
+  A <fun>PowerUp</fun> is just a <fun>GameObject</fun> with extra state, so we can simply define it in a single header file which you can find <a href="/code_viewer_gh.php?code=src/7.in_practice/3.2d_game/0.full_source/power_up.h" target="_blank">here</a>.
+</p>
+
+<p>
+  Each powerup defines its type as a string, a duration for how long it is active, and whether it is currently activated. Within Breakout we're going to feature a total of 4 positive powerups and 2 negative powerups:
+</p>
+
+<img src="/img/in-practice/breakout/powerups.png" class="clean" alt="PowerUps used in OpenGL Breakoout"/>
+  
+<ul>
+  <li><strong>Speed</strong>: increases the velocity of the ball by 20%. </li> 
+  <li><strong>Sticky</strong>: when the ball collides with the paddle, the ball remains stuck to the paddle unless the spacebar is pressed again. This allows the player to better position the ball before releasing it. </li> 
+  <li><strong>Pass-Through</strong>: collision resolution is disabled for non-solid blocks, allowing the ball to pass through multiple blocks.</li> 
+  <li><strong>Pad-Size-Increase</strong>: increases the width of the paddle by 50 pixels.</li> 
+  <li><strong>Confuse</strong>: activates the confuse postprocessing effect for a short period of time, confusing the user. </li> 
+  <li><strong>Chaos</strong>: activates the chaos postprocessing effect for a short period of time, heavily disorienting the user.</li> 
+</ul>
+  
+<p>
+ You can find the textures here:
+</p>
+  
+<ul>
+  <li><strong>Textures</strong>: <a href="/img/in-practice/breakout/textures/powerup_speed.png" target="_blank">Speed</a>, <a href="/img/in-practice/breakout/textures/powerup_sticky.png" target="_blank">Sticky</a>, <a href="/img/in-practice/breakout/textures/powerup_passthrough.png" target="_blank">Pass-Through</a>, <a href="/img/in-practice/breakout/textures/powerup_increase.png" target="_blank">Pad-Size-Increase</a>, <a href="/img/in-practice/breakout/textures/powerup_confuse.png" target="_blank">Confuse</a>, <a href="/img/in-practice/breakout/textures/powerup_chaos.png" target="_blank">Chaos</a>.
+</ul>
+  
+<p>
+   Similar to the level block textures, each of the powerup textures is completely grayscale. This makes sure the color of the powerups remain balanced whenever we multiply them with a color vector. 
+</p>
+  
+<p>
+  Because powerups have state, a duration, and certain effects associated with them, we would like to keep track of all the powerups currently active in the game; we store them in a vector:
+</p>
+  
+<pre><code>
+class Game {
+    public:
+        [...]
+        std::vector&lt;PowerUp&gt;  PowerUps;
+        [...]
+        void SpawnPowerUps(GameObject &block);
+        void UpdatePowerUps(float dt);
+};
+</code></pre>
+  
+<p>
+  We've also defined two functions for managing powerups. <fun>SpawnPowerUps</fun> spawns a powerups at the location of a given block and <fun>UpdatePowerUps</fun> manages all powerups currently active within the game.
+</p>
+  
+<h3>Spawning PowerUps</h3>
+<p>
+  Each time a block is destroyed we would like to, given a small chance, spawn a powerup. This functionality is found inside the game's <fun>SpawnPowerUps</fun> function:
+</p>
+  
+<pre><code>
+bool ShouldSpawn(unsigned int chance)
+{
+    unsigned int random = rand() % chance;
+    return random == 0;
+}
+void Game::SpawnPowerUps(GameObject &block)
+{
+    if (ShouldSpawn(75)) // 1 in 75 chance
+        this-&gt;PowerUps.push_back(
+             PowerUp("speed", glm::vec3(0.5f, 0.5f, 1.0f), 0.0f, block.Position, tex_speed
+         ));
+    if (ShouldSpawn(75))
+        this-&gt;PowerUps.push_back(
+            PowerUp("sticky", glm::vec3(1.0f, 0.5f, 1.0f), 20.0f, block.Position, tex_sticky 
+        );
+    if (ShouldSpawn(75))
+        this-&gt;PowerUps.push_back(
+            PowerUp("pass-through", glm::vec3(0.5f, 1.0f, 0.5f), 10.0f, block.Position, tex_pass
+        ));
+    if (ShouldSpawn(75))
+        this-&gt;PowerUps.push_back(
+            PowerUp("pad-size-increase", glm::vec3(1.0f, 0.6f, 0.4), 0.0f, block.Position, tex_size    
+        ));
+    if (ShouldSpawn(15)) // negative powerups should spawn more often
+        this-&gt;PowerUps.push_back(
+            PowerUp("confuse", glm::vec3(1.0f, 0.3f, 0.3f), 15.0f, block.Position, tex_confuse
+        ));
+    if (ShouldSpawn(15))
+        this-&gt;PowerUps.push_back(
+            PowerUp("chaos", glm::vec3(0.9f, 0.25f, 0.25f), 15.0f, block.Position, tex_chaos
+        ));
+}  
+</code></pre>
+  
+<p>
+  The <fun>SpawnPowerUps</fun> function creates a new <fun>PowerUp</fun> object based on a given chance (1 in 75 for normal powerups and 1 in 15 for negative powerups) and sets their properties. Each powerup is given a specific color to make them more recognizable for the user and a duration in seconds based on its type; here a duration of <code>0.0f</code> means its duration is infinite. Additionally, each powerup is given the position of the destroyed block and one of the textures from the beginning of this chapter.
+</p>
+  
+<h3>Activating PowerUps</h3>
+<p>
+  We then have to update the game's <fun>DoCollisions</fun> function to not only check for brick and paddle collisions, but also collisions between the paddle and each non-destroyed PowerUp. Note that we call <fun>SpawnPowerUps</fun> directly after a block is destroyed.
+</p>
+  
+<pre><code>
+void Game::DoCollisions()
+{
+    for (GameObject &box : this-&gt;Levels[this-&gt;Level].Bricks)
+    {
+        if (!box.Destroyed)
+        {
+            Collision collision = CheckCollision(*Ball, box);
+            if (std::get&lt;0&gt;(collision)) // if collision is true
+            {
+                // destroy block if not solid
+                if (!box.IsSolid)
+                {
+                    box.Destroyed = true;
+                    this-&gt;SpawnPowerUps(box);
+                }
+                [...]
+            }
+        }
+    }        
+    [...] 
+    for (PowerUp &powerUp : this-&gt;PowerUps)
+    {
+        if (!powerUp.Destroyed)
+        {
+            if (powerUp.Position.y &gt;= this-&gt;Height)
+                powerUp.Destroyed = true;
+            if (CheckCollision(*Player, powerUp))
+            {	// collided with player, now activate powerup
+                ActivatePowerUp(powerUp);
+                powerUp.Destroyed = true;
+                powerUp.Activated = true;
+            }
+        }
+    }  
+}
+</code></pre>
+
+<p>
+  For all powerups not yet destroyed, we check if the powerup either reached the bottom edge of the screen or collided with the paddle. In both cases the powerup is destroyed, but when collided with the paddle, it is also activated.
+</p>
+  
+<p>
+  Activating a powerup is accomplished by settings its <var>Activated</var> property to <code>true</code> and enabling the powerup's effect by giving it to the <fun>ActivatePowerUp</fun> function:
+</p>
+  
+<pre><code>
+void ActivatePowerUp(PowerUp &powerUp)
+{
+    if (powerUp.Type == "speed")
+    {
+        Ball-&gt;Velocity *= 1.2;
+    }
+    else if (powerUp.Type == "sticky")
+    {
+        Ball-&gt;Sticky = true;
+        Player-&gt;Color = glm::vec3(1.0f, 0.5f, 1.0f);
+    }
+    else if (powerUp.Type == "pass-through")
+    {
+        Ball-&gt;PassThrough = true;
+        Ball-&gt;Color = glm::vec3(1.0f, 0.5f, 0.5f);
+    }
+    else if (powerUp.Type == "pad-size-increase")
+    {
+        Player-&gt;Size.x += 50;
+    }
+    else if (powerUp.Type == "confuse")
+    {
+        if (!Effects-&gt;Chaos)
+            Effects-&gt;Confuse = true; // only activate if chaos wasn't already active
+    }
+    else if (powerUp.Type == "chaos")
+    {
+        if (!Effects-&gt;Confuse)
+            Effects-&gt;Chaos = true;
+    }
+} 
+</code></pre>
+  
+<p>
+  The purpose of <fun>ActivatePowerUp</fun> is exactly as it sounds: it activates the effect of a powerup as we've described at the start of this chapter. We check the type of the powerup and change the game state accordingly. For the <code>"sticky"</code> and <code>"pass-through"</code> effect, we also change the color of the paddle and the ball respectively to give the user some feedback as to which effect is currently active.
+</p>
+  
+<p>
+   Because the sticky and pass-through effects somewhat change the game logic we store their effect as a property of the ball object; this way we can change the game logic based on whatever effect on the ball is currently active. The only thing we've changed in the <fun>BallObject</fun> header is the addition of these two properties, but for completeness' sake its updated code is listed below:
+</p>
+  
+<ul>
+  <li><strong>BallObject</strong>: <a href="/code_viewer_gh.php?code=src/7.in_practice/3.2d_game/0.full_source/ball_object.h" target="_blank">header</a>, <a href="/code_viewer_gh.php?code=src/7.in_practice/3.2d_game/0.full_source/ball_object.cpp" target="_blank">code</a>.</li>
+</ul>
+  
+<p>
+  We can then easily implement the sticky effect by slightly updating the <fun>DoCollisions</fun> function at the collision code between the ball and the paddle:
+</p>
+  
+<pre><code>
+if (!Ball-&gt;Stuck && std::get&lt;0&gt;(result))
+{
+    [...]
+    Ball-&gt;Stuck = Ball-&gt;Sticky;
+}
+</code></pre>
+  
+<p>
+  Here we set the ball's <var>Stuck</var> property equal to the ball's <var>Sticky</var> property. If the sticky effect is activated, the ball will end up stuck to the player paddle whenever it collides; the user then has to press the spacebar again to release the ball.
+</p>
+  
+<p>
+  A similar small change is made for the pass-through effect within the same <fun>DoCollisions</fun> function. When the ball's <var>PassThrough</var> property is set to <code>true</code> we do not perform any collision resolution on the non-solid bricks.
+</p>
+  
+<pre><code>
+Direction dir = std::get&lt;1&gt;(collision);
+glm::vec2 diff_vector = std::get&lt;2&gt;(collision);
+if (!(Ball-&gt;PassThrough && !box.IsSolid)) 
+{
+    if (dir == LEFT || dir == RIGHT) // horizontal collision
+    {
+        [...]
+    }
+    else 
+    {
+        [...]
+    }
+}  
+</code></pre>
+  
+<p>
+  The other effects are activated by simply modifying the game's state like the ball's velocity, the paddle's size, or an effect of the <fun>PostProcesser</fun> object.
+</p>
+  
+<h3>Updating PowerUps</h3>
+<p>
+  Now all that is left to do is make sure that powerups are able to move once they've spawned and that they're deactivated as soon as their duration runs out; otherwise powerups will stay active forever.
+</p>
+  
+<p>
+  Within the game's <fun>UpdatePowerUps</fun> function we move the powerups based on their velocity and decrease the active powerups their duration. Whenever a powerup's duration is decreased to <code>0.0f</code>, its effect is deactivated and the relevant variables are reset to their original state:
+</p>
+  
+<pre><code>
+void Game::UpdatePowerUps(float dt)
+{
+    for (PowerUp &powerUp : this-&gt;PowerUps)
+    {
+        powerUp.Position += powerUp.Velocity * dt;
+        if (powerUp.Activated)
+        {
+            powerUp.Duration -= dt;
+
+            if (powerUp.Duration &lt;= 0.0f)
+            {
+                // remove powerup from list (will later be removed)
+                powerUp.Activated = false;
+                // deactivate effects
+                if (powerUp.Type == "sticky")
+                {
+                    if (!isOtherPowerUpActive(this-&gt;PowerUps, "sticky"))
+                    {	// only reset if no other PowerUp of type sticky is active
+                        Ball-&gt;Sticky = false;
+                        Player-&gt;Color = glm::vec3(1.0f);
+                    }
+                }
+                else if (powerUp.Type == "pass-through")
+                {
+                    if (!isOtherPowerUpActive(this-&gt;PowerUps, "pass-through"))
+                    {	// only reset if no other PowerUp of type pass-through is active
+                        Ball-&gt;PassThrough = false;
+                        Ball-&gt;Color = glm::vec3(1.0f);
+                    }
+                }
+                else if (powerUp.Type == "confuse")
+                {
+                    if (!isOtherPowerUpActive(this-&gt;PowerUps, "confuse"))
+                    {	// only reset if no other PowerUp of type confuse is active
+                        Effects-&gt;Confuse = false;
+                    }
+                }
+                else if (powerUp.Type == "chaos")
+                {
+                    if (!isOtherPowerUpActive(this-&gt;PowerUps, "chaos"))
+                    {	// only reset if no other PowerUp of type chaos is active
+                        Effects-&gt;Chaos = false;
+                    }
+                }                
+            }
+        }
+    }
+    this-&gt;PowerUps.erase(std::remove_if(this-&gt;PowerUps.begin(), this-&gt;PowerUps.end(),
+        [](const PowerUp &powerUp) { return powerUp.Destroyed && !powerUp.Activated; }
+    ), this-&gt;PowerUps.end());
+}  
+</code></pre>
+  
+<p>
+  You can see that for each effect we disable it by resetting the relevant items to their original state. We also set the powerup's <var>Activated</var> property to <code>false</code>. At the end of <fun>UpdatePowerUps</fun> we then loop through the <var>PowerUps</var> vector and erase each powerup if they are destroyed <strong>and</strong> deactivated. We use the <fun>remove_if</fun> function from the <fun>algorithm</fun> header to erase these items given a lambda predicate.
+</p>
+  
+<note>
+  The <fun>remove_if</fun> function moves all elements for which the lambda predicate is true to the end of the container object and returns an iterator to the start of this <em>removed elements</em> range. The container's <fun>erase</fun> function then takes this iterator and the vector's end iterator to remove all the elements between these two iterators.
+</note>
+  
+<p>
+  It may happen that while one of the powerup effects is active, another powerup of the same type collides with the player paddle. In that case we have more than 1 powerup of that type currently active within the game's <var>PowerUps</var> vector. Whenever one of these powerups gets deactivated, we don't want to disable its effects yet since another powerup of the same type may still be active. For this reason we use the <fun>IsOtherPowerUpActive</fun> function to check if there is still another powerup active of the same type. Only if this function returns <code>false</code> we deactivate the powerup. This way, the powerup's duration of a given type is extended to the duration of its last activated powerup:
+</p>
+  
+<pre><code>
+bool IsOtherPowerUpActive(std::vector&lt;PowerUp&gt; &powerUps, std::string type)
+{
+    for (const PowerUp &powerUp : powerUps)
+    {
+        if (powerUp.Activated)
+            if (powerUp.Type == type)
+                return true;
+    }
+    return false;
+}  
+</code></pre>
+
+<p>
+  The function checks for all activated powerups if there is still a powerup active of the same type and if so, returns <code>true</code>.
+</p>
+  
+<p>
+  The last thing left to do is render the powerups:
+</p>
+  
+<pre><code>
+void Game::Render()
+{
+    if (this->State == GAME_ACTIVE)
+    {
+        [...]
+        for (PowerUp &powerUp : this-&gt;PowerUps)
+            if (!powerUp.Destroyed)
+                powerUp.Draw(*Renderer);
+        [...]
+    }
+}    
+</code></pre>
+  
+<p>
+  Combine all this functionality and we have a working powerup system that not only makes the game more fun, but also a lot more challenging. It'll look a bit like this:
+</p>
+
+<div class="video paused" onclick="ClickVideo(this)">
+  <video width="600" height="450" loop>
+    <source src="/video/in-practice/breakout/powerups.mp4" type="video/mp4" />
+    <img src="/img/in-practice/breakout/powerups_video.png" class="clean"/>
+  </video>
+</div>
+  
+<p>
+  You can find the updated game code here (there we also reset all powerup effects whenever the level is reset):
+</p>
+  
+<ul>
+  <li><strong>Game</strong>: <a href="/code_viewer_gh.php?code=src/7.in_practice/3.2d_game/0.full_source/progress/8.game.h" target="_blank">header</a>, <a href="/code_viewer_gh.php?code=src/7.in_practice/3.2d_game/0.full_source/progress/8.game.cpp" target="_blank">code</a>.</li>
+</ul>  
+       
+
+    </div>
+    
+    <div id="hover">
+        HI
+    </div>
+   <!-- 728x90/320x50 sticky footer -->
+<!--<div id="waldo-tag-6196"></div>-->
+
+   <div id="disqus_thread"></div>
+
+    
+
+
+</div> <!-- container div -->
+
+
+</div> <!-- super container div -->
+</body>
+</html>

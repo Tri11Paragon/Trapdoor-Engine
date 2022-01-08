@@ -1,0 +1,586 @@
+
+
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <meta charset="utf-8"/>
+    <title>LearnOpenGL - Depth testing</title>	<!--<title>Learn OpenGL, extensive tutorial resource for learning Modern OpenGL</title>-->
+    <link rel="shortcut icon" type="image/ico" href="/favicon.ico"  />
+    <meta name="description" content="Learn OpenGL . com provides good and clear modern 3.3+ OpenGL tutorials with clear examples. A great resource to learn modern OpenGL aimed at beginners.">
+	<meta name="fragment" content="!">
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-51879160-1', 'learnopengl.com');
+      ga('send', 'pageview');
+
+    </script>
+    <!--<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-7855791439695850",
+              enable_page_level_ads: true
+         });
+    </script>
+	<script async='async' src='https://www.googletagservices.com/tag/js/gpt.js'></script>
+	<script>
+	  var googletag = googletag || {};
+	  googletag.cmd = googletag.cmd || [];
+	</script>
+	<script>
+	  googletag.cmd.push(function() {
+		googletag.defineSlot('/8491498/learnopengl_video', [300, 225], 'div-gpt-ad-1540574378241-0').addService(googletag.pubads());
+		googletag.pubads().enableSingleRequest();
+		googletag.pubads().collapseEmptyDivs();
+		googletag.enableServices();
+	  });
+	</script>
+    <script type="text/javascript" src="//cdn.thisiswaldo.com/static/js/1681.js"></script>
+	<script src="/js/jquery-1.11.0.min.js"></script>
+	<script src="/js/hoverintent.js"></script>
+	<link rel="stylesheet" type="text/css" href="/layout.css">
+    <link rel="stylesheet" type="text/css" href="/js/styles/obsidian.css">
+    <script src="/js/highlight.pack.js"></script>    
+    <script src="/js/functions.js"></script>
+    <script type="text/javascript" src="/js/mathjax/MathJax.js?config=TeX-AMS_HTML"></script>
+    <script>
+    // Has to be loaded last due to content bug 
+    MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+    </script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script>  
+        $(document).ready(function() {
+            // check if user visited from the old # based urls, re-direct to ?p= form
+            if(window.location.hash)
+            {
+                var name = window.location.hash.substring(2);
+                // name = name.replace(/-/g," ");
+                var index = name.indexOf('#'); // Remove any hash fragments from the url (Disquss adds hash fragments for comments, but results in 404 pages)
+                if(index >= 0)
+                    name = name.substring(0, index);
+                
+                window.location.href = "https://learnopengl.com/" + name;
+            } else {
+                    // Check if data has been succesfully loaded, if so: change title bar as ajax hash fragment
+                    var title = $('#content-url').text();
+                  
+                    // Refresh syntax highlighting
+                    // $('pre').each(function(i, e) {hljs.highlightBlock(e)});
+                  
+                    // Reset DISQUS
+                    // if(title == '/dev/')
+                        // title = '';
+                    // alert('hoi');
+					
+					// place video tag
+					if(title != '') {
+						var videoad = "%3Cdiv id=\'waldo-tag-12074\'%3E %3Cscript%3Egoogletag.cmd.push(function() {googletag.display(\'waldo-tag-12074\'); }); %3C/script%3E%3C/div%3E";
+						$('#content p:nth-of-type(3)').after(unescape(videoad));
+					}
+					
+                    // Adjust ads for correct bottom positioning based on content size
+                    window.setTimeout(function() {  
+                        AdPositioning();
+                     }, 3000);
+                  
+                  
+                    // set API resets after time-out (once content is properly loaded)
+                    window.setTimeout(function() {  
+                        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);       
+                        MathJax.Hub.Queue(["resetEquationNumbers", MathJax.InputJax.TeX]);
+                        
+                        var page_url = title == "" ? "http://www.learnopengl.com/" : "http://www.learnopengl.com/" + title;
+                        if(typeof DISQUS !== 'undefined') {                                              
+                            DISQUS.reset({
+                              reload: true,
+                              config: function () {  
+                                this.page.identifier = title;  
+                                this.page.url = page_url;
+                              }
+                            });
+                            $('#disqus_thread').show();
+                        }
+                           // Refresh callbacks on <function> tags
+                        SetFunctionTagCallbacks();        
+                    }, 1000);
+                                        
+                    // Zet ook de juiste button op 'selected'
+                    $('#nav li span, #nav li a').removeClass('selected');                
+                    if(title != '')
+                    {                    
+                        $('#nav li[id=\'' + title + '\']').children('span, a').addClass('selected');
+                    }
+                    // En open menu waar nodig
+                    var parents = $('#nav span.selected, #nav a.selected').parents('li').children('span.closed, a.closed');
+                    var index = 0;
+                    for(index = parents.length - 1; index >= 0; index--)
+                    {             
+                        
+                        var id = $(parents[index]).attr("id").replace( /^\D+/g, '');
+                        MenuClick(id, false);
+                    }                          
+                
+            }
+        });
+		// var initialized = false;
+        // window.onpopstate = function() {
+            // if(initialized)
+                // LoadPage();
+			// else
+				// initialized = true;
+        // };
+        
+        // Set up DISQUS
+        // $(document).ready(function() {
+            var disqus_shortname = 'learnopengl';
+            (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();           
+        // });
+    </script>
+</head>
+<body>
+<a href="https://learnopengl.com">
+<div id="header">
+</div>
+</a>
+
+<div id="supercontainer">
+    <!-- 728x90/320x50 -->
+    <div id="header_ad">
+        <div id="waldo-tag-6194"></div>
+    </div>
+    <div id="rightad_container">
+        <div id="rightad">
+            <!-- /8491498/learnopengl_video -->
+            <!--<div id='div-gpt-ad-1540574378241-0' style='height:225px; width:300px;'>
+			<script>
+			googletag.cmd.push(function() { googletag.display('div-gpt-ad-1540574378241-0'); });
+			</script>
+			</div>            
+            <br/>-->
+			<!-- place in-content -->
+			<!--<div id='waldo-tag-12074'>
+			 <script>
+			   googletag.cmd.push(function() { googletag.display('waldo-tag-12074'); });
+			 </script>
+			</div>-->
+           
+            <div id="waldo-tag-1715"></div>
+        </div>
+
+        <div id="admessage">
+            If you're running AdBlock, please consider whitelisting this site if you'd like to support LearnOpenGL; and no worries, I won't be mad if you don't :)
+            <!--<br/><br/>
+            Also, check out this little local multiplayer-only game I've made: <a href="https://store.steampowered.com/app/983590/Tank_Blazers/" target="_blank">Tank Blazers</a>.
+            <br/>
+            <a href="https://store.steampowered.com/app/983590/Tank_Blazers" target="_blank"><img src="/img/tank_blazers.jpg"  style="width:278px; margin-top: 9px; margin-left: -3px;"/></a>-->
+        </div>
+        
+        <div id="rightonethirdad">
+            <div id="waldo-tag-2246"></div>
+        </div>
+        
+        <div id="rightbottomad">            
+			<div id="waldo-tag-2247"></div>								
+        </div>
+    </div>
+    <div id="container">
+        <div id="loading"></div>
+<script> 
+$(document).ready(function() {
+$('#menu-item4').mousedown(function() { MenuClick(4, true) });
+$('#menu-item48').mousedown(function() { MenuClick(48, true) });
+$('#menu-item56').mousedown(function() { MenuClick(56, true) });
+$('#menu-item63').mousedown(function() { MenuClick(63, true) });
+$('#menu-item100').mousedown(function() { MenuClick(100, true) });
+$('#menu-item102').mousedown(function() { MenuClick(102, true) });
+$('#menu-item113').mousedown(function() { MenuClick(113, true) });
+$('#menu-item116').mousedown(function() { MenuClick(116, true) });
+$('#menu-item78').mousedown(function() { MenuClick(78, true) });
+$('#menu-item81').mousedown(function() { MenuClick(81, true) });
+$('#menu-item85').mousedown(function() { MenuClick(85, true) });
+$('#menu-item125').mousedown(function() { MenuClick(125, true) });
+$('#menu-item128').mousedown(function() { MenuClick(128, true) });
+$('#menu-item129').mousedown(function() { MenuClick(129, true) });
+$('#menu-item133').mousedown(function() { MenuClick(133, true) });
+$('#menu-item134').mousedown(function() { MenuClick(134, true) });
+$('#menu-item138').mousedown(function() { MenuClick(138, true) });
+}); 
+</script>   
+    <div id="nav">
+         <div id="social">
+            <a href="https://github.com/JoeyDeVries/LearnOpenGL" target="_blank">
+                    <img src="/img/github.png" class="social_ico">
+            </a>
+             <!-- <a href="https://www.facebook.com/Learnopengl-2199631333595544/" target="_blank">
+                <img src="/img/facebook.png" class="social_ico">
+            </a>-->
+            <a href="https://twitter.com/JoeyDeVriez" target="_blank">
+                <img src="/img/twitter.png" class="social_ico">
+            </a>
+          
+        </div>
+    <img src='img/nav-button_bottom-arrow.png' style='display: none'><ol><li id='Introduction'><a id="menu-item1" href="https://learnopengl.com/Introduction">Introduction </a></li><li id='Getting-started'><span id="menu-item4" class="closed">Getting started </span><ol id="menu-items-of4" style="display:none;"><li id='Getting-started/OpenGL'><a id="menu-item49" href="https://learnopengl.com/Getting-started/OpenGL">OpenGL </a></li><li id='Getting-started/Creating-a-window'><a id="menu-item5" href="https://learnopengl.com/Getting-started/Creating-a-window">Creating a window </a></li><li id='Getting-started/Hello-Window'><a id="menu-item6" href="https://learnopengl.com/Getting-started/Hello-Window">Hello Window </a></li><li id='Getting-started/Hello-Triangle'><a id="menu-item38" href="https://learnopengl.com/Getting-started/Hello-Triangle">Hello Triangle </a></li><li id='Getting-started/Shaders'><a id="menu-item39" href="https://learnopengl.com/Getting-started/Shaders">Shaders </a></li><li id='Getting-started/Textures'><a id="menu-item40" href="https://learnopengl.com/Getting-started/Textures">Textures </a></li><li id='Getting-started/Transformations'><a id="menu-item43" href="https://learnopengl.com/Getting-started/Transformations">Transformations </a></li><li id='Getting-started/Coordinate-Systems'><a id="menu-item44" href="https://learnopengl.com/Getting-started/Coordinate-Systems">Coordinate Systems </a></li><li id='Getting-started/Camera'><a id="menu-item47" href="https://learnopengl.com/Getting-started/Camera">Camera </a></li><li id='Getting-started/Review'><a id="menu-item50" href="https://learnopengl.com/Getting-started/Review">Review </a></li></ol></li><li id='Lighting'><span id="menu-item48" class="closed">Lighting </span><ol id="menu-items-of48" style="display:none;"><li id='Lighting/Colors'><a id="menu-item51" href="https://learnopengl.com/Lighting/Colors">Colors </a></li><li id='Lighting/Basic-Lighting'><a id="menu-item52" href="https://learnopengl.com/Lighting/Basic-Lighting">Basic Lighting </a></li><li id='Lighting/Materials'><a id="menu-item53" href="https://learnopengl.com/Lighting/Materials">Materials </a></li><li id='Lighting/Lighting-maps'><a id="menu-item54" href="https://learnopengl.com/Lighting/Lighting-maps">Lighting maps </a></li><li id='Lighting/Light-casters'><a id="menu-item55" href="https://learnopengl.com/Lighting/Light-casters">Light casters </a></li><li id='Lighting/Multiple-lights'><a id="menu-item58" href="https://learnopengl.com/Lighting/Multiple-lights">Multiple lights </a></li><li id='Lighting/Review'><a id="menu-item57" href="https://learnopengl.com/Lighting/Review">Review </a></li></ol></li><li id='Model-Loading'><span id="menu-item56" class="closed">Model Loading </span><ol id="menu-items-of56" style="display:none;"><li id='Model-Loading/Assimp'><a id="menu-item59" href="https://learnopengl.com/Model-Loading/Assimp">Assimp </a></li><li id='Model-Loading/Mesh'><a id="menu-item60" href="https://learnopengl.com/Model-Loading/Mesh">Mesh </a></li><li id='Model-Loading/Model'><a id="menu-item61" href="https://learnopengl.com/Model-Loading/Model">Model </a></li></ol></li><li id='Advanced-OpenGL'><span id="menu-item63" class="closed">Advanced OpenGL </span><ol id="menu-items-of63" style="display:none;"><li id='Advanced-OpenGL/Depth-testing'><a id="menu-item72" href="https://learnopengl.com/Advanced-OpenGL/Depth-testing">Depth testing </a></li><li id='Advanced-OpenGL/Stencil-testing'><a id="menu-item73" href="https://learnopengl.com/Advanced-OpenGL/Stencil-testing">Stencil testing </a></li><li id='Advanced-OpenGL/Blending'><a id="menu-item74" href="https://learnopengl.com/Advanced-OpenGL/Blending">Blending </a></li><li id='Advanced-OpenGL/Face-culling'><a id="menu-item77" href="https://learnopengl.com/Advanced-OpenGL/Face-culling">Face culling </a></li><li id='Advanced-OpenGL/Framebuffers'><a id="menu-item65" href="https://learnopengl.com/Advanced-OpenGL/Framebuffers">Framebuffers </a></li><li id='Advanced-OpenGL/Cubemaps'><a id="menu-item66" href="https://learnopengl.com/Advanced-OpenGL/Cubemaps">Cubemaps </a></li><li id='Advanced-OpenGL/Advanced-Data'><a id="menu-item69" href="https://learnopengl.com/Advanced-OpenGL/Advanced-Data">Advanced Data </a></li><li id='Advanced-OpenGL/Advanced-GLSL'><a id="menu-item67" href="https://learnopengl.com/Advanced-OpenGL/Advanced-GLSL">Advanced GLSL </a></li><li id='Advanced-OpenGL/Geometry-Shader'><a id="menu-item68" href="https://learnopengl.com/Advanced-OpenGL/Geometry-Shader">Geometry Shader </a></li><li id='Advanced-OpenGL/Instancing'><a id="menu-item70" href="https://learnopengl.com/Advanced-OpenGL/Instancing">Instancing </a></li><li id='Advanced-OpenGL/Anti-Aliasing'><a id="menu-item75" href="https://learnopengl.com/Advanced-OpenGL/Anti-Aliasing">Anti Aliasing </a></li></ol></li><li id='Advanced-Lighting'><span id="menu-item100" class="closed">Advanced Lighting </span><ol id="menu-items-of100" style="display:none;"><li id='Advanced-Lighting/Advanced-Lighting'><a id="menu-item101" href="https://learnopengl.com/Advanced-Lighting/Advanced-Lighting">Advanced Lighting </a></li><li id='Advanced-Lighting/Gamma-Correction'><a id="menu-item110" href="https://learnopengl.com/Advanced-Lighting/Gamma-Correction">Gamma Correction </a></li><li id='Advanced-Lighting/Shadows'><span id="menu-item102" class="closed">Shadows </span><ol id="menu-items-of102" style="display:none;"><li id='Advanced-Lighting/Shadows/Shadow-Mapping'><a id="menu-item103" href="https://learnopengl.com/Advanced-Lighting/Shadows/Shadow-Mapping">Shadow Mapping </a></li><li id='Advanced-Lighting/Shadows/Point-Shadows'><a id="menu-item104" href="https://learnopengl.com/Advanced-Lighting/Shadows/Point-Shadows">Point Shadows </a></li></ol></li><li id='Advanced-Lighting/Normal-Mapping'><a id="menu-item106" href="https://learnopengl.com/Advanced-Lighting/Normal-Mapping">Normal Mapping </a></li><li id='Advanced-Lighting/Parallax-Mapping'><a id="menu-item107" href="https://learnopengl.com/Advanced-Lighting/Parallax-Mapping">Parallax Mapping </a></li><li id='Advanced-Lighting/HDR'><a id="menu-item111" href="https://learnopengl.com/Advanced-Lighting/HDR">HDR </a></li><li id='Advanced-Lighting/Bloom'><a id="menu-item112" href="https://learnopengl.com/Advanced-Lighting/Bloom">Bloom </a></li><li id='Advanced-Lighting/Deferred-Shading'><a id="menu-item108" href="https://learnopengl.com/Advanced-Lighting/Deferred-Shading">Deferred Shading </a></li><li id='Advanced-Lighting/SSAO'><a id="menu-item109" href="https://learnopengl.com/Advanced-Lighting/SSAO">SSAO </a></li></ol></li><li id='PBR'><span id="menu-item113" class="closed">PBR </span><ol id="menu-items-of113" style="display:none;"><li id='PBR/Theory'><a id="menu-item114" href="https://learnopengl.com/PBR/Theory">Theory </a></li><li id='PBR/Lighting'><a id="menu-item115" href="https://learnopengl.com/PBR/Lighting">Lighting </a></li><li id='PBR/IBL'><span id="menu-item116" class="closed">IBL </span><ol id="menu-items-of116" style="display:none;"><li id='PBR/IBL/Diffuse-irradiance'><a id="menu-item117" href="https://learnopengl.com/PBR/IBL/Diffuse-irradiance">Diffuse irradiance </a></li><li id='PBR/IBL/Specular-IBL'><a id="menu-item118" href="https://learnopengl.com/PBR/IBL/Specular-IBL">Specular IBL </a></li></ol></li></ol></li><li id='In-Practice'><span id="menu-item78" class="closed">In Practice </span><ol id="menu-items-of78" style="display:none;"><li id='In-Practice/Debugging'><a id="menu-item79" href="https://learnopengl.com/In-Practice/Debugging">Debugging </a></li><li id='In-Practice/Text-Rendering'><a id="menu-item80" href="https://learnopengl.com/In-Practice/Text-Rendering">Text Rendering </a></li><li id='In-Practice/2D-Game'><span id="menu-item81" class="closed">2D Game </span><ol id="menu-items-of81" style="display:none;"><li id='In-Practice/2D-Game/Breakout'><a id="menu-item82" href="https://learnopengl.com/In-Practice/2D-Game/Breakout">Breakout </a></li><li id='In-Practice/2D-Game/Setting-up'><a id="menu-item88" href="https://learnopengl.com/In-Practice/2D-Game/Setting-up">Setting up </a></li><li id='In-Practice/2D-Game/Rendering-Sprites'><a id="menu-item83" href="https://learnopengl.com/In-Practice/2D-Game/Rendering-Sprites">Rendering Sprites </a></li><li id='In-Practice/2D-Game/Levels'><a id="menu-item84" href="https://learnopengl.com/In-Practice/2D-Game/Levels">Levels </a></li><li id='In-Practice/2D-Game/Collisions'><span id="menu-item85" class="closed">Collisions </span><ol id="menu-items-of85" style="display:none;"><li id='In-Practice/2D-Game/Collisions/Ball'><a id="menu-item95" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Ball">Ball </a></li><li id='In-Practice/2D-Game/Collisions/Collision-detection'><a id="menu-item96" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Collision-detection">Collision detection </a></li><li id='In-Practice/2D-Game/Collisions/Collision-resolution'><a id="menu-item97" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Collision-resolution">Collision resolution </a></li></ol></li><li id='In-Practice/2D-Game/Particles'><a id="menu-item89" href="https://learnopengl.com/In-Practice/2D-Game/Particles">Particles </a></li><li id='In-Practice/2D-Game/Postprocessing'><a id="menu-item90" href="https://learnopengl.com/In-Practice/2D-Game/Postprocessing">Postprocessing </a></li><li id='In-Practice/2D-Game/Powerups'><a id="menu-item91" href="https://learnopengl.com/In-Practice/2D-Game/Powerups">Powerups </a></li><li id='In-Practice/2D-Game/Audio'><a id="menu-item94" href="https://learnopengl.com/In-Practice/2D-Game/Audio">Audio </a></li><li id='In-Practice/2D-Game/Render-text'><a id="menu-item92" href="https://learnopengl.com/In-Practice/2D-Game/Render-text">Render text </a></li><li id='In-Practice/2D-Game/Final-thoughts'><a id="menu-item93" href="https://learnopengl.com/In-Practice/2D-Game/Final-thoughts">Final thoughts </a></li></ol></li></ol></li><li id='Guest-Articles'><span id="menu-item125" class="closed">Guest Articles </span><ol id="menu-items-of125" style="display:none;"><li id='Guest-Articles/How-to-publish'><a id="menu-item126" href="https://learnopengl.com/Guest-Articles/How-to-publish">How to publish </a></li><li id='Guest-Articles/2020'><span id="menu-item128" class="closed">2020 </span><ol id="menu-items-of128" style="display:none;"><li id='Guest-Articles/2020/OIT'><span id="menu-item129" class="closed">OIT </span><ol id="menu-items-of129" style="display:none;"><li id='Guest-Articles/2020/OIT/Introduction'><a id="menu-item130" href="https://learnopengl.com/Guest-Articles/2020/OIT/Introduction">Introduction </a></li><li id='Guest-Articles/2020/OIT/Weighted-Blended'><a id="menu-item132" href="https://learnopengl.com/Guest-Articles/2020/OIT/Weighted-Blended">Weighted Blended </a></li></ol></li><li id='Guest-Articles/2020/Skeletal-Animation'><a id="menu-item131" href="https://learnopengl.com/Guest-Articles/2020/Skeletal-Animation">Skeletal Animation </a></li></ol></li><li id='Guest-Articles/2021'><span id="menu-item133" class="closed">2021 </span><ol id="menu-items-of133" style="display:none;"><li id='Guest-Articles/2021/CSM'><a id="menu-item137" href="https://learnopengl.com/Guest-Articles/2021/CSM">CSM </a></li><li id='Guest-Articles/2021/Scene'><span id="menu-item134" class="closed">Scene </span><ol id="menu-items-of134" style="display:none;"><li id='Guest-Articles/2021/Scene/Scene-Graph'><a id="menu-item135" href="https://learnopengl.com/Guest-Articles/2021/Scene/Scene-Graph">Scene Graph </a></li><li id='Guest-Articles/2021/Scene/Frustum-Culling'><a id="menu-item136" href="https://learnopengl.com/Guest-Articles/2021/Scene/Frustum-Culling">Frustum Culling </a></li></ol></li><li id='Guest-Articles/2021/Tessellation'><span id="menu-item138" class="closed">Tessellation </span><ol id="menu-items-of138" style="display:none;"><li id='Guest-Articles/2021/Tessellation/Height-map'><a id="menu-item139" href="https://learnopengl.com/Guest-Articles/2021/Tessellation/Height-map">Height map </a></li></ol></li></ol></li></ol></li><li id='Code-repository'><a id="menu-item99" href="https://learnopengl.com/Code-repository">Code repository </a></li><li id='Translations'><a id="menu-item119" href="https://learnopengl.com/Translations">Translations </a></li><li id='About'><a id="menu-item2" href="https://learnopengl.com/About">About </a></li></ol>		<div id="menu_book">
+            <a href="https://geni.us/learnopengl" target="_blank"><img src="/book/below_menu.png" class="clean"/></a>
+        </div>
+       <div id="donate">
+            <a href="https://www.paypal.me/learnopengl/" target="_blank">
+                <div id="donate_img"></div>
+                <img style="display: none" src="/img/donate_button_hover.png"/>
+                <!--<img id="donate_img" src="img/patreon.png"/>-->
+            </a>
+          <!--<div id="alipay">
+            <img style="width: 150px;" class="clean" src="/img/alipay_logo.png"/>
+            <img style="width: 150px; margin-top: 5px" src="/img/alipay.png"/>
+          </div>-->
+        </div> 
+		<!--
+		<div class="btc">
+			<h3>BTC</h3>
+			<p>
+				1CLGKgmBSuYJ1nnvDGAepVTKNNDpUjfpRa
+			</p>
+			<img src="/img/btc_qr.png"/>
+        </div> 
+		<div class="btc">
+			<h3>ETH/ERC20</h3>
+			<p>
+				0x1de59bd9e52521a46309474f8372531533bd7c43
+			</p>
+			<img src="/img/erc20_qr.png"/>
+        </div>       
+		!-->
+        <div id="ad">
+							<!--<div id="waldo-tag-1684"></div>-->
+			        </div>
+      
+        <div id="lefttwothirdad">
+            <div id="waldo-tag-2245"></div>
+        </div>
+    </div>
+    
+    <div id="content">
+    <h1 id="content-title">Depth testing</h1>
+<h1 id="content-url" style='display:none;'>Advanced-OpenGL/Depth-testing</h1>
+<p>
+  In the <a href="https://learnopengl.com/Getting-started/Coordinate-Systems" target="_blank">coordinate systems</a> chapter we've rendered a 3D container and made use of a <def>depth buffer</def> to prevent triangles rendering in the front while they're supposed to be behind other triangles. In this chapter we're going to elaborate a bit more on those <def>depth values</def> the depth buffer (or z-buffer) stores and how it actually determines if a fragment is in front. 
+</p>
+
+<p>
+  The depth-buffer is a buffer that, just like the <def>color buffer</def> (that stores all the fragment colors: the visual output), stores information per fragment and has the same width and height as the color buffer. The depth buffer is automatically created by the windowing system and stores its depth values as <code>16</code>, <code>24</code> or <code>32</code> bit floats. In most systems you'll see a depth buffer with a precision of <code>24</code> bits. 
+</p>
+
+<p>
+  When depth testing is enabled, OpenGL tests the depth value of a fragment against the content of the depth buffer. OpenGL performs a depth test and if this test passes, the fragment is rendered and the depth buffer is updated with the new depth value. If the depth test fails, the fragment is discarded.
+</p>
+
+<p>
+  Depth testing is done in screen space after the fragment shader has run (and after the stencil test which we'll get to in the <a href="https://learnopengl.com/Advanced-OpenGL/Stencil-testing" target="_blank">next</a> chapter). The screen space coordinates relate directly to the viewport defined by OpenGL's <fun><function id='22'>glViewport</function></fun> function and can be accessed via GLSL's built-in <var>gl_FragCoord</var> variable in the fragment shader. The x and y components of <var>gl_FragCoord</var> represent the fragment's screen-space coordinates (with (0,0) being the bottom-left corner). The <var>gl_FragCoord</var> variable also contains a z-component which contains the depth value of the fragment. This z value is the value that is compared to the depth buffer's content. 
+</p>
+
+<note>
+  Today most GPUs support a hardware feature called <def>early depth testing</def>. Early depth testing allows the depth test to run before the fragment shader runs. Whenever it is clear a fragment isn't going to be visible (it is behind other objects) we can prematurely discard the fragment. 
+<br/><br/>
+Fragment shaders are usually quite expensive so wherever we can avoid running them we should. A restriction on the fragment shader for early depth testing is that you shouldn't write to the fragment's depth value. If a fragment shader would write to its depth value, early depth testing is impossible;  OpenGL won't be able to figure out the depth value beforehand. 
+</note>
+
+<p>
+  Depth testing is disabled by default so to enable depth testing we need to enable it with the <var>GL_DEPTH_TEST</var> option:
+</p>
+
+<pre><code>
+<function id='60'>glEnable</function>(GL_DEPTH_TEST);  
+</code></pre>
+
+<p>
+  Once enabled, OpenGL automatically stores fragments their z-values in the depth buffer if they passed the depth test and discards fragments if they failed the depth test accordingly. If you have depth testing enabled you should also clear the depth buffer before each frame using <var>GL_DEPTH_BUFFER_BIT</var>; otherwise you're stuck with the depth values from last frame:
+</p>
+
+<pre><code>
+<function id='10'>glClear</function>(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  
+</code></pre>
+
+<p>
+  There are certain scenarios imaginable where you want to perform the depth test on all fragments and discard them accordingly, but <strong>not</strong> update the depth buffer. Basically, you're (temporarily) using a <def>read-only</def> depth buffer. OpenGL allows us to disable writing to the depth buffer by setting its depth mask to <code>GL_FALSE</code>:
+</p>
+
+<pre><code>
+<function id='65'>glDepthMask</function>(GL_FALSE);  
+</code></pre>
+
+<p>
+  Note that this only has effect if depth testing is enabled. 
+</p>
+
+<h2>Depth test function</h2>
+<p>
+  OpenGL allows us to modify the comparison operators it uses for the depth test. This allows us to control when OpenGL should pass or discard fragments and when to update the depth buffer. We can set the comparison operator (or depth function) by calling <fun><function id='66'>glDepthFunc</function></fun>:
+</p>
+
+<pre><code>
+<function id='66'>glDepthFunc</function>(GL_LESS);  
+</code></pre>
+
+<p>
+  The function accepts several comparison operators that are listed in the table below:
+</p>
+
+<table>
+  <tr>
+  	<th>Function</th>
+  	<th>Description</th>
+  </tr>  
+  <tr>
+    <td><code>GL_ALWAYS</code></td>
+ 	<td>The depth test always passes.</td>
+  </tr>
+  <tr>
+    <td><code>GL_NEVER</code></td>
+ 	<td>The depth test never passes.</td>
+  </tr>
+  <tr>
+    <td><code>GL_LESS</code></td>
+ 	<td>Passes if the fragment's depth value is less than the stored depth value.</td>
+  </tr>
+  <tr>
+    <td><code>GL_EQUAL</code></td>
+ 	<td>Passes if the fragment's depth value is equal to the stored depth value.</td>
+  </tr><tr>
+    <td><code>GL_LEQUAL</code></td>
+ 	<td>Passes if the fragment's depth value is less than or equal to the stored depth value.</td>
+  </tr> 
+  <tr>
+    <td><code>GL_GREATER</code></td>
+ 	<td>Passes if the fragment's depth value is greater than the stored depth value.</td>
+  </tr>
+  <tr>
+    <td><code>GL_NOTEQUAL</code></td>
+ 	<td>Passes if the fragment's depth value is not equal to the stored depth value.</td>
+  </tr>
+  <tr>
+    <td><code>GL_GEQUAL</code></td>
+ 	<td>Passes if the fragment's depth value is greater than or equal to the stored depth value.</td>
+  </tr>
+</table>
+
+<p>
+  By default the depth function <var>GL_LESS</var> is used that discards all the fragments that have a depth value higher than or equal to the current depth buffer's value.
+</p>
+
+<p>
+  Let's show the effect that changing the depth function has on the visual output. We'll use a fresh code setup that displays a basic scene with two textured cubes sitting on a textured floor with no lighting. You can find the source code <a href="/code_viewer_gh.php?code=src/4.advanced_opengl/1.1.depth_testing/depth_testing.cpp" target="_blank">here</a>.
+</p>
+
+<p>
+  Within the source code we changed the depth function to <var>GL_ALWAYS</var>:
+</p>
+
+<pre><code>
+<function id='60'>glEnable</function>(GL_DEPTH_TEST);
+<function id='66'>glDepthFunc</function>(GL_ALWAYS); 
+</code></pre>
+
+<p>
+  This simulates the same behavior we'd get if we didn't enable depth testing. The depth test always passes so the fragments that are drawn last are rendered in front of the fragments that were drawn before, even though they should've been at the front. Since we've drawn the floor plane last, the plane's fragments overwrite each of the container's previously written fragments:
+</p>
+
+<img src="/img/advanced/depth_testing_func_always.png" class="clean" alt="Depth testing in OpenGL with GL_ALWAYS as depth function"/>
+
+<p>
+  Setting it all back to <var>GL_LESS</var> gives us the type of scene we're used to:
+</p>
+
+<img src="/img/advanced/depth_testing_func_less.png" class="clean" alt="Depth testing in OpenGL with GL_LESS as depth function"/>
+
+<h2>Depth value precision</h2>
+<p>
+  The depth buffer contains depth values between <code>0.0</code> and <code>1.0</code> and it compares its content with the z-values of all the objects in the scene as seen from the viewer. These z-values in view space can be any value between the projection-frustum's <code>near</code> and <code>far</code> plane. We thus need some way to transform these view-space z-values to the range of <code>[0,1]</code> and one way is to linearly transform them. The following (linear) equation transforms the z-value to a depth value between <code>0.0</code> and <code>1.0</code>:
+</p>
+
+\begin{equation} F_{depth} = \frac{z - near}{far - near} \end{equation}
+
+<p>
+  Here \(near\) and \(far\) are the <em>near</em> and <em>far</em> values we used to provide to the projection matrix to set the visible frustum (see <a href="https://learnopengl.com/Getting-started/Coordinate-Systems" target="_blank">coordinate Systems</a>). The equation takes a depth value \(z\) within the frustum and transforms it to the range <code>[0,1]</code>. The relation between the z-value and its corresponding depth value is presented in the following graph:
+</p>
+
+<img src="/img/advanced/depth_linear_graph.png" class="clean" alt="Graph of depth values in OpenGL as a linear function"/>
+
+<note>
+  Note that all equations give a depth value close to <code>0.0</code> when the object is close by  and a depth value close to <code>1.0</code> when the object is close to the far plane.
+</note>
+
+<p>
+  In practice however, a <def>linear depth buffer</def> like this is almost never used. Because of projection properties a non-linear depth equation is used that is proportional to 1/z. The result is that we get enormous precision when z is small and much less precision when z is far away.
+</p>
+
+<p>
+  Since the non-linear function is proportional to 1/z, z-values between <code>1.0</code> and <code>2.0</code> would result in depth values between <code>1.0</code> and <code>0.5</code> which is half of the [0,1] range, giving us enormous precision at small z-values. Z-values between <code>50.0</code> and <code>100.0</code> would account for only 2% of the [0,1] range. Such an equation, that also takes near and far distances into account, is given below:
+</p>
+
+\begin{equation} F_{depth} = \frac{1/z - 1/near}{1/far - 1/near} \end{equation}
+
+<p>
+  Don't worry if you don't know exactly what is going on with this equation. The important thing to remember is that the values in the depth buffer are not linear in clip-space (they are linear in view-space before the projection matrix is applied). A value of <code>0.5</code> in the depth buffer does not mean the pixel's z-value is halfway in the frustum; the z-value of the vertex is actually quite close to the near plane! You can see the non-linear relation between the z-value and the resulting depth buffer's value in the following graph:
+</p>
+
+<img src="/img/advanced/depth_non_linear_graph.png" class="clean" alt="Graph of depth values in OpenGL as a non-linear function"/>
+
+<p>
+  As you can see, the depth values are greatly determined by the small z-values giving us large depth precision to the objects close by. The equation to transform z-values (from the viewer's perspective) is embedded within the projection matrix so when we transform vertex coordinates from view to clip, and then to screen-space the non-linear equation is applied. 
+</p>  
+
+<p>
+  The effect of this non-linear equation quickly becomes apparent when we try to visualize the depth buffer.
+</p>
+
+<h2>Visualizing the depth buffer</h2>
+<p>
+  We know that the z-value of the built-in <var>gl_FragCoord</var> vector in the fragment shader contains the depth value of that particular fragment. If we were to output this depth value of the fragment as a color we could display the depth values of all the fragments in the scene:
+</p>
+
+<pre><code>
+void main()
+{             
+    FragColor = vec4(vec3(gl_FragCoord.z), 1.0);
+}  
+</code></pre>
+
+<p>
+  If you'd then run the program you'll probably notice that everything is white, making it look like all of our depth values are the maximum depth value of <code>1.0</code>. So why aren't any of the depth values closer to <code>0.0</code> and thus darker?
+</p>
+
+<p>
+  In the previous section we described that depth values in screen space are non-linear e.g. they have a very high precision for small z-values and a low precision for large z-values. The depth value of the fragment increases rapidly over distance so almost all the vertices have values close to <code>1.0</code>. If we were to carefully move really close to an object you may eventually see the colors getting darker, their z-values becoming smaller:
+</p>
+
+<img src="/img/advanced/depth_testing_visible_depth.png" class="clean" alt="Depth buffer visualized in OpenGL and GLSL"/>
+
+<p>
+  This clearly shows the non-linearity of the depth value. Objects close by have a much larger effect on the depth value than objects far away. Only moving a few inches can result in the colors going from dark to completely white.
+</p>
+
+<p>
+  We can however, transform the non-linear depth values of the fragment back to its linear sibling. To achieve this we basically need to reverse the process of projection for the depth values alone. This means we have to first re-transform the depth values from the range <code>[0,1]</code> to normalized device coordinates in the range <code>[-1,1]</code>. Then we want to reverse the non-linear equation (equation 2) as done in the projection matrix and apply this inversed equation to the resulting depth value. The result is then a linear depth value. 
+</p>
+
+<p>
+  First we transform the depth value to NDC which is not too difficult:
+</p>
+
+<pre><code>
+float ndc = depth * 2.0 - 1.0; 
+</code></pre>
+
+<p>
+  We then take the resulting <var>ndc</var> value and apply the inverse transformation to retrieve its linear depth value:
+</p>
+
+<pre><code>
+float linearDepth = (2.0 * near * far) / (far + near - ndc * (far - near));	
+</code></pre>
+
+<p>
+  This equation is derived from the projection matrix for non-linearizing the depth values, returning depth values between <var>near</var> and <var>far</var>. This <a href="http://www.songho.ca/opengl/gl_projectionmatrix.html" target="_blank">math-heavy article</a> explains the projection matrix in enormous detail for the interested reader; it also shows where the equations come from.
+</p>
+
+<p>
+  The complete fragment shader that transforms the non-linear depth in screen-space to a linear depth value is then as follows:
+</p>
+
+<pre><code>
+#version 330 core
+out vec4 FragColor;
+
+float near = 0.1; 
+float far  = 100.0; 
+  
+float LinearizeDepth(float depth) 
+{
+    float z = depth * 2.0 - 1.0; // back to NDC 
+    return (2.0 * near * far) / (far + near - z * (far - near));	
+}
+
+void main()
+{             
+    float depth = LinearizeDepth(gl_FragCoord.z) / far; // divide by far for demonstration
+    FragColor = vec4(vec3(depth), 1.0);
+}
+</code></pre>
+
+<p>
+  Because the linearized depth values range from <var>near</var> to <var>far</var> most of its values will be above <code>1.0</code> and displayed as completely white. By dividing the linear depth value by <var>far</var> in the <fun>main</fun> function we convert the linear depth value to the range [<code>0</code>, <code>1</code>]. This way we can gradually see the scene become brighter the closer the fragments are to the projection frustum's far plane, which works better for visualization purposes.
+</p>
+
+<p>
+  If we'd now run the application we get depth values that are linear over distance. Try moving around the scene to see the depth values change in a linear fashion.
+</p>
+
+<img src="/img/advanced/depth_testing_visible_linear.png" class="clean" alt="Depth buffer visualized in OpenGL and GLSL as linear values"/>
+
+<p>
+  The colors are mostly black because the depth values range linearly from the <code>near</code> plane (<code>0.1</code>) to the <code>far</code> plane (<code>100</code>) which is still quite far away from us. The result is that we're relatively close to the near plane and therefore get lower (darker) depth values.
+</p>
+
+<h2>Z-fighting</h2>
+<p>
+  A common visual artifact may occur when two planes or triangles are so closely aligned to each other that the depth buffer does not have enough precision to figure out which one of the two shapes is in front of the other. The result is that the two shapes continually seem to switch order which causes weird glitchy patterns. This is called <def>z-fighting</def>, because it looks like the shapes are fighting over who gets on top.
+</p>
+
+<p>
+  In the scene we've been using so far there are a few spots where z-fighting can be noticed. The containers were placed at the exact height of the floor which means the bottom plane of the container is coplanar with the floor plane. The depth values of both planes are then the same so the resulting depth test has no way of figuring out which is the right one. 
+</p>
+
+<p>
+  If you move the camera inside one of the containers the effects are clearly visible, the bottom part of the container is constantly switching between the container's plane and the floor's plane in a zigzag pattern:
+</p>
+
+<img src="/img/advanced/depth_testing_z_fighting.png" class="clean" alt="Demonstration of Z-fighting in OpenGL"/>
+
+<p>
+  Z-fighting is a common problem with depth buffers and it's generally more noticeable when objects are further away (because the depth buffer has less precision at larger z-values). Z-fighting can't be completely prevented, but there are a few tricks that will help to mitigate or completely prevent z-fighting in your scene.
+</p>
+
+<h3>Prevent z-fighting</h3>
+<p>
+  The first and most important trick is <em>never place objects too close to each other in a way that some of their triangles closely overlap</em>. By creating a small offset between two objects you can completely remove z-fighting between the two objects. In the case of the containers and the plane we could've easily moved the containers slightly upwards in the positive y direction. The small change of the container's positions would probably not be noticeable at all and would completely reduce the z-fighting. However, this requires manual intervention of each of the objects and thorough testing to make sure no objects in a scene produce z-fighting.
+</p>
+
+<p>
+  A second trick is to <em>set the near plane as far as possible</em>. In one of the previous sections we've discussed that precision is extremely large when close to the <code>near</code> plane so if we move the <code>near</code> plane away from the viewer, we'll have significantly greater precision over the entire frustum range. However, setting the <code>near</code> plane too far could cause clipping of near objects so it is usually a matter of tweaking and experimentation to figure out the best <code>near</code> distance for your scene. 
+</p>
+
+<p>
+  Another great trick at the cost of some performance is to <em>use a higher precision depth buffer</em>. Most depth buffers have a precision of <code>24</code> bits, but most GPUs nowadays support <code>32</code> bit depth buffers, increasing the precision by a significant amount. So at the cost of some performance you'll get much more precision with depth testing, reducing z-fighting.
+</p>
+
+<p>
+  The 3 techniques we've discussed are the most common and easy-to-implement anti z-fighting techniques. There are some other techniques out there that require a lot more work and still won't completely disable z-fighting. Z-fighting is a common issue, but if you use the proper combination of the listed techniques you probably won't need to deal with z-fighting that much.
+</p>       
+
+    </div>
+    
+    <div id="hover">
+        HI
+    </div>
+   <!-- 728x90/320x50 sticky footer -->
+<!--<div id="waldo-tag-6196"></div>-->
+
+   <div id="disqus_thread"></div>
+
+    
+
+
+</div> <!-- container div -->
+
+
+</div> <!-- super container div -->
+</body>
+</html>

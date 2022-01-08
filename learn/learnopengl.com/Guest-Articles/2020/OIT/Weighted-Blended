@@ -1,0 +1,836 @@
+
+
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <meta charset="utf-8"/>
+    <title>LearnOpenGL - Weighted Blended</title>	<!--<title>Learn OpenGL, extensive tutorial resource for learning Modern OpenGL</title>-->
+    <link rel="shortcut icon" type="image/ico" href="/favicon.ico"  />
+    <meta name="description" content="Learn OpenGL . com provides good and clear modern 3.3+ OpenGL tutorials with clear examples. A great resource to learn modern OpenGL aimed at beginners.">
+	<meta name="fragment" content="!">
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-51879160-1', 'learnopengl.com');
+      ga('send', 'pageview');
+
+    </script>
+    <!--<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-7855791439695850",
+              enable_page_level_ads: true
+         });
+    </script>
+	<script async='async' src='https://www.googletagservices.com/tag/js/gpt.js'></script>
+	<script>
+	  var googletag = googletag || {};
+	  googletag.cmd = googletag.cmd || [];
+	</script>
+	<script>
+	  googletag.cmd.push(function() {
+		googletag.defineSlot('/8491498/learnopengl_video', [300, 225], 'div-gpt-ad-1540574378241-0').addService(googletag.pubads());
+		googletag.pubads().enableSingleRequest();
+		googletag.pubads().collapseEmptyDivs();
+		googletag.enableServices();
+	  });
+	</script>
+    <script type="text/javascript" src="//cdn.thisiswaldo.com/static/js/1681.js"></script>
+	<script src="/js/jquery-1.11.0.min.js"></script>
+	<script src="/js/hoverintent.js"></script>
+	<link rel="stylesheet" type="text/css" href="/layout.css">
+    <link rel="stylesheet" type="text/css" href="/js/styles/obsidian.css">
+    <script src="/js/highlight.pack.js"></script>    
+    <script src="/js/functions.js"></script>
+    <script type="text/javascript" src="/js/mathjax/MathJax.js?config=TeX-AMS_HTML"></script>
+    <script>
+    // Has to be loaded last due to content bug 
+    MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+    </script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script>  
+        $(document).ready(function() {
+            // check if user visited from the old # based urls, re-direct to ?p= form
+            if(window.location.hash)
+            {
+                var name = window.location.hash.substring(2);
+                // name = name.replace(/-/g," ");
+                var index = name.indexOf('#'); // Remove any hash fragments from the url (Disquss adds hash fragments for comments, but results in 404 pages)
+                if(index >= 0)
+                    name = name.substring(0, index);
+                
+                window.location.href = "https://learnopengl.com/" + name;
+            } else {
+                    // Check if data has been succesfully loaded, if so: change title bar as ajax hash fragment
+                    var title = $('#content-url').text();
+                  
+                    // Refresh syntax highlighting
+                    // $('pre').each(function(i, e) {hljs.highlightBlock(e)});
+                  
+                    // Reset DISQUS
+                    // if(title == '/dev/')
+                        // title = '';
+                    // alert('hoi');
+					
+					// place video tag
+					if(title != '') {
+						var videoad = "%3Cdiv id=\'waldo-tag-12074\'%3E %3Cscript%3Egoogletag.cmd.push(function() {googletag.display(\'waldo-tag-12074\'); }); %3C/script%3E%3C/div%3E";
+						$('#content p:nth-of-type(3)').after(unescape(videoad));
+					}
+					
+                    // Adjust ads for correct bottom positioning based on content size
+                    window.setTimeout(function() {  
+                        AdPositioning();
+                     }, 3000);
+                  
+                  
+                    // set API resets after time-out (once content is properly loaded)
+                    window.setTimeout(function() {  
+                        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);       
+                        MathJax.Hub.Queue(["resetEquationNumbers", MathJax.InputJax.TeX]);
+                        
+                        var page_url = title == "" ? "http://www.learnopengl.com/" : "http://www.learnopengl.com/" + title;
+                        if(typeof DISQUS !== 'undefined') {                                              
+                            DISQUS.reset({
+                              reload: true,
+                              config: function () {  
+                                this.page.identifier = title;  
+                                this.page.url = page_url;
+                              }
+                            });
+                            $('#disqus_thread').show();
+                        }
+                           // Refresh callbacks on <function> tags
+                        SetFunctionTagCallbacks();        
+                    }, 1000);
+                                        
+                    // Zet ook de juiste button op 'selected'
+                    $('#nav li span, #nav li a').removeClass('selected');                
+                    if(title != '')
+                    {                    
+                        $('#nav li[id=\'' + title + '\']').children('span, a').addClass('selected');
+                    }
+                    // En open menu waar nodig
+                    var parents = $('#nav span.selected, #nav a.selected').parents('li').children('span.closed, a.closed');
+                    var index = 0;
+                    for(index = parents.length - 1; index >= 0; index--)
+                    {             
+                        
+                        var id = $(parents[index]).attr("id").replace( /^\D+/g, '');
+                        MenuClick(id, false);
+                    }                          
+                
+            }
+        });
+		// var initialized = false;
+        // window.onpopstate = function() {
+            // if(initialized)
+                // LoadPage();
+			// else
+				// initialized = true;
+        // };
+        
+        // Set up DISQUS
+        // $(document).ready(function() {
+            var disqus_shortname = 'learnopengl';
+            (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();           
+        // });
+    </script>
+</head>
+<body>
+<a href="https://learnopengl.com">
+<div id="header">
+</div>
+</a>
+
+<div id="supercontainer">
+    <!-- 728x90/320x50 -->
+    <div id="header_ad">
+        <div id="waldo-tag-6194"></div>
+    </div>
+    <div id="rightad_container">
+        <div id="rightad">
+            <!-- /8491498/learnopengl_video -->
+            <!--<div id='div-gpt-ad-1540574378241-0' style='height:225px; width:300px;'>
+			<script>
+			googletag.cmd.push(function() { googletag.display('div-gpt-ad-1540574378241-0'); });
+			</script>
+			</div>            
+            <br/>-->
+			<!-- place in-content -->
+			<!--<div id='waldo-tag-12074'>
+			 <script>
+			   googletag.cmd.push(function() { googletag.display('waldo-tag-12074'); });
+			 </script>
+			</div>-->
+           
+            <div id="waldo-tag-1715"></div>
+        </div>
+
+        <div id="admessage">
+            If you're running AdBlock, please consider whitelisting this site if you'd like to support LearnOpenGL; and no worries, I won't be mad if you don't :)
+            <!--<br/><br/>
+            Also, check out this little local multiplayer-only game I've made: <a href="https://store.steampowered.com/app/983590/Tank_Blazers/" target="_blank">Tank Blazers</a>.
+            <br/>
+            <a href="https://store.steampowered.com/app/983590/Tank_Blazers" target="_blank"><img src="/img/tank_blazers.jpg"  style="width:278px; margin-top: 9px; margin-left: -3px;"/></a>-->
+        </div>
+        
+        <div id="rightonethirdad">
+            <div id="waldo-tag-2246"></div>
+        </div>
+        
+        <div id="rightbottomad">            
+			<div id="waldo-tag-2247"></div>								
+        </div>
+    </div>
+    <div id="container">
+        <div id="loading"></div>
+<script> 
+$(document).ready(function() {
+$('#menu-item4').mousedown(function() { MenuClick(4, true) });
+$('#menu-item48').mousedown(function() { MenuClick(48, true) });
+$('#menu-item56').mousedown(function() { MenuClick(56, true) });
+$('#menu-item63').mousedown(function() { MenuClick(63, true) });
+$('#menu-item100').mousedown(function() { MenuClick(100, true) });
+$('#menu-item102').mousedown(function() { MenuClick(102, true) });
+$('#menu-item113').mousedown(function() { MenuClick(113, true) });
+$('#menu-item116').mousedown(function() { MenuClick(116, true) });
+$('#menu-item78').mousedown(function() { MenuClick(78, true) });
+$('#menu-item81').mousedown(function() { MenuClick(81, true) });
+$('#menu-item85').mousedown(function() { MenuClick(85, true) });
+$('#menu-item125').mousedown(function() { MenuClick(125, true) });
+$('#menu-item128').mousedown(function() { MenuClick(128, true) });
+$('#menu-item129').mousedown(function() { MenuClick(129, true) });
+$('#menu-item133').mousedown(function() { MenuClick(133, true) });
+$('#menu-item134').mousedown(function() { MenuClick(134, true) });
+$('#menu-item138').mousedown(function() { MenuClick(138, true) });
+}); 
+</script>   
+    <div id="nav">
+         <div id="social">
+            <a href="https://github.com/JoeyDeVries/LearnOpenGL" target="_blank">
+                    <img src="/img/github.png" class="social_ico">
+            </a>
+             <!-- <a href="https://www.facebook.com/Learnopengl-2199631333595544/" target="_blank">
+                <img src="/img/facebook.png" class="social_ico">
+            </a>-->
+            <a href="https://twitter.com/JoeyDeVriez" target="_blank">
+                <img src="/img/twitter.png" class="social_ico">
+            </a>
+          
+        </div>
+    <img src='img/nav-button_bottom-arrow.png' style='display: none'><ol><li id='Introduction'><a id="menu-item1" href="https://learnopengl.com/Introduction">Introduction </a></li><li id='Getting-started'><span id="menu-item4" class="closed">Getting started </span><ol id="menu-items-of4" style="display:none;"><li id='Getting-started/OpenGL'><a id="menu-item49" href="https://learnopengl.com/Getting-started/OpenGL">OpenGL </a></li><li id='Getting-started/Creating-a-window'><a id="menu-item5" href="https://learnopengl.com/Getting-started/Creating-a-window">Creating a window </a></li><li id='Getting-started/Hello-Window'><a id="menu-item6" href="https://learnopengl.com/Getting-started/Hello-Window">Hello Window </a></li><li id='Getting-started/Hello-Triangle'><a id="menu-item38" href="https://learnopengl.com/Getting-started/Hello-Triangle">Hello Triangle </a></li><li id='Getting-started/Shaders'><a id="menu-item39" href="https://learnopengl.com/Getting-started/Shaders">Shaders </a></li><li id='Getting-started/Textures'><a id="menu-item40" href="https://learnopengl.com/Getting-started/Textures">Textures </a></li><li id='Getting-started/Transformations'><a id="menu-item43" href="https://learnopengl.com/Getting-started/Transformations">Transformations </a></li><li id='Getting-started/Coordinate-Systems'><a id="menu-item44" href="https://learnopengl.com/Getting-started/Coordinate-Systems">Coordinate Systems </a></li><li id='Getting-started/Camera'><a id="menu-item47" href="https://learnopengl.com/Getting-started/Camera">Camera </a></li><li id='Getting-started/Review'><a id="menu-item50" href="https://learnopengl.com/Getting-started/Review">Review </a></li></ol></li><li id='Lighting'><span id="menu-item48" class="closed">Lighting </span><ol id="menu-items-of48" style="display:none;"><li id='Lighting/Colors'><a id="menu-item51" href="https://learnopengl.com/Lighting/Colors">Colors </a></li><li id='Lighting/Basic-Lighting'><a id="menu-item52" href="https://learnopengl.com/Lighting/Basic-Lighting">Basic Lighting </a></li><li id='Lighting/Materials'><a id="menu-item53" href="https://learnopengl.com/Lighting/Materials">Materials </a></li><li id='Lighting/Lighting-maps'><a id="menu-item54" href="https://learnopengl.com/Lighting/Lighting-maps">Lighting maps </a></li><li id='Lighting/Light-casters'><a id="menu-item55" href="https://learnopengl.com/Lighting/Light-casters">Light casters </a></li><li id='Lighting/Multiple-lights'><a id="menu-item58" href="https://learnopengl.com/Lighting/Multiple-lights">Multiple lights </a></li><li id='Lighting/Review'><a id="menu-item57" href="https://learnopengl.com/Lighting/Review">Review </a></li></ol></li><li id='Model-Loading'><span id="menu-item56" class="closed">Model Loading </span><ol id="menu-items-of56" style="display:none;"><li id='Model-Loading/Assimp'><a id="menu-item59" href="https://learnopengl.com/Model-Loading/Assimp">Assimp </a></li><li id='Model-Loading/Mesh'><a id="menu-item60" href="https://learnopengl.com/Model-Loading/Mesh">Mesh </a></li><li id='Model-Loading/Model'><a id="menu-item61" href="https://learnopengl.com/Model-Loading/Model">Model </a></li></ol></li><li id='Advanced-OpenGL'><span id="menu-item63" class="closed">Advanced OpenGL </span><ol id="menu-items-of63" style="display:none;"><li id='Advanced-OpenGL/Depth-testing'><a id="menu-item72" href="https://learnopengl.com/Advanced-OpenGL/Depth-testing">Depth testing </a></li><li id='Advanced-OpenGL/Stencil-testing'><a id="menu-item73" href="https://learnopengl.com/Advanced-OpenGL/Stencil-testing">Stencil testing </a></li><li id='Advanced-OpenGL/Blending'><a id="menu-item74" href="https://learnopengl.com/Advanced-OpenGL/Blending">Blending </a></li><li id='Advanced-OpenGL/Face-culling'><a id="menu-item77" href="https://learnopengl.com/Advanced-OpenGL/Face-culling">Face culling </a></li><li id='Advanced-OpenGL/Framebuffers'><a id="menu-item65" href="https://learnopengl.com/Advanced-OpenGL/Framebuffers">Framebuffers </a></li><li id='Advanced-OpenGL/Cubemaps'><a id="menu-item66" href="https://learnopengl.com/Advanced-OpenGL/Cubemaps">Cubemaps </a></li><li id='Advanced-OpenGL/Advanced-Data'><a id="menu-item69" href="https://learnopengl.com/Advanced-OpenGL/Advanced-Data">Advanced Data </a></li><li id='Advanced-OpenGL/Advanced-GLSL'><a id="menu-item67" href="https://learnopengl.com/Advanced-OpenGL/Advanced-GLSL">Advanced GLSL </a></li><li id='Advanced-OpenGL/Geometry-Shader'><a id="menu-item68" href="https://learnopengl.com/Advanced-OpenGL/Geometry-Shader">Geometry Shader </a></li><li id='Advanced-OpenGL/Instancing'><a id="menu-item70" href="https://learnopengl.com/Advanced-OpenGL/Instancing">Instancing </a></li><li id='Advanced-OpenGL/Anti-Aliasing'><a id="menu-item75" href="https://learnopengl.com/Advanced-OpenGL/Anti-Aliasing">Anti Aliasing </a></li></ol></li><li id='Advanced-Lighting'><span id="menu-item100" class="closed">Advanced Lighting </span><ol id="menu-items-of100" style="display:none;"><li id='Advanced-Lighting/Advanced-Lighting'><a id="menu-item101" href="https://learnopengl.com/Advanced-Lighting/Advanced-Lighting">Advanced Lighting </a></li><li id='Advanced-Lighting/Gamma-Correction'><a id="menu-item110" href="https://learnopengl.com/Advanced-Lighting/Gamma-Correction">Gamma Correction </a></li><li id='Advanced-Lighting/Shadows'><span id="menu-item102" class="closed">Shadows </span><ol id="menu-items-of102" style="display:none;"><li id='Advanced-Lighting/Shadows/Shadow-Mapping'><a id="menu-item103" href="https://learnopengl.com/Advanced-Lighting/Shadows/Shadow-Mapping">Shadow Mapping </a></li><li id='Advanced-Lighting/Shadows/Point-Shadows'><a id="menu-item104" href="https://learnopengl.com/Advanced-Lighting/Shadows/Point-Shadows">Point Shadows </a></li></ol></li><li id='Advanced-Lighting/Normal-Mapping'><a id="menu-item106" href="https://learnopengl.com/Advanced-Lighting/Normal-Mapping">Normal Mapping </a></li><li id='Advanced-Lighting/Parallax-Mapping'><a id="menu-item107" href="https://learnopengl.com/Advanced-Lighting/Parallax-Mapping">Parallax Mapping </a></li><li id='Advanced-Lighting/HDR'><a id="menu-item111" href="https://learnopengl.com/Advanced-Lighting/HDR">HDR </a></li><li id='Advanced-Lighting/Bloom'><a id="menu-item112" href="https://learnopengl.com/Advanced-Lighting/Bloom">Bloom </a></li><li id='Advanced-Lighting/Deferred-Shading'><a id="menu-item108" href="https://learnopengl.com/Advanced-Lighting/Deferred-Shading">Deferred Shading </a></li><li id='Advanced-Lighting/SSAO'><a id="menu-item109" href="https://learnopengl.com/Advanced-Lighting/SSAO">SSAO </a></li></ol></li><li id='PBR'><span id="menu-item113" class="closed">PBR </span><ol id="menu-items-of113" style="display:none;"><li id='PBR/Theory'><a id="menu-item114" href="https://learnopengl.com/PBR/Theory">Theory </a></li><li id='PBR/Lighting'><a id="menu-item115" href="https://learnopengl.com/PBR/Lighting">Lighting </a></li><li id='PBR/IBL'><span id="menu-item116" class="closed">IBL </span><ol id="menu-items-of116" style="display:none;"><li id='PBR/IBL/Diffuse-irradiance'><a id="menu-item117" href="https://learnopengl.com/PBR/IBL/Diffuse-irradiance">Diffuse irradiance </a></li><li id='PBR/IBL/Specular-IBL'><a id="menu-item118" href="https://learnopengl.com/PBR/IBL/Specular-IBL">Specular IBL </a></li></ol></li></ol></li><li id='In-Practice'><span id="menu-item78" class="closed">In Practice </span><ol id="menu-items-of78" style="display:none;"><li id='In-Practice/Debugging'><a id="menu-item79" href="https://learnopengl.com/In-Practice/Debugging">Debugging </a></li><li id='In-Practice/Text-Rendering'><a id="menu-item80" href="https://learnopengl.com/In-Practice/Text-Rendering">Text Rendering </a></li><li id='In-Practice/2D-Game'><span id="menu-item81" class="closed">2D Game </span><ol id="menu-items-of81" style="display:none;"><li id='In-Practice/2D-Game/Breakout'><a id="menu-item82" href="https://learnopengl.com/In-Practice/2D-Game/Breakout">Breakout </a></li><li id='In-Practice/2D-Game/Setting-up'><a id="menu-item88" href="https://learnopengl.com/In-Practice/2D-Game/Setting-up">Setting up </a></li><li id='In-Practice/2D-Game/Rendering-Sprites'><a id="menu-item83" href="https://learnopengl.com/In-Practice/2D-Game/Rendering-Sprites">Rendering Sprites </a></li><li id='In-Practice/2D-Game/Levels'><a id="menu-item84" href="https://learnopengl.com/In-Practice/2D-Game/Levels">Levels </a></li><li id='In-Practice/2D-Game/Collisions'><span id="menu-item85" class="closed">Collisions </span><ol id="menu-items-of85" style="display:none;"><li id='In-Practice/2D-Game/Collisions/Ball'><a id="menu-item95" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Ball">Ball </a></li><li id='In-Practice/2D-Game/Collisions/Collision-detection'><a id="menu-item96" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Collision-detection">Collision detection </a></li><li id='In-Practice/2D-Game/Collisions/Collision-resolution'><a id="menu-item97" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Collision-resolution">Collision resolution </a></li></ol></li><li id='In-Practice/2D-Game/Particles'><a id="menu-item89" href="https://learnopengl.com/In-Practice/2D-Game/Particles">Particles </a></li><li id='In-Practice/2D-Game/Postprocessing'><a id="menu-item90" href="https://learnopengl.com/In-Practice/2D-Game/Postprocessing">Postprocessing </a></li><li id='In-Practice/2D-Game/Powerups'><a id="menu-item91" href="https://learnopengl.com/In-Practice/2D-Game/Powerups">Powerups </a></li><li id='In-Practice/2D-Game/Audio'><a id="menu-item94" href="https://learnopengl.com/In-Practice/2D-Game/Audio">Audio </a></li><li id='In-Practice/2D-Game/Render-text'><a id="menu-item92" href="https://learnopengl.com/In-Practice/2D-Game/Render-text">Render text </a></li><li id='In-Practice/2D-Game/Final-thoughts'><a id="menu-item93" href="https://learnopengl.com/In-Practice/2D-Game/Final-thoughts">Final thoughts </a></li></ol></li></ol></li><li id='Guest-Articles'><span id="menu-item125" class="closed">Guest Articles </span><ol id="menu-items-of125" style="display:none;"><li id='Guest-Articles/How-to-publish'><a id="menu-item126" href="https://learnopengl.com/Guest-Articles/How-to-publish">How to publish </a></li><li id='Guest-Articles/2020'><span id="menu-item128" class="closed">2020 </span><ol id="menu-items-of128" style="display:none;"><li id='Guest-Articles/2020/OIT'><span id="menu-item129" class="closed">OIT </span><ol id="menu-items-of129" style="display:none;"><li id='Guest-Articles/2020/OIT/Introduction'><a id="menu-item130" href="https://learnopengl.com/Guest-Articles/2020/OIT/Introduction">Introduction </a></li><li id='Guest-Articles/2020/OIT/Weighted-Blended'><a id="menu-item132" href="https://learnopengl.com/Guest-Articles/2020/OIT/Weighted-Blended">Weighted Blended </a></li></ol></li><li id='Guest-Articles/2020/Skeletal-Animation'><a id="menu-item131" href="https://learnopengl.com/Guest-Articles/2020/Skeletal-Animation">Skeletal Animation </a></li></ol></li><li id='Guest-Articles/2021'><span id="menu-item133" class="closed">2021 </span><ol id="menu-items-of133" style="display:none;"><li id='Guest-Articles/2021/CSM'><a id="menu-item137" href="https://learnopengl.com/Guest-Articles/2021/CSM">CSM </a></li><li id='Guest-Articles/2021/Scene'><span id="menu-item134" class="closed">Scene </span><ol id="menu-items-of134" style="display:none;"><li id='Guest-Articles/2021/Scene/Scene-Graph'><a id="menu-item135" href="https://learnopengl.com/Guest-Articles/2021/Scene/Scene-Graph">Scene Graph </a></li><li id='Guest-Articles/2021/Scene/Frustum-Culling'><a id="menu-item136" href="https://learnopengl.com/Guest-Articles/2021/Scene/Frustum-Culling">Frustum Culling </a></li></ol></li><li id='Guest-Articles/2021/Tessellation'><span id="menu-item138" class="closed">Tessellation </span><ol id="menu-items-of138" style="display:none;"><li id='Guest-Articles/2021/Tessellation/Height-map'><a id="menu-item139" href="https://learnopengl.com/Guest-Articles/2021/Tessellation/Height-map">Height map </a></li></ol></li></ol></li></ol></li><li id='Code-repository'><a id="menu-item99" href="https://learnopengl.com/Code-repository">Code repository </a></li><li id='Translations'><a id="menu-item119" href="https://learnopengl.com/Translations">Translations </a></li><li id='About'><a id="menu-item2" href="https://learnopengl.com/About">About </a></li></ol>		<div id="menu_book">
+            <a href="https://geni.us/learnopengl" target="_blank"><img src="/book/below_menu.png" class="clean"/></a>
+        </div>
+       <div id="donate">
+            <a href="https://www.paypal.me/learnopengl/" target="_blank">
+                <div id="donate_img"></div>
+                <img style="display: none" src="/img/donate_button_hover.png"/>
+                <!--<img id="donate_img" src="img/patreon.png"/>-->
+            </a>
+          <!--<div id="alipay">
+            <img style="width: 150px;" class="clean" src="/img/alipay_logo.png"/>
+            <img style="width: 150px; margin-top: 5px" src="/img/alipay.png"/>
+          </div>-->
+        </div> 
+		<!--
+		<div class="btc">
+			<h3>BTC</h3>
+			<p>
+				1CLGKgmBSuYJ1nnvDGAepVTKNNDpUjfpRa
+			</p>
+			<img src="/img/btc_qr.png"/>
+        </div> 
+		<div class="btc">
+			<h3>ETH/ERC20</h3>
+			<p>
+				0x1de59bd9e52521a46309474f8372531533bd7c43
+			</p>
+			<img src="/img/erc20_qr.png"/>
+        </div>       
+		!-->
+        <div id="ad">
+							<!--<div id="waldo-tag-1684"></div>-->
+			        </div>
+      
+        <div id="lefttwothirdad">
+            <div id="waldo-tag-2245"></div>
+        </div>
+    </div>
+    
+    <div id="content">
+    <h1 id="content-title">Weighted Blended</h1>
+<h1 id="content-url" style='display:none;'>Guest-Articles/2020/OIT/Weighted-Blended</h1>
+    <p>
+        Weighted, Blended is an approximate order-independent transparency technique which was published in the <a href="http://jcgt.org/published/0002/02/09/">journal of computer graphics techniques</a> in 2013 by Morgan McGuire and Louis Bavoil at NVIDIA to address the transparency problem on a broad class of then gaming platforms.
+    </p>
+
+    <p>
+        Their approach to avoid the cost of storing and sorting primitives or fragments is to alter the compositing operator so that it is order independent, thus allowing a pure streaming approach.
+    </p>
+
+    <p>
+        Most games have ad-hoc and scene-dependent ways of working around transparent surface rendering limitations. These include limited sorting, additive-only blending, and hard-coded render and composite ordering. Most of these methods also break at some point during gameplay and create visual artifacts. One not-viable alternative is <a href="http://developer.download.nvidia.com/SDK/10/opengl/screenshots/samples/dual_depth_peeling.html" target="_blank">depth peeling</a>, which produces good images, but is too slow for scenes with many layers both in theory and practice.
+    </p>
+
+    <p>
+        There are many <a href="https://en.wikipedia.org/wiki/Asymptotic_analysis" target="_blank">asymptotically</a> fast solutions for transparency rendering, such as bounded A-buffer approximations using programmable blending (e.g., <a href="http://software.intel.com/en-us/articles/multi-layer-alpha-blending">Marco Salvi's work</a>), stochastic transparency (as <a href="https://www.computer.org/csdl/journal/tg/2011/08/ttg2011081036/13rRUxBa55X" target="_blank">explained by Eric Enderton and others</a>), and ray tracing. One or more of these will probably dominate at some point, but all were impractical on the game platforms of five or six years ago, including PC DX11/GL4 GPUs, mobile devices with OpenGL ES 3.0 GPUs, and last-generation consoles like PlayStation 4.
+    </p>
+
+    <note>
+        In mathematical analysis, asymptotic analysis, also known as asymptotics, is a method of describing limiting behavior.
+    </note>
+
+    <p>
+        The below image is a transparent CAD view of a car engine rendered by this technique.
+    </p>
+
+<img src="/img/guest/2020/oit/cad_view_of_an_engine.png" width="560" alt="A transparent CAD view of a car engine rendered by this technique.">
+
+    <h2>Theory</h2>
+
+    <p>
+        This technique renders non-refractive, monochrome transmission through surfaces that themselves have color, without requiring sorting or new hardware features. In fact, it can be implemented with a simple shader for any GPU that supports blending to render targets with more than 8 bits per channel.
+    </p>
+
+    <p>
+        It works best on GPUs with multiple render targets and floating-point texture, where it is faster than sorted transparency and avoids sorting artifacts and popping for particle systems. It also consumes less bandwidth than even a 4-deep RGBA8 K-buffer and allows mixing low-resolution particles with full-resolution surfaces such as glass.
+    </p>
+
+    <p>
+        For the mixed resolution case, the peak memory cost remains that of the higher resolution render target but bandwidth cost falls based on the proportional of low-resolution surfaces.
+    </p>
+
+    <p>
+        The basic idea of Weighted, Blended method is to compute the coverage of the background by transparent surfaces exactly, but to only approximate the light scattered towards the camera by the transparent surfaces themselves. The algorithm imposes a heuristic on inter-occlusion factor among transparent surfaces that increases with distance from the camera.
+    </p>
+
+    <note>
+        A heuristic technique, or a heuristic, is any approach to problem solving or self-discovery that employs a practical method that is not guaranteed to be optimal, perfect, or rational, but is nevertheless sufficient for reaching an immediate, short-term goal or approximation. In our case, the heuristic is the weighting function.
+    </note>
+
+    <p>
+        After all transparent surfaces have been rendered, it then performs a full-screen normalization and compositing pass to reduce errors where the heuristic was a poor approximation of the true inter-occlusion.
+    </p>
+
+    <p>
+        The below image is a glass chess set rendered with this technique. Note that the glass pieces are not refracting any light.
+    </p>
+
+      <img src="/img/guest/2020/oit/a_glass_chess_set.png" width="560" alt="A glass chess set rendered with this technique.">
+
+    <p>
+        For a better understanding and a more detailed explanation of the weight function, please refer to page 5, 6 and 7 of the original paper as the Blended OIT has been implemented and improved by different methods along the years. Link to the paper is provided at the end of this article.
+    </p>
+
+    <h2>Limitation</h2>
+
+    <p>
+        The primary limitation of the technique is that the weighting heuristic must be tuned for the anticipated depth range and opacity of transparent surfaces.
+    </p>
+
+    <p>
+        The technique was implemented in OpenGL for the <a href="http://g3d.sf.net/">G3D Innovation Engine</a> and DirectX for the <a href="http://www.unrealengine.com/">Unreal Engine</a> to produce the results live and in the paper. Dan Bagnell and Patrick Cozzi <a href="http://bagnell.github.io/cesium/Apps/Sandcastle/gallery/OIT.html">implemented it in WebGL</a> for their open-source Cesium engine (see also their <a href="http://cesiumjs.org/2014/03/14/Weighted-Blended-Order-Independent-Transparency/">blog post</a> discussing it).
+    </p>
+
+    <p>
+        From those implementations, a good set of weighting functions were found, which are reported in the journal paper. In the paper, they also discuss how to spot artifacts from a poorly-tuned weighting function and fix them.
+    </p>
+
+    <p>
+        Also, I haven't been able to find a proper way to implement this technique in a deferred renderer. Since pixels override each other in a deferred renderer, we lose information about the previous layers so we cannot correctly accumulate the color values for the lighting stage.
+    </p>
+
+    <p>
+        One feasible solution is to apply this technique as you would ordinarily do in a forward renderer. This is basically borrowing the transparency pass of a forward renderer and incorporate it in a deferred one.
+    </p>
+
+    <h2>Implementation</h2>
+
+    <p>
+        This technique is fairly straight forward to implement and the shader modifications are very simple. If you're familiar with how Framebuffers work in OpenGL, you're almost halfway there.
+    </p>
+
+    <p>
+        The only caveat is we need to write our code in OpenGL ^4.0 to be able to use blending to multiple render targets (e.g. utilizing <fun><function id='70'>glBlendFunc</function>i</fun>). In the paper, different ways of implementation have been discussed for libraries that do not support rendering or blending to multiple targets.
+    </p>
+
+    <warning>Don't forget to change your OpenGL version when initializng GLFW and also your GLSL version in your shaders.</warning>
+
+    <h3>Overview</h3>
+
+    <p>
+        During the transparent surface rendering, shade surfaces as usual, but output to two render targets. The first render target (<def>accum</def>) must have at least <var>RGBA16F</var> precision and the second (<def>revealage</def>) must have at least <var>R8</var> precision. Clear the first render target to <var>vec4(0)</var> and the second render target to 1 (using a pixel shader or <fun><function id='10'>glClear</function>Buffer</fun> + <fun><function id='10'>glClear</function></fun>).
+    </p>
+
+    <p>
+        Then, render the surfaces in any order to these render targets, adding the following to the bottom of the pixel shader and using the specified blending modes:
+    </p>
+
+<pre><code>
+// your first render target which is used to accumulate pre-multiplied color values
+layout (location = 0) out vec4 accum;
+
+// your second render target which is used to store pixel revealage
+layout (location = 1) out float reveal;
+
+...
+
+// output linear (not gamma encoded!), unmultiplied color from the rest of the shader
+vec4 color = ... // regular shading code
+
+// insert your favorite weighting function here. the color-based factor
+// avoids color pollution from the edges of wispy clouds. the z-based
+// factor gives precedence to nearer surfaces
+float weight =
+    max(min(1.0, max(max(color.r, color.g), color.b) * color.a), color.a) *
+    clamp(0.03 / (1e-5 + pow(z / 200, 4.0)), 1e-2, 3e3);
+
+// blend func: GL_ONE, GL_ONE
+// switch to pre-multiplied alpha and weight
+accum = vec4(color.rgb * color.a, color.a) * weight;
+
+// blend func: GL_ZERO, GL_ONE_MINUS_SRC_ALPHA
+reveal = color.a;
+</code></pre>
+
+    <p>
+        Finally, after all surfaces have been rendered, composite the result onto the screen using a full-screen pass:
+    </p>
+
+<pre><code>
+// bind your accum render target to this texture unit
+layout (binding = 0) uniform sampler2D rt0;
+
+// bind your reveal render target to this texture unit
+layout (binding = 1) uniform sampler2D rt1;
+
+// shader output
+out vec4 color;
+
+// fetch pixel information
+vec4 accum = texelFetch(rt0, int2(gl_FragCoord.xy), 0);
+float reveal = texelFetch(rt1, int2(gl_FragCoord.xy), 0).r;
+
+// blend func: GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA
+color = vec4(accum.rgb / max(accum.a, 1e-5), reveal);
+</code></pre>
+
+    <p>
+        Use this table as a reference for your render targets:
+    </p>
+
+    <table border="1">
+        <tbody>
+            <tr><td>Render Target</td><td>Format</td><td>Clear</td><td>Src Blend</td><td>Dst Blend</td><td>Write ("Src")</td></tr>
+            <tr><td>accum</td><td>RGBA16F</td><td>(0,0,0,0)</td><td>ONE</td><td>ONE</td><td><code>(r*a, g*a, b*a, a) * w</code></td></tr>
+            <tr><td>revealage</td><td>R8</td><td>(1,0,0,0)</td><td>ZERO</td><td>ONE_MINUS_SRC_COLOR</td><td><code>a</code></td></tr>
+        </tbody>
+    </table>
+
+    <p>
+        A total of three rendering passes are needed to accomplish the finished result which is down below:
+    </p>
+
+      <img src="/img/guest/2020/oit/weighted_blended_result.png" width="640" alt="Weighted, Blended result.">
+
+    <h3>Details</h3>
+
+    <p>
+        To get started, we would have to setup a quad for our solid and transparent surfaces. The red quad will be the solid one, and the green and blue will be the transparent one. Since we're using the same quad for our screen quad as well, here we define UV values for texture mapping purposes at the screen pass.
+    </p>
+
+<pre><code>
+float quadVertices[] = {
+    // positions        // uv
+    -1.0f, -1.0f, 0.0f,	0.0f, 0.0f,
+     1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+     1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+
+     1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+    -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+    -1.0f, -1.0f, 0.0f, 0.0f, 0.0f
+};
+
+// quad VAO
+unsigned int quadVAO, quadVBO;
+<function id='33'>glGenVertexArrays</function>(1, &quadVAO);
+<function id='12'>glGenBuffers</function>(1, &quadVBO);
+<function id='27'>glBindVertexArray</function>(quadVAO);
+<function id='32'>glBindBuffer</function>(GL_ARRAY_BUFFER, quadVBO);
+<function id='31'>glBufferData</function>(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
+<function id='29'><function id='60'>glEnable</function>VertexAttribArray</function>(0);
+<function id='30'>glVertexAttribPointer</function>(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+<function id='29'><function id='60'>glEnable</function>VertexAttribArray</function>(1);
+<function id='30'>glVertexAttribPointer</function>(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+<function id='27'>glBindVertexArray</function>(0);
+</code></pre>
+
+    <p>
+        Next, we will create two framebuffers for our solid and transparent passes. Our solid pass needs a color buffer and a depth buffer to store color and depth information. Our transparent pass needs two color buffers to store color accumulation and pixel revealage threshold. We will also attach the opaque framebuffer's depth texture to our transparent framebuffer, to utilize it for depth testing when rendering our transparent surfaces.
+    </p>
+
+<pre><code>
+// set up framebuffers
+unsigned int opaqueFBO, transparentFBO;
+<function id='76'>glGenFramebuffers</function>(1, &opaqueFBO);
+<function id='76'>glGenFramebuffers</function>(1, &transparentFBO);
+
+// set up attachments for opaque framebuffer
+unsigned int opaqueTexture;
+<function id='50'>glGenTextures</function>(1, &opaqueTexture);
+<function id='48'>glBindTexture</function>(GL_TEXTURE_2D, opaqueTexture);
+<function id='52'>glTexImage2D</function>(GL_TEXTURE_2D, 0, GL_RGBA16F, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGBA, GL_HALF_FLOAT, NULL);
+<function id='15'>glTexParameter</function>i(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+<function id='15'>glTexParameter</function>i(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+<function id='48'>glBindTexture</function>(GL_TEXTURE_2D, 0);
+
+unsigned int depthTexture;
+<function id='50'>glGenTextures</function>(1, &depthTexture);
+<function id='48'>glBindTexture</function>(GL_TEXTURE_2D, depthTexture);
+<function id='52'>glTexImage2D</function>(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SCR_WIDTH, SCR_HEIGHT,
+             0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+<function id='48'>glBindTexture</function>(GL_TEXTURE_2D, 0);
+
+...
+
+// set up attachments for transparent framebuffer
+unsigned int accumTexture;
+<function id='50'>glGenTextures</function>(1, &accumTexture);
+<function id='48'>glBindTexture</function>(GL_TEXTURE_2D, accumTexture);
+<function id='52'>glTexImage2D</function>(GL_TEXTURE_2D, 0, GL_RGBA16F, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGBA, GL_HALF_FLOAT, NULL);
+<function id='15'>glTexParameter</function>i(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+<function id='15'>glTexParameter</function>i(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+<function id='48'>glBindTexture</function>(GL_TEXTURE_2D, 0);
+
+unsigned int revealTexture;
+<function id='50'>glGenTextures</function>(1, &revealTexture);
+<function id='48'>glBindTexture</function>(GL_TEXTURE_2D, revealTexture);
+<function id='52'>glTexImage2D</function>(GL_TEXTURE_2D, 0, GL_R8, SCR_WIDTH, SCR_HEIGHT, 0, GL_RED, GL_FLOAT, NULL);
+<function id='15'>glTexParameter</function>i(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+<function id='15'>glTexParameter</function>i(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+<function id='48'>glBindTexture</function>(GL_TEXTURE_2D, 0);
+
+...
+
+// don't forget to explicitly tell OpenGL that your transparent framebuffer has two draw buffers
+const GLenum transparentDrawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+glDrawBuffers(2, transparentDrawBuffers);
+</code></pre>
+
+    <note>
+        For the sake of this article, we are creating two separate framebuffers, so it would be easier to understand how the technique unfolds. We could omit the opaque framebuffer and use backbuffer for our solid pass or just create a single framebuffer with four attachments all together (opaque, accumulation, revealage, depth) and render to different render targets at each pass.
+    </note>
+
+    <p>
+        Before rendering, setup some model matrices for your quads. You can set the Z axis however you want since this is an order-independent technique and objects closer or further to the camera would not impose any problem.
+    </p>
+
+<pre><code>glm::mat4 redModelMat = calculate_model_matrix(glm::vec3(0.0f, 0.0f, 0.0f));
+glm::mat4 greenModelMat = calculate_model_matrix(glm::vec3(0.0f, 0.0f, 1.0f));
+glm::mat4 blueModelMat = calculate_model_matrix(glm::vec3(0.0f, 0.0f, 2.0f));
+</code></pre>
+
+    <p>
+        At this point, we have to perform our solid pass, so configure the render states and bind the opaque framebuffer.
+    </p>
+
+<pre><code>
+// configure render states
+<function id='60'>glEnable</function>(GL_DEPTH_TEST);
+<function id='66'>glDepthFunc</function>(GL_LESS);
+<function id='65'>glDepthMask</function>(GL_TRUE);
+glDisable(GL_BLEND);
+<function id='13'><function id='10'>glClear</function>Color</function>(0.0f, 0.0f, 0.0f, 0.0f);
+
+// bind opaque framebuffer to render solid objects
+<function id='77'>glBindFramebuffer</function>(GL_FRAMEBUFFER, opaqueFBO);
+<function id='10'>glClear</function>(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+</code></pre>
+
+    <p>
+        We have to reset our depth function and depth mask for the solid pass at every frame since pipeline changes these states further down the line.
+    </p>
+
+    <p>
+        Now, draw the solid objects using the solid shader. You can draw alpha cutout objects both at this stage and the next stage as well. The solid shader is just a simple shader that transforms the vertices and draws the mesh with the supplied color.
+    </p>
+
+<pre><code>
+// use solid shader
+solidShader.use();
+
+// draw red quad
+solidShader.setMat4("mvp", vp * redModelMat);
+solidShader.setVec3("color", glm::vec3(1.0f, 0.0f, 0.0f));
+<function id='27'>glBindVertexArray</function>(quadVAO);
+<function id='1'>glDrawArrays</function>(GL_TRIANGLES, 0, 6);
+</code></pre>
+
+    <p>
+        So far so good. For our transparent pass, like in the solid pass, configure the render states to blend to these render targets as below, then bind the transparent framebuffer and clear its two color buffers to <var>vec4(0.0f)</var> and <var>vec4(1.0)</var>.
+    </p>
+
+<pre><code>
+// configure render states
+// disable depth writes so transparent objects wouldn't interfere with solid pass depth values
+<function id='65'>glDepthMask</function>(GL_FALSE);
+<function id='60'>glEnable</function>(GL_BLEND);
+<function id='70'>glBlendFunc</function>i(0, GL_ONE, GL_ONE); // accumulation blend target
+<function id='70'>glBlendFunc</function>i(1, GL_ZERO, GL_ONE_MINUS_SRC_COLOR); // revealge blend target
+<function id='72'>glBlendEquation</function>(GL_FUNC_ADD);
+
+// bind transparent framebuffer to render transparent objects
+<function id='77'>glBindFramebuffer</function>(GL_FRAMEBUFFER, transparentFBO);
+// use a four component float array or a glm::vec4(0.0)
+<function id='10'>glClear</function>Bufferfv(GL_COLOR, 0, &zeroFillerVec[0]); 
+ // use a four component float array or a glm::vec4(1.0)
+<function id='10'>glClear</function>Bufferfv(GL_COLOR, 1, &oneFillerVec[0]);
+</code></pre>
+
+    <p>
+        Then, draw the transparent surfaces with your preferred alpha values.
+    </p>
+
+<pre><code>
+// use transparent shader
+transparentShader.use();
+
+// draw green quad
+transparentShader.setMat4("mvp", vp * greenModelMat);
+transparentShader.setVec4("color", glm::vec4(0.0f, 1.0f, 0.0f, 0.5f));
+<function id='27'>glBindVertexArray</function>(quadVAO);
+<function id='1'>glDrawArrays</function>(GL_TRIANGLES, 0, 6);
+
+// draw blue quad
+transparentShader.setMat4("mvp", vp * blueModelMat);
+transparentShader.setVec4("color", glm::vec4(0.0f, 0.0f, 1.0f, 0.5f));
+<function id='27'>glBindVertexArray</function>(quadVAO);
+<function id='1'>glDrawArrays</function>(GL_TRIANGLES, 0, 6);
+</code></pre>
+
+    <p>
+        The transparent shader is where half the work is done. It's primarily a shader that collects pixel information for our composite pass:
+    </p>
+
+<pre><code>
+// shader outputs
+layout (location = 0) out vec4 accum;
+layout (location = 1) out float reveal;
+
+// material color
+uniform vec4 color;
+
+void main()
+{
+    // weight function
+    float weight = clamp(pow(min(1.0, color.a * 10.0) + 0.01, 3.0) * 1e8 * 
+                         pow(1.0 - gl_FragCoord.z * 0.9, 3.0), 1e-2, 3e3);
+
+    // store pixel color accumulation
+    accum = vec4(color.rgb * color.a, color.a) * weight;
+
+    // store pixel revealage threshold
+    reveal = color.a;
+}
+</code></pre>
+
+	<p>
+		Note that, we are directly using the color passed to the shader as our final fragment color. Normally, if you are in a lighting shader, you want to use the final result of the lighting to store in accumulation and revealage render targets.
+	</p>
+
+    <p>
+        Now that everything has been rendered, we have to <def>composite</def> these two images so we can have the finished result.
+    </p>
+
+    <note>
+        Compositing is a common method in many techniques that use a post-processing quad drawn all over the screen. Think of it as merging two layers in a photo editing software like Photoshop or Gimp.
+    </note>
+
+    <p>
+        In OpenGL, we can achieve this by color blending feature:
+    </p>
+
+<pre><code>
+// set render states
+<function id='66'>glDepthFunc</function>(GL_ALWAYS);
+<function id='60'>glEnable</function>(GL_BLEND);
+<function id='70'>glBlendFunc</function>(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+// bind opaque framebuffer
+<function id='77'>glBindFramebuffer</function>(GL_FRAMEBUFFER, opaqueFBO);
+
+// use composite shader
+compositeShader.use();
+
+// draw screen quad
+<function id='49'>glActiveTexture</function>(GL_TEXTURE0);
+<function id='48'>glBindTexture</function>(GL_TEXTURE_2D, accumTexture);
+<function id='49'>glActiveTexture</function>(GL_TEXTURE1);
+<function id='48'>glBindTexture</function>(GL_TEXTURE_2D, revealTexture);
+<function id='27'>glBindVertexArray</function>(quadVAO);
+<function id='1'>glDrawArrays</function>(GL_TRIANGLES, 0, 6);
+</code></pre>
+
+    <p>
+        Composite shader is where the other half of the work is done. We're basically merging two layers, one being the solid objects image and the other being the transparent objects image. Accumulation buffer tells us about the color and revealage buffer determines the visibility of the the underlying pixel:
+    </p>
+
+<pre><code>
+// shader outputs
+layout (location = 0) out vec4 frag;
+
+// color accumulation buffer
+layout (binding = 0) uniform sampler2D accum;
+
+// revealage threshold buffer
+layout (binding = 1) uniform sampler2D reveal;
+
+// epsilon number
+const float EPSILON = 0.00001f;
+
+// calculate floating point numbers equality accurately
+bool isApproximatelyEqual(float a, float b)
+{
+    return abs(a - b) &lt;= (abs(a) &lt; abs(b) ? abs(b) : abs(a)) * EPSILON;
+}
+
+// get the max value between three values
+float max3(vec3 v)
+{
+    return max(max(v.x, v.y), v.z);
+}
+
+void main()
+{
+    // fragment coordination
+    ivec2 coords = ivec2(gl_FragCoord.xy);
+
+    // fragment revealage
+    float revealage = texelFetch(reveal, coords, 0).r;
+
+    // save the blending and color texture fetch cost if there is not a transparent fragment
+    if (isApproximatelyEqual(revealage, 1.0f))
+        discard;
+
+    // fragment color
+    vec4 accumulation = texelFetch(accum, coords, 0);
+
+    // suppress overflow
+    if (isinf(max3(abs(accumulation.rgb))))
+        accumulation.rgb = vec3(accumulation.a);
+
+    // prevent floating point precision bug
+    vec3 average_color = accumulation.rgb / max(accumulation.a, EPSILON);
+
+    // blend pixels
+    frag = vec4(average_color, 1.0f - revealage);
+}
+</code></pre>
+
+    <p>
+        Note that, we are using some helper functions like <fun>isApproximatelyEqual</fun> or <fun>max3</fun> to help us with the accurate calculation of floating-point numbers. Due to inaccuracy of floating-point numbers calculation in current generation processors, we need to compare our values with an extremely small amount called an <def>epsilon</def> to avoid underflows or overflows.
+    </p>
+
+    <p>
+        Also, we don't need an intermediate framebuffer to do compositing. We can use our opaque framebuffer as the base framebuffer and paint over it since it already has the opaque pass information. Plus, we're stating that all depth tests should pass since we want to paint over the opaque image.
+    </p>
+
+    <p>
+        Finally, draw your composited image (which is the opaque texture attachment since you rendered your transparent image over it in the last pass) onto the backbuffer and observe the result.
+    </p>
+
+<pre><code>
+// set render states
+glDisable(GL_DEPTH);
+<function id='65'>glDepthMask</function>(GL_TRUE); // enable depth writes so <function id='10'>glClear</function> won't ignore clearing the depth buffer
+glDisable(GL_BLEND);
+
+// bind backbuffer
+<function id='77'>glBindFramebuffer</function>(GL_FRAMEBUFFER, 0);
+<function id='13'><function id='10'>glClear</function>Color</function>(0.0f, 0.0f, 0.0f, 0.0f);
+<function id='10'>glClear</function>(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+// use screen shader
+screenShader.use();
+
+// draw final screen quad
+<function id='49'>glActiveTexture</function>(GL_TEXTURE0);
+<function id='48'>glBindTexture</function>(GL_TEXTURE_2D, opaqueTexture);
+<function id='27'>glBindVertexArray</function>(quadVAO);
+<function id='1'>glDrawArrays</function>(GL_TRIANGLES, 0, 6);
+</code></pre>
+
+    <p>
+        Screen shader is just a simple post-processing shader which draws a full-screen quad.
+    </p>
+
+    <p>
+        In a regular pipeline, you would also apply gamma-correction, tone-mapping, etc. in an intermediate post-processing framebuffer before you render to backbuffer, but ensure you are not applying them while rendering your solid and transparent surfaces and also not before composition since this transparency technique needs raw color values for calculating transparent pixels.
+    </p>
+
+    <p>
+        Now, the interesting part is to play with the Z axis of your objects to see order-independence in action. Try to place your transparent objects behind the solid object or mess up the orders entirely.
+    </p>
+
+      <img src="/img/guest/2020/oit/weighted_blended_reordered.png" width="640" alt="Weighted, Blended reordered.">
+
+    <p>
+        In the image above, the green quad is rendered after the red quad, but behind it, and if you move the camera around to see the green quad from behind, you won't see any artifacts.
+    </p>
+
+    <p>
+        As stated earlier, one limitation that this technique imposes is that for scenes with higher depth/alpha complexity we need to tune the weighting function to achieve the correct result. Luckily, a number of tested weighting functions are provided in the paper which you can refer and investigate them for your environment.
+    </p>
+
+    <p>
+        Be sure to also check the colored transmission transparency which is the improved version of this technique in the links below.
+    </p>
+
+    <p>
+        You can find the source code for this demo <a href="/code_viewer_gh.php?code=src/8.guest/2020/oit/weighted_blended.cpp" target="_blank">here</a>.
+    </p>
+
+    <h2>Further reading</h2>
+
+    <ul>
+        <li><a href="http://jcgt.org/published/0002/02/09" href="_blank">Weighted, Blended paper</a>: The original paper published in the journal of computer graphics. A brief history of the transparency and the emergence of the technique itself is provided. This is a must for the dedicated readers.</li>
+        <li><a href="http://casual-effects.blogspot.com/2014/03/weighted-blended-order-independent.html" href="_blank">Weighted, Blended introduction</a>: Casual Effects is Morgan McGuire's personal blog. This post is the introduction of their technique which goes into further details and is definitely worth to read. Plus, there are videos of their implementation live in action that you would not want to miss.</li>
+        <li><a href="http://casual-effects.blogspot.com/2015/03/implemented-weighted-blended-order.html" href="_blank">Weighted, Blended for implementors</a>: And also another blog post by him on implementing the technique for implementors.</li>
+        <li><a href="http://casual-effects.blogspot.com/2015/03/colored-blended-order-independent.html" href="_blank">Weighted, Blended and colored transmission</a>: And another blog post on colored transmission for transparent surfaces.</li>
+        <li><a href="http://bagnell.github.io/cesium/Apps/Sandcastle/gallery/OIT.html" href="_blank">A live implementation of the technique</a>: This is a live WebGL visualization from Cesium engine which accepts weighting functions for you to test in your browser!</li>
+    </ul>
+        
+<author>
+  <strong>Article by: </strong>Mahan Heshmati Moghaddam<br/>
+  <strong>Contact: </strong><a href="mailto:mahangm@gmail.com" target="_blank">e-mail</a>
+</author>       
+
+    </div>
+    
+    <div id="hover">
+        HI
+    </div>
+   <!-- 728x90/320x50 sticky footer -->
+<!--<div id="waldo-tag-6196"></div>-->
+
+   <div id="disqus_thread"></div>
+
+    
+
+
+</div> <!-- container div -->
+
+
+</div> <!-- super container div -->
+</body>
+</html>

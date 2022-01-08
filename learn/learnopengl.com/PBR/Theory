@@ -1,0 +1,892 @@
+
+
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <meta charset="utf-8"/>
+    <title>LearnOpenGL - Theory</title>	<!--<title>Learn OpenGL, extensive tutorial resource for learning Modern OpenGL</title>-->
+    <link rel="shortcut icon" type="image/ico" href="/favicon.ico"  />
+    <meta name="description" content="Learn OpenGL . com provides good and clear modern 3.3+ OpenGL tutorials with clear examples. A great resource to learn modern OpenGL aimed at beginners.">
+	<meta name="fragment" content="!">
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-51879160-1', 'learnopengl.com');
+      ga('send', 'pageview');
+
+    </script>
+    <!--<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-7855791439695850",
+              enable_page_level_ads: true
+         });
+    </script>
+	<script async='async' src='https://www.googletagservices.com/tag/js/gpt.js'></script>
+	<script>
+	  var googletag = googletag || {};
+	  googletag.cmd = googletag.cmd || [];
+	</script>
+	<script>
+	  googletag.cmd.push(function() {
+		googletag.defineSlot('/8491498/learnopengl_video', [300, 225], 'div-gpt-ad-1540574378241-0').addService(googletag.pubads());
+		googletag.pubads().enableSingleRequest();
+		googletag.pubads().collapseEmptyDivs();
+		googletag.enableServices();
+	  });
+	</script>
+    <script type="text/javascript" src="//cdn.thisiswaldo.com/static/js/1681.js"></script>
+	<script src="/js/jquery-1.11.0.min.js"></script>
+	<script src="/js/hoverintent.js"></script>
+	<link rel="stylesheet" type="text/css" href="/layout.css">
+    <link rel="stylesheet" type="text/css" href="/js/styles/obsidian.css">
+    <script src="/js/highlight.pack.js"></script>    
+    <script src="/js/functions.js"></script>
+    <script type="text/javascript" src="/js/mathjax/MathJax.js?config=TeX-AMS_HTML"></script>
+    <script>
+    // Has to be loaded last due to content bug 
+    MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+    </script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script>  
+        $(document).ready(function() {
+            // check if user visited from the old # based urls, re-direct to ?p= form
+            if(window.location.hash)
+            {
+                var name = window.location.hash.substring(2);
+                // name = name.replace(/-/g," ");
+                var index = name.indexOf('#'); // Remove any hash fragments from the url (Disquss adds hash fragments for comments, but results in 404 pages)
+                if(index >= 0)
+                    name = name.substring(0, index);
+                
+                window.location.href = "https://learnopengl.com/" + name;
+            } else {
+                    // Check if data has been succesfully loaded, if so: change title bar as ajax hash fragment
+                    var title = $('#content-url').text();
+                  
+                    // Refresh syntax highlighting
+                    // $('pre').each(function(i, e) {hljs.highlightBlock(e)});
+                  
+                    // Reset DISQUS
+                    // if(title == '/dev/')
+                        // title = '';
+                    // alert('hoi');
+					
+					// place video tag
+					if(title != '') {
+						var videoad = "%3Cdiv id=\'waldo-tag-12074\'%3E %3Cscript%3Egoogletag.cmd.push(function() {googletag.display(\'waldo-tag-12074\'); }); %3C/script%3E%3C/div%3E";
+						$('#content p:nth-of-type(3)').after(unescape(videoad));
+					}
+					
+                    // Adjust ads for correct bottom positioning based on content size
+                    window.setTimeout(function() {  
+                        AdPositioning();
+                     }, 3000);
+                  
+                  
+                    // set API resets after time-out (once content is properly loaded)
+                    window.setTimeout(function() {  
+                        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);       
+                        MathJax.Hub.Queue(["resetEquationNumbers", MathJax.InputJax.TeX]);
+                        
+                        var page_url = title == "" ? "http://www.learnopengl.com/" : "http://www.learnopengl.com/" + title;
+                        if(typeof DISQUS !== 'undefined') {                                              
+                            DISQUS.reset({
+                              reload: true,
+                              config: function () {  
+                                this.page.identifier = title;  
+                                this.page.url = page_url;
+                              }
+                            });
+                            $('#disqus_thread').show();
+                        }
+                           // Refresh callbacks on <function> tags
+                        SetFunctionTagCallbacks();        
+                    }, 1000);
+                                        
+                    // Zet ook de juiste button op 'selected'
+                    $('#nav li span, #nav li a').removeClass('selected');                
+                    if(title != '')
+                    {                    
+                        $('#nav li[id=\'' + title + '\']').children('span, a').addClass('selected');
+                    }
+                    // En open menu waar nodig
+                    var parents = $('#nav span.selected, #nav a.selected').parents('li').children('span.closed, a.closed');
+                    var index = 0;
+                    for(index = parents.length - 1; index >= 0; index--)
+                    {             
+                        
+                        var id = $(parents[index]).attr("id").replace( /^\D+/g, '');
+                        MenuClick(id, false);
+                    }                          
+                
+            }
+        });
+		// var initialized = false;
+        // window.onpopstate = function() {
+            // if(initialized)
+                // LoadPage();
+			// else
+				// initialized = true;
+        // };
+        
+        // Set up DISQUS
+        // $(document).ready(function() {
+            var disqus_shortname = 'learnopengl';
+            (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();           
+        // });
+    </script>
+</head>
+<body>
+<a href="https://learnopengl.com">
+<div id="header">
+</div>
+</a>
+
+<div id="supercontainer">
+    <!-- 728x90/320x50 -->
+    <div id="header_ad">
+        <div id="waldo-tag-6194"></div>
+    </div>
+    <div id="rightad_container">
+        <div id="rightad">
+            <!-- /8491498/learnopengl_video -->
+            <!--<div id='div-gpt-ad-1540574378241-0' style='height:225px; width:300px;'>
+			<script>
+			googletag.cmd.push(function() { googletag.display('div-gpt-ad-1540574378241-0'); });
+			</script>
+			</div>            
+            <br/>-->
+			<!-- place in-content -->
+			<!--<div id='waldo-tag-12074'>
+			 <script>
+			   googletag.cmd.push(function() { googletag.display('waldo-tag-12074'); });
+			 </script>
+			</div>-->
+           
+            <div id="waldo-tag-1715"></div>
+        </div>
+
+        <div id="admessage">
+            If you're running AdBlock, please consider whitelisting this site if you'd like to support LearnOpenGL; and no worries, I won't be mad if you don't :)
+            <!--<br/><br/>
+            Also, check out this little local multiplayer-only game I've made: <a href="https://store.steampowered.com/app/983590/Tank_Blazers/" target="_blank">Tank Blazers</a>.
+            <br/>
+            <a href="https://store.steampowered.com/app/983590/Tank_Blazers" target="_blank"><img src="/img/tank_blazers.jpg"  style="width:278px; margin-top: 9px; margin-left: -3px;"/></a>-->
+        </div>
+        
+        <div id="rightonethirdad">
+            <div id="waldo-tag-2246"></div>
+        </div>
+        
+        <div id="rightbottomad">            
+			<div id="waldo-tag-2247"></div>								
+        </div>
+    </div>
+    <div id="container">
+        <div id="loading"></div>
+<script> 
+$(document).ready(function() {
+$('#menu-item4').mousedown(function() { MenuClick(4, true) });
+$('#menu-item48').mousedown(function() { MenuClick(48, true) });
+$('#menu-item56').mousedown(function() { MenuClick(56, true) });
+$('#menu-item63').mousedown(function() { MenuClick(63, true) });
+$('#menu-item100').mousedown(function() { MenuClick(100, true) });
+$('#menu-item102').mousedown(function() { MenuClick(102, true) });
+$('#menu-item113').mousedown(function() { MenuClick(113, true) });
+$('#menu-item116').mousedown(function() { MenuClick(116, true) });
+$('#menu-item78').mousedown(function() { MenuClick(78, true) });
+$('#menu-item81').mousedown(function() { MenuClick(81, true) });
+$('#menu-item85').mousedown(function() { MenuClick(85, true) });
+$('#menu-item125').mousedown(function() { MenuClick(125, true) });
+$('#menu-item128').mousedown(function() { MenuClick(128, true) });
+$('#menu-item129').mousedown(function() { MenuClick(129, true) });
+$('#menu-item133').mousedown(function() { MenuClick(133, true) });
+$('#menu-item134').mousedown(function() { MenuClick(134, true) });
+$('#menu-item138').mousedown(function() { MenuClick(138, true) });
+}); 
+</script>   
+    <div id="nav">
+         <div id="social">
+            <a href="https://github.com/JoeyDeVries/LearnOpenGL" target="_blank">
+                    <img src="/img/github.png" class="social_ico">
+            </a>
+             <!-- <a href="https://www.facebook.com/Learnopengl-2199631333595544/" target="_blank">
+                <img src="/img/facebook.png" class="social_ico">
+            </a>-->
+            <a href="https://twitter.com/JoeyDeVriez" target="_blank">
+                <img src="/img/twitter.png" class="social_ico">
+            </a>
+          
+        </div>
+    <img src='img/nav-button_bottom-arrow.png' style='display: none'><ol><li id='Introduction'><a id="menu-item1" href="https://learnopengl.com/Introduction">Introduction </a></li><li id='Getting-started'><span id="menu-item4" class="closed">Getting started </span><ol id="menu-items-of4" style="display:none;"><li id='Getting-started/OpenGL'><a id="menu-item49" href="https://learnopengl.com/Getting-started/OpenGL">OpenGL </a></li><li id='Getting-started/Creating-a-window'><a id="menu-item5" href="https://learnopengl.com/Getting-started/Creating-a-window">Creating a window </a></li><li id='Getting-started/Hello-Window'><a id="menu-item6" href="https://learnopengl.com/Getting-started/Hello-Window">Hello Window </a></li><li id='Getting-started/Hello-Triangle'><a id="menu-item38" href="https://learnopengl.com/Getting-started/Hello-Triangle">Hello Triangle </a></li><li id='Getting-started/Shaders'><a id="menu-item39" href="https://learnopengl.com/Getting-started/Shaders">Shaders </a></li><li id='Getting-started/Textures'><a id="menu-item40" href="https://learnopengl.com/Getting-started/Textures">Textures </a></li><li id='Getting-started/Transformations'><a id="menu-item43" href="https://learnopengl.com/Getting-started/Transformations">Transformations </a></li><li id='Getting-started/Coordinate-Systems'><a id="menu-item44" href="https://learnopengl.com/Getting-started/Coordinate-Systems">Coordinate Systems </a></li><li id='Getting-started/Camera'><a id="menu-item47" href="https://learnopengl.com/Getting-started/Camera">Camera </a></li><li id='Getting-started/Review'><a id="menu-item50" href="https://learnopengl.com/Getting-started/Review">Review </a></li></ol></li><li id='Lighting'><span id="menu-item48" class="closed">Lighting </span><ol id="menu-items-of48" style="display:none;"><li id='Lighting/Colors'><a id="menu-item51" href="https://learnopengl.com/Lighting/Colors">Colors </a></li><li id='Lighting/Basic-Lighting'><a id="menu-item52" href="https://learnopengl.com/Lighting/Basic-Lighting">Basic Lighting </a></li><li id='Lighting/Materials'><a id="menu-item53" href="https://learnopengl.com/Lighting/Materials">Materials </a></li><li id='Lighting/Lighting-maps'><a id="menu-item54" href="https://learnopengl.com/Lighting/Lighting-maps">Lighting maps </a></li><li id='Lighting/Light-casters'><a id="menu-item55" href="https://learnopengl.com/Lighting/Light-casters">Light casters </a></li><li id='Lighting/Multiple-lights'><a id="menu-item58" href="https://learnopengl.com/Lighting/Multiple-lights">Multiple lights </a></li><li id='Lighting/Review'><a id="menu-item57" href="https://learnopengl.com/Lighting/Review">Review </a></li></ol></li><li id='Model-Loading'><span id="menu-item56" class="closed">Model Loading </span><ol id="menu-items-of56" style="display:none;"><li id='Model-Loading/Assimp'><a id="menu-item59" href="https://learnopengl.com/Model-Loading/Assimp">Assimp </a></li><li id='Model-Loading/Mesh'><a id="menu-item60" href="https://learnopengl.com/Model-Loading/Mesh">Mesh </a></li><li id='Model-Loading/Model'><a id="menu-item61" href="https://learnopengl.com/Model-Loading/Model">Model </a></li></ol></li><li id='Advanced-OpenGL'><span id="menu-item63" class="closed">Advanced OpenGL </span><ol id="menu-items-of63" style="display:none;"><li id='Advanced-OpenGL/Depth-testing'><a id="menu-item72" href="https://learnopengl.com/Advanced-OpenGL/Depth-testing">Depth testing </a></li><li id='Advanced-OpenGL/Stencil-testing'><a id="menu-item73" href="https://learnopengl.com/Advanced-OpenGL/Stencil-testing">Stencil testing </a></li><li id='Advanced-OpenGL/Blending'><a id="menu-item74" href="https://learnopengl.com/Advanced-OpenGL/Blending">Blending </a></li><li id='Advanced-OpenGL/Face-culling'><a id="menu-item77" href="https://learnopengl.com/Advanced-OpenGL/Face-culling">Face culling </a></li><li id='Advanced-OpenGL/Framebuffers'><a id="menu-item65" href="https://learnopengl.com/Advanced-OpenGL/Framebuffers">Framebuffers </a></li><li id='Advanced-OpenGL/Cubemaps'><a id="menu-item66" href="https://learnopengl.com/Advanced-OpenGL/Cubemaps">Cubemaps </a></li><li id='Advanced-OpenGL/Advanced-Data'><a id="menu-item69" href="https://learnopengl.com/Advanced-OpenGL/Advanced-Data">Advanced Data </a></li><li id='Advanced-OpenGL/Advanced-GLSL'><a id="menu-item67" href="https://learnopengl.com/Advanced-OpenGL/Advanced-GLSL">Advanced GLSL </a></li><li id='Advanced-OpenGL/Geometry-Shader'><a id="menu-item68" href="https://learnopengl.com/Advanced-OpenGL/Geometry-Shader">Geometry Shader </a></li><li id='Advanced-OpenGL/Instancing'><a id="menu-item70" href="https://learnopengl.com/Advanced-OpenGL/Instancing">Instancing </a></li><li id='Advanced-OpenGL/Anti-Aliasing'><a id="menu-item75" href="https://learnopengl.com/Advanced-OpenGL/Anti-Aliasing">Anti Aliasing </a></li></ol></li><li id='Advanced-Lighting'><span id="menu-item100" class="closed">Advanced Lighting </span><ol id="menu-items-of100" style="display:none;"><li id='Advanced-Lighting/Advanced-Lighting'><a id="menu-item101" href="https://learnopengl.com/Advanced-Lighting/Advanced-Lighting">Advanced Lighting </a></li><li id='Advanced-Lighting/Gamma-Correction'><a id="menu-item110" href="https://learnopengl.com/Advanced-Lighting/Gamma-Correction">Gamma Correction </a></li><li id='Advanced-Lighting/Shadows'><span id="menu-item102" class="closed">Shadows </span><ol id="menu-items-of102" style="display:none;"><li id='Advanced-Lighting/Shadows/Shadow-Mapping'><a id="menu-item103" href="https://learnopengl.com/Advanced-Lighting/Shadows/Shadow-Mapping">Shadow Mapping </a></li><li id='Advanced-Lighting/Shadows/Point-Shadows'><a id="menu-item104" href="https://learnopengl.com/Advanced-Lighting/Shadows/Point-Shadows">Point Shadows </a></li></ol></li><li id='Advanced-Lighting/Normal-Mapping'><a id="menu-item106" href="https://learnopengl.com/Advanced-Lighting/Normal-Mapping">Normal Mapping </a></li><li id='Advanced-Lighting/Parallax-Mapping'><a id="menu-item107" href="https://learnopengl.com/Advanced-Lighting/Parallax-Mapping">Parallax Mapping </a></li><li id='Advanced-Lighting/HDR'><a id="menu-item111" href="https://learnopengl.com/Advanced-Lighting/HDR">HDR </a></li><li id='Advanced-Lighting/Bloom'><a id="menu-item112" href="https://learnopengl.com/Advanced-Lighting/Bloom">Bloom </a></li><li id='Advanced-Lighting/Deferred-Shading'><a id="menu-item108" href="https://learnopengl.com/Advanced-Lighting/Deferred-Shading">Deferred Shading </a></li><li id='Advanced-Lighting/SSAO'><a id="menu-item109" href="https://learnopengl.com/Advanced-Lighting/SSAO">SSAO </a></li></ol></li><li id='PBR'><span id="menu-item113" class="closed">PBR </span><ol id="menu-items-of113" style="display:none;"><li id='PBR/Theory'><a id="menu-item114" href="https://learnopengl.com/PBR/Theory">Theory </a></li><li id='PBR/Lighting'><a id="menu-item115" href="https://learnopengl.com/PBR/Lighting">Lighting </a></li><li id='PBR/IBL'><span id="menu-item116" class="closed">IBL </span><ol id="menu-items-of116" style="display:none;"><li id='PBR/IBL/Diffuse-irradiance'><a id="menu-item117" href="https://learnopengl.com/PBR/IBL/Diffuse-irradiance">Diffuse irradiance </a></li><li id='PBR/IBL/Specular-IBL'><a id="menu-item118" href="https://learnopengl.com/PBR/IBL/Specular-IBL">Specular IBL </a></li></ol></li></ol></li><li id='In-Practice'><span id="menu-item78" class="closed">In Practice </span><ol id="menu-items-of78" style="display:none;"><li id='In-Practice/Debugging'><a id="menu-item79" href="https://learnopengl.com/In-Practice/Debugging">Debugging </a></li><li id='In-Practice/Text-Rendering'><a id="menu-item80" href="https://learnopengl.com/In-Practice/Text-Rendering">Text Rendering </a></li><li id='In-Practice/2D-Game'><span id="menu-item81" class="closed">2D Game </span><ol id="menu-items-of81" style="display:none;"><li id='In-Practice/2D-Game/Breakout'><a id="menu-item82" href="https://learnopengl.com/In-Practice/2D-Game/Breakout">Breakout </a></li><li id='In-Practice/2D-Game/Setting-up'><a id="menu-item88" href="https://learnopengl.com/In-Practice/2D-Game/Setting-up">Setting up </a></li><li id='In-Practice/2D-Game/Rendering-Sprites'><a id="menu-item83" href="https://learnopengl.com/In-Practice/2D-Game/Rendering-Sprites">Rendering Sprites </a></li><li id='In-Practice/2D-Game/Levels'><a id="menu-item84" href="https://learnopengl.com/In-Practice/2D-Game/Levels">Levels </a></li><li id='In-Practice/2D-Game/Collisions'><span id="menu-item85" class="closed">Collisions </span><ol id="menu-items-of85" style="display:none;"><li id='In-Practice/2D-Game/Collisions/Ball'><a id="menu-item95" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Ball">Ball </a></li><li id='In-Practice/2D-Game/Collisions/Collision-detection'><a id="menu-item96" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Collision-detection">Collision detection </a></li><li id='In-Practice/2D-Game/Collisions/Collision-resolution'><a id="menu-item97" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Collision-resolution">Collision resolution </a></li></ol></li><li id='In-Practice/2D-Game/Particles'><a id="menu-item89" href="https://learnopengl.com/In-Practice/2D-Game/Particles">Particles </a></li><li id='In-Practice/2D-Game/Postprocessing'><a id="menu-item90" href="https://learnopengl.com/In-Practice/2D-Game/Postprocessing">Postprocessing </a></li><li id='In-Practice/2D-Game/Powerups'><a id="menu-item91" href="https://learnopengl.com/In-Practice/2D-Game/Powerups">Powerups </a></li><li id='In-Practice/2D-Game/Audio'><a id="menu-item94" href="https://learnopengl.com/In-Practice/2D-Game/Audio">Audio </a></li><li id='In-Practice/2D-Game/Render-text'><a id="menu-item92" href="https://learnopengl.com/In-Practice/2D-Game/Render-text">Render text </a></li><li id='In-Practice/2D-Game/Final-thoughts'><a id="menu-item93" href="https://learnopengl.com/In-Practice/2D-Game/Final-thoughts">Final thoughts </a></li></ol></li></ol></li><li id='Guest-Articles'><span id="menu-item125" class="closed">Guest Articles </span><ol id="menu-items-of125" style="display:none;"><li id='Guest-Articles/How-to-publish'><a id="menu-item126" href="https://learnopengl.com/Guest-Articles/How-to-publish">How to publish </a></li><li id='Guest-Articles/2020'><span id="menu-item128" class="closed">2020 </span><ol id="menu-items-of128" style="display:none;"><li id='Guest-Articles/2020/OIT'><span id="menu-item129" class="closed">OIT </span><ol id="menu-items-of129" style="display:none;"><li id='Guest-Articles/2020/OIT/Introduction'><a id="menu-item130" href="https://learnopengl.com/Guest-Articles/2020/OIT/Introduction">Introduction </a></li><li id='Guest-Articles/2020/OIT/Weighted-Blended'><a id="menu-item132" href="https://learnopengl.com/Guest-Articles/2020/OIT/Weighted-Blended">Weighted Blended </a></li></ol></li><li id='Guest-Articles/2020/Skeletal-Animation'><a id="menu-item131" href="https://learnopengl.com/Guest-Articles/2020/Skeletal-Animation">Skeletal Animation </a></li></ol></li><li id='Guest-Articles/2021'><span id="menu-item133" class="closed">2021 </span><ol id="menu-items-of133" style="display:none;"><li id='Guest-Articles/2021/CSM'><a id="menu-item137" href="https://learnopengl.com/Guest-Articles/2021/CSM">CSM </a></li><li id='Guest-Articles/2021/Scene'><span id="menu-item134" class="closed">Scene </span><ol id="menu-items-of134" style="display:none;"><li id='Guest-Articles/2021/Scene/Scene-Graph'><a id="menu-item135" href="https://learnopengl.com/Guest-Articles/2021/Scene/Scene-Graph">Scene Graph </a></li><li id='Guest-Articles/2021/Scene/Frustum-Culling'><a id="menu-item136" href="https://learnopengl.com/Guest-Articles/2021/Scene/Frustum-Culling">Frustum Culling </a></li></ol></li><li id='Guest-Articles/2021/Tessellation'><span id="menu-item138" class="closed">Tessellation </span><ol id="menu-items-of138" style="display:none;"><li id='Guest-Articles/2021/Tessellation/Height-map'><a id="menu-item139" href="https://learnopengl.com/Guest-Articles/2021/Tessellation/Height-map">Height map </a></li></ol></li></ol></li></ol></li><li id='Code-repository'><a id="menu-item99" href="https://learnopengl.com/Code-repository">Code repository </a></li><li id='Translations'><a id="menu-item119" href="https://learnopengl.com/Translations">Translations </a></li><li id='About'><a id="menu-item2" href="https://learnopengl.com/About">About </a></li></ol>		<div id="menu_book">
+            <a href="https://geni.us/learnopengl" target="_blank"><img src="/book/below_menu.png" class="clean"/></a>
+        </div>
+       <div id="donate">
+            <a href="https://www.paypal.me/learnopengl/" target="_blank">
+                <div id="donate_img"></div>
+                <img style="display: none" src="/img/donate_button_hover.png"/>
+                <!--<img id="donate_img" src="img/patreon.png"/>-->
+            </a>
+          <!--<div id="alipay">
+            <img style="width: 150px;" class="clean" src="/img/alipay_logo.png"/>
+            <img style="width: 150px; margin-top: 5px" src="/img/alipay.png"/>
+          </div>-->
+        </div> 
+		<!--
+		<div class="btc">
+			<h3>BTC</h3>
+			<p>
+				1CLGKgmBSuYJ1nnvDGAepVTKNNDpUjfpRa
+			</p>
+			<img src="/img/btc_qr.png"/>
+        </div> 
+		<div class="btc">
+			<h3>ETH/ERC20</h3>
+			<p>
+				0x1de59bd9e52521a46309474f8372531533bd7c43
+			</p>
+			<img src="/img/erc20_qr.png"/>
+        </div>       
+		!-->
+        <div id="ad">
+							<!--<div id="waldo-tag-1684"></div>-->
+			        </div>
+      
+        <div id="lefttwothirdad">
+            <div id="waldo-tag-2245"></div>
+        </div>
+    </div>
+    
+    <div id="content">
+    <h1 id="content-title">Theory</h1>
+<h1 id="content-url" style='display:none;'>PBR/Theory</h1>
+<p>
+  PBR, or more commonly known as <def>physically based rendering</def>, is a collection of render techniques that are more or less based on the same underlying theory that more closely matches that of the physical world. As physically based rendering aims to mimic light in a physically plausible way, it generally looks more realistic compared to our original lighting algorithms like Phong and Blinn-Phong. Not only does it look better, as it closely approximates actual physics, we (and especially the artists) can author surface materials based on physical parameters without having to resort to cheap hacks and tweaks to make the lighting look right. One of the bigger advantages of authoring materials based on physical parameters is that these materials will look correct regardless of lighting conditions; something that is not true in non-PBR pipelines.
+</p>
+
+<p>
+  Physically based rendering is still nonetheless an approximation of reality (based on the principles of physics) which is why it's not called physical shading, but physically <em>based</em> shading. For a PBR lighting model to be considered physically based, it has to satisfy the following 3 conditions (don't worry, we'll get to them soon enough):
+</p>
+
+<ol>
+  <li>Be based on the microfacet surface model.</li>
+  <li>Be energy conserving.</li>
+  <li>Use a physically based BRDF.</li>
+</ol>
+
+<p>
+  In the next PBR chapters we'll be focusing on the PBR approach as originally explored by Disney and adopted for real-time display by Epic Games. Their approach, based on the <def>metallic workflow</def>, is decently documented, widely adopted on most popular engines, and looks visually amazing. By the end of these chapters we'll have something that looks like this: 
+</p>
+
+<img src="/img/pbr/ibl_specular_result_textured.png" class="" alt="An example of a PBR render (with IBL) in OpenGL on textured materials."/>
+  
+<p>
+  Keep in mind, the topics in these chapters are rather advanced so it is advised to have a good understanding of OpenGL and shader lighting. Some of the more advanced knowledge you'll need for this series are: <a href="https://learnopengl.com/Advanced-OpenGL/Framebuffers" target="_blank">framebuffers</a>, <a href="https://learnopengl.com/Advanced-OpenGL/Cubemaps" target="_blank">cubemaps</a>, <a href="https://learnopengl.com/Advanced-Lighting/Gamma-Correction" target="_blank">gamma correction</a>, <a href="https://learnopengl.com/Advanced-Lighting/HDR" target="_blank">HDR</a>, and <a href="https://learnopengl.com/Advanced-Lighting/Normal-Mapping" target="_blank">normal mapping</a>. We'll also delve into some advanced mathematics, but I'll do my best to explain the concepts as clear as possible.
+</p>
+
+<h2>The microfacet model</h2>
+<p>
+  All the PBR techniques are based on the theory of microfacets. The theory describes that any surface at a microscopic scale can be described by tiny little perfectly reflective mirrors called <def>microfacets</def>. Depending on the roughness of a surface, the alignment of these tiny little mirrors can differ quite a lot:
+</p>
+
+<img src="/img/pbr/microfacets.png" class="clean" alt="Different surface types for OpenGL PBR"/>
+
+<p>
+  The rougher a surface is, the more chaotically aligned each microfacet will be along the surface. The effect of these tiny-like mirror alignments is, that when specifically talking about specular lighting/reflection, the incoming light rays are more likely to <def>scatter</def> along completely different directions on rougher surfaces, resulting in a more widespread specular reflection. In contrast, on a smooth surface the light rays are more likely to reflect in roughly the same direction, giving us smaller and sharper reflections:
+</p>
+
+<img src="/img/pbr/microfacets_light_rays.png" class="clean" alt="Effect of light scattering on different surface types for OpenGL PBR"/>
+
+<p>
+  No surface is completely smooth on a microscopic level, but seeing as these microfacets are small enough that we can't make a distinction between them on a per-pixel basis, we statistically approximate the surface's microfacet roughness given a <def>roughness</def> parameter. Based on the roughness of a surface, we can calculate the ratio of microfacets roughly aligned to some vector \(h\). This vector \(h\) is the <def>halfway vector</def> that sits halfway between the light \(l\) and view \(v\) vector. We've discussed the halfway vector before in the <a href="https://learnopengl.com/Advanced-Lighting/Advanced-Lighting" target="_blank">advanced lighting</a> chapter which is calculated as the sum of \(l\) and \(v\) divided by its length:
+</p>
+
+\[ 
+   h = \frac{l + v}{\|l + v\|}
+\]
+
+<p>
+  The more the microfacets are aligned to the halfway vector, the sharper and stronger the specular reflection. Together with a roughness parameter that varies between 0 and 1, we can statistically approximate the alignment of the microfacets:
+</p>
+
+<img src="/img/pbr/ndf.png" alt="Visualized NDF (Normalized Distribution Function) in OpenGL PBR"/>
+
+<p>
+  We can see that higher roughness values display a much larger specular reflection shape, in contrast with the smaller and sharper specular reflection shape of smooth surfaces. 
+</p>
+
+<h2>Energy conservation</h2>
+<p>
+  The microfacet approximation employs a form of <def>energy conservation</def>: outgoing light energy should never exceed the incoming light energy (excluding emissive surfaces). Looking at the above image we see the specular reflection area increase, but also its brightness decrease at increasing roughness levels. If the specular intensity were to be the same at each pixel (regardless of the size of the specular shape) the rougher surfaces would emit much more energy, violating the energy conservation principle. This is why we see specular reflections more intensely on smooth surfaces and more dimly on rough surfaces. 
+</p>
+
+<p>
+  For energy conservation to hold, we need to make a clear distinction between diffuse and specular light. The moment a light ray hits a surface, it gets split in both a <def>refraction</def> part and a <def>reflection</def> part. The reflection part is light that directly gets reflected and doesn't enter the surface; this is what we know as specular lighting. The refraction part is the remaining light that enters the surface and gets absorbed; this is what we know as diffuse lighting. 
+  </p>
+
+<p>
+  There are some nuances here as refracted light doesn't immediately get absorbed by touching the surface. From physics, we know that light can be modeled as a beam of energy that keeps moving forward until it loses all of its energy; the way a light beam loses energy is by collision. Each material consists of tiny little particles that can collide with the light ray as illustrated in the following image. The particles absorb some, or all, of the light's energy at each collision which is converted into heat.
+</p>
+  
+<img src="/img/pbr/surface_reaction.png" class="clean" alt="Light as reflected and refracted light with absorption in OpenGL PBR"/>
+  
+<p>
+    Generally, not all energy is absorbed and the light will continue to <def>scatter</def> in a (mostly) random direction at which point it collides with other particles until its energy is depleted or it leaves the surface again. Light rays re-emerging out of the surface contribute to the surface's observed (diffuse) color. In physically based rendering however, we make the simplifying assumption that all refracted light gets absorbed and scattered at a very small area of impact, ignoring the effect of scattered light rays that would've exited the surface at a distance. Specific shader techniques that do take this into account are known as <def>subsurface scattering</def> techniques that significantly improve the visual quality on materials like skin, marble, or wax, but come at the price of performance.
+  </p>
+
+<p>
+  An additional subtlety when it comes to reflection and refraction are surfaces that are <def>metallic</def>. Metallic surfaces react different to light compared to non-metallic surfaces (also known as <def>dielectrics</def>). Metallic surfaces follow the same principles of reflection and refraction, but <strong>all</strong> refracted light gets directly absorbed without scattering. This means metallic surfaces only leave reflected or specular light; metallic surfaces show no diffuse colors. Because of this apparent distinction between metals and dielectrics, they're both treated differently in the PBR pipeline which we'll delve into further down the chapter.
+</p>
+
+<p>
+  This distinction between reflected and refracted light brings us to another observation regarding energy preservation: they're <strong>mutually exclusive</strong>. Whatever light energy gets reflected will no longer be absorbed by the material itself. Thus, the energy left to enter the surface as refracted light is directly the resulting energy after we've taken reflection into account.
+</p>
+
+<p>
+  We preserve this energy conserving relation by first calculating the specular fraction that amounts the percentage the incoming light's energy is reflected. The fraction of refracted light is then directly calculated from the specular fraction as:
+</p>
+
+<pre><code>
+float kS = calculateSpecularComponent(...); // reflection/specular fraction
+float kD = 1.0 - kS;                        // refraction/diffuse  fraction
+</code></pre>
+
+<p>
+  This way we know both the amount the incoming light reflects and the amount the incoming light refracts, while adhering to the energy conservation principle. Given this approach, it is impossible for both the refracted/diffuse and reflected/specular contribution to exceed <code>1.0</code>, thus ensuring the sum of their energy never exceeds the incoming light energy. Something we did not take into account in the previous lighting chapters.
+</p>
+
+<h2>The reflectance equation</h2>
+<p>
+  This brings us to something called the <a href="https://en.wikipedia.org/wiki/Rendering_equation" target="_blank">render equation</a>, an elaborate equation some very smart folks out there came up with that is currently the best model we have for simulating the visuals of light. Physically based rendering strongly follows a more specialized version of the render equation known as the <def>reflectance equation</def>. To properly understand PBR, it's important to first build a solid understanding of the reflectance equation:
+</p>
+
+ \[
+  L_o(p,\omega_o) = \int\limits_{\Omega} f_r(p,\omega_i,\omega_o) L_i(p,\omega_i) n \cdot \omega_i  d\omega_i
+  \]
+
+<p>
+  The reflectance equation appears daunting at first, but as we'll dissect it you'll see it slowly starts to makes sense. To understand the equation, we have to delve into a bit of <def>radiometry</def>. Radiometry is the measurement of electromagnetic radiation, including visible light. There are several radiometric quantities we can use to measure light over surfaces and directions, but we will only discuss a single one that's relevant to the reflectance equation known as <def>radiance</def>, denoted here as \(L\). Radiance is used to quantify the magnitude or strength of light coming from a single direction. It's a bit tricky to understand at first as radiance is a combination of multiple physical quantities so we'll focus on those first:
+</p>
+    
+<p>
+  <strong>Radiant flux</strong>: radiant flux \(\Phi\) is the transmitted energy of a light source measured in Watts. Light is a collective sum of energy over multiple different wavelengths, each wavelength associated with a particular (visible) color. The emitted energy of a light source can  therefore be thought of as a function of all its different wavelengths. Wavelengths between 390nm to 700nm (nanometers) are considered part of the visible light spectrum i.e. wavelengths the human eye is able to perceive. Below you'll find an image of the different energies per wavelength of daylight:
+</p>
+  
+  <img src="/img/pbr/daylight_spectral_distribution.png" class="clean" alt="Spectral distribution of daylight"/>
+  
+<p>
+    The radiant flux measures the total area of this function of different wavelengths. Directly taking this measure of wavelengths as input is slightly impractical so we often make the simplification of representing radiant flux, not as a function of varying wavelength strengths, but as a light color triplet encoded as <code>RGB</code> (or as we'd commonly call it: light color). This encoding does come at quite a loss of information, but this is generally negligible for visual aspects. 
+</p>
+  
+<p>
+  <strong>Solid angle</strong>: the solid angle, denoted as \(\omega\), tells us the size or area of a shape projected onto a unit sphere. The area of the projected shape onto this unit sphere is known as the <def>solid angle</def>; you can visualize the solid angle as a direction with volume:
+</p>
+  
+  <img src="/img/pbr/solid_angle.png" class="clean" alt="Solid angle"/>
+  
+ <p>
+   Think of being an observer at the center of this unit sphere and looking in the direction of the shape; the size of the silhouette you make out of it is the solid angle. 
+</p>
+    
+<p>
+  <strong>Radiant intensity</strong>: radiant intensity measures the amount of radiant flux per solid angle, or the strength of a light source over a projected area onto the unit sphere. For instance, given an omnidirectional light that radiates equally in all directions, the radiant intensity can give us its energy over a specific area (solid angle):
+</p>
+  
+  <img src="/img/pbr/radiant_intensity.png" class="clean" alt="Radiant intensity"/>
+  
+<p>
+  The equation to describe the radiant intensity is defined as follows:
+</p>
+  
+  \[I = \frac{d\Phi}{d\omega}\]
+  
+<p>
+  Where \(I\) is the radiant flux \(\Phi\) over the solid angle \(\omega\). 
+</p>
+  
+<p>
+  With knowledge of radiant flux, radiant intensity, and the solid angle, we can finally describe the equation for <strong>radiance</strong>. Radiance is described as the total observed energy in an area \(A\) over the solid angle \(\omega\) of a light of radiant intensity \(\Phi\):
+</p>
+  
+  \[L=\frac{d^2\Phi}{ dA d\omega \cos\theta}\]
+  
+  <img src="/img/pbr/radiance.png" class="clean" alt="Diagram of radiance"/>
+  
+<p>
+  Radiance is a radiometric measure of the amount of light in an area, scaled by the <def>incident</def> (or incoming) angle \(\theta\) of the light to the surface's normal as \(\cos \theta\): light is weaker the less it directly radiates onto the surface, and strongest when it is directly perpendicular to the surface. This is similar to our perception of diffuse lighting from the <a href="https://learnopengl.com/Lighting/Basic-lighting" target="_blank">basic lighting</a> chapter as \(\cos\theta\) directly corresponds to the dot product between the light's direction vector and the surface normal:
+</p>
+  
+<pre><code>
+float cosTheta = dot(lightDir, N);  
+</code></pre>
+  
+<p>
+  The radiance equation is quite useful as it contains most physical quantities we're interested in. If we consider the solid angle \(\omega\) and the area \(A\) to be infinitely small, we can use radiance to measure the flux of a single ray of light hitting a single point in space. This relation allows us to calculate the radiance of a single light ray influencing a single (fragment) point; we effectively translate the solid angle \(\omega\) into a direction vector \(\omega\), and \(A\) into a point \(p\). This way, we can directly use radiance in our shaders to calculate a single light ray's per-fragment contribution.
+</p>
+  
+<p>
+  In fact, when it comes to radiance we generally care about <strong>all</strong> incoming light onto a point \(p\), which is the sum of all radiance known as <def>irradiance</def>. With knowledge of both radiance and irradiance we can get back to the reflectance equation:
+</p>
+  
+  
+  \[
+  L_o(p,\omega_o) = \int\limits_{\Omega} f_r(p,\omega_i,\omega_o) L_i(p,\omega_i) n \cdot \omega_i  d\omega_i
+  \]
+  
+<p>
+  We now know that \(L\) in the render equation represents the radiance of some point \(p\) and some incoming infinitely small solid angle \(\omega_i\) which can be thought of as an incoming direction vector \(\omega_i\). Remember that \(\cos \theta\) scales the energy based on the light's incident angle to the surface, which we find in the reflectance equation as \(n \cdot \omega_i\). The reflectance equation calculates the sum of reflected radiance \(L_o(p, \omega_o)\) of a point \(p\) in direction \(\omega_o\) which is the outgoing direction to the viewer. Or to put it differently: \(L_o\) measures the reflected sum of the lights' irradiance onto point \(p\) as viewed from \(\omega_o\).
+</p>
+  
+<p>
+  The reflectance equation is based around irradiance, which is the sum of all incoming radiance we measure light of. Not just of a single incoming light direction, but of all incoming light directions within a hemisphere \(\Omega\) centered around point \(p\). A <def>hemisphere</def> can be described as half a sphere aligned around a surface's normal \(n\):
+  </p>
+  
+  <img src="/img/pbr/hemisphere.png" class="clean" alt="Hemisphere"/>
+  
+<p>  
+  To calculate the total of values inside an area or (in the case of a hemisphere) a volume, we use a mathematical construct called an <def>integral</def> denoted in the reflectance equation as \(\int\) over all incoming directions \(d\omega_i\) within the hemisphere \(\Omega\) . An integral measures the area of a function, which can either be calculated analytically or numerically. As there is no analytical solution to both the render and reflectance equation, we'll want to numerically solve the integral discretely. This translates to taking the result of small discrete steps of the reflectance equation over the hemisphere \(\Omega\) and averaging their results over the step size. This is known as the <def>Riemann sum</def> that we can roughly visualize in code as follows:
+</p>
+
+<pre><code>
+int steps = 100;
+float sum = 0.0f;
+vec3 P    = ...;
+vec3 Wo   = ...;
+vec3 N    = ...;
+float dW  = 1.0f / steps;
+for(int i = 0; i &lt; steps; ++i) 
+{
+    vec3 Wi = getNextIncomingLightDir(i);
+    sum += Fr(P, Wi, Wo) * L(P, Wi) * dot(N, Wi) * dW;
+}
+</code></pre>
+  
+<p>
+  By scaling the steps by <code>dW</code>, the sum will equal the total area or volume of the integral function. The <code>dW</code> to scale each discrete step can be thought of as \(d\omega_i\) in the reflectance equation. Mathematically \(d\omega_i\) is the continuous symbol over which we calculate the integral, and while it does not directly relate to <code>dW</code> in code (as this is a discrete step of the Riemann sum), it helps to think of it this way. Keep in mind that taking discrete steps will always give us an approximation of the total area of the function. A careful reader will notice we can increase the <em>accuracy</em> of the Riemann Sum by increasing the number of steps.
+  </p>
+  
+<p>
+  The reflectance equation sums up the radiance of all incoming light directions \(\omega_i\) over the hemisphere \(\Omega\) scaled by \(f_r\) that hit point \(p\) and returns the sum of reflected light \(L_o\) in the viewer's direction. The incoming radiance can come from <a href="https://learnopengl.com/PBR/Lighting" target="_blank">light sources</a> as we're familiar with, or from an environment map measuring the radiance of every incoming direction as we'll discuss in the <a href="https://learnopengl.com/PBR/IBL/Diffuse-irradiance" target="_blank">IBL</a> chapters.
+</p>
+  
+<p>
+  Now the only unknown left is the \(f_r\) symbol known as the <def>BRDF</def> or <def>bidirectional reflective distribution function</def> that scales or weighs the incoming radiance based on the surface's material properties.
+</p>
+  
+
+<h2>BRDF</h2>
+<p>
+  The <def>BRDF</def>, or <def>bidirectional reflective distribution function</def>, is a function that takes as input the incoming (light) direction \(\omega_i\), the outgoing (view) direction \(\omega_o\), the surface normal \(n\), and a surface parameter \(a\) that represents the microsurface's roughness. The BRDF approximates how much each individual light ray \(\omega_i\) contributes to the final reflected light of an opaque surface given its material properties. For instance, if the surface has a perfectly smooth surface (~like a mirror) the BRDF function would return 0.0 for all incoming light rays \(\omega_i\) except the one ray that has the same (reflected) angle as the outgoing ray \(\omega_o\) at which the function returns 1.0. </p>
+  
+  <p>
+    A BRDF approximates the material's reflective and refractive properties based on the previously discussed microfacet theory. For a BRDF to be physically plausible it has to respect the law of energy conservation i.e. the sum of reflected light should never exceed the amount of incoming light. Technically, Blinn-Phong is considered a BRDF taking the same \(\omega_i\) and \(\omega_o\) as inputs. However, Blinn-Phong is not considered physically based as it doesn't adhere to the energy conservation principle. There are several physically based BRDFs out there to approximate the surface's reaction to light. However, almost all real-time PBR render pipelines use a BRDF known as the <def>Cook-Torrance BRDF</def>.
+  </p>
+  
+<p>
+    The Cook-Torrance BRDF contains both a diffuse and specular part:
+</p>
+  
+  \[f_r = k_d f_{lambert} +  k_s f_{cook-torrance}\]
+  
+<p>
+  Here \(k_d\) is the earlier mentioned ratio of incoming light energy that gets <em>refracted</em> with \(k_s\) being the ratio that gets <em>reflected</em>. The left side of the BRDF states the diffuse part of the equation denoted here as \(f_{lambert}\). This is known as <def>Lambertian diffuse</def> similar to what we used for diffuse shading, which is a constant factor denoted as:
+</p>
+  
+  \[ f_{lambert} = \frac{c}{\pi}\]
+  
+<p>
+	With \(c\) being the albedo or surface color (think of the diffuse surface texture). The divide by pi is there to normalize the diffuse light as the earlier denoted integral that contains the BRDF is scaled by \(\pi\) (we'll get to that in the <a href="https://learnopengl.com/PBR/IBL/Diffuse-irradiance" target="_blank">IBL</a> chapters).
+</p>
+  
+  <note>
+    You may wonder how this Lambertian diffuse relates to the diffuse lighting we've been using before: the surface color multiplied by the dot product between the surface's normal and the light direction. The dot product is still there, but moved out of the BRDF as we find \(n \cdot \omega_i\) at the end of the \(L_o\) integral.
+  </note>
+  
+<p>
+  There exist different equations for the diffuse part of the BRDF which tend to look more realistic, but are also more computationally expensive. As concluded by Epic Games however, the Lambertian diffuse is sufficient enough for most real-time rendering purposes.
+</p>
+  
+<p>
+  The specular part of the BRDF is a bit more advanced and is described as:
+</p>
+  
+ \[
+  f_{CookTorrance} = \frac{DFG}{4(\omega_o \cdot n)(\omega_i \cdot n)}
+  \]
+  
+<p>
+  The Cook-Torrance specular BRDF is composed three functions and a normalization factor in the denominator. Each of the D, F and G symbols represent a type of function that approximates a specific part of the surface's reflective properties. These are defined as the normal <strong>D</strong>istribution function, the <strong>F</strong>resnel equation and the <strong>G</strong>eometry function:
+</p>
+  
+<ul>
+  <li><strong>Normal distribution function</strong>: approximates the amount the surface's microfacets are aligned to the halfway vector, influenced by the roughness of the surface; this is the primary function approximating the microfacets.</li>
+    <li><strong>Geometry function</strong>: describes the self-shadowing property of the microfacets. When a surface is relatively rough, the surface's microfacets can overshadow other microfacets reducing the light the surface reflects.</li>
+  <li><strong>Fresnel equation</strong>: The Fresnel equation describes the ratio of surface reflection at different surface angles.</li>
+</ul>
+  
+<p>
+  Each of these functions are an approximation of their physics equivalents and you'll find more than one version of each that aims to approximate the underlying physics in different ways; some more realistic, others more efficient. It is perfectly fine to pick whatever approximated version of these functions you want to use. Brian Karis from Epic Games did a great deal of research on the multiple types of approximations <a href="http://graphicrants.blogspot.nl/2013/08/specular-brdf-reference.html" target="_blank">here</a>. We're going to pick the same functions used by Epic Game's Unreal Engine 4 which are the Trowbridge-Reitz GGX for D, the Fresnel-Schlick approximation for F, and the Smith's Schlick-GGX for G.
+</p>
+  
+<h3>Normal distribution function</h3>
+<p>
+  The <def>normal distribution function</def> \(D\) statistically approximates the relative surface area of microfacets exactly aligned to the (halfway) vector \(h\). There are a multitude of NDFs that statistically approximate the general alignment of the microfacets given some roughness parameter and the one we'll be using is known as the Trowbridge-Reitz GGX:
+</p>
+  
+  \[
+  	NDF_{GGX TR}(n, h, \alpha) = \frac{\alpha^2}{\pi((n \cdot h)^2 (\alpha^2 - 1) + 1)^2}
+  \]
+  
+<p>
+  Here \(h\) is the halfway vector to measure against the surface's microfacets, with \(a\) being a measure of the surface's roughness. If we take \(h\) as the halfway vector between the surface normal and light direction over varying roughness parameters we get the following visual result:
+</p>
+  
+  <img src="/img/pbr/ndf.png" alt="Visualized NDF in OpenGL PBR"/>
+    
+<p>
+   When the roughness is low (thus the surface is smooth), a highly concentrated number of microfacets are aligned to halfway vectors over a small radius. Due to this high concentration, the NDF displays a very bright spot. On a rough surface however, where the microfacets are aligned in much more random directions, you'll find a much larger number of halfway vectors \(h\) somewhat aligned to the microfacets (but less concentrated), giving us the more grayish results.
+</p>
+    
+<p>
+  In GLSL the Trowbridge-Reitz GGX normal distribution function translates to the following code:
+</p>
+    
+<pre><code>
+float DistributionGGX(vec3 N, vec3 H, float a)
+{
+    float a2     = a*a;
+    float NdotH  = max(dot(N, H), 0.0);
+    float NdotH2 = NdotH*NdotH;
+	
+    float nom    = a2;
+    float denom  = (NdotH2 * (a2 - 1.0) + 1.0);
+    denom        = PI * denom * denom;
+	
+    return nom / denom;
+}
+</code></pre>
+
+  
+<h3>Geometry function</h3>
+<p>
+    The geometry function statistically approximates the relative surface area where its micro surface-details overshadow each other, causing light rays to be occluded. 
+</p>
+    
+    <img src="/img/pbr/geometry_shadowing.png" class="clean" alt="Light being either shadowed or obstructed due to microfacet model."/>
+    
+<p>
+  Similar to the NDF, the Geometry function takes a material's roughness parameter as input with rougher surfaces having a higher probability of overshadowing microfacets. The geometry function we will use is a combination of the GGX and Schlick-Beckmann approximation known as Schlick-GGX:
+</p>
+    
+    \[
+    	G_{SchlickGGX}(n, v, k) 
+       		 = 
+   		\frac{n \cdot v}
+    	{(n \cdot v)(1 - k) + k }
+    \]
+    
+<p>
+  Here \(k\) is a remapping of \(\alpha\) based on whether we're using the geometry function for either direct lighting or IBL lighting:
+</p>
+    
+\[
+    k_{direct} = \frac{(\alpha + 1)^2}{8}
+\]
+    
+\[
+    k_{IBL} = \frac{\alpha^2}{2}
+\]
+    
+<p>
+  Note that the value of \(\alpha\) may differ based on how your engine translates roughness to \(\alpha\). In the following chapters we'll extensively discuss how and where this remapping becomes relevant. 
+    </p>
+  
+<p>
+  To effectively approximate the geometry we need to take account of both the view direction (geometry obstruction) and the light direction vector (geometry shadowing). We can take both into account using <def>Smith's method</def>:
+</p>
+    
+\[
+  	G(n, v, l, k) = G_{sub}(n, v, k) G_{sub}(n, l, k)  
+\]
+    
+<p>
+  Using Smith's method with Schlick-GGX as \(G_{sub}\) gives the following visual appearance over varying roughness <code>R</code>:
+</p>
+    
+    
+    <img src="/img/pbr/geometry.png" alt="Visualized Geometry function in OpenGL PBR"/>
+    
+<p>
+  The geometry function is a multiplier between [0.0, 1.0] with 1.0 (or white) measuring no microfacet shadowing, and 0.0 (or black) complete microfacet shadowing. 
+</p>
+    
+<p>
+  In GLSL the geometry function translates to the following code:
+</p>
+    
+<pre><code>
+float GeometrySchlickGGX(float NdotV, float k)
+{
+    float nom   = NdotV;
+    float denom = NdotV * (1.0 - k) + k;
+	
+    return nom / denom;
+}
+  
+float GeometrySmith(vec3 N, vec3 V, vec3 L, float k)
+{
+    float NdotV = max(dot(N, V), 0.0);
+    float NdotL = max(dot(N, L), 0.0);
+    float ggx1 = GeometrySchlickGGX(NdotV, k);
+    float ggx2 = GeometrySchlickGGX(NdotL, k);
+	
+    return ggx1 * ggx2;
+}
+</code></pre>
+  
+      
+<h3>Fresnel equation</h3>
+<p>
+	The Fresnel equation (pronounced as Freh-nel) describes the ratio of light that gets reflected over the light that gets refracted, which varies over the angle we're looking at a surface. The moment light hits a surface, based on the surface-to-view angle, the Fresnel equation tells us the  percentage of light that gets reflected. From this ratio of reflection and the energy conservation principle we can directly obtain the refracted portion of light.
+    </p>
+    
+ <p>
+   Every surface or material has a level of <def>base reflectivity</def> when looking straight at its surface, but when looking at the surface from an angle <a href="http://filmicworlds.com/blog/everything-has-fresnel/" target="_blank">all</a> reflections become more apparent compared to the surface's base reflectivity. You can check this for yourself by looking at your (presumably) wooden/metallic desk which has a certain level of base reflectivity from a perpendicular view angle, but by looking at your desk from an almost 90 degree angle you'll see the reflections become much more apparent. All surfaces theoretically fully reflect light if seen from perfect 90-degree angles. This phenomenon is known as <def>Fresnel</def> and is described by the Fresnel equation. 
+</p>
+        
+<p>
+  The Fresnel equation is a rather complex equation, but luckily the Fresnel equation can be approximated using the <def>Fresnel-Schlick</def> approximation:
+</p>
+    
+\[
+	F_{Schlick}(h, v, F_0) = 
+    F_0 + (1 - F_0) ( 1 - (h \cdot v))^5 	
+\]
+    
+<p>
+  \(F_0\) represents the base reflectivity of the surface, which we calculate using something called the <em>indices of refraction</em> or IOR. As you can see on a sphere surface, the more we look towards the surface's grazing angles (with the halfway-view angle reaching 90 degrees), the stronger the Fresnel and thus the reflections: 
+</p>
+    
+    <img src="/img/pbr/fresnel.png" alt="Visualized Fresnel equation on a sphere."/>
+    
+<p>
+    There are a few subtleties involved with the Fresnel equation. One is that the Fresnel-Schlick approximation is only really defined for <def>dielectric</def> or non-metal surfaces. For <def>conductor</def> surfaces (metals), calculating the base reflectivity with indices of refraction doesn't properly hold and we need to use a different Fresnel equation for conductors altogether. As this is inconvenient, we further approximate by pre-computing the surface's response at <def>normal incidence</def> (\(F_0\)) at a 0 degree angle as if looking directly onto a surface. We interpolate this value based on the view angle, as per the Fresnel-Schlick approximation, such that we can use the same equation for both metals and non-metals.
+</p>
+    
+<p>
+  The surface's response at normal incidence, or the base reflectivity, can be found in large databases like <a href="http://refractiveindex.info/" target="_blank">these</a> with some of the more common values listed below as taken from Naty Hoffman's course notes:
+</p>
+    
+<table>
+  <tr>
+  	<th>Material</th>
+  	<th>\(F_0\) (Linear)</th>
+  	<th>\(F_0\) (sRGB)</th>
+  	<th>Color</th>
+  </tr>  
+  <tr>
+    <td>Water</td>
+    <td><code>(0.02, 0.02, 0.02)</code></td>
+    <td><code>&nbsp;(0.15, 0.15, 0.15)</code>&nbsp;&nbsp;</td>
+ 	<td style="background-color: #262626"></td> 
+  </tr>
+  <tr>
+    <td>Plastic / Glass (Low)</td>
+    <td><code>(0.03, 0.03, 0.03)</code></td>
+    <td><code>(0.21, 0.21, 0.21)</code></td>
+ 	<td style="background-color: #363636"></td> 
+  </tr>
+  <tr>
+    <td>Plastic High</td>
+    <td><code>(0.05, 0.05, 0.05)</code></td>
+    <td><code>(0.24, 0.24, 0.24)</code></td>
+ 	<td style="background-color: #3D3D3D"></td> 
+  </tr>
+  <tr>
+    <td>Glass (high) / Ruby</td>
+    <td><code>(0.08, 0.08, 0.08)</code></td>
+    <td><code>(0.31, 0.31, 0.31)</code></td>
+ 	<td style="background-color: #4F4F4F"></td> 
+  </tr>
+  <tr>
+    <td>Diamond</td>
+    <td><code>(0.17, 0.17, 0.17)</code></td>
+    <td><code>(0.45, 0.45, 0.45)</code></td>
+ 	<td style="background-color: #737373"></td> 
+  </tr>
+  <tr>
+    <td>Iron</td>
+    <td><code>(0.56, 0.57, 0.58)</code></td>
+    <td><code>(0.77, 0.78, 0.78)</code></td>
+ 	<td style="background-color: #C5C8C8"></td> 
+  </tr>
+  <tr>
+    <td>Copper</td>
+    <td><code>(0.95, 0.64, 0.54)</code></td>
+    <td><code>(0.98, 0.82, 0.76)</code></td>
+ 	<td style="background-color: #FBD2C3"></td> 
+  </tr>
+  <tr>
+    <td>Gold</td>
+    <td><code>(1.00, 0.71, 0.29)</code></td>
+    <td><code>(1.00, 0.86, 0.57)</code></td>
+ 	<td style="background-color: #FFDC92"></td> 
+  </tr>
+  <tr>
+    <td>Aluminium</td>
+    <td><code>(0.91, 0.92, 0.92)</code></td>
+    <td><code>(0.96, 0.96, 0.97)</code></td>
+ 	<td style="background-color: #F6F6F8"></td> 
+  </tr>
+  <tr>
+    <td>Silver</td>
+    <td><code>(0.95, 0.93, 0.88)</code></td>
+    <td><code>(0.98, 0.97, 0.95)</code></td>
+ 	<td style="background-color: #FBF8F3"></td> 
+  </tr>
+ 
+</table>
+    
+<p>
+  What is interesting to observe here is that for all dielectric surfaces the base reflectivity never gets above 0.17 which is the exception rather than the rule, while for conductors the base reflectivity starts much higher and (mostly) varies between 0.5 and 1.0. Furthermore, for conductors (or metallic surfaces) the base reflectivity is tinted. This is why \(F_0\) is presented as an RGB triplet (reflectivity at normal incidence can vary per wavelength); this is something we <strong>only</strong> see at metallic surfaces.
+</p>
+      
+<p>
+  These specific attributes of metallic surfaces compared to dielectric surfaces gave rise to something called the <def>metallic workflow</def>. In the metallic workflow we author surface materials with an extra parameter known as <def>metalness</def> that describes whether a surface is either a metallic or a non-metallic surface. 
+</p>
+    
+<note>
+  Theoretically, the metalness of a material is binary: it's either a metal or it isn't; it can't be both. However, most render pipelines allow configuring the metalness of a surface linearly between 0.0 and 1.0. This is mostly because of the lack of material texture precision. For instance, a surface having small (non-metal) dust/sand-like particles/scratches over a metallic surface is difficult to render with binary metalness values. 
+</note>
+
+<p>
+  By pre-computing \(F_0\) for both dielectrics and conductors we can use the same Fresnel-Schlick approximation for both types of surfaces, but we do have to tint the base reflectivity if we have a metallic surface. We generally accomplish this as follows:
+</p>
+    
+<pre><code>
+vec3 F0 = vec3(0.04);
+F0      = mix(F0, surfaceColor.rgb, metalness);
+</code></pre>
+    
+<p>
+  We define a base reflectivity that is approximated for most dielectric surfaces. This is yet another approximation as \(F_0\) is averaged around most common dielectrics. A base reflectivity of 0.04 holds for most dielectrics and produces physically plausible results without having to author an additional surface parameter. Then, based on how metallic a surface is, we either take the dielectric base reflectivity or take \(F_0\) authored as the surface color. Because metallic surfaces absorb all refracted light they have no diffuse reflections and we can directly use the surface color texture as their base reflectivity.
+</p>
+    
+ <p>
+  In code, the Fresnel Schlick approximation translates to:
+</p>
+    
+<pre><code>
+vec3 fresnelSchlick(float cosTheta, vec3 F0)
+{
+    return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
+}
+</code></pre>
+    
+<p>
+  With <code>cosTheta</code> being the dot product result between the surface's normal \(n\) and the halfway \(h\) (or view \(v\)) direction.
+</p>
+    
+    
+<h3>Cook-Torrance reflectance equation</h3>
+<p>
+  With every component of the Cook-Torrance BRDF described, we can include the physically based BRDF into the now final reflectance equation:
+</p>
+  
+ \[
+    L_o(p,\omega_o) = \int\limits_{\Omega} 
+    	(k_d\frac{c}{\pi} + k_s\frac{DFG}{4(\omega_o \cdot n)(\omega_i \cdot n)})
+    	L_i(p,\omega_i) n \cdot \omega_i  d\omega_i
+ \]
+    
+<p>
+  This equation is not fully mathematically correct however. You may remember that the Fresnel term \(F\) represents the ratio of light that gets <em>reflected</em> on a surface. This is effectively our ratio \(k_s\), meaning the specular (BRDF) part of the reflectance equation implicitly contains the reflectance ratio \(k_s\). Given this, our final final reflectance equation becomes:
+</p>
+    
+ \[
+    L_o(p,\omega_o) = \int\limits_{\Omega} 
+    	(k_d\frac{c}{\pi} + \frac{DFG}{4(\omega_o \cdot n)(\omega_i \cdot n)})
+    	L_i(p,\omega_i) n \cdot \omega_i  d\omega_i
+ \]
+    
+<p>
+  This equation now completely describes a physically based render model that is generally recognized as what we commonly understand as physically based rendering, or PBR. Don't worry if you didn't yet completely understand how we'll need to fit all the discussed mathematics together in code. In the next chapters, we'll explore how to utilize the reflectance equation to get much more physically plausible results in our rendered lighting and all the bits and pieces should slowly start to fit together. 
+</p>
+    
+<h2>Authoring PBR materials</h2>
+<p>
+  With knowledge of the underlying mathematical model of PBR we'll finalize the discussion by describing how artists generally author the physical properties of a surface that we can directly feed into the PBR equations. Each of the surface parameters we need for a PBR pipeline can be defined or modeled by textures. Using textures gives us per-fragment control over how each specific surface point should react to light: whether that point is metallic, rough or smooth, or how the surface responds to different wavelengths of light. 
+</p>
+    
+<p>
+  Below you'll see a list of textures you'll frequently find in a PBR pipeline together with its visual output if supplied to a PBR renderer:
+</p>
+    
+    <img src="/img/pbr/textures.png" class="clean" alt="Example of how artists author a PBR material with its relevant textures (OpenGL)."/>
+    
+<p>
+  <strong>Albedo</strong>: the <def>albedo</def> texture specifies for each texel the color of the surface, or the base reflectivity if that texel is metallic. This is largely similar to what we've been using before as a diffuse texture, but all lighting information is extracted from the texture. Diffuse textures often have slight shadows or darkened crevices inside the image which is something you don't want in an albedo texture; it should only contain the color (or refracted absorption coefficients) of the surface. 
+</p>
+    
+<p>
+  <strong>Normal</strong>: the normal map texture is exactly as we've been using before in the <a href="https://learnopengl.com/Advanced-Lighting/Normal-Mapping" target="_blank">normal mapping</a> chapter. The normal map allows us to specify, per fragment, a unique normal to give the illusion that a surface is <em>bumpier</em> than its flat counterpart. 
+</p>
+    
+<p>
+  <strong>Metallic</strong>: the metallic map specifies per texel whether a texel is either metallic or it isn't. Based on how the PBR engine is set up, artists can author metalness as either grayscale values or as binary black or white.
+</p>
+    
+<p>
+  <strong>Roughness</strong>: the roughness map specifies how rough a surface is on a per texel basis. The sampled roughness value of the roughness influences the statistical microfacet orientations of the surface. A rougher surface gets wider and blurrier reflections, while a smooth surface gets focused and clear reflections. Some PBR engines expect a <def>smoothness</def> map instead of a roughness map which some artists find more intuitive. These values are then translated (<code>1.0 - smoothness</code>) to roughness the moment they're sampled.
+</p>
+    
+<p>
+  <strong>AO</strong>: the <def>ambient occlusion</def> or <def>AO</def> map specifies an extra shadowing factor of the surface and potentially surrounding geometry. If we have a brick surface for instance, the albedo texture should have no shadowing information inside the brick's crevices. The AO map however does specify these darkened edges as it's more difficult for light to escape. Taking ambient occlusion in account at the end of the lighting stage can significantly boost the visual quality of your scene. The ambient occlusion map of a mesh/surface is either manually generated, or pre-calculated in 3D modeling programs.
+</p>
+    
+<p>
+  Artists set and tweak these physically based input values on a per-texel basis and can base their texture values on the physical surface properties of real-world materials. This is one of the biggest advantages of a PBR render pipeline as these physical properties of a surface remain the same, regardless of environment or lighting setup, making life easier for artists to get physically plausible results. Surfaces authored in a PBR pipeline can easily be shared among different PBR render engines, will look correct regardless of the environment they're in, and as a result look much more natural.
+</p>
+ 
+<h2>Further reading</h2>
+<ul>
+    <li><a href="http://blog.selfshadow.com/publications/s2013-shading-course/hoffman/s2013_pbs_physics_math_notes.pdf" target="_blank">Background: Physics and Math of Shading by Naty Hoffmann</a>: there is too much theory to fully discuss in a single article so the theory here barely scratches the surface; if you want to know more about the physics of light and how it relates to the theory of PBR <strong>this</strong> is the resource you want to read.</li>
+  <li><a href="http://blog.selfshadow.com/publications/s2013-shading-course/karis/s2013_pbs_epic_notes_v2.pdf" target="_blank">Real shading in Unreal Engine 4</a>: discusses the PBR model adopted by Epic Games in their 4th Unreal Engine installment. The PBR system we'll focus on in these chapters is based on this model of PBR.</li>
+  <li><a href="https://www.shadertoy.com/view/4sSfzK" target="_blank">[SH17C] Physically Based Shading, by knarkowicz</a>: great showcase of all individual PBR elements in an interactive ShaderToy demo.</li>
+  <li><a href="https://www.marmoset.co/toolbag/learn/pbr-theory" target="_blank">Marmoset: PBR Theory</a>: an introduction to PBR mostly meant for artists, but nevertheless a good read.</li>
+	<li><a href="http://www.codinglabs.net/article_physically_based_rendering.aspx" target="_blank">Coding Labs: Physically based rendering</a>: an introduction to the render equation and how it relates to PBR. </li>
+  <li><a href="http://www.codinglabs.net/article_physically_based_rendering_cook_torrance.aspx" target="_blank">Coding Labs: Physically Based Rendering - Cook–Torrance</a>: an introduction to the Cook-Torrance BRDF. </li>
+  <li><a href="http://blog.wolfire.com/2015/10/Physically-based-rendering" target="_blank">Wolfire Games - Physically based rendering</a>: an introduction to PBR by Lukas Orsvärn.</li>
+  <li><a href="https://www.shadertoy.com/view/4sSfzK" target="_blank">[SH17C] Physically Based Shading</a>: a great interactive shadertoy example (warning: may take a while to load) by Krzysztof Narkowi showcasing light-material interaction in a PBR fashion.</li>
+</ul>
+       
+
+    </div>
+    
+    <div id="hover">
+        HI
+    </div>
+   <!-- 728x90/320x50 sticky footer -->
+<!--<div id="waldo-tag-6196"></div>-->
+
+   <div id="disqus_thread"></div>
+
+    
+
+
+</div> <!-- container div -->
+
+
+</div> <!-- super container div -->
+</body>
+</html>

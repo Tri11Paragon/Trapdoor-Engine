@@ -1,0 +1,729 @@
+
+
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <meta charset="utf-8"/>
+    <title>LearnOpenGL - Instancing</title>	<!--<title>Learn OpenGL, extensive tutorial resource for learning Modern OpenGL</title>-->
+    <link rel="shortcut icon" type="image/ico" href="/favicon.ico"  />
+    <meta name="description" content="Learn OpenGL . com provides good and clear modern 3.3+ OpenGL tutorials with clear examples. A great resource to learn modern OpenGL aimed at beginners.">
+	<meta name="fragment" content="!">
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-51879160-1', 'learnopengl.com');
+      ga('send', 'pageview');
+
+    </script>
+    <!--<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-7855791439695850",
+              enable_page_level_ads: true
+         });
+    </script>
+	<script async='async' src='https://www.googletagservices.com/tag/js/gpt.js'></script>
+	<script>
+	  var googletag = googletag || {};
+	  googletag.cmd = googletag.cmd || [];
+	</script>
+	<script>
+	  googletag.cmd.push(function() {
+		googletag.defineSlot('/8491498/learnopengl_video', [300, 225], 'div-gpt-ad-1540574378241-0').addService(googletag.pubads());
+		googletag.pubads().enableSingleRequest();
+		googletag.pubads().collapseEmptyDivs();
+		googletag.enableServices();
+	  });
+	</script>
+    <script type="text/javascript" src="//cdn.thisiswaldo.com/static/js/1681.js"></script>
+	<script src="/js/jquery-1.11.0.min.js"></script>
+	<script src="/js/hoverintent.js"></script>
+	<link rel="stylesheet" type="text/css" href="/layout.css">
+    <link rel="stylesheet" type="text/css" href="/js/styles/obsidian.css">
+    <script src="/js/highlight.pack.js"></script>    
+    <script src="/js/functions.js"></script>
+    <script type="text/javascript" src="/js/mathjax/MathJax.js?config=TeX-AMS_HTML"></script>
+    <script>
+    // Has to be loaded last due to content bug 
+    MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+    </script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script>  
+        $(document).ready(function() {
+            // check if user visited from the old # based urls, re-direct to ?p= form
+            if(window.location.hash)
+            {
+                var name = window.location.hash.substring(2);
+                // name = name.replace(/-/g," ");
+                var index = name.indexOf('#'); // Remove any hash fragments from the url (Disquss adds hash fragments for comments, but results in 404 pages)
+                if(index >= 0)
+                    name = name.substring(0, index);
+                
+                window.location.href = "https://learnopengl.com/" + name;
+            } else {
+                    // Check if data has been succesfully loaded, if so: change title bar as ajax hash fragment
+                    var title = $('#content-url').text();
+                  
+                    // Refresh syntax highlighting
+                    // $('pre').each(function(i, e) {hljs.highlightBlock(e)});
+                  
+                    // Reset DISQUS
+                    // if(title == '/dev/')
+                        // title = '';
+                    // alert('hoi');
+					
+					// place video tag
+					if(title != '') {
+						var videoad = "%3Cdiv id=\'waldo-tag-12074\'%3E %3Cscript%3Egoogletag.cmd.push(function() {googletag.display(\'waldo-tag-12074\'); }); %3C/script%3E%3C/div%3E";
+						$('#content p:nth-of-type(3)').after(unescape(videoad));
+					}
+					
+                    // Adjust ads for correct bottom positioning based on content size
+                    window.setTimeout(function() {  
+                        AdPositioning();
+                     }, 3000);
+                  
+                  
+                    // set API resets after time-out (once content is properly loaded)
+                    window.setTimeout(function() {  
+                        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);       
+                        MathJax.Hub.Queue(["resetEquationNumbers", MathJax.InputJax.TeX]);
+                        
+                        var page_url = title == "" ? "http://www.learnopengl.com/" : "http://www.learnopengl.com/" + title;
+                        if(typeof DISQUS !== 'undefined') {                                              
+                            DISQUS.reset({
+                              reload: true,
+                              config: function () {  
+                                this.page.identifier = title;  
+                                this.page.url = page_url;
+                              }
+                            });
+                            $('#disqus_thread').show();
+                        }
+                           // Refresh callbacks on <function> tags
+                        SetFunctionTagCallbacks();        
+                    }, 1000);
+                                        
+                    // Zet ook de juiste button op 'selected'
+                    $('#nav li span, #nav li a').removeClass('selected');                
+                    if(title != '')
+                    {                    
+                        $('#nav li[id=\'' + title + '\']').children('span, a').addClass('selected');
+                    }
+                    // En open menu waar nodig
+                    var parents = $('#nav span.selected, #nav a.selected').parents('li').children('span.closed, a.closed');
+                    var index = 0;
+                    for(index = parents.length - 1; index >= 0; index--)
+                    {             
+                        
+                        var id = $(parents[index]).attr("id").replace( /^\D+/g, '');
+                        MenuClick(id, false);
+                    }                          
+                
+            }
+        });
+		// var initialized = false;
+        // window.onpopstate = function() {
+            // if(initialized)
+                // LoadPage();
+			// else
+				// initialized = true;
+        // };
+        
+        // Set up DISQUS
+        // $(document).ready(function() {
+            var disqus_shortname = 'learnopengl';
+            (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();           
+        // });
+    </script>
+</head>
+<body>
+<a href="https://learnopengl.com">
+<div id="header">
+</div>
+</a>
+
+<div id="supercontainer">
+    <!-- 728x90/320x50 -->
+    <div id="header_ad">
+        <div id="waldo-tag-6194"></div>
+    </div>
+    <div id="rightad_container">
+        <div id="rightad">
+            <!-- /8491498/learnopengl_video -->
+            <!--<div id='div-gpt-ad-1540574378241-0' style='height:225px; width:300px;'>
+			<script>
+			googletag.cmd.push(function() { googletag.display('div-gpt-ad-1540574378241-0'); });
+			</script>
+			</div>            
+            <br/>-->
+			<!-- place in-content -->
+			<!--<div id='waldo-tag-12074'>
+			 <script>
+			   googletag.cmd.push(function() { googletag.display('waldo-tag-12074'); });
+			 </script>
+			</div>-->
+           
+            <div id="waldo-tag-1715"></div>
+        </div>
+
+        <div id="admessage">
+            If you're running AdBlock, please consider whitelisting this site if you'd like to support LearnOpenGL; and no worries, I won't be mad if you don't :)
+            <!--<br/><br/>
+            Also, check out this little local multiplayer-only game I've made: <a href="https://store.steampowered.com/app/983590/Tank_Blazers/" target="_blank">Tank Blazers</a>.
+            <br/>
+            <a href="https://store.steampowered.com/app/983590/Tank_Blazers" target="_blank"><img src="/img/tank_blazers.jpg"  style="width:278px; margin-top: 9px; margin-left: -3px;"/></a>-->
+        </div>
+        
+        <div id="rightonethirdad">
+            <div id="waldo-tag-2246"></div>
+        </div>
+        
+        <div id="rightbottomad">            
+			<div id="waldo-tag-2247"></div>								
+        </div>
+    </div>
+    <div id="container">
+        <div id="loading"></div>
+<script> 
+$(document).ready(function() {
+$('#menu-item4').mousedown(function() { MenuClick(4, true) });
+$('#menu-item48').mousedown(function() { MenuClick(48, true) });
+$('#menu-item56').mousedown(function() { MenuClick(56, true) });
+$('#menu-item63').mousedown(function() { MenuClick(63, true) });
+$('#menu-item100').mousedown(function() { MenuClick(100, true) });
+$('#menu-item102').mousedown(function() { MenuClick(102, true) });
+$('#menu-item113').mousedown(function() { MenuClick(113, true) });
+$('#menu-item116').mousedown(function() { MenuClick(116, true) });
+$('#menu-item78').mousedown(function() { MenuClick(78, true) });
+$('#menu-item81').mousedown(function() { MenuClick(81, true) });
+$('#menu-item85').mousedown(function() { MenuClick(85, true) });
+$('#menu-item125').mousedown(function() { MenuClick(125, true) });
+$('#menu-item128').mousedown(function() { MenuClick(128, true) });
+$('#menu-item129').mousedown(function() { MenuClick(129, true) });
+$('#menu-item133').mousedown(function() { MenuClick(133, true) });
+$('#menu-item134').mousedown(function() { MenuClick(134, true) });
+$('#menu-item138').mousedown(function() { MenuClick(138, true) });
+}); 
+</script>   
+    <div id="nav">
+         <div id="social">
+            <a href="https://github.com/JoeyDeVries/LearnOpenGL" target="_blank">
+                    <img src="/img/github.png" class="social_ico">
+            </a>
+             <!-- <a href="https://www.facebook.com/Learnopengl-2199631333595544/" target="_blank">
+                <img src="/img/facebook.png" class="social_ico">
+            </a>-->
+            <a href="https://twitter.com/JoeyDeVriez" target="_blank">
+                <img src="/img/twitter.png" class="social_ico">
+            </a>
+          
+        </div>
+    <img src='img/nav-button_bottom-arrow.png' style='display: none'><ol><li id='Introduction'><a id="menu-item1" href="https://learnopengl.com/Introduction">Introduction </a></li><li id='Getting-started'><span id="menu-item4" class="closed">Getting started </span><ol id="menu-items-of4" style="display:none;"><li id='Getting-started/OpenGL'><a id="menu-item49" href="https://learnopengl.com/Getting-started/OpenGL">OpenGL </a></li><li id='Getting-started/Creating-a-window'><a id="menu-item5" href="https://learnopengl.com/Getting-started/Creating-a-window">Creating a window </a></li><li id='Getting-started/Hello-Window'><a id="menu-item6" href="https://learnopengl.com/Getting-started/Hello-Window">Hello Window </a></li><li id='Getting-started/Hello-Triangle'><a id="menu-item38" href="https://learnopengl.com/Getting-started/Hello-Triangle">Hello Triangle </a></li><li id='Getting-started/Shaders'><a id="menu-item39" href="https://learnopengl.com/Getting-started/Shaders">Shaders </a></li><li id='Getting-started/Textures'><a id="menu-item40" href="https://learnopengl.com/Getting-started/Textures">Textures </a></li><li id='Getting-started/Transformations'><a id="menu-item43" href="https://learnopengl.com/Getting-started/Transformations">Transformations </a></li><li id='Getting-started/Coordinate-Systems'><a id="menu-item44" href="https://learnopengl.com/Getting-started/Coordinate-Systems">Coordinate Systems </a></li><li id='Getting-started/Camera'><a id="menu-item47" href="https://learnopengl.com/Getting-started/Camera">Camera </a></li><li id='Getting-started/Review'><a id="menu-item50" href="https://learnopengl.com/Getting-started/Review">Review </a></li></ol></li><li id='Lighting'><span id="menu-item48" class="closed">Lighting </span><ol id="menu-items-of48" style="display:none;"><li id='Lighting/Colors'><a id="menu-item51" href="https://learnopengl.com/Lighting/Colors">Colors </a></li><li id='Lighting/Basic-Lighting'><a id="menu-item52" href="https://learnopengl.com/Lighting/Basic-Lighting">Basic Lighting </a></li><li id='Lighting/Materials'><a id="menu-item53" href="https://learnopengl.com/Lighting/Materials">Materials </a></li><li id='Lighting/Lighting-maps'><a id="menu-item54" href="https://learnopengl.com/Lighting/Lighting-maps">Lighting maps </a></li><li id='Lighting/Light-casters'><a id="menu-item55" href="https://learnopengl.com/Lighting/Light-casters">Light casters </a></li><li id='Lighting/Multiple-lights'><a id="menu-item58" href="https://learnopengl.com/Lighting/Multiple-lights">Multiple lights </a></li><li id='Lighting/Review'><a id="menu-item57" href="https://learnopengl.com/Lighting/Review">Review </a></li></ol></li><li id='Model-Loading'><span id="menu-item56" class="closed">Model Loading </span><ol id="menu-items-of56" style="display:none;"><li id='Model-Loading/Assimp'><a id="menu-item59" href="https://learnopengl.com/Model-Loading/Assimp">Assimp </a></li><li id='Model-Loading/Mesh'><a id="menu-item60" href="https://learnopengl.com/Model-Loading/Mesh">Mesh </a></li><li id='Model-Loading/Model'><a id="menu-item61" href="https://learnopengl.com/Model-Loading/Model">Model </a></li></ol></li><li id='Advanced-OpenGL'><span id="menu-item63" class="closed">Advanced OpenGL </span><ol id="menu-items-of63" style="display:none;"><li id='Advanced-OpenGL/Depth-testing'><a id="menu-item72" href="https://learnopengl.com/Advanced-OpenGL/Depth-testing">Depth testing </a></li><li id='Advanced-OpenGL/Stencil-testing'><a id="menu-item73" href="https://learnopengl.com/Advanced-OpenGL/Stencil-testing">Stencil testing </a></li><li id='Advanced-OpenGL/Blending'><a id="menu-item74" href="https://learnopengl.com/Advanced-OpenGL/Blending">Blending </a></li><li id='Advanced-OpenGL/Face-culling'><a id="menu-item77" href="https://learnopengl.com/Advanced-OpenGL/Face-culling">Face culling </a></li><li id='Advanced-OpenGL/Framebuffers'><a id="menu-item65" href="https://learnopengl.com/Advanced-OpenGL/Framebuffers">Framebuffers </a></li><li id='Advanced-OpenGL/Cubemaps'><a id="menu-item66" href="https://learnopengl.com/Advanced-OpenGL/Cubemaps">Cubemaps </a></li><li id='Advanced-OpenGL/Advanced-Data'><a id="menu-item69" href="https://learnopengl.com/Advanced-OpenGL/Advanced-Data">Advanced Data </a></li><li id='Advanced-OpenGL/Advanced-GLSL'><a id="menu-item67" href="https://learnopengl.com/Advanced-OpenGL/Advanced-GLSL">Advanced GLSL </a></li><li id='Advanced-OpenGL/Geometry-Shader'><a id="menu-item68" href="https://learnopengl.com/Advanced-OpenGL/Geometry-Shader">Geometry Shader </a></li><li id='Advanced-OpenGL/Instancing'><a id="menu-item70" href="https://learnopengl.com/Advanced-OpenGL/Instancing">Instancing </a></li><li id='Advanced-OpenGL/Anti-Aliasing'><a id="menu-item75" href="https://learnopengl.com/Advanced-OpenGL/Anti-Aliasing">Anti Aliasing </a></li></ol></li><li id='Advanced-Lighting'><span id="menu-item100" class="closed">Advanced Lighting </span><ol id="menu-items-of100" style="display:none;"><li id='Advanced-Lighting/Advanced-Lighting'><a id="menu-item101" href="https://learnopengl.com/Advanced-Lighting/Advanced-Lighting">Advanced Lighting </a></li><li id='Advanced-Lighting/Gamma-Correction'><a id="menu-item110" href="https://learnopengl.com/Advanced-Lighting/Gamma-Correction">Gamma Correction </a></li><li id='Advanced-Lighting/Shadows'><span id="menu-item102" class="closed">Shadows </span><ol id="menu-items-of102" style="display:none;"><li id='Advanced-Lighting/Shadows/Shadow-Mapping'><a id="menu-item103" href="https://learnopengl.com/Advanced-Lighting/Shadows/Shadow-Mapping">Shadow Mapping </a></li><li id='Advanced-Lighting/Shadows/Point-Shadows'><a id="menu-item104" href="https://learnopengl.com/Advanced-Lighting/Shadows/Point-Shadows">Point Shadows </a></li></ol></li><li id='Advanced-Lighting/Normal-Mapping'><a id="menu-item106" href="https://learnopengl.com/Advanced-Lighting/Normal-Mapping">Normal Mapping </a></li><li id='Advanced-Lighting/Parallax-Mapping'><a id="menu-item107" href="https://learnopengl.com/Advanced-Lighting/Parallax-Mapping">Parallax Mapping </a></li><li id='Advanced-Lighting/HDR'><a id="menu-item111" href="https://learnopengl.com/Advanced-Lighting/HDR">HDR </a></li><li id='Advanced-Lighting/Bloom'><a id="menu-item112" href="https://learnopengl.com/Advanced-Lighting/Bloom">Bloom </a></li><li id='Advanced-Lighting/Deferred-Shading'><a id="menu-item108" href="https://learnopengl.com/Advanced-Lighting/Deferred-Shading">Deferred Shading </a></li><li id='Advanced-Lighting/SSAO'><a id="menu-item109" href="https://learnopengl.com/Advanced-Lighting/SSAO">SSAO </a></li></ol></li><li id='PBR'><span id="menu-item113" class="closed">PBR </span><ol id="menu-items-of113" style="display:none;"><li id='PBR/Theory'><a id="menu-item114" href="https://learnopengl.com/PBR/Theory">Theory </a></li><li id='PBR/Lighting'><a id="menu-item115" href="https://learnopengl.com/PBR/Lighting">Lighting </a></li><li id='PBR/IBL'><span id="menu-item116" class="closed">IBL </span><ol id="menu-items-of116" style="display:none;"><li id='PBR/IBL/Diffuse-irradiance'><a id="menu-item117" href="https://learnopengl.com/PBR/IBL/Diffuse-irradiance">Diffuse irradiance </a></li><li id='PBR/IBL/Specular-IBL'><a id="menu-item118" href="https://learnopengl.com/PBR/IBL/Specular-IBL">Specular IBL </a></li></ol></li></ol></li><li id='In-Practice'><span id="menu-item78" class="closed">In Practice </span><ol id="menu-items-of78" style="display:none;"><li id='In-Practice/Debugging'><a id="menu-item79" href="https://learnopengl.com/In-Practice/Debugging">Debugging </a></li><li id='In-Practice/Text-Rendering'><a id="menu-item80" href="https://learnopengl.com/In-Practice/Text-Rendering">Text Rendering </a></li><li id='In-Practice/2D-Game'><span id="menu-item81" class="closed">2D Game </span><ol id="menu-items-of81" style="display:none;"><li id='In-Practice/2D-Game/Breakout'><a id="menu-item82" href="https://learnopengl.com/In-Practice/2D-Game/Breakout">Breakout </a></li><li id='In-Practice/2D-Game/Setting-up'><a id="menu-item88" href="https://learnopengl.com/In-Practice/2D-Game/Setting-up">Setting up </a></li><li id='In-Practice/2D-Game/Rendering-Sprites'><a id="menu-item83" href="https://learnopengl.com/In-Practice/2D-Game/Rendering-Sprites">Rendering Sprites </a></li><li id='In-Practice/2D-Game/Levels'><a id="menu-item84" href="https://learnopengl.com/In-Practice/2D-Game/Levels">Levels </a></li><li id='In-Practice/2D-Game/Collisions'><span id="menu-item85" class="closed">Collisions </span><ol id="menu-items-of85" style="display:none;"><li id='In-Practice/2D-Game/Collisions/Ball'><a id="menu-item95" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Ball">Ball </a></li><li id='In-Practice/2D-Game/Collisions/Collision-detection'><a id="menu-item96" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Collision-detection">Collision detection </a></li><li id='In-Practice/2D-Game/Collisions/Collision-resolution'><a id="menu-item97" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Collision-resolution">Collision resolution </a></li></ol></li><li id='In-Practice/2D-Game/Particles'><a id="menu-item89" href="https://learnopengl.com/In-Practice/2D-Game/Particles">Particles </a></li><li id='In-Practice/2D-Game/Postprocessing'><a id="menu-item90" href="https://learnopengl.com/In-Practice/2D-Game/Postprocessing">Postprocessing </a></li><li id='In-Practice/2D-Game/Powerups'><a id="menu-item91" href="https://learnopengl.com/In-Practice/2D-Game/Powerups">Powerups </a></li><li id='In-Practice/2D-Game/Audio'><a id="menu-item94" href="https://learnopengl.com/In-Practice/2D-Game/Audio">Audio </a></li><li id='In-Practice/2D-Game/Render-text'><a id="menu-item92" href="https://learnopengl.com/In-Practice/2D-Game/Render-text">Render text </a></li><li id='In-Practice/2D-Game/Final-thoughts'><a id="menu-item93" href="https://learnopengl.com/In-Practice/2D-Game/Final-thoughts">Final thoughts </a></li></ol></li></ol></li><li id='Guest-Articles'><span id="menu-item125" class="closed">Guest Articles </span><ol id="menu-items-of125" style="display:none;"><li id='Guest-Articles/How-to-publish'><a id="menu-item126" href="https://learnopengl.com/Guest-Articles/How-to-publish">How to publish </a></li><li id='Guest-Articles/2020'><span id="menu-item128" class="closed">2020 </span><ol id="menu-items-of128" style="display:none;"><li id='Guest-Articles/2020/OIT'><span id="menu-item129" class="closed">OIT </span><ol id="menu-items-of129" style="display:none;"><li id='Guest-Articles/2020/OIT/Introduction'><a id="menu-item130" href="https://learnopengl.com/Guest-Articles/2020/OIT/Introduction">Introduction </a></li><li id='Guest-Articles/2020/OIT/Weighted-Blended'><a id="menu-item132" href="https://learnopengl.com/Guest-Articles/2020/OIT/Weighted-Blended">Weighted Blended </a></li></ol></li><li id='Guest-Articles/2020/Skeletal-Animation'><a id="menu-item131" href="https://learnopengl.com/Guest-Articles/2020/Skeletal-Animation">Skeletal Animation </a></li></ol></li><li id='Guest-Articles/2021'><span id="menu-item133" class="closed">2021 </span><ol id="menu-items-of133" style="display:none;"><li id='Guest-Articles/2021/CSM'><a id="menu-item137" href="https://learnopengl.com/Guest-Articles/2021/CSM">CSM </a></li><li id='Guest-Articles/2021/Scene'><span id="menu-item134" class="closed">Scene </span><ol id="menu-items-of134" style="display:none;"><li id='Guest-Articles/2021/Scene/Scene-Graph'><a id="menu-item135" href="https://learnopengl.com/Guest-Articles/2021/Scene/Scene-Graph">Scene Graph </a></li><li id='Guest-Articles/2021/Scene/Frustum-Culling'><a id="menu-item136" href="https://learnopengl.com/Guest-Articles/2021/Scene/Frustum-Culling">Frustum Culling </a></li></ol></li><li id='Guest-Articles/2021/Tessellation'><span id="menu-item138" class="closed">Tessellation </span><ol id="menu-items-of138" style="display:none;"><li id='Guest-Articles/2021/Tessellation/Height-map'><a id="menu-item139" href="https://learnopengl.com/Guest-Articles/2021/Tessellation/Height-map">Height map </a></li></ol></li></ol></li></ol></li><li id='Code-repository'><a id="menu-item99" href="https://learnopengl.com/Code-repository">Code repository </a></li><li id='Translations'><a id="menu-item119" href="https://learnopengl.com/Translations">Translations </a></li><li id='About'><a id="menu-item2" href="https://learnopengl.com/About">About </a></li></ol>		<div id="menu_book">
+            <a href="https://geni.us/learnopengl" target="_blank"><img src="/book/below_menu.png" class="clean"/></a>
+        </div>
+       <div id="donate">
+            <a href="https://www.paypal.me/learnopengl/" target="_blank">
+                <div id="donate_img"></div>
+                <img style="display: none" src="/img/donate_button_hover.png"/>
+                <!--<img id="donate_img" src="img/patreon.png"/>-->
+            </a>
+          <!--<div id="alipay">
+            <img style="width: 150px;" class="clean" src="/img/alipay_logo.png"/>
+            <img style="width: 150px; margin-top: 5px" src="/img/alipay.png"/>
+          </div>-->
+        </div> 
+		<!--
+		<div class="btc">
+			<h3>BTC</h3>
+			<p>
+				1CLGKgmBSuYJ1nnvDGAepVTKNNDpUjfpRa
+			</p>
+			<img src="/img/btc_qr.png"/>
+        </div> 
+		<div class="btc">
+			<h3>ETH/ERC20</h3>
+			<p>
+				0x1de59bd9e52521a46309474f8372531533bd7c43
+			</p>
+			<img src="/img/erc20_qr.png"/>
+        </div>       
+		!-->
+        <div id="ad">
+							<!--<div id="waldo-tag-1684"></div>-->
+			        </div>
+      
+        <div id="lefttwothirdad">
+            <div id="waldo-tag-2245"></div>
+        </div>
+    </div>
+    
+    <div id="content">
+    <h1 id="content-title">Instancing</h1>
+<h1 id="content-url" style='display:none;'>Advanced-OpenGL/Instancing</h1>
+<p>
+  Say you have a scene where you're drawing a lot of models where most of these models contain the same set of vertex data, but with different world transformations. Think of a scene filled with grass leaves: each grass leave is a small model that consists of only a few triangles. You'll probably want to draw quite a few of them and your scene may end up with thousands or maybe tens of thousands of grass leaves that you need to render each frame. Because each leaf is only a few triangles, the leaf is rendered almost instantly. However, the thousands of render calls you'll have to make will drastically reduce performance.
+</p>
+
+<p>
+  If we were to actually render such a large amount of objects it will look a bit like this in code:
+</p>
+
+<pre><code>
+for(unsigned int i = 0; i &lt; amount_of_models_to_draw; i++)
+{
+    DoSomePreparations(); // bind VAO, bind textures, set uniforms etc.
+    <function id='1'>glDrawArrays</function>(GL_TRIANGLES, 0, amount_of_vertices);
+}
+</code></pre>
+
+<p>
+  When drawing many <def>instances</def> of your model like this you'll quickly reach a performance bottleneck because of the many draw calls. Compared to rendering the actual vertices, telling the GPU to render your vertex data with functions like <fun><function id='1'>glDrawArrays</function></fun> or <fun><function id='2'>glDrawElements</function></fun> eats up quite some performance since OpenGL must make necessary preparations before it can draw your vertex data (like telling the GPU which buffer to read data from, where to find vertex attributes and all this over the relatively slow CPU to GPU bus). So even though rendering your vertices is super fast, giving your GPU the commands to render them isn't.
+</p>
+
+<p>
+  It would be much more convenient if we could send data over to the GPU once, and then tell OpenGL to draw multiple objects using this data with a single drawing call. Enter <def>instancing</def>.
+</p>
+
+<p>
+  Instancing is a technique where we draw many (equal mesh data) objects at once with a single render call, saving us all the CPU -> GPU communications each time we need to render an object. To render using instancing all we need to do is change the render calls <fun><function id='1'>glDrawArrays</function></fun> and <fun><function id='2'>glDrawElements</function></fun> to <fun><function id='98'><function id='1'>glDrawArrays</function>Instanced</function></fun> and <fun><function id='99'><function id='2'>glDrawElements</function>Instanced</function></fun> respectively. These <em>instanced</em> versions of the classic rendering functions take an extra parameter called the <def>instance count</def> that sets the number of instances we want to render. We sent all the required data to the GPU once, and then tell the GPU how it should draw all these instances with a single call. The GPU then renders all these instances without having to continually communicate with the CPU.
+</p>
+
+<p>
+  By itself this function is a bit useless. Rendering the same object a thousand times is of no use to us since each of the rendered objects is rendered exactly the same and thus also at the same location; we would only see one object! For this reason GLSL added another built-in variable in the vertex shader called <var>gl_InstanceID</var>. 
+</p>
+
+<p>
+  When drawing with one of the instanced rendering calls, <var>gl_InstanceID</var> is incremented for each instance being rendered starting from <code>0</code>. If we were to render the 43th instance for example, <var>gl_InstanceID</var> would have the value <code>42</code> in the vertex shader. Having a unique value per instance means we could now for example index into a large array of position values to position each instance at a different location in the world.
+</p>
+
+<p>
+  To get a feel for instanced drawing we're going to demonstrate a simple example that renders a hundred 2D quads in normalized device coordinates with just one render call. We accomplish this by uniquely positioning each instanced quad by indexing a uniform array of <code>100</code> offset vectors. The result is a neatly organized grid of quads that fill the entire window:
+</p>
+
+<img src="/img/advanced/instancing_quads.png" class="clean" alt="100 Quads drawn via OpenGL instancing."/>
+
+<p>
+  Each quad consists of 2 triangles with a total of 6 vertices. Each vertex contains a 2D NDC position vector and a color vector. Below is the vertex data used for this example - the triangles are small enough to properly fit the screen when there's a 100 of them:
+</p>
+
+<pre><code>
+float quadVertices[] = {
+    // positions     // colors
+    -0.05f,  0.05f,  1.0f, 0.0f, 0.0f,
+     0.05f, -0.05f,  0.0f, 1.0f, 0.0f,
+    -0.05f, -0.05f,  0.0f, 0.0f, 1.0f,
+
+    -0.05f,  0.05f,  1.0f, 0.0f, 0.0f,
+     0.05f, -0.05f,  0.0f, 1.0f, 0.0f,   
+     0.05f,  0.05f,  0.0f, 1.0f, 1.0f		    		
+};  
+</code></pre>
+
+<p>
+  The quads are colored in the fragment shader that receives a color vector from the vertex shader and sets it as its output:
+</p>
+
+<pre><code>
+#version 330 core
+out vec4 FragColor;
+  
+in vec3 fColor;
+
+void main()
+{
+    FragColor = vec4(fColor, 1.0);
+}
+</code></pre>
+
+<p>
+  Nothing new so far, but at the vertex shader it's starting to get interesting:
+</p>
+
+<pre><code>
+#version 330 core
+layout (location = 0) in vec2 aPos;
+layout (location = 1) in vec3 aColor;
+
+out vec3 fColor;
+
+uniform vec2 offsets[100];
+
+void main()
+{
+    vec2 offset = offsets[gl_InstanceID];
+    gl_Position = vec4(aPos + offset, 0.0, 1.0);
+    fColor = aColor;
+}  
+</code></pre>
+
+<p>
+  Here we defined a uniform array called <var>offsets</var> that contain a total of <code>100</code> offset vectors. Within the vertex shader we retrieve an offset vector for each instance by indexing the <var>offsets</var> array using <var>gl_InstanceID</var>. If we now were to draw <code>100</code> quads with instanced drawing we'd get <code>100</code> quads located at different positions.
+</p>
+
+<p>
+  We do need to actually set the offset positions that we calculate in a nested for-loop before we enter the render loop:
+</p>
+
+<pre><code>
+glm::vec2 translations[100];
+int index = 0;
+float offset = 0.1f;
+for(int y = -10; y &lt; 10; y += 2)
+{
+    for(int x = -10; x &lt; 10; x += 2)
+    {
+        glm::vec2 translation;
+        translation.x = (float)x / 10.0f + offset;
+        translation.y = (float)y / 10.0f + offset;
+        translations[index++] = translation;
+    }
+}  
+</code></pre>
+
+<p>
+  Here we create a set of <code>100</code> translation vectors that contains an offset vector for all positions in a 10x10 grid. In addition to generating the <var>translations</var> array, we'd also need to transfer the data to the vertex shader's uniform array:
+</p>
+
+<pre><code>
+shader.use();
+for(unsigned int i = 0; i &lt; 100; i++)
+{
+    shader.setVec2(("offsets[" + std::to_string(i) + "]")), translations[i]);
+}  
+</code></pre>
+
+<p>
+  Within this snippet of code we transform the for-loop counter <var>i</var> to a <fun>string</fun> to dynamically create a location string for querying the uniform location. For each item in the <var>offsets</var> uniform array we then set the corresponding translation vector.
+</p>
+
+<p>
+  Now that all the preparations are finished we can start rendering the quads. To draw via instanced rendering we call <fun><function id='98'><function id='1'>glDrawArrays</function>Instanced</function></fun> or <fun><function id='99'><function id='2'>glDrawElements</function>Instanced</function></fun>. Since we're not using an element index buffer we're going to call the <fun><function id='1'>glDrawArrays</function></fun> version:
+</p>
+
+<pre class="cpp"><code>
+<function id='27'>glBindVertexArray</function>(quadVAO);
+<function id='98'><function id='1'>glDrawArrays</function>Instanced</function>(GL_TRIANGLES, 0, 6, 100);  
+</code></pre>
+
+<p>
+  The parameters of <fun><function id='98'><function id='1'>glDrawArrays</function>Instanced</function></fun> are exactly the same as <fun><function id='1'>glDrawArrays</function></fun> except the last parameter that sets the number of instances we want to draw. Since we want to display <code>100</code> quads in a 10x10 grid we set it equal to <code>100</code>. Running the code should now give you the familiar image of <code>100</code> colorful quads.
+</p>
+
+<h2>Instanced arrays</h2>
+<p>
+  While the previous implementation works fine for this specific use case, whenever we are rendering a lot more than <code>100</code> instances (which is quite common) we will eventually hit a <a href="https://www.khronos.org/opengl/wiki/GLSL_Uniform#Implementation_limits" target="_blank">limit</a> on the amount of uniform data we can send to the shaders. One alternative option is known as <def>instanced arrays</def>. Instanced arrays are defined as a vertex attribute (allowing us to store much more data) that are updated per instance instead of per vertex.
+</p>
+
+<p>
+  With vertex attributes, at the start of each run of the vertex shader, the GPU will retrieve the next set of vertex attributes that belong to the current vertex. When defining a vertex attribute as an instanced array however, the vertex shader only updates the content of the vertex attribute per instance. This allows us to use the standard vertex attributes for data per vertex and use the instanced array for storing data that is unique per instance.
+</p>
+
+<p>
+  To give you an example of an instanced array we're going to take the previous example and convert the offset uniform array to an instanced array. We'll have to update the vertex shader by adding another vertex attribute:
+</p>
+
+<pre><code>
+#version 330 core
+layout (location = 0) in vec2 aPos;
+layout (location = 1) in vec3 aColor;
+layout (location = 2) in vec2 aOffset;
+
+out vec3 fColor;
+
+void main()
+{
+    gl_Position = vec4(aPos + aOffset, 0.0, 1.0);
+    fColor = aColor;
+}  
+</code></pre>
+
+<p>
+  We no longer use <var>gl_InstanceID</var> and can directly use the <var>offset</var> attribute  without first indexing into a large uniform array.
+</p>
+
+<p>
+  Because an instanced array is a vertex attribute, just like the <var>position</var> and <var>color</var> variables, we need to store its content in a vertex buffer object and configure its attribute pointer. We're first going to store the <var>translations</var> array (from the previous section) in a new buffer object:
+</p>
+
+<pre><code>
+unsigned int instanceVBO;
+<function id='12'>glGenBuffers</function>(1, &instanceVBO);
+<function id='32'>glBindBuffer</function>(GL_ARRAY_BUFFER, instanceVBO);
+<function id='31'>glBufferData</function>(GL_ARRAY_BUFFER, sizeof(glm::vec2) * 100, &translations[0], GL_STATIC_DRAW);
+<function id='32'>glBindBuffer</function>(GL_ARRAY_BUFFER, 0); 
+</code></pre>
+
+<p>
+  Then we also need to set its vertex attribute pointer and enable the vertex attribute:
+</p>
+
+<pre><code>
+<function id='29'><function id='60'>glEnable</function>VertexAttribArray</function>(2);
+<function id='32'>glBindBuffer</function>(GL_ARRAY_BUFFER, instanceVBO);
+<function id='30'>glVertexAttribPointer</function>(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+<function id='32'>glBindBuffer</function>(GL_ARRAY_BUFFER, 0);	
+<function id='100'>glVertexAttribDivisor</function>(2, 1);  
+</code></pre>
+
+<p>
+  What makes this code interesting is the last line where we call <fun><function id='100'>glVertexAttribDivisor</function></fun>. This function tells OpenGL <strong>when</strong> to update the content of a vertex attribute to the next element. Its first parameter is the vertex attribute in question and the second parameter the <def>attribute divisor</def>. By default, the attribute divisor is <code>0</code> which tells OpenGL to update the content of the vertex attribute each iteration of the vertex shader. By setting this attribute to <code>1</code> we're telling OpenGL that we want to update the content of the vertex attribute when we start to render a new instance. By setting it to <code>2</code> we'd update the content every 2 instances and so on. By setting the attribute divisor to <code>1</code> we're effectively telling OpenGL that the vertex attribute at attribute location <code>2</code> is an instanced array.
+</p>
+
+<p>
+  If we now were to render the quads again with <fun><function id='98'><function id='1'>glDrawArrays</function>Instanced</function></fun> we'd get the following output:
+</p>
+
+<img src="/img/advanced/instancing_quads.png" class="clean" alt="Same image of OpenGL instanced quads, but this time using instanced arrays."/>
+
+<p>
+  This is exactly the same as the previous example, but now with instanced arrays, which allows us to pass a lot more data (as much as memory allows us) to the vertex shader for instanced drawing.
+</p>
+
+<p>
+  For fun we could slowly downscale each quad from top-right to bottom-left using <var>gl_InstanceID</var> again, because why not?
+</p>
+
+<pre><code>
+void main()
+{
+    vec2 pos = aPos * (gl_InstanceID / 100.0);
+    gl_Position = vec4(pos + aOffset, 0.0, 1.0);
+    fColor = aColor;
+} 
+</code></pre>
+
+<p>
+  The result is that the first instances of the quads are drawn extremely small and the further we're in the process of drawing the instances, the closer <var>gl_InstanceID</var> gets to <code>100</code> and thus the more the quads regain their original size. It's perfectly legal to use instanced arrays together with <var>gl_InstanceID</var> like this.
+</p>
+
+<img src="/img/advanced/instancing_quads_arrays.png" class="clean" alt="Image of instanced quads drawn in OpenGL using instanced arrays"/>
+
+<p>
+  If you're still a bit unsure about how instanced rendering works or want to see how everything fits together you can find the full source code of the application <a href="/code_viewer_gh.php?code=src/4.advanced_opengl/10.1.instancing_quads/instancing_quads.cpp" target="_blank">here</a>.
+</p>
+
+<p>
+  While fun and all, these examples aren't really good examples of instancing. Yes, they do give you an easy overview of how instancing works, but instancing gets most of its power when drawing an enormous amount of similar objects. For that reason we're going to venture into space.
+</p>
+
+<h1>An asteroid field</h1>
+<p>
+  Imagine a scene where we have one large planet that's at the center of a large asteroid ring. Such an asteroid ring could contain thousands or tens of thousands of rock formations and quickly becomes un-renderable on any decent graphics card. This scenario proves itself particularly useful for instanced rendering, since all the asteroids can be represented with a single model. Each single asteroid then gets its variation from a transformation matrix unique to each asteroid.
+</p>
+
+<p>
+  To demonstrate the impact of instanced rendering we're first going to render a scene of asteroids hovering around a planet <em>without</em> instanced rendering. The scene will contain a large planet model that can be downloaded from <a href="/data/models/planet.zip" target="_blank">here</a> and a large set of asteroid rocks that we properly position around the planet. The asteroid rock model can be downloaded <a href="/data/models/rock.zip" target="_blank">here</a>.
+</p>
+
+<p>
+  Within the code samples we load the models using the model loader we've previously defined in the <a href="https://learnopengl.com/Model-Loading/Assimp" target="_blank">model loading</a> chapters. 
+</p>
+
+<p>
+  To achieve the effect we're looking for we'll be generating a model transformation matrix for each asteroid. The transformation matrix first translates the rock somewhere in the asteroid ring - then we'll add a small random displacement value to the offset to make the ring look more natural. From there we also apply a random scale and a random rotation. The result is a transformation matrix that translates each asteroid somewhere around the planet while also giving it a more natural and unique look compared to the other asteroids. 
+</p>
+
+<pre><code>
+unsigned int amount = 1000;
+glm::mat4 *modelMatrices;
+modelMatrices = new glm::mat4[amount];
+srand(<function id='47'>glfwGetTime</function>()); // initialize random seed	
+float radius = 50.0;
+float offset = 2.5f;
+for(unsigned int i = 0; i &lt; amount; i++)
+{
+    glm::mat4 model = glm::mat4(1.0f);
+    // 1. translation: displace along circle with 'radius' in range [-offset, offset]
+    float angle = (float)i / (float)amount * 360.0f;
+    float displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
+    float x = sin(angle) * radius + displacement;
+    displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
+    float y = displacement * 0.4f; // keep height of field smaller compared to width of x and z
+    displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
+    float z = cos(angle) * radius + displacement;
+    model = <function id='55'>glm::translate</function>(model, glm::vec3(x, y, z));
+
+    // 2. scale: scale between 0.05 and 0.25f
+    float scale = (rand() % 20) / 100.0f + 0.05;
+    model = <function id='56'>glm::scale</function>(model, glm::vec3(scale));
+
+    // 3. rotation: add random rotation around a (semi)randomly picked rotation axis vector
+    float rotAngle = (rand() % 360);
+    model = <function id='57'>glm::rotate</function>(model, rotAngle, glm::vec3(0.4f, 0.6f, 0.8f));
+
+    // 4. now add to list of matrices
+    modelMatrices[i] = model;
+}  
+</code></pre>
+
+<p>
+  This piece of code may look a little daunting, but we basically transform the x and z position of the asteroid along a circle with a radius defined by <var>radius</var> and randomly displace each asteroid a little around the circle by <var>-offset</var> and <var>offset</var>. We give the <code>y</code> displacement less of an impact to create a more flat asteroid ring. Then we apply scale and rotation transformations and store the resulting transformation matrix in <var>modelMatrices</var> that is of size <var>amount</var>. Here we generate <code>1000</code> model matrices, one per asteroid.
+</p>
+
+<p>
+  After loading the planet and rock models and compiling a set of shaders, the rendering code then looks a bit like this:
+</p>
+
+<pre><code>
+// draw planet
+shader.use();
+glm::mat4 model = glm::mat4(1.0f);
+model = <function id='55'>glm::translate</function>(model, glm::vec3(0.0f, -3.0f, 0.0f));
+model = <function id='56'>glm::scale</function>(model, glm::vec3(4.0f, 4.0f, 4.0f));
+shader.setMat4("model", model);
+planet.Draw(shader);
+  
+// draw meteorites
+for(unsigned int i = 0; i &lt; amount; i++)
+{
+    shader.setMat4("model", modelMatrices[i]);
+    rock.Draw(shader);
+}  
+</code></pre>
+
+<p>
+  First we draw the planet model, that we translate and scale a bit to accommodate the scene, and then we draw a number of rock models equal to the <var>amount</var> of transformations we generated previously.  Before we draw each rock however, we first set the corresponding model transformation matrix within the shader.
+</p>
+
+<p>
+  The result is then a space-like scene where we can see a natural-looking asteroid ring around a planet:
+</p>
+
+<img src="/img/advanced/instancing_asteroids.png" class="clean" alt="Image of asteroid field drawn in OpenGL"/>
+
+<p>
+  This scene contains a total of <code>1001</code> rendering calls per frame of which <code>1000</code> are of the rock model. You can find the source code for this scene <a href="/code_viewer_gh.php?code=src/4.advanced_opengl/10.2.asteroids/asteroids.cpp" target="_blank">here</a>.
+</p>
+
+<p>
+  As soon as we start to increase this number we will quickly notice that the scene stops running smoothly and the number of frames we're able to render per second reduces drastically. As soon as we set <var>amount</var> to something close to <code>2000</code> the scene already becomes so slow on our GPU that it becomes difficult to move around. 
+</p>
+
+<p>
+  Let's now try to render the same scene, but this time with instanced rendering. We first need to adjust the vertex shader a little:
+</p>
+
+<pre><code>
+#version 330 core
+layout (location = 0) in vec3 aPos;
+layout (location = 2) in vec2 aTexCoords;
+layout (location = 3) in mat4 instanceMatrix;
+
+out vec2 TexCoords;
+
+uniform mat4 projection;
+uniform mat4 view;
+
+void main()
+{
+    gl_Position = projection * view * instanceMatrix * vec4(aPos, 1.0); 
+    TexCoords = aTexCoords;
+}
+</code></pre>
+
+<p>
+  We're no longer using a model uniform variable, but instead declare a <fun>mat4</fun> as a vertex attribute so we can store an instanced array of transformation matrices. However, when we declare a datatype as a vertex attribute that is greater than a <fun>vec4</fun> things work a bit differently. The maximum amount of data allowed for a vertex attribute is equal to a <fun>vec4</fun>. Because a <fun>mat4</fun> is basically 4 <fun>vec4</fun>s, we have to reserve 4 vertex attributes for this specific matrix. Because we assigned it a location of <code>3</code>, the columns of the matrix will have vertex attribute locations of <code>3</code>, <code>4</code>, <code>5</code>, and <code>6</code>.
+</p>
+
+<p>
+  We then have to set each of the attribute pointers of those <code>4</code> vertex attributes and configure them as instanced arrays:
+</p>
+
+<pre><code>
+// vertex buffer object
+unsigned int buffer;
+<function id='12'>glGenBuffers</function>(1, &buffer);
+<function id='32'>glBindBuffer</function>(GL_ARRAY_BUFFER, buffer);
+<function id='31'>glBufferData</function>(GL_ARRAY_BUFFER, amount * sizeof(glm::mat4), &modelMatrices[0], GL_STATIC_DRAW);
+  
+for(unsigned int i = 0; i &lt; rock.meshes.size(); i++)
+{
+    unsigned int VAO = rock.meshes[i].VAO;
+    <function id='27'>glBindVertexArray</function>(VAO);
+    // vertex attributes
+    std::size_t vec4Size = sizeof(glm::vec4);
+    <function id='29'><function id='60'>glEnable</function>VertexAttribArray</function>(3); 
+    <function id='30'>glVertexAttribPointer</function>(3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
+    <function id='29'><function id='60'>glEnable</function>VertexAttribArray</function>(4); 
+    <function id='30'>glVertexAttribPointer</function>(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(1 * vec4Size));
+    <function id='29'><function id='60'>glEnable</function>VertexAttribArray</function>(5); 
+    <function id='30'>glVertexAttribPointer</function>(5, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
+    <function id='29'><function id='60'>glEnable</function>VertexAttribArray</function>(6); 
+    <function id='30'>glVertexAttribPointer</function>(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
+
+    <function id='100'>glVertexAttribDivisor</function>(3, 1);
+    <function id='100'>glVertexAttribDivisor</function>(4, 1);
+    <function id='100'>glVertexAttribDivisor</function>(5, 1);
+    <function id='100'>glVertexAttribDivisor</function>(6, 1);
+
+    <function id='27'>glBindVertexArray</function>(0);
+}  
+</code></pre>
+
+<p>
+  Note that we cheated a little by declaring the <var>VAO</var> variable of the <fun>Mesh</fun> as a public variable instead of a private variable so we could access its vertex array object. This is not the cleanest solution, but just a simple modification to suit this example. Aside from the little hack, this code should be clear. We're basically declaring how OpenGL should interpret the buffer for each of the matrix's vertex attributes and that each of those vertex attributes is an instanced array.
+</p>
+
+<p>
+  Next we take the <var>VAO</var> of the mesh(es) again and this time draw using <fun><function id='99'><function id='2'>glDrawElements</function>Instanced</function></fun>:
+</p>
+
+<pre><code>
+// draw meteorites
+instanceShader.use();
+for(unsigned int i = 0; i &lt; rock.meshes.size(); i++)
+{
+    <function id='27'>glBindVertexArray</function>(rock.meshes[i].VAO);
+    <function id='99'><function id='2'>glDrawElements</function>Instanced</function>(
+        GL_TRIANGLES, rock.meshes[i].indices.size(), GL_UNSIGNED_INT, 0, amount
+    );
+}  
+</code></pre>
+
+<p>
+  Here we draw the same <var>amount</var> of asteroids as the previous example, but this time with instanced rendering. The results should be exactly the same, but once we increase the <var>amount</var> you'll really start to see the power of instanced rendering. Without instanced rendering we were able to smoothly render around <code>1000</code> to <code>1500</code> asteroids. With instanced rendering we can now set this value to <code>100000</code>. This, with the rock model having <code>576</code> vertices, would equal around <code>57</code> million vertices drawn each frame without significant performance drops; and only 2 draw calls!
+</p>
+
+<img src="/img/advanced/instancing_asteroids_quantity.png" class="clean" alt="Image of asteroid field in OpenGL drawn using instanced rendering"/>
+
+<p>
+  This image was rendered with <code>100000</code> asteroids with a radius of <code>150.0f</code> and an offset equal to <code>25.0f</code>. You can find the source code of the instanced rendering demo <a href="/code_viewer_gh.php?code=src/4.advanced_opengl/10.3.asteroids_instanced/asteroids_instanced.cpp" target="_blank">here</a>.
+</p>
+
+<note>
+  On different machines an asteroid count of <code>100000</code> may be a bit too high, so try tweaking the values till you reach an acceptable framerate.
+</note>
+
+<p>
+  As you can see, with the right type of environments, instanced rendering can make an enormous difference to the rendering capabilities of your application. For this reason, instanced rendering is commonly used for grass, flora, particles, and scenes like this - basically any scene with many repeating shapes can benefit from instanced rendering.
+</p>       
+
+    </div>
+    
+    <div id="hover">
+        HI
+    </div>
+   <!-- 728x90/320x50 sticky footer -->
+<!--<div id="waldo-tag-6196"></div>-->
+
+   <div id="disqus_thread"></div>
+
+    
+
+
+</div> <!-- container div -->
+
+
+</div> <!-- super container div -->
+</body>
+</html>

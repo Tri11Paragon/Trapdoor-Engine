@@ -1,0 +1,857 @@
+
+
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <meta charset="utf-8"/>
+    <title>LearnOpenGL - Shaders</title>	<!--<title>Learn OpenGL, extensive tutorial resource for learning Modern OpenGL</title>-->
+    <link rel="shortcut icon" type="image/ico" href="/favicon.ico"  />
+    <meta name="description" content="Learn OpenGL . com provides good and clear modern 3.3+ OpenGL tutorials with clear examples. A great resource to learn modern OpenGL aimed at beginners.">
+	<meta name="fragment" content="!">
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-51879160-1', 'learnopengl.com');
+      ga('send', 'pageview');
+
+    </script>
+    <!--<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-7855791439695850",
+              enable_page_level_ads: true
+         });
+    </script>
+	<script async='async' src='https://www.googletagservices.com/tag/js/gpt.js'></script>
+	<script>
+	  var googletag = googletag || {};
+	  googletag.cmd = googletag.cmd || [];
+	</script>
+	<script>
+	  googletag.cmd.push(function() {
+		googletag.defineSlot('/8491498/learnopengl_video', [300, 225], 'div-gpt-ad-1540574378241-0').addService(googletag.pubads());
+		googletag.pubads().enableSingleRequest();
+		googletag.pubads().collapseEmptyDivs();
+		googletag.enableServices();
+	  });
+	</script>
+    <script type="text/javascript" src="//cdn.thisiswaldo.com/static/js/1681.js"></script>
+	<script src="/js/jquery-1.11.0.min.js"></script>
+	<script src="/js/hoverintent.js"></script>
+	<link rel="stylesheet" type="text/css" href="/layout.css">
+    <link rel="stylesheet" type="text/css" href="/js/styles/obsidian.css">
+    <script src="/js/highlight.pack.js"></script>    
+    <script src="/js/functions.js"></script>
+    <script type="text/javascript" src="/js/mathjax/MathJax.js?config=TeX-AMS_HTML"></script>
+    <script>
+    // Has to be loaded last due to content bug 
+    MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+    </script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script>  
+        $(document).ready(function() {
+            // check if user visited from the old # based urls, re-direct to ?p= form
+            if(window.location.hash)
+            {
+                var name = window.location.hash.substring(2);
+                // name = name.replace(/-/g," ");
+                var index = name.indexOf('#'); // Remove any hash fragments from the url (Disquss adds hash fragments for comments, but results in 404 pages)
+                if(index >= 0)
+                    name = name.substring(0, index);
+                
+                window.location.href = "https://learnopengl.com/" + name;
+            } else {
+                    // Check if data has been succesfully loaded, if so: change title bar as ajax hash fragment
+                    var title = $('#content-url').text();
+                  
+                    // Refresh syntax highlighting
+                    // $('pre').each(function(i, e) {hljs.highlightBlock(e)});
+                  
+                    // Reset DISQUS
+                    // if(title == '/dev/')
+                        // title = '';
+                    // alert('hoi');
+					
+					// place video tag
+					if(title != '') {
+						var videoad = "%3Cdiv id=\'waldo-tag-12074\'%3E %3Cscript%3Egoogletag.cmd.push(function() {googletag.display(\'waldo-tag-12074\'); }); %3C/script%3E%3C/div%3E";
+						$('#content p:nth-of-type(3)').after(unescape(videoad));
+					}
+					
+                    // Adjust ads for correct bottom positioning based on content size
+                    window.setTimeout(function() {  
+                        AdPositioning();
+                     }, 3000);
+                  
+                  
+                    // set API resets after time-out (once content is properly loaded)
+                    window.setTimeout(function() {  
+                        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);       
+                        MathJax.Hub.Queue(["resetEquationNumbers", MathJax.InputJax.TeX]);
+                        
+                        var page_url = title == "" ? "http://www.learnopengl.com/" : "http://www.learnopengl.com/" + title;
+                        if(typeof DISQUS !== 'undefined') {                                              
+                            DISQUS.reset({
+                              reload: true,
+                              config: function () {  
+                                this.page.identifier = title;  
+                                this.page.url = page_url;
+                              }
+                            });
+                            $('#disqus_thread').show();
+                        }
+                           // Refresh callbacks on <function> tags
+                        SetFunctionTagCallbacks();        
+                    }, 1000);
+                                        
+                    // Zet ook de juiste button op 'selected'
+                    $('#nav li span, #nav li a').removeClass('selected');                
+                    if(title != '')
+                    {                    
+                        $('#nav li[id=\'' + title + '\']').children('span, a').addClass('selected');
+                    }
+                    // En open menu waar nodig
+                    var parents = $('#nav span.selected, #nav a.selected').parents('li').children('span.closed, a.closed');
+                    var index = 0;
+                    for(index = parents.length - 1; index >= 0; index--)
+                    {             
+                        
+                        var id = $(parents[index]).attr("id").replace( /^\D+/g, '');
+                        MenuClick(id, false);
+                    }                          
+                
+            }
+        });
+		// var initialized = false;
+        // window.onpopstate = function() {
+            // if(initialized)
+                // LoadPage();
+			// else
+				// initialized = true;
+        // };
+        
+        // Set up DISQUS
+        // $(document).ready(function() {
+            var disqus_shortname = 'learnopengl';
+            (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();           
+        // });
+    </script>
+</head>
+<body>
+<a href="https://learnopengl.com">
+<div id="header">
+</div>
+</a>
+
+<div id="supercontainer">
+    <!-- 728x90/320x50 -->
+    <div id="header_ad">
+        <div id="waldo-tag-6194"></div>
+    </div>
+    <div id="rightad_container">
+        <div id="rightad">
+            <!-- /8491498/learnopengl_video -->
+            <!--<div id='div-gpt-ad-1540574378241-0' style='height:225px; width:300px;'>
+			<script>
+			googletag.cmd.push(function() { googletag.display('div-gpt-ad-1540574378241-0'); });
+			</script>
+			</div>            
+            <br/>-->
+			<!-- place in-content -->
+			<!--<div id='waldo-tag-12074'>
+			 <script>
+			   googletag.cmd.push(function() { googletag.display('waldo-tag-12074'); });
+			 </script>
+			</div>-->
+           
+            <div id="waldo-tag-1715"></div>
+        </div>
+
+        <div id="admessage">
+            If you're running AdBlock, please consider whitelisting this site if you'd like to support LearnOpenGL; and no worries, I won't be mad if you don't :)
+            <!--<br/><br/>
+            Also, check out this little local multiplayer-only game I've made: <a href="https://store.steampowered.com/app/983590/Tank_Blazers/" target="_blank">Tank Blazers</a>.
+            <br/>
+            <a href="https://store.steampowered.com/app/983590/Tank_Blazers" target="_blank"><img src="/img/tank_blazers.jpg"  style="width:278px; margin-top: 9px; margin-left: -3px;"/></a>-->
+        </div>
+        
+        <div id="rightonethirdad">
+            <div id="waldo-tag-2246"></div>
+        </div>
+        
+        <div id="rightbottomad">            
+			<div id="waldo-tag-2247"></div>								
+        </div>
+    </div>
+    <div id="container">
+        <div id="loading"></div>
+<script> 
+$(document).ready(function() {
+$('#menu-item4').mousedown(function() { MenuClick(4, true) });
+$('#menu-item48').mousedown(function() { MenuClick(48, true) });
+$('#menu-item56').mousedown(function() { MenuClick(56, true) });
+$('#menu-item63').mousedown(function() { MenuClick(63, true) });
+$('#menu-item100').mousedown(function() { MenuClick(100, true) });
+$('#menu-item102').mousedown(function() { MenuClick(102, true) });
+$('#menu-item113').mousedown(function() { MenuClick(113, true) });
+$('#menu-item116').mousedown(function() { MenuClick(116, true) });
+$('#menu-item78').mousedown(function() { MenuClick(78, true) });
+$('#menu-item81').mousedown(function() { MenuClick(81, true) });
+$('#menu-item85').mousedown(function() { MenuClick(85, true) });
+$('#menu-item125').mousedown(function() { MenuClick(125, true) });
+$('#menu-item128').mousedown(function() { MenuClick(128, true) });
+$('#menu-item129').mousedown(function() { MenuClick(129, true) });
+$('#menu-item133').mousedown(function() { MenuClick(133, true) });
+$('#menu-item134').mousedown(function() { MenuClick(134, true) });
+$('#menu-item138').mousedown(function() { MenuClick(138, true) });
+}); 
+</script>   
+    <div id="nav">
+         <div id="social">
+            <a href="https://github.com/JoeyDeVries/LearnOpenGL" target="_blank">
+                    <img src="/img/github.png" class="social_ico">
+            </a>
+             <!-- <a href="https://www.facebook.com/Learnopengl-2199631333595544/" target="_blank">
+                <img src="/img/facebook.png" class="social_ico">
+            </a>-->
+            <a href="https://twitter.com/JoeyDeVriez" target="_blank">
+                <img src="/img/twitter.png" class="social_ico">
+            </a>
+          
+        </div>
+    <img src='img/nav-button_bottom-arrow.png' style='display: none'><ol><li id='Introduction'><a id="menu-item1" href="https://learnopengl.com/Introduction">Introduction </a></li><li id='Getting-started'><span id="menu-item4" class="closed">Getting started </span><ol id="menu-items-of4" style="display:none;"><li id='Getting-started/OpenGL'><a id="menu-item49" href="https://learnopengl.com/Getting-started/OpenGL">OpenGL </a></li><li id='Getting-started/Creating-a-window'><a id="menu-item5" href="https://learnopengl.com/Getting-started/Creating-a-window">Creating a window </a></li><li id='Getting-started/Hello-Window'><a id="menu-item6" href="https://learnopengl.com/Getting-started/Hello-Window">Hello Window </a></li><li id='Getting-started/Hello-Triangle'><a id="menu-item38" href="https://learnopengl.com/Getting-started/Hello-Triangle">Hello Triangle </a></li><li id='Getting-started/Shaders'><a id="menu-item39" href="https://learnopengl.com/Getting-started/Shaders">Shaders </a></li><li id='Getting-started/Textures'><a id="menu-item40" href="https://learnopengl.com/Getting-started/Textures">Textures </a></li><li id='Getting-started/Transformations'><a id="menu-item43" href="https://learnopengl.com/Getting-started/Transformations">Transformations </a></li><li id='Getting-started/Coordinate-Systems'><a id="menu-item44" href="https://learnopengl.com/Getting-started/Coordinate-Systems">Coordinate Systems </a></li><li id='Getting-started/Camera'><a id="menu-item47" href="https://learnopengl.com/Getting-started/Camera">Camera </a></li><li id='Getting-started/Review'><a id="menu-item50" href="https://learnopengl.com/Getting-started/Review">Review </a></li></ol></li><li id='Lighting'><span id="menu-item48" class="closed">Lighting </span><ol id="menu-items-of48" style="display:none;"><li id='Lighting/Colors'><a id="menu-item51" href="https://learnopengl.com/Lighting/Colors">Colors </a></li><li id='Lighting/Basic-Lighting'><a id="menu-item52" href="https://learnopengl.com/Lighting/Basic-Lighting">Basic Lighting </a></li><li id='Lighting/Materials'><a id="menu-item53" href="https://learnopengl.com/Lighting/Materials">Materials </a></li><li id='Lighting/Lighting-maps'><a id="menu-item54" href="https://learnopengl.com/Lighting/Lighting-maps">Lighting maps </a></li><li id='Lighting/Light-casters'><a id="menu-item55" href="https://learnopengl.com/Lighting/Light-casters">Light casters </a></li><li id='Lighting/Multiple-lights'><a id="menu-item58" href="https://learnopengl.com/Lighting/Multiple-lights">Multiple lights </a></li><li id='Lighting/Review'><a id="menu-item57" href="https://learnopengl.com/Lighting/Review">Review </a></li></ol></li><li id='Model-Loading'><span id="menu-item56" class="closed">Model Loading </span><ol id="menu-items-of56" style="display:none;"><li id='Model-Loading/Assimp'><a id="menu-item59" href="https://learnopengl.com/Model-Loading/Assimp">Assimp </a></li><li id='Model-Loading/Mesh'><a id="menu-item60" href="https://learnopengl.com/Model-Loading/Mesh">Mesh </a></li><li id='Model-Loading/Model'><a id="menu-item61" href="https://learnopengl.com/Model-Loading/Model">Model </a></li></ol></li><li id='Advanced-OpenGL'><span id="menu-item63" class="closed">Advanced OpenGL </span><ol id="menu-items-of63" style="display:none;"><li id='Advanced-OpenGL/Depth-testing'><a id="menu-item72" href="https://learnopengl.com/Advanced-OpenGL/Depth-testing">Depth testing </a></li><li id='Advanced-OpenGL/Stencil-testing'><a id="menu-item73" href="https://learnopengl.com/Advanced-OpenGL/Stencil-testing">Stencil testing </a></li><li id='Advanced-OpenGL/Blending'><a id="menu-item74" href="https://learnopengl.com/Advanced-OpenGL/Blending">Blending </a></li><li id='Advanced-OpenGL/Face-culling'><a id="menu-item77" href="https://learnopengl.com/Advanced-OpenGL/Face-culling">Face culling </a></li><li id='Advanced-OpenGL/Framebuffers'><a id="menu-item65" href="https://learnopengl.com/Advanced-OpenGL/Framebuffers">Framebuffers </a></li><li id='Advanced-OpenGL/Cubemaps'><a id="menu-item66" href="https://learnopengl.com/Advanced-OpenGL/Cubemaps">Cubemaps </a></li><li id='Advanced-OpenGL/Advanced-Data'><a id="menu-item69" href="https://learnopengl.com/Advanced-OpenGL/Advanced-Data">Advanced Data </a></li><li id='Advanced-OpenGL/Advanced-GLSL'><a id="menu-item67" href="https://learnopengl.com/Advanced-OpenGL/Advanced-GLSL">Advanced GLSL </a></li><li id='Advanced-OpenGL/Geometry-Shader'><a id="menu-item68" href="https://learnopengl.com/Advanced-OpenGL/Geometry-Shader">Geometry Shader </a></li><li id='Advanced-OpenGL/Instancing'><a id="menu-item70" href="https://learnopengl.com/Advanced-OpenGL/Instancing">Instancing </a></li><li id='Advanced-OpenGL/Anti-Aliasing'><a id="menu-item75" href="https://learnopengl.com/Advanced-OpenGL/Anti-Aliasing">Anti Aliasing </a></li></ol></li><li id='Advanced-Lighting'><span id="menu-item100" class="closed">Advanced Lighting </span><ol id="menu-items-of100" style="display:none;"><li id='Advanced-Lighting/Advanced-Lighting'><a id="menu-item101" href="https://learnopengl.com/Advanced-Lighting/Advanced-Lighting">Advanced Lighting </a></li><li id='Advanced-Lighting/Gamma-Correction'><a id="menu-item110" href="https://learnopengl.com/Advanced-Lighting/Gamma-Correction">Gamma Correction </a></li><li id='Advanced-Lighting/Shadows'><span id="menu-item102" class="closed">Shadows </span><ol id="menu-items-of102" style="display:none;"><li id='Advanced-Lighting/Shadows/Shadow-Mapping'><a id="menu-item103" href="https://learnopengl.com/Advanced-Lighting/Shadows/Shadow-Mapping">Shadow Mapping </a></li><li id='Advanced-Lighting/Shadows/Point-Shadows'><a id="menu-item104" href="https://learnopengl.com/Advanced-Lighting/Shadows/Point-Shadows">Point Shadows </a></li></ol></li><li id='Advanced-Lighting/Normal-Mapping'><a id="menu-item106" href="https://learnopengl.com/Advanced-Lighting/Normal-Mapping">Normal Mapping </a></li><li id='Advanced-Lighting/Parallax-Mapping'><a id="menu-item107" href="https://learnopengl.com/Advanced-Lighting/Parallax-Mapping">Parallax Mapping </a></li><li id='Advanced-Lighting/HDR'><a id="menu-item111" href="https://learnopengl.com/Advanced-Lighting/HDR">HDR </a></li><li id='Advanced-Lighting/Bloom'><a id="menu-item112" href="https://learnopengl.com/Advanced-Lighting/Bloom">Bloom </a></li><li id='Advanced-Lighting/Deferred-Shading'><a id="menu-item108" href="https://learnopengl.com/Advanced-Lighting/Deferred-Shading">Deferred Shading </a></li><li id='Advanced-Lighting/SSAO'><a id="menu-item109" href="https://learnopengl.com/Advanced-Lighting/SSAO">SSAO </a></li></ol></li><li id='PBR'><span id="menu-item113" class="closed">PBR </span><ol id="menu-items-of113" style="display:none;"><li id='PBR/Theory'><a id="menu-item114" href="https://learnopengl.com/PBR/Theory">Theory </a></li><li id='PBR/Lighting'><a id="menu-item115" href="https://learnopengl.com/PBR/Lighting">Lighting </a></li><li id='PBR/IBL'><span id="menu-item116" class="closed">IBL </span><ol id="menu-items-of116" style="display:none;"><li id='PBR/IBL/Diffuse-irradiance'><a id="menu-item117" href="https://learnopengl.com/PBR/IBL/Diffuse-irradiance">Diffuse irradiance </a></li><li id='PBR/IBL/Specular-IBL'><a id="menu-item118" href="https://learnopengl.com/PBR/IBL/Specular-IBL">Specular IBL </a></li></ol></li></ol></li><li id='In-Practice'><span id="menu-item78" class="closed">In Practice </span><ol id="menu-items-of78" style="display:none;"><li id='In-Practice/Debugging'><a id="menu-item79" href="https://learnopengl.com/In-Practice/Debugging">Debugging </a></li><li id='In-Practice/Text-Rendering'><a id="menu-item80" href="https://learnopengl.com/In-Practice/Text-Rendering">Text Rendering </a></li><li id='In-Practice/2D-Game'><span id="menu-item81" class="closed">2D Game </span><ol id="menu-items-of81" style="display:none;"><li id='In-Practice/2D-Game/Breakout'><a id="menu-item82" href="https://learnopengl.com/In-Practice/2D-Game/Breakout">Breakout </a></li><li id='In-Practice/2D-Game/Setting-up'><a id="menu-item88" href="https://learnopengl.com/In-Practice/2D-Game/Setting-up">Setting up </a></li><li id='In-Practice/2D-Game/Rendering-Sprites'><a id="menu-item83" href="https://learnopengl.com/In-Practice/2D-Game/Rendering-Sprites">Rendering Sprites </a></li><li id='In-Practice/2D-Game/Levels'><a id="menu-item84" href="https://learnopengl.com/In-Practice/2D-Game/Levels">Levels </a></li><li id='In-Practice/2D-Game/Collisions'><span id="menu-item85" class="closed">Collisions </span><ol id="menu-items-of85" style="display:none;"><li id='In-Practice/2D-Game/Collisions/Ball'><a id="menu-item95" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Ball">Ball </a></li><li id='In-Practice/2D-Game/Collisions/Collision-detection'><a id="menu-item96" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Collision-detection">Collision detection </a></li><li id='In-Practice/2D-Game/Collisions/Collision-resolution'><a id="menu-item97" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Collision-resolution">Collision resolution </a></li></ol></li><li id='In-Practice/2D-Game/Particles'><a id="menu-item89" href="https://learnopengl.com/In-Practice/2D-Game/Particles">Particles </a></li><li id='In-Practice/2D-Game/Postprocessing'><a id="menu-item90" href="https://learnopengl.com/In-Practice/2D-Game/Postprocessing">Postprocessing </a></li><li id='In-Practice/2D-Game/Powerups'><a id="menu-item91" href="https://learnopengl.com/In-Practice/2D-Game/Powerups">Powerups </a></li><li id='In-Practice/2D-Game/Audio'><a id="menu-item94" href="https://learnopengl.com/In-Practice/2D-Game/Audio">Audio </a></li><li id='In-Practice/2D-Game/Render-text'><a id="menu-item92" href="https://learnopengl.com/In-Practice/2D-Game/Render-text">Render text </a></li><li id='In-Practice/2D-Game/Final-thoughts'><a id="menu-item93" href="https://learnopengl.com/In-Practice/2D-Game/Final-thoughts">Final thoughts </a></li></ol></li></ol></li><li id='Guest-Articles'><span id="menu-item125" class="closed">Guest Articles </span><ol id="menu-items-of125" style="display:none;"><li id='Guest-Articles/How-to-publish'><a id="menu-item126" href="https://learnopengl.com/Guest-Articles/How-to-publish">How to publish </a></li><li id='Guest-Articles/2020'><span id="menu-item128" class="closed">2020 </span><ol id="menu-items-of128" style="display:none;"><li id='Guest-Articles/2020/OIT'><span id="menu-item129" class="closed">OIT </span><ol id="menu-items-of129" style="display:none;"><li id='Guest-Articles/2020/OIT/Introduction'><a id="menu-item130" href="https://learnopengl.com/Guest-Articles/2020/OIT/Introduction">Introduction </a></li><li id='Guest-Articles/2020/OIT/Weighted-Blended'><a id="menu-item132" href="https://learnopengl.com/Guest-Articles/2020/OIT/Weighted-Blended">Weighted Blended </a></li></ol></li><li id='Guest-Articles/2020/Skeletal-Animation'><a id="menu-item131" href="https://learnopengl.com/Guest-Articles/2020/Skeletal-Animation">Skeletal Animation </a></li></ol></li><li id='Guest-Articles/2021'><span id="menu-item133" class="closed">2021 </span><ol id="menu-items-of133" style="display:none;"><li id='Guest-Articles/2021/CSM'><a id="menu-item137" href="https://learnopengl.com/Guest-Articles/2021/CSM">CSM </a></li><li id='Guest-Articles/2021/Scene'><span id="menu-item134" class="closed">Scene </span><ol id="menu-items-of134" style="display:none;"><li id='Guest-Articles/2021/Scene/Scene-Graph'><a id="menu-item135" href="https://learnopengl.com/Guest-Articles/2021/Scene/Scene-Graph">Scene Graph </a></li><li id='Guest-Articles/2021/Scene/Frustum-Culling'><a id="menu-item136" href="https://learnopengl.com/Guest-Articles/2021/Scene/Frustum-Culling">Frustum Culling </a></li></ol></li><li id='Guest-Articles/2021/Tessellation'><span id="menu-item138" class="closed">Tessellation </span><ol id="menu-items-of138" style="display:none;"><li id='Guest-Articles/2021/Tessellation/Height-map'><a id="menu-item139" href="https://learnopengl.com/Guest-Articles/2021/Tessellation/Height-map">Height map </a></li></ol></li></ol></li></ol></li><li id='Code-repository'><a id="menu-item99" href="https://learnopengl.com/Code-repository">Code repository </a></li><li id='Translations'><a id="menu-item119" href="https://learnopengl.com/Translations">Translations </a></li><li id='About'><a id="menu-item2" href="https://learnopengl.com/About">About </a></li></ol>		<div id="menu_book">
+            <a href="https://geni.us/learnopengl" target="_blank"><img src="/book/below_menu.png" class="clean"/></a>
+        </div>
+       <div id="donate">
+            <a href="https://www.paypal.me/learnopengl/" target="_blank">
+                <div id="donate_img"></div>
+                <img style="display: none" src="/img/donate_button_hover.png"/>
+                <!--<img id="donate_img" src="img/patreon.png"/>-->
+            </a>
+          <!--<div id="alipay">
+            <img style="width: 150px;" class="clean" src="/img/alipay_logo.png"/>
+            <img style="width: 150px; margin-top: 5px" src="/img/alipay.png"/>
+          </div>-->
+        </div> 
+		<!--
+		<div class="btc">
+			<h3>BTC</h3>
+			<p>
+				1CLGKgmBSuYJ1nnvDGAepVTKNNDpUjfpRa
+			</p>
+			<img src="/img/btc_qr.png"/>
+        </div> 
+		<div class="btc">
+			<h3>ETH/ERC20</h3>
+			<p>
+				0x1de59bd9e52521a46309474f8372531533bd7c43
+			</p>
+			<img src="/img/erc20_qr.png"/>
+        </div>       
+		!-->
+        <div id="ad">
+							<!--<div id="waldo-tag-1684"></div>-->
+			        </div>
+      
+        <div id="lefttwothirdad">
+            <div id="waldo-tag-2245"></div>
+        </div>
+    </div>
+    
+    <div id="content">
+    <h1 id="content-title">Shaders</h1>
+<h1 id="content-url" style='display:none;'>Getting-started/Shaders</h1>
+<p>
+  As mentioned in the <a href="https://learnopengl.com/Getting-started/Hello-Triangle" target="_blank">Hello Triangle</a> chapter, shaders are little programs that rest on the GPU. These programs are run for each specific section of the graphics pipeline. In a basic sense, shaders are nothing more than programs transforming inputs to outputs. Shaders are also very isolated programs in that they're not allowed to communicate with each other; the only communication they have is via their inputs and outputs.
+</p>
+
+<p>
+  In the previous chapter we briefly touched the surface of shaders and how to properly use them. We will now explain shaders, and specifically the OpenGL Shading Language, in a more general fashion.
+</p>
+
+<h1>GLSL</h1>
+<p>
+  Shaders are written in the C-like language GLSL. GLSL is tailored for use with graphics and contains useful features specifically targeted at vector and matrix manipulation.
+</p>
+
+<p>
+  Shaders always begin with a version declaration, followed by a list of input and output variables, uniforms and its <fun>main</fun> function. Each shader's entry point is at its <fun>main</fun> function where we process any input variables and output the results in its output variables. Don't worry if you don't know what uniforms are, we'll get to those shortly.
+</p>
+
+<p>
+  A shader typically has the following structure:
+</p>
+
+<pre><code>
+#version version_number
+in type in_variable_name;
+in type in_variable_name;
+
+out type out_variable_name;
+  
+uniform type uniform_name;
+  
+void main()
+{
+  // process input(s) and do some weird graphics stuff
+  ...
+  // output processed stuff to output variable
+  out_variable_name = weird_stuff_we_processed;
+}
+</code></pre>
+
+<p>
+  When we're talking specifically about the vertex shader each input variable is also known as a <def>vertex attribute</def>. There is a maximum number of vertex attributes we're allowed to declare limited by the hardware. OpenGL guarantees there are always at least 16 4-component vertex attributes available, but some hardware may allow for more which you can retrieve by querying <var>GL_MAX_VERTEX_ATTRIBS</var>:
+</p>
+
+<pre><code>
+int nrAttributes;
+glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
+std::cout &lt;&lt; "Maximum nr of vertex attributes supported: " &lt;&lt; nrAttributes &lt;&lt; std::endl;
+</code></pre>
+ 
+<p>
+  This often returns the minimum of <code>16</code> which should be more than enough for most purposes.
+</p>
+
+<h2>Types</h2>
+<p>
+  GLSL has, like any other programming language, data types for specifying what kind of variable we want to work with. GLSL has most of the default basic types we know from languages like C:  <code>int</code>, <code>float</code>, <code>double</code>, <code>uint</code> and <code>bool</code>. GLSL also features two container types that we'll be using a lot, namely <code>vectors</code> and <code>matrices</code>. We'll discuss matrices in a later chapter.
+</p>
+
+<h3>Vectors</h3>
+<p>
+  A vector in GLSL is a 1,2,3 or 4 component container for any of the basic types just mentioned.  They can take the following form (<code>n</code> represents the number of components):
+</p>
+  
+  <ul>
+    <li><code>vecn</code>: the default vector of <code>n</code> floats.</li>
+    <li><code>bvecn</code>: a vector of <code>n</code> booleans.</li>
+    <li><code>ivecn</code>: a vector of <code>n</code> integers.</li>
+  	<li><code>uvecn</code>: a vector of <code>n</code> unsigned integers.</li>
+  	<li><code>dvecn</code>: a vector of <code>n</code> double components.</li>
+  </ul>
+  
+<p>
+  Most of the time we will be using the basic <code>vecn</code> since floats are sufficient for most of our purposes.
+</p>
+  
+  <p>
+    Components of a vector can be accessed via <code>vec.x</code> where <code>x</code> is the first component of the vector. You can use <code>.x</code>, <code>.y</code>, <code>.z</code> and <code>.w</code> to access their first, second, third and fourth component respectively. GLSL also allows you to use <code>rgba</code> for colors or <code>stpq</code> for texture coordinates, accessing the same components.
+  </p>
+  
+  <p>
+    The vector datatype allows for some interesting and flexible component selection called <def>swizzling</def>. Swizzling allows us to use syntax like this:
+  </p>
+  
+<pre><code>
+vec2 someVec;
+vec4 differentVec = someVec.xyxx;
+vec3 anotherVec = differentVec.zyw;
+vec4 otherVec = someVec.xxxx + anotherVec.yxzy;
+</code></pre>
+  
+<p>
+	You can use any combination of up to 4 letters to create a new vector (of the same type) as long as the original vector has those components; it is not allowed to access the <code>.z</code> component of a <code>vec2</code> for example. We can also pass vectors as arguments to different vector constructor calls, reducing the number of arguments required:    
+</p>
+  
+<pre><code>
+vec2 vect = vec2(0.5, 0.7);
+vec4 result = vec4(vect, 0.0, 0.0);
+vec4 otherResult = vec4(result.xyz, 1.0);
+</code></pre>
+
+<p>
+	Vectors are thus a flexible datatype that we can use for all kinds of input and output. Throughout the book you'll see plenty of examples of how we can creatively manage vectors.  
+</p>
+  
+<h2>Ins and outs</h2>
+<p>
+  Shaders are nice little programs on their own, but they are part of a whole and for that reason we want to have inputs and outputs on the individual shaders so that we can move stuff around. GLSL defined the <code>in</code> and <code>out</code> keywords specifically for that purpose. Each shader can specify inputs and outputs using those keywords and wherever an output variable matches with an input variable of the next shader stage they're passed along. The vertex and fragment shader differ a bit though.
+</p>
+  
+<p>
+  The vertex shader <strong>should</strong> receive some form of input otherwise it would be pretty ineffective. The vertex shader differs in its input, in that it receives its input straight from the vertex data. To define how the vertex data is organized we specify the input variables with location metadata so we can configure the vertex attributes on the CPU. We've seen this in the previous chapter as <code>layout (location = 0)</code>. The vertex shader thus requires an extra layout specification for its inputs so we can link it with the vertex data.
+  </p>
+  
+<note>
+  It is also possible to omit the <code>layout (location = 0)</code> specifier and query for the attribute locations in your OpenGL code via <fun><function id='104'>glGetAttribLocation</function></fun>, but I'd prefer to set them in the vertex shader. It is easier to understand and saves you (and OpenGL) some work.
+  </note>
+  
+<p>
+  The other exception is that the fragment shader requires a <code>vec4</code> color output variable, since the fragment shaders needs to generate a final output color. If you fail to specify an output color in your fragment shader, the color buffer output for those fragments will be undefined (which usually means OpenGL will render them either black or white).
+  </p>
+
+<p>
+	So if we want to send data from one shader to the other we'd have to declare an output in the sending shader and a similar input in the receiving shader. When the types and the names are equal on both sides OpenGL will link those variables together and then it is possible to send data between shaders (this is done when linking a program object). To show you how this works in practice we're going to alter the shaders from the previous chapter to let the vertex shader decide the color for the fragment shader.
+  </p>
+
+<strong>Vertex shader</strong>
+<pre><code>
+#version 330 core
+layout (location = 0) in vec3 aPos; // the position variable has attribute position 0
+  
+out vec4 vertexColor; // specify a color output to the fragment shader
+
+void main()
+{
+    gl_Position = vec4(aPos, 1.0); // see how we directly give a vec3 to vec4's constructor
+    vertexColor = vec4(0.5, 0.0, 0.0, 1.0); // set the output variable to a dark-red color
+}
+</code></pre>  
+  
+<strong>Fragment shader</strong>
+<pre><code>
+#version 330 core
+out vec4 FragColor;
+  
+in vec4 vertexColor; // the input variable from the vertex shader (same name and same type)  
+
+void main()
+{
+    FragColor = vertexColor;
+} 
+</code></pre>
+  
+<p>
+  You can see we declared a <var>vertexColor</var> variable as a <code>vec4</code> output that we set in the vertex shader and we declare a similar <var>vertexColor</var> input in the fragment shader. Since they both have the same type and name, the <var>vertexColor</var> in the fragment shader is linked to the <var>vertexColor</var> in the vertex shader. Because we set the color to a dark-red color in the vertex shader, the resulting fragments should be dark-red as well. The following image shows the output:
+  </p>
+ 
+  <img src="/img/getting-started/shaders.png" class="clean"/>
+  
+<p>
+   There we go! We just managed to send a value from the vertex shader to the fragment shader. Let's spice it up a bit and see if we can send a color from our application to the fragment shader!
+  </p>
+  
+  <h2>Uniforms</h2>
+  <p>
+    <def>Uniforms</def> are another way to pass data from our application on the CPU to the shaders on the GPU. Uniforms are however slightly different compared to vertex attributes. First of all, uniforms are <def>global</def>. Global, meaning that a uniform variable is unique per shader program object, and can be accessed from any shader at any stage in the shader program. Second, whatever you set the uniform value to, uniforms will keep their values until they're either reset or updated.
+  </p>
+  
+  <p>
+    To declare a uniform in GLSL we simply add the <code>uniform</code> keyword to a shader with a type and a name. From that point on we can use the newly declared uniform in the shader. Let's see if this time we can set the color of the triangle via a uniform:
+  </p>
+  
+<pre><code>
+#version 330 core
+out vec4 FragColor;
+  
+uniform vec4 ourColor; // we set this variable in the OpenGL code.
+
+void main()
+{
+    FragColor = ourColor;
+}   
+</code></pre>
+  
+  <p>
+    We declared a uniform <code>vec4</code> <var>ourColor</var> in the fragment shader and set the fragment's output color to the content of this uniform value. Since uniforms are global variables, we can define them in any shader stage we'd like so no need to go through the vertex shader again to get something to the fragment shader. We're not using this uniform in the vertex shader so there's no need to define it there.
+  </p>
+  
+  <warning>
+    If you declare a uniform that isn't used anywhere in your GLSL code the compiler will silently remove the variable from the compiled version which is the cause for several frustrating errors; keep this in mind!
+  </warning>
+  
+  <p>
+    The uniform is currently empty; we haven't added any data to the uniform yet so let's try that. We first need to find the index/location of the uniform attribute in our shader. Once we have the index/location of the uniform, we can update its values. Instead of passing a single color to the fragment shader, let's spice things up by gradually changing color over time:
+  </p>
+  
+<pre><code>
+float timeValue = <function id='47'>glfwGetTime</function>();
+float greenValue = (sin(timeValue) / 2.0f) + 0.5f;
+int vertexColorLocation = <function id='45'>glGetUniformLocation</function>(shaderProgram, "ourColor");
+<function id='28'>glUseProgram</function>(shaderProgram);
+<function id='44'>glUniform</function>4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+</code></pre>
+  
+  <p>
+    First, we retrieve the running time in seconds via <fun><function id='47'>glfwGetTime</function>()</fun>. Then we vary the color in the range of <code>0.0</code> - <code>1.0</code> by using the <fun>sin</fun> function and store the result in <var>greenValue</var>. 
+  </p>
+  
+  <p>
+    Then we query for the location of the <var>ourColor</var> uniform using <fun><function id='45'>glGetUniformLocation</function></fun>. We supply the shader program and the name of the uniform (that we want to retrieve the location from) to the query function. If <fun><function id='45'>glGetUniformLocation</function></fun> returns <code>-1</code>, it could not find the location. Lastly we can set the uniform value using the <fun><function id='44'>glUniform</function>4f</fun> function. Note that finding the uniform location does not require you to use the shader program first, but updating a uniform <strong>does</strong> require you to first use the program (by calling <fun><function id='28'>glUseProgram</function></fun>), because it sets the uniform on the currently active shader program.
+  </p>
+  
+<note>
+<p>
+    Because OpenGL is in its core a C library it does not have native support for function overloading, so wherever a function can be called with different types OpenGL defines new functions for each type required; <fun><function id='44'>glUniform</function></fun> is a perfect example of this. The function requires a specific postfix for the type of the uniform you want to set. A few of the possible postfixes are:
+  <ul>
+    <li><code>f</code>: the function expects a <code>float</code> as its value.</li>  
+    <li><code>i</code>: the function expects an <code>int</code> as its value.</li>  
+  	<li><code>ui</code>: the function expects an <code>unsigned int</code> as its value.</li>  
+    <li><code>3f</code>: the function expects 3 <code>float</code>s as its value.</li> 
+    <li><code>fv</code>: the function expects a <code>float</code> vector/array as its value.</li> 
+  </ul>
+  Whenever you want to configure an option of OpenGL simply pick the overloaded function that corresponds with your type. In our case we want to set 4 floats of the uniform individually so we pass our data via <fun><function id='44'>glUniform</function>4f</fun> (note that we also could've used the <code>fv</code> version).
+</p>
+</note>
+    
+ <p>    
+   Now that we know how to set the values of uniform variables, we can use them for rendering. If we want the color to gradually change, we want to update this uniform every frame, otherwise the triangle would maintain a single solid color if we only set it once. So we calculate the <var>greenValue</var> and update the uniform each render iteration:
+  </p>
+  
+<pre><code>
+while(!<function id='14'>glfwWindowShouldClose</function>(window))
+{
+    // input
+    processInput(window);
+
+    // render
+    // clear the colorbuffer
+    <function id='13'><function id='10'>glClear</function>Color</function>(0.2f, 0.3f, 0.3f, 1.0f);
+    <function id='10'>glClear</function>(GL_COLOR_BUFFER_BIT);
+
+    // be sure to activate the shader
+    <function id='28'>glUseProgram</function>(shaderProgram);
+  
+    // update the uniform color
+    float timeValue = <function id='47'>glfwGetTime</function>();
+    float greenValue = sin(timeValue) / 2.0f + 0.5f;
+    int vertexColorLocation = <function id='45'>glGetUniformLocation</function>(shaderProgram, "ourColor");
+    <function id='44'>glUniform</function>4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+
+    // now render the triangle
+    <function id='27'>glBindVertexArray</function>(VAO);
+    <function id='1'>glDrawArrays</function>(GL_TRIANGLES, 0, 3);
+  
+    // swap buffers and poll IO events
+    <function id='24'>glfwSwapBuffers</function>(window);
+    <function id='23'>glfwPollEvents</function>();
+}
+</code></pre>
+  
+  <p>
+    The code is a relatively straightforward adaptation of the previous code. This time, we update a  uniform value each frame before drawing the triangle. If you update the uniform correctly you should see the color of your triangle gradually change from green to black and back to green.
+  </p>
+  
+<div class="video paused" onclick="ClickVideo(this)">
+  <video width="600" height="450" loop>
+    <source src="/video/getting-started/shaders.mp4" type="video/mp4" />
+    <img src="/img/getting-started/shaders2.png" class="clean"/>
+  </video>
+</div>
+
+  
+<p>
+    Check out the source code <a href="/code_viewer_gh.php?code=src/1.getting_started/3.1.shaders_uniform/shaders_uniform.cpp" target="_blank">here</a> if you're stuck.
+  </p>
+  
+<p>
+  As you can see, uniforms are a useful tool for setting attributes that may change every frame, or for interchanging data between your application and your shaders, but what if we want to set a color for each vertex? In that case we'd have to declare as many uniforms as we have vertices. A better solution would be to include more data in the vertex attributes which is what we're going to do now.
+  </p>
+    
+  <h2>More attributes!</h2>
+  <p>
+    We saw in the previous chapter how we can fill a VBO, configure vertex attribute pointers and store it all in a VAO. This time, we also want to add color data to the vertex data. We're going to add color data as 3 <code>float</code>s to the <var>vertices</var> array. We assign a red, green and blue color to each of the corners of our triangle respectively:
+  </p>
+  
+<pre><code>
+float vertices[] = {
+    // positions         // colors
+     0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // bottom right
+    -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // bottom left
+     0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // top 
+};    
+</code></pre>
+  
+<p>
+  Since we now have more data to send to the vertex shader, it is necessary to adjust the vertex shader to also receive our color value as a vertex attribute input. Note that we set the location of the <var>aColor</var> attribute to 1 with the layout specifier:
+</p>
+  
+<pre><code>
+#version 330 core
+layout (location = 0) in vec3 aPos;   // the position variable has attribute position 0
+layout (location = 1) in vec3 aColor; // the color variable has attribute position 1
+  
+out vec3 ourColor; // output a color to the fragment shader
+
+void main()
+{
+    gl_Position = vec4(aPos, 1.0);
+    ourColor = aColor; // set ourColor to the input color we got from the vertex data
+}       
+</code></pre>
+  
+  <p>
+    Since we no longer use a uniform for the fragment's color, but now use the <var>ourColor</var> output variable we'll have to change the fragment shader as well:
+  </p>
+  
+<pre><code>
+#version 330 core
+out vec4 FragColor;  
+in vec3 ourColor;
+  
+void main()
+{
+    FragColor = vec4(ourColor, 1.0);
+}
+</code></pre>
+  
+<p>
+  Because we added another vertex attribute and updated the VBO's memory we have to re-configure the vertex attribute pointers. The updated data in the VBO's memory now looks a bit like this: 
+  </p>
+  
+  <img src="/img/getting-started/vertex_attribute_pointer_interleaved.png" class="clean" alt="Interleaved data of position and color within VBO to be configured wtih <function id='30'>glVertexAttribPointer</function>"/>
+    
+<p>
+  Knowing the current layout we can update the vertex format with <fun><function id='30'>glVertexAttribPointer</function></fun>:
+</p>
+  
+<pre><code>
+// position attribute
+<function id='30'>glVertexAttribPointer</function>(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+<function id='29'><function id='60'>glEnable</function>VertexAttribArray</function>(0);
+// color attribute
+<function id='30'>glVertexAttribPointer</function>(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3* sizeof(float)));
+<function id='29'><function id='60'>glEnable</function>VertexAttribArray</function>(1);
+</code></pre>
+
+<p> 
+  The first few arguments of <fun><function id='30'>glVertexAttribPointer</function></fun> are relatively straightforward. This time we are configuring the vertex attribute on attribute location <code>1</code>. The color values have a size of <code>3</code> <code>float</code>s and we do not normalize the values. 
+  </p>
+  
+  <p>
+    Since we now have two vertex attributes we have to re-calculate the <em>stride</em> value. To get the next attribute value (e.g. the next <code>x</code> component of the position  vector) in the data array we have to move <code>6</code> <code>float</code>s to the right, three for the position values and three for the color values. This gives us a stride value of 6 times the size of a <code>float</code> in bytes (= <code>24</code> bytes). <br/>
+  Also, this time we have to specify an offset. For each vertex, the position vertex attribute is first so we declare an offset of <code>0</code>. The color attribute starts after the position data so the offset is <code>3 * sizeof(float)</code> in bytes (= <code>12</code> bytes).
+</p>
+  
+<p> 
+    Running the application should result in the following image:
+</p>
+  
+  <img src="/img/getting-started/shaders3.png" class="clean"/>
+  
+  <p>
+    Check out the source code <a href="/code_viewer_gh.php?code=src/1.getting_started/3.2.shaders_interpolation/shaders_interpolation.cpp" target="_blank">here</a> if you're stuck.
+  </p>
+  
+ <p>
+   The image may not be exactly what you would expect, since we only supplied 3 colors, not the huge color palette we're seeing right now. This is all the result of something called <def>fragment interpolation</def> in the fragment shader. When rendering a triangle the rasterization stage usually results in a lot more fragments than vertices originally specified. The rasterizer then determines the positions of each of those fragments based on where they reside on the triangle shape.<br/>
+   Based on these positions, it <def>interpolates</def> all the fragment shader's input variables. Say for example we have a line where the upper point has a green color and the lower point a blue color. If the fragment shader is run at a fragment that resides around a position at <code>70%</code> of the line, its resulting color input attribute would then be a linear combination of green and blue; to be more precise: <code>30%</code> blue and <code>70%</code> green.
+  </p>
+  
+  <p>
+    This is exactly what happened at the triangle. We have 3 vertices and thus 3 colors, and judging from the triangle's pixels it probably contains around 50000 fragments, where the fragment shader interpolated the colors among those pixels. If you take a good look at the colors you'll see it all makes sense: red to blue first gets to purple and then to blue. Fragment interpolation is applied to all the fragment shader's input attributes.
+  </p>   
+  
+<h1>Our own shader class</h1>
+    <p> 
+    Writing, compiling and managing shaders can be quite cumbersome. As a final touch on the shader subject we're going to make our life a bit easier by building a shader class that reads shaders from disk, compiles and links them, checks for errors and is easy to use. This also gives you a bit of an idea how we can encapsulate some of the knowledge we learned so far into useful abstract objects.
+  </p>
+  
+  <p>
+    We will create the shader class entirely in a header file, mainly for learning purposes and portability. Let's start by adding the required includes and by defining the class structure:
+  </p>
+  
+<pre><code>
+#ifndef SHADER_H
+#define SHADER_H
+
+#include &lt;glad/glad.h&gt; // include glad to get all the required OpenGL headers
+  
+#include &lt;string&gt;
+#include &lt;fstream&gt;
+#include &lt;sstream&gt;
+#include &lt;iostream&gt;
+  
+
+class Shader
+{
+public:
+    // the program ID
+    unsigned int ID;
+  
+    // constructor reads and builds the shader
+    Shader(const char* vertexPath, const char* fragmentPath);
+    // use/activate the shader
+    void use();
+    // utility uniform functions
+    void setBool(const std::string &name, bool value) const;  
+    void setInt(const std::string &name, int value) const;   
+    void setFloat(const std::string &name, float value) const;
+};
+  
+#endif
+</code></pre>
+  
+  <note>
+    We used several <def>preprocessor directives</def> at the top of the header file. Using these  little lines of code informs your compiler to only include and compile this header file if it hasn't been included yet, even if multiple files include the shader header. This prevents linking conflicts.
+  </note>
+  
+  <p>
+    The shader class holds the ID of the shader program. Its constructor requires the file paths of the source code of the vertex and fragment shader respectively that we can store on disk as simple text files. To add a little extra we also add several utility functions to ease our lives a little: <fun>use</fun> activates the shader program, and all <fun>set...</fun> functions query a uniform location and set its value.
+  </p>
+  
+<h2>Reading from file</h2>
+<p>
+    We're using C++ filestreams to read the content from the file into several <code>string</code> objects:
+</p>
+  
+<pre><code>
+Shader(const char* vertexPath, const char* fragmentPath)
+{
+    // 1. retrieve the vertex/fragment source code from filePath
+    std::string vertexCode;
+    std::string fragmentCode;
+    std::ifstream vShaderFile;
+    std::ifstream fShaderFile;
+    // ensure ifstream objects can throw exceptions:
+    vShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
+    fShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
+    try 
+    {
+        // open files
+        vShaderFile.open(vertexPath);
+        fShaderFile.open(fragmentPath);
+        std::stringstream vShaderStream, fShaderStream;
+        // read file's buffer contents into streams
+        vShaderStream &lt;&lt; vShaderFile.rdbuf();
+        fShaderStream &lt;&lt; fShaderFile.rdbuf();		
+        // close file handlers
+        vShaderFile.close();
+        fShaderFile.close();
+        // convert stream into string
+        vertexCode   = vShaderStream.str();
+        fragmentCode = fShaderStream.str();		
+    }
+    catch(std::ifstream::failure e)
+    {
+        std::cout &lt;&lt; "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" &lt;&lt; std::endl;
+    }
+    const char* vShaderCode = vertexCode.c_str();
+    const char* fShaderCode = fragmentCode.c_str();
+    [...]
+</code></pre> 
+  
+  <p>
+    Next we need to compile and link the shaders. Note that we're also reviewing if compilation/linking failed and if so, print the compile-time errors. This is extremely useful when debugging (you are going to need those error logs eventually):
+  </p>
+  
+<pre><code>
+// 2. compile shaders
+unsigned int vertex, fragment;
+int success;
+char infoLog[512];
+   
+// vertex Shader
+vertex = <function id='37'>glCreateShader</function>(GL_VERTEX_SHADER);
+<function id='42'>glShaderSource</function>(vertex, 1, &amp;vShaderCode, NULL);
+<function id='38'>glCompileShader</function>(vertex);
+// print compile errors if any
+<function id='39'>glGetShaderiv</function>(vertex, GL_COMPILE_STATUS, &amp;success);
+if(!success)
+{
+    <function id='40'>glGetShaderInfoLog</function>(vertex, 512, NULL, infoLog);
+    std::cout &lt;&lt; "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" &lt;&lt; infoLog &lt;&lt; std::endl;
+};
+  
+// similiar for Fragment Shader
+[...]
+  
+// shader Program
+ID = <function id='36'>glCreateProgram</function>();
+<function id='34'>glAttachShader</function>(ID, vertex);
+<function id='34'>glAttachShader</function>(ID, fragment);
+<function id='35'>glLinkProgram</function>(ID);
+// print linking errors if any
+<function id='41'>glGetProgramiv</function>(ID, GL_LINK_STATUS, &amp;success);
+if(!success)
+{
+    glGetProgramInfoLog(ID, 512, NULL, infoLog);
+    std::cout &lt;&lt; "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" &lt;&lt; infoLog &lt;&lt; std::endl;
+}
+  
+// delete the shaders as they're linked into our program now and no longer necessary
+<function id='46'>glDeleteShader</function>(vertex);
+<function id='46'>glDeleteShader</function>(fragment);
+</code></pre> 
+
+  <p>
+    The <fun>use</fun> function is straightforward:
+  </p>
+  
+<pre><code>
+void use() 
+{ 
+    <function id='28'>glUseProgram</function>(ID);
+}  
+</code></pre>
+    
+<p>
+  Similarly for any of the uniform setter functions:
+</p>
+    
+<pre><code>
+void setBool(const std::string &name, bool value) const
+{         
+    <function id='44'>glUniform</function>1i(<function id='45'>glGetUniformLocation</function>(ID, name.c_str()), (int)value); 
+}
+void setInt(const std::string &name, int value) const
+{ 
+    <function id='44'>glUniform</function>1i(<function id='45'>glGetUniformLocation</function>(ID, name.c_str()), value); 
+}
+void setFloat(const std::string &name, float value) const
+{ 
+    <function id='44'>glUniform</function>1f(<function id='45'>glGetUniformLocation</function>(ID, name.c_str()), value); 
+} 
+</code></pre>
+  
+  <p>
+    And there we have it, a completed <a href="/code_viewer_gh.php?code=includes/learnopengl/shader_s.h" target="_blank">shader class</a>. Using the shader class is fairly easy; we create a shader object once and from that point on simply start using it:
+  </p>
+  
+<pre><code>
+Shader ourShader("path/to/shaders/shader.vs", "path/to/shaders/shader.fs");
+[...]
+while(...)
+{
+    ourShader.use();
+    ourShader.setFloat("someUniform", 1.0f);
+    DrawStuff();
+}
+</code></pre>
+    
+<p>
+  Here we stored the vertex and fragment shader source code in two files called <code>shader.vs</code> and <code>shader.fs</code>. You're free to name your shader files however you like; I personally find the extensions <code>.vs</code> and <code>.fs</code> quite intuitive.
+</p>
+  
+  <p>
+    You can find the source code <a href="/code_viewer_gh.php?code=src/1.getting_started/3.3.shaders_class/shaders_class.cpp" target="_blank">here</a> using our newly created <a href="/code_viewer_gh.php?code=includes/learnopengl/shader_s.h" target="_blank">shader class</a>. Note that you can click the shader file paths to find the shaders' source code.
+  </p>
+
+<h1>Exercises</h1>
+  <ol>
+    <li>Adjust the vertex shader so that the triangle is upside down: <a href="/code_viewer_gh.php?code=src/1.getting_started/3.4.shaders_exercise1/shaders_exercise1.cpp" target="_blank">solution</a>.</li>
+    <li>Specify a horizontal offset via a uniform and move the triangle to the right side of the screen in the vertex shader using this offset value: <a href="/code_viewer_gh.php?code=src/1.getting_started/3.5.shaders_exercise2/shaders_exercise2.cpp" target="_blank">solution</a>.</li>
+    <li>Output the vertex position to the fragment shader using the <code>out</code> keyword and set the fragment's color equal to this vertex position (see how even the vertex position values are interpolated across the triangle). Once you managed to do this; try to answer the following question: why is the bottom-left side of our triangle black?: <a href="/code_viewer_gh.php?code=src/1.getting_started/3.6.shaders_exercise3/shaders_exercise3.cpp" target="_blank">solution</a>.</li>
+  </ol>
+         
+
+    </div>
+    
+    <div id="hover">
+        HI
+    </div>
+   <!-- 728x90/320x50 sticky footer -->
+<!--<div id="waldo-tag-6196"></div>-->
+
+   <div id="disqus_thread"></div>
+
+    
+
+
+</div> <!-- container div -->
+
+
+</div> <!-- super container div -->
+</body>
+</html>

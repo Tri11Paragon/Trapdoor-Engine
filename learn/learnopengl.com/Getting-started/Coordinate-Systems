@@ -1,0 +1,741 @@
+
+
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <meta charset="utf-8"/>
+    <title>LearnOpenGL - Coordinate Systems</title>	<!--<title>Learn OpenGL, extensive tutorial resource for learning Modern OpenGL</title>-->
+    <link rel="shortcut icon" type="image/ico" href="/favicon.ico"  />
+    <meta name="description" content="Learn OpenGL . com provides good and clear modern 3.3+ OpenGL tutorials with clear examples. A great resource to learn modern OpenGL aimed at beginners.">
+	<meta name="fragment" content="!">
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-51879160-1', 'learnopengl.com');
+      ga('send', 'pageview');
+
+    </script>
+    <!--<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-7855791439695850",
+              enable_page_level_ads: true
+         });
+    </script>
+	<script async='async' src='https://www.googletagservices.com/tag/js/gpt.js'></script>
+	<script>
+	  var googletag = googletag || {};
+	  googletag.cmd = googletag.cmd || [];
+	</script>
+	<script>
+	  googletag.cmd.push(function() {
+		googletag.defineSlot('/8491498/learnopengl_video', [300, 225], 'div-gpt-ad-1540574378241-0').addService(googletag.pubads());
+		googletag.pubads().enableSingleRequest();
+		googletag.pubads().collapseEmptyDivs();
+		googletag.enableServices();
+	  });
+	</script>
+    <script type="text/javascript" src="//cdn.thisiswaldo.com/static/js/1681.js"></script>
+	<script src="/js/jquery-1.11.0.min.js"></script>
+	<script src="/js/hoverintent.js"></script>
+	<link rel="stylesheet" type="text/css" href="/layout.css">
+    <link rel="stylesheet" type="text/css" href="/js/styles/obsidian.css">
+    <script src="/js/highlight.pack.js"></script>    
+    <script src="/js/functions.js"></script>
+    <script type="text/javascript" src="/js/mathjax/MathJax.js?config=TeX-AMS_HTML"></script>
+    <script>
+    // Has to be loaded last due to content bug 
+    MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+    </script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script>  
+        $(document).ready(function() {
+            // check if user visited from the old # based urls, re-direct to ?p= form
+            if(window.location.hash)
+            {
+                var name = window.location.hash.substring(2);
+                // name = name.replace(/-/g," ");
+                var index = name.indexOf('#'); // Remove any hash fragments from the url (Disquss adds hash fragments for comments, but results in 404 pages)
+                if(index >= 0)
+                    name = name.substring(0, index);
+                
+                window.location.href = "https://learnopengl.com/" + name;
+            } else {
+                    // Check if data has been succesfully loaded, if so: change title bar as ajax hash fragment
+                    var title = $('#content-url').text();
+                  
+                    // Refresh syntax highlighting
+                    // $('pre').each(function(i, e) {hljs.highlightBlock(e)});
+                  
+                    // Reset DISQUS
+                    // if(title == '/dev/')
+                        // title = '';
+                    // alert('hoi');
+					
+					// place video tag
+					if(title != '') {
+						var videoad = "%3Cdiv id=\'waldo-tag-12074\'%3E %3Cscript%3Egoogletag.cmd.push(function() {googletag.display(\'waldo-tag-12074\'); }); %3C/script%3E%3C/div%3E";
+						$('#content p:nth-of-type(3)').after(unescape(videoad));
+					}
+					
+                    // Adjust ads for correct bottom positioning based on content size
+                    window.setTimeout(function() {  
+                        AdPositioning();
+                     }, 3000);
+                  
+                  
+                    // set API resets after time-out (once content is properly loaded)
+                    window.setTimeout(function() {  
+                        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);       
+                        MathJax.Hub.Queue(["resetEquationNumbers", MathJax.InputJax.TeX]);
+                        
+                        var page_url = title == "" ? "http://www.learnopengl.com/" : "http://www.learnopengl.com/" + title;
+                        if(typeof DISQUS !== 'undefined') {                                              
+                            DISQUS.reset({
+                              reload: true,
+                              config: function () {  
+                                this.page.identifier = title;  
+                                this.page.url = page_url;
+                              }
+                            });
+                            $('#disqus_thread').show();
+                        }
+                           // Refresh callbacks on <function> tags
+                        SetFunctionTagCallbacks();        
+                    }, 1000);
+                                        
+                    // Zet ook de juiste button op 'selected'
+                    $('#nav li span, #nav li a').removeClass('selected');                
+                    if(title != '')
+                    {                    
+                        $('#nav li[id=\'' + title + '\']').children('span, a').addClass('selected');
+                    }
+                    // En open menu waar nodig
+                    var parents = $('#nav span.selected, #nav a.selected').parents('li').children('span.closed, a.closed');
+                    var index = 0;
+                    for(index = parents.length - 1; index >= 0; index--)
+                    {             
+                        
+                        var id = $(parents[index]).attr("id").replace( /^\D+/g, '');
+                        MenuClick(id, false);
+                    }                          
+                
+            }
+        });
+		// var initialized = false;
+        // window.onpopstate = function() {
+            // if(initialized)
+                // LoadPage();
+			// else
+				// initialized = true;
+        // };
+        
+        // Set up DISQUS
+        // $(document).ready(function() {
+            var disqus_shortname = 'learnopengl';
+            (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();           
+        // });
+    </script>
+</head>
+<body>
+<a href="https://learnopengl.com">
+<div id="header">
+</div>
+</a>
+
+<div id="supercontainer">
+    <!-- 728x90/320x50 -->
+    <div id="header_ad">
+        <div id="waldo-tag-6194"></div>
+    </div>
+    <div id="rightad_container">
+        <div id="rightad">
+            <!-- /8491498/learnopengl_video -->
+            <!--<div id='div-gpt-ad-1540574378241-0' style='height:225px; width:300px;'>
+			<script>
+			googletag.cmd.push(function() { googletag.display('div-gpt-ad-1540574378241-0'); });
+			</script>
+			</div>            
+            <br/>-->
+			<!-- place in-content -->
+			<!--<div id='waldo-tag-12074'>
+			 <script>
+			   googletag.cmd.push(function() { googletag.display('waldo-tag-12074'); });
+			 </script>
+			</div>-->
+           
+            <div id="waldo-tag-1715"></div>
+        </div>
+
+        <div id="admessage">
+            If you're running AdBlock, please consider whitelisting this site if you'd like to support LearnOpenGL; and no worries, I won't be mad if you don't :)
+            <!--<br/><br/>
+            Also, check out this little local multiplayer-only game I've made: <a href="https://store.steampowered.com/app/983590/Tank_Blazers/" target="_blank">Tank Blazers</a>.
+            <br/>
+            <a href="https://store.steampowered.com/app/983590/Tank_Blazers" target="_blank"><img src="/img/tank_blazers.jpg"  style="width:278px; margin-top: 9px; margin-left: -3px;"/></a>-->
+        </div>
+        
+        <div id="rightonethirdad">
+            <div id="waldo-tag-2246"></div>
+        </div>
+        
+        <div id="rightbottomad">            
+			<div id="waldo-tag-2247"></div>								
+        </div>
+    </div>
+    <div id="container">
+        <div id="loading"></div>
+<script> 
+$(document).ready(function() {
+$('#menu-item4').mousedown(function() { MenuClick(4, true) });
+$('#menu-item48').mousedown(function() { MenuClick(48, true) });
+$('#menu-item56').mousedown(function() { MenuClick(56, true) });
+$('#menu-item63').mousedown(function() { MenuClick(63, true) });
+$('#menu-item100').mousedown(function() { MenuClick(100, true) });
+$('#menu-item102').mousedown(function() { MenuClick(102, true) });
+$('#menu-item113').mousedown(function() { MenuClick(113, true) });
+$('#menu-item116').mousedown(function() { MenuClick(116, true) });
+$('#menu-item78').mousedown(function() { MenuClick(78, true) });
+$('#menu-item81').mousedown(function() { MenuClick(81, true) });
+$('#menu-item85').mousedown(function() { MenuClick(85, true) });
+$('#menu-item125').mousedown(function() { MenuClick(125, true) });
+$('#menu-item128').mousedown(function() { MenuClick(128, true) });
+$('#menu-item129').mousedown(function() { MenuClick(129, true) });
+$('#menu-item133').mousedown(function() { MenuClick(133, true) });
+$('#menu-item134').mousedown(function() { MenuClick(134, true) });
+$('#menu-item138').mousedown(function() { MenuClick(138, true) });
+}); 
+</script>   
+    <div id="nav">
+         <div id="social">
+            <a href="https://github.com/JoeyDeVries/LearnOpenGL" target="_blank">
+                    <img src="/img/github.png" class="social_ico">
+            </a>
+             <!-- <a href="https://www.facebook.com/Learnopengl-2199631333595544/" target="_blank">
+                <img src="/img/facebook.png" class="social_ico">
+            </a>-->
+            <a href="https://twitter.com/JoeyDeVriez" target="_blank">
+                <img src="/img/twitter.png" class="social_ico">
+            </a>
+          
+        </div>
+    <img src='img/nav-button_bottom-arrow.png' style='display: none'><ol><li id='Introduction'><a id="menu-item1" href="https://learnopengl.com/Introduction">Introduction </a></li><li id='Getting-started'><span id="menu-item4" class="closed">Getting started </span><ol id="menu-items-of4" style="display:none;"><li id='Getting-started/OpenGL'><a id="menu-item49" href="https://learnopengl.com/Getting-started/OpenGL">OpenGL </a></li><li id='Getting-started/Creating-a-window'><a id="menu-item5" href="https://learnopengl.com/Getting-started/Creating-a-window">Creating a window </a></li><li id='Getting-started/Hello-Window'><a id="menu-item6" href="https://learnopengl.com/Getting-started/Hello-Window">Hello Window </a></li><li id='Getting-started/Hello-Triangle'><a id="menu-item38" href="https://learnopengl.com/Getting-started/Hello-Triangle">Hello Triangle </a></li><li id='Getting-started/Shaders'><a id="menu-item39" href="https://learnopengl.com/Getting-started/Shaders">Shaders </a></li><li id='Getting-started/Textures'><a id="menu-item40" href="https://learnopengl.com/Getting-started/Textures">Textures </a></li><li id='Getting-started/Transformations'><a id="menu-item43" href="https://learnopengl.com/Getting-started/Transformations">Transformations </a></li><li id='Getting-started/Coordinate-Systems'><a id="menu-item44" href="https://learnopengl.com/Getting-started/Coordinate-Systems">Coordinate Systems </a></li><li id='Getting-started/Camera'><a id="menu-item47" href="https://learnopengl.com/Getting-started/Camera">Camera </a></li><li id='Getting-started/Review'><a id="menu-item50" href="https://learnopengl.com/Getting-started/Review">Review </a></li></ol></li><li id='Lighting'><span id="menu-item48" class="closed">Lighting </span><ol id="menu-items-of48" style="display:none;"><li id='Lighting/Colors'><a id="menu-item51" href="https://learnopengl.com/Lighting/Colors">Colors </a></li><li id='Lighting/Basic-Lighting'><a id="menu-item52" href="https://learnopengl.com/Lighting/Basic-Lighting">Basic Lighting </a></li><li id='Lighting/Materials'><a id="menu-item53" href="https://learnopengl.com/Lighting/Materials">Materials </a></li><li id='Lighting/Lighting-maps'><a id="menu-item54" href="https://learnopengl.com/Lighting/Lighting-maps">Lighting maps </a></li><li id='Lighting/Light-casters'><a id="menu-item55" href="https://learnopengl.com/Lighting/Light-casters">Light casters </a></li><li id='Lighting/Multiple-lights'><a id="menu-item58" href="https://learnopengl.com/Lighting/Multiple-lights">Multiple lights </a></li><li id='Lighting/Review'><a id="menu-item57" href="https://learnopengl.com/Lighting/Review">Review </a></li></ol></li><li id='Model-Loading'><span id="menu-item56" class="closed">Model Loading </span><ol id="menu-items-of56" style="display:none;"><li id='Model-Loading/Assimp'><a id="menu-item59" href="https://learnopengl.com/Model-Loading/Assimp">Assimp </a></li><li id='Model-Loading/Mesh'><a id="menu-item60" href="https://learnopengl.com/Model-Loading/Mesh">Mesh </a></li><li id='Model-Loading/Model'><a id="menu-item61" href="https://learnopengl.com/Model-Loading/Model">Model </a></li></ol></li><li id='Advanced-OpenGL'><span id="menu-item63" class="closed">Advanced OpenGL </span><ol id="menu-items-of63" style="display:none;"><li id='Advanced-OpenGL/Depth-testing'><a id="menu-item72" href="https://learnopengl.com/Advanced-OpenGL/Depth-testing">Depth testing </a></li><li id='Advanced-OpenGL/Stencil-testing'><a id="menu-item73" href="https://learnopengl.com/Advanced-OpenGL/Stencil-testing">Stencil testing </a></li><li id='Advanced-OpenGL/Blending'><a id="menu-item74" href="https://learnopengl.com/Advanced-OpenGL/Blending">Blending </a></li><li id='Advanced-OpenGL/Face-culling'><a id="menu-item77" href="https://learnopengl.com/Advanced-OpenGL/Face-culling">Face culling </a></li><li id='Advanced-OpenGL/Framebuffers'><a id="menu-item65" href="https://learnopengl.com/Advanced-OpenGL/Framebuffers">Framebuffers </a></li><li id='Advanced-OpenGL/Cubemaps'><a id="menu-item66" href="https://learnopengl.com/Advanced-OpenGL/Cubemaps">Cubemaps </a></li><li id='Advanced-OpenGL/Advanced-Data'><a id="menu-item69" href="https://learnopengl.com/Advanced-OpenGL/Advanced-Data">Advanced Data </a></li><li id='Advanced-OpenGL/Advanced-GLSL'><a id="menu-item67" href="https://learnopengl.com/Advanced-OpenGL/Advanced-GLSL">Advanced GLSL </a></li><li id='Advanced-OpenGL/Geometry-Shader'><a id="menu-item68" href="https://learnopengl.com/Advanced-OpenGL/Geometry-Shader">Geometry Shader </a></li><li id='Advanced-OpenGL/Instancing'><a id="menu-item70" href="https://learnopengl.com/Advanced-OpenGL/Instancing">Instancing </a></li><li id='Advanced-OpenGL/Anti-Aliasing'><a id="menu-item75" href="https://learnopengl.com/Advanced-OpenGL/Anti-Aliasing">Anti Aliasing </a></li></ol></li><li id='Advanced-Lighting'><span id="menu-item100" class="closed">Advanced Lighting </span><ol id="menu-items-of100" style="display:none;"><li id='Advanced-Lighting/Advanced-Lighting'><a id="menu-item101" href="https://learnopengl.com/Advanced-Lighting/Advanced-Lighting">Advanced Lighting </a></li><li id='Advanced-Lighting/Gamma-Correction'><a id="menu-item110" href="https://learnopengl.com/Advanced-Lighting/Gamma-Correction">Gamma Correction </a></li><li id='Advanced-Lighting/Shadows'><span id="menu-item102" class="closed">Shadows </span><ol id="menu-items-of102" style="display:none;"><li id='Advanced-Lighting/Shadows/Shadow-Mapping'><a id="menu-item103" href="https://learnopengl.com/Advanced-Lighting/Shadows/Shadow-Mapping">Shadow Mapping </a></li><li id='Advanced-Lighting/Shadows/Point-Shadows'><a id="menu-item104" href="https://learnopengl.com/Advanced-Lighting/Shadows/Point-Shadows">Point Shadows </a></li></ol></li><li id='Advanced-Lighting/Normal-Mapping'><a id="menu-item106" href="https://learnopengl.com/Advanced-Lighting/Normal-Mapping">Normal Mapping </a></li><li id='Advanced-Lighting/Parallax-Mapping'><a id="menu-item107" href="https://learnopengl.com/Advanced-Lighting/Parallax-Mapping">Parallax Mapping </a></li><li id='Advanced-Lighting/HDR'><a id="menu-item111" href="https://learnopengl.com/Advanced-Lighting/HDR">HDR </a></li><li id='Advanced-Lighting/Bloom'><a id="menu-item112" href="https://learnopengl.com/Advanced-Lighting/Bloom">Bloom </a></li><li id='Advanced-Lighting/Deferred-Shading'><a id="menu-item108" href="https://learnopengl.com/Advanced-Lighting/Deferred-Shading">Deferred Shading </a></li><li id='Advanced-Lighting/SSAO'><a id="menu-item109" href="https://learnopengl.com/Advanced-Lighting/SSAO">SSAO </a></li></ol></li><li id='PBR'><span id="menu-item113" class="closed">PBR </span><ol id="menu-items-of113" style="display:none;"><li id='PBR/Theory'><a id="menu-item114" href="https://learnopengl.com/PBR/Theory">Theory </a></li><li id='PBR/Lighting'><a id="menu-item115" href="https://learnopengl.com/PBR/Lighting">Lighting </a></li><li id='PBR/IBL'><span id="menu-item116" class="closed">IBL </span><ol id="menu-items-of116" style="display:none;"><li id='PBR/IBL/Diffuse-irradiance'><a id="menu-item117" href="https://learnopengl.com/PBR/IBL/Diffuse-irradiance">Diffuse irradiance </a></li><li id='PBR/IBL/Specular-IBL'><a id="menu-item118" href="https://learnopengl.com/PBR/IBL/Specular-IBL">Specular IBL </a></li></ol></li></ol></li><li id='In-Practice'><span id="menu-item78" class="closed">In Practice </span><ol id="menu-items-of78" style="display:none;"><li id='In-Practice/Debugging'><a id="menu-item79" href="https://learnopengl.com/In-Practice/Debugging">Debugging </a></li><li id='In-Practice/Text-Rendering'><a id="menu-item80" href="https://learnopengl.com/In-Practice/Text-Rendering">Text Rendering </a></li><li id='In-Practice/2D-Game'><span id="menu-item81" class="closed">2D Game </span><ol id="menu-items-of81" style="display:none;"><li id='In-Practice/2D-Game/Breakout'><a id="menu-item82" href="https://learnopengl.com/In-Practice/2D-Game/Breakout">Breakout </a></li><li id='In-Practice/2D-Game/Setting-up'><a id="menu-item88" href="https://learnopengl.com/In-Practice/2D-Game/Setting-up">Setting up </a></li><li id='In-Practice/2D-Game/Rendering-Sprites'><a id="menu-item83" href="https://learnopengl.com/In-Practice/2D-Game/Rendering-Sprites">Rendering Sprites </a></li><li id='In-Practice/2D-Game/Levels'><a id="menu-item84" href="https://learnopengl.com/In-Practice/2D-Game/Levels">Levels </a></li><li id='In-Practice/2D-Game/Collisions'><span id="menu-item85" class="closed">Collisions </span><ol id="menu-items-of85" style="display:none;"><li id='In-Practice/2D-Game/Collisions/Ball'><a id="menu-item95" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Ball">Ball </a></li><li id='In-Practice/2D-Game/Collisions/Collision-detection'><a id="menu-item96" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Collision-detection">Collision detection </a></li><li id='In-Practice/2D-Game/Collisions/Collision-resolution'><a id="menu-item97" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Collision-resolution">Collision resolution </a></li></ol></li><li id='In-Practice/2D-Game/Particles'><a id="menu-item89" href="https://learnopengl.com/In-Practice/2D-Game/Particles">Particles </a></li><li id='In-Practice/2D-Game/Postprocessing'><a id="menu-item90" href="https://learnopengl.com/In-Practice/2D-Game/Postprocessing">Postprocessing </a></li><li id='In-Practice/2D-Game/Powerups'><a id="menu-item91" href="https://learnopengl.com/In-Practice/2D-Game/Powerups">Powerups </a></li><li id='In-Practice/2D-Game/Audio'><a id="menu-item94" href="https://learnopengl.com/In-Practice/2D-Game/Audio">Audio </a></li><li id='In-Practice/2D-Game/Render-text'><a id="menu-item92" href="https://learnopengl.com/In-Practice/2D-Game/Render-text">Render text </a></li><li id='In-Practice/2D-Game/Final-thoughts'><a id="menu-item93" href="https://learnopengl.com/In-Practice/2D-Game/Final-thoughts">Final thoughts </a></li></ol></li></ol></li><li id='Guest-Articles'><span id="menu-item125" class="closed">Guest Articles </span><ol id="menu-items-of125" style="display:none;"><li id='Guest-Articles/How-to-publish'><a id="menu-item126" href="https://learnopengl.com/Guest-Articles/How-to-publish">How to publish </a></li><li id='Guest-Articles/2020'><span id="menu-item128" class="closed">2020 </span><ol id="menu-items-of128" style="display:none;"><li id='Guest-Articles/2020/OIT'><span id="menu-item129" class="closed">OIT </span><ol id="menu-items-of129" style="display:none;"><li id='Guest-Articles/2020/OIT/Introduction'><a id="menu-item130" href="https://learnopengl.com/Guest-Articles/2020/OIT/Introduction">Introduction </a></li><li id='Guest-Articles/2020/OIT/Weighted-Blended'><a id="menu-item132" href="https://learnopengl.com/Guest-Articles/2020/OIT/Weighted-Blended">Weighted Blended </a></li></ol></li><li id='Guest-Articles/2020/Skeletal-Animation'><a id="menu-item131" href="https://learnopengl.com/Guest-Articles/2020/Skeletal-Animation">Skeletal Animation </a></li></ol></li><li id='Guest-Articles/2021'><span id="menu-item133" class="closed">2021 </span><ol id="menu-items-of133" style="display:none;"><li id='Guest-Articles/2021/CSM'><a id="menu-item137" href="https://learnopengl.com/Guest-Articles/2021/CSM">CSM </a></li><li id='Guest-Articles/2021/Scene'><span id="menu-item134" class="closed">Scene </span><ol id="menu-items-of134" style="display:none;"><li id='Guest-Articles/2021/Scene/Scene-Graph'><a id="menu-item135" href="https://learnopengl.com/Guest-Articles/2021/Scene/Scene-Graph">Scene Graph </a></li><li id='Guest-Articles/2021/Scene/Frustum-Culling'><a id="menu-item136" href="https://learnopengl.com/Guest-Articles/2021/Scene/Frustum-Culling">Frustum Culling </a></li></ol></li><li id='Guest-Articles/2021/Tessellation'><span id="menu-item138" class="closed">Tessellation </span><ol id="menu-items-of138" style="display:none;"><li id='Guest-Articles/2021/Tessellation/Height-map'><a id="menu-item139" href="https://learnopengl.com/Guest-Articles/2021/Tessellation/Height-map">Height map </a></li></ol></li></ol></li></ol></li><li id='Code-repository'><a id="menu-item99" href="https://learnopengl.com/Code-repository">Code repository </a></li><li id='Translations'><a id="menu-item119" href="https://learnopengl.com/Translations">Translations </a></li><li id='About'><a id="menu-item2" href="https://learnopengl.com/About">About </a></li></ol>		<div id="menu_book">
+            <a href="https://geni.us/learnopengl" target="_blank"><img src="/book/below_menu.png" class="clean"/></a>
+        </div>
+       <div id="donate">
+            <a href="https://www.paypal.me/learnopengl/" target="_blank">
+                <div id="donate_img"></div>
+                <img style="display: none" src="/img/donate_button_hover.png"/>
+                <!--<img id="donate_img" src="img/patreon.png"/>-->
+            </a>
+          <!--<div id="alipay">
+            <img style="width: 150px;" class="clean" src="/img/alipay_logo.png"/>
+            <img style="width: 150px; margin-top: 5px" src="/img/alipay.png"/>
+          </div>-->
+        </div> 
+		<!--
+		<div class="btc">
+			<h3>BTC</h3>
+			<p>
+				1CLGKgmBSuYJ1nnvDGAepVTKNNDpUjfpRa
+			</p>
+			<img src="/img/btc_qr.png"/>
+        </div> 
+		<div class="btc">
+			<h3>ETH/ERC20</h3>
+			<p>
+				0x1de59bd9e52521a46309474f8372531533bd7c43
+			</p>
+			<img src="/img/erc20_qr.png"/>
+        </div>       
+		!-->
+        <div id="ad">
+							<!--<div id="waldo-tag-1684"></div>-->
+			        </div>
+      
+        <div id="lefttwothirdad">
+            <div id="waldo-tag-2245"></div>
+        </div>
+    </div>
+    
+    <div id="content">
+    <h1 id="content-title">Coordinate Systems</h1>
+<h1 id="content-url" style='display:none;'>Getting-started/Coordinate-Systems</h1>
+<p>
+  In the last chapter we learned how we can use matrices to our advantage by transforming all vertices with transformation matrices. OpenGL expects all the vertices, that we want to become visible, to be in normalized device coordinates after each vertex shader run. That is, the <code>x</code>, <code>y</code> and <code>z</code> coordinates of each vertex should be between <code>-1.0</code> and <code>1.0</code>; coordinates outside this range will not be visible. What we usually do, is specify the coordinates in a range (or space) we determine ourselves and in the vertex shader transform these coordinates to normalized device coordinates (NDC). These NDC are then given to the rasterizer to transform them to 2D coordinates/pixels on your screen.
+</p>
+
+<p>
+  Transforming coordinates to NDC is usually accomplished in a step-by-step fashion where we transform an object's vertices to several coordinate systems before finally transforming them to NDC. The advantage of transforming them to several <em>intermediate</em> coordinate systems is that some operations/calculations are easier in certain coordinate systems as will soon become apparent. There are a total of 5 different coordinate systems that are of importance to us:
+</p>
+
+  <ul>
+    <li>Local space (or Object space)</li>
+    <li>World space</li>
+    <li>View space (or Eye space)</li>
+    <li>Clip space</li>
+    <li>Screen space</li>
+  </ul>
+ 
+<p>
+	Those are all a different state at which our vertices will be transformed in before finally ending up as fragments. 
+</p>
+
+<p>
+  You're probably quite confused by now by what a space or coordinate system actually is so we'll explain them in a more high-level fashion first by showing the total picture and what each specific space represents.
+</p>
+
+<h2>The global picture</h2>
+<p>
+  To transform the coordinates from one space to the next coordinate space we'll use several transformation matrices of which the most important are the <def>model</def>, <def>view</def> and <def>projection</def> matrix. Our vertex coordinates first start in <def>local space</def> as <def>local coordinates</def> and are then further processed to <def>world coordinates</def>, <def>view coordinates</def>, <def>clip coordinates</def> and eventually end up as <def>screen coordinates</def>. The following image displays the process and shows what each transformation does:
+</p>
+
+<img src="/img/getting-started/coordinate_systems.png" class="clean"/>
+
+  <ol>
+    <li>Local coordinates are the coordinates of your object relative to its local origin; they're the coordinates your object begins in. </li>
+    <li>The next step is to transform the local coordinates to world-space coordinates which are coordinates in respect of a larger world. These coordinates are relative to some global origin of the world, together with many other objects also placed relative to this world's origin.</li>
+    <li>Next we transform the world coordinates to view-space coordinates in such a way that each coordinate is as seen from the camera or viewer's point of view. </li>
+    <li>After the coordinates are in view space we want to project them to clip coordinates. Clip coordinates are processed to the <code>-1.0</code> and <code>1.0</code> range and determine which vertices will end up on the screen. Projection to clip-space coordinates can add perspective if using perspective projection. </li>
+    <li>
+      And lastly we transform the clip coordinates to screen coordinates in a process we call <def>viewport transform</def> that transforms the coordinates from <code>-1.0</code> and <code>1.0</code> to the coordinate range defined by <fun><function id='22'>glViewport</function></fun>. The resulting coordinates are then sent to the rasterizer to turn them into fragments.
+    </li>   
+  </ol>
+
+<p>
+  You probably got a slight idea what each individual space is used for. The reason we're transforming our vertices into all these different spaces is that some operations make more sense or are easier to use in certain coordinate systems. For example, when modifying your object it makes most sense to do this in local space, while calculating certain operations on the object with respect to the position of other objects makes most sense in world coordinates and so on. If we want, we could define one transformation matrix that goes from local space to clip space all in one go, but that leaves us with less flexibility.
+</p>
+
+<p>
+  We'll discuss each coordinate system in more detail below.
+</p>
+
+<h2>Local space</h2>
+<p>
+  Local space is the coordinate space that is local to your object, i.e. where your object begins in. Imagine that you've created your cube in a modeling software package (like Blender). The origin of your cube is probably at <code>(0,0,0)</code> even though your cube may end up at a different location in your final application. Probably all the models you've created all have <code>(0,0,0)</code> as their initial position. All the vertices of your model are therefore in <em>local</em> space: they are all local to your object. 
+</p>
+
+<p>
+  The vertices of the container we've been using were specified as coordinates between <code>-0.5</code> and <code>0.5</code> with <code>0.0</code> as its origin. These are local coordinates.
+</p>
+
+<h2>World space</h2>
+<p>
+  If we would import all our objects directly in the application they would probably all be somewhere positioned inside each other at the world's origin of <code>(0,0,0)</code> which is not what we want. We want to define a position for each object to position them inside a larger world. The coordinates in world space are exactly what they sound like: the coordinates of all your vertices relative to a (game) world. This is the coordinate space where you want your objects transformed to in such a way that they're all scattered around the place (preferably in a realistic fashion). The coordinates of your object are transformed from local to world space; this is accomplished with the <def>model</def> matrix.
+</p>
+
+<p>
+  The model matrix is a transformation matrix that translates, scales and/or rotates your object to place it in the world at a location/orientation they belong to. Think of it as transforming a house by scaling it down (it was a bit too large in local space), translating it to a suburbia town and rotating it a bit to the left on the y-axis so that it neatly fits with the neighboring houses. You could think of the matrix in the previous chapter to position the container all over the scene as a sort of model matrix as well; we transformed the local coordinates of the container to some different place in the scene/world.
+</p>
+
+<h2>View space</h2>
+<p>
+  The view space is what people usually refer to as the <def>camera</def> of OpenGL (it is sometimes also known as <def>camera space</def> or <def>eye space</def>). The view space is the result of transforming your world-space coordinates to coordinates that are in front of the user's view. The view space is thus the space as seen from the camera's point of view. This is usually accomplished  with a combination of translations and rotations to translate/rotate the scene so that certain items are transformed to the front of the camera. These combined transformations are generally stored inside a <def>view matrix</def> that transforms world coordinates to view space. In the next chapter we'll extensively discuss how to create such a view matrix to simulate a camera.
+</p>
+
+<h2>Clip space</h2>
+<p>
+  At the end of each vertex shader run, OpenGL expects the coordinates to be within a specific range and any coordinate that falls outside this range is <def>clipped</def>. Coordinates that are clipped are discarded, so the remaining coordinates will end up as fragments visible on your screen. This is also where <def>clip space</def> gets its name from.
+</p>
+
+<p>
+  Because specifying all the visible coordinates to be within the range <code>-1.0</code> and <code>1.0</code> isn't really intuitive, we specify our own coordinate set to work in and convert those back to NDC as OpenGL expects them.
+</p>
+
+<p>
+  To transform vertex coordinates from view to clip-space we define a so called <def>projection matrix</def> that specifies a range of coordinates e.g. <code>-1000</code> and <code>1000</code> in each dimension. The projection matrix then transforms coordinates within this specified range to normalized device coordinates (<code>-1.0</code>, <code>1.0</code>). All coordinates outside this range will not be mapped between <code>-1.0</code> and <code>1.0</code> and therefore be clipped. With this range we specified in the projection matrix, a coordinate of (<code>1250</code>, <code>500</code>, <code>750</code>) would not be visible, since the <code>x</code> coordinate is out of range and thus gets converted to a coordinate higher than <code>1.0</code> in NDC and is therefore clipped.
+</p>
+
+<note>
+  Note that if only a part of a primitive e.g. a triangle is outside the <def>clipping volume</def> OpenGL will reconstruct the triangle as one or more triangles to fit inside the clipping range.
+</note>
+
+<p>
+  This <em>viewing box</em> a projection matrix creates is called a <def>frustum</def> and each coordinate that ends up inside this frustum will end up on the user's screen. The total process to convert coordinates within a specified range to NDC that can easily be mapped to 2D view-space coordinates is called <def>projection</def> since the projection matrix <def>projects</def> 3D coordinates to the easy-to-map-to-2D normalized device coordinates.  
+</p>
+
+<p>
+  Once all the vertices are transformed to clip space a final operation called <def>perspective division</def> is performed where we divide the <code>x</code>, <code>y</code> and <code>z</code> components of the position vectors by the vector's homogeneous <code>w</code> component; perspective division is what transforms the 4D clip space coordinates to 3D normalized device coordinates. This step is performed automatically at the end of the vertex shader step. 
+</p>
+
+<p>
+  It is after this stage where the resulting coordinates are mapped to screen coordinates (using the settings of <fun><function id='22'>glViewport</function></fun>) and turned into fragments.
+</p>
+
+<p>
+  The projection matrix to transform view coordinates to clip coordinates usually takes two different forms, where each form defines its own unique frustum. We can either create an <def>orthographic</def> projection matrix or a <def>perspective</def> projection matrix.
+</p>
+
+<h3>Orthographic projection</h3>
+<p>
+  An orthographic projection matrix defines a cube-like frustum box that defines the clipping space where each vertex outside this box is clipped. When creating an orthographic projection matrix we specify the width, height and length of the visible frustum. All the coordinates inside this frustum will end up within the NDC range after transformed by its matrix and thus won't be clipped. The frustum looks a bit like a container:
+</p>
+
+<img src="/img/getting-started/orthographic_frustum.png" class="clean"/>
+
+<p>
+  The frustum defines the visible coordinates and is specified by a width, a height and a <def>near</def> and <def>far</def> plane. Any coordinate in front of the near plane is clipped and the same applies to coordinates behind the far plane. The orthographic frustum <strong>directly</strong> maps all coordinates inside the frustum to normalized device coordinates without any special side effects since it won't touch the <code>w</code> component of the transformed vector; if the <code>w</code> component remains equal to <code>1.0</code> perspective division won't change the coordinates.
+</p>
+
+<p>
+  To create an orthographic projection matrix we make use of GLM's built-in function <code><function id='59'>glm::ortho</function></code>:
+</p>
+
+<pre><code>
+<function id='59'>glm::ortho</function>(0.0f, 800.0f, 0.0f, 600.0f, 0.1f, 100.0f);
+</code></pre>
+
+<p>
+  The first two parameters specify the left and right coordinate of the frustum and the third and fourth parameter specify the bottom and top part of the frustum. With those 4 points we've defined the size of the near and far planes and the 5th and 6th parameter then define the distances between the near and far plane. This specific projection matrix transforms all coordinates between these <code>x</code>, <code>y</code> and <code>z</code> range values to normalized device coordinates. 
+</p>
+
+<p>
+  An orthographic projection matrix directly maps coordinates to the 2D plane that is your screen, but in reality a direct projection produces unrealistic results since the projection doesn't take <def>perspective</def> into account. That is something the <def>perspective projection</def> matrix fixes for us.
+</p>
+
+<h3>Perspective projection</h3>
+<p>
+  If you ever were to enjoy the graphics the <em>real life</em> has to offer you'll notice that objects that are farther away appear much smaller. This weird effect is something we call  <def>perspective</def>. Perspective is especially noticeable when looking down the end of an infinite motorway or railway as seen in the following image:
+</p>
+
+<img src="/img/getting-started/perspective.png" class="clean"/>
+
+<p>
+  As you can see, due to perspective the lines seem to coincide at a far enough distance. This is exactly the effect perspective projection tries to mimic and it does so using a <def>perspective projection matrix</def>. The projection matrix maps a given frustum range to clip space, but also manipulates the <code>w</code> value of each vertex coordinate in such a way that the further away a vertex coordinate is from the viewer, the higher this <code>w</code> component becomes. Once the coordinates are transformed to clip space they are in the range <code>-w</code> to <code>w</code> (anything outside this range is clipped). OpenGL requires that the visible coordinates fall between the range <code>-1.0</code> and <code>1.0</code> as the final vertex shader output, thus once the coordinates are in clip space, perspective division is applied to the clip space coordinates:
+
+  \[ out = \begin{pmatrix} x /w \\ y / w \\ z / w \end{pmatrix} \]
+  
+  Each component of the vertex coordinate is divided by its <code>w</code> component giving smaller vertex coordinates the further away a vertex is from the viewer. This is another reason why the <code>w</code> component is important, since it helps us with perspective projection. The resulting coordinates are then in normalized device space. If you're interested to figure out how the orthographic and perspective projection matrices are actually calculated (and aren't too scared of the mathematics) I can recommend <a href="http://www.songho.ca/opengl/gl_projectionmatrix.html" target="_blank">this excellent article</a> by Songho.
+</p>
+
+<p>
+  A perspective projection matrix can be created in GLM as follows:
+</p>
+
+<pre><code>
+glm::mat4 proj = <function id='58'>glm::perspective</function>(<function id='63'>glm::radians</function>(45.0f), (float)width/(float)height, 0.1f, 100.0f);
+</code></pre>
+
+<p>
+  What <code><function id='58'>glm::perspective</function></code> does is again create a large <em>frustum</em> that defines the visible space, anything outside the frustum will not end up in the clip space volume and will thus become clipped. A perspective frustum can be visualized as a non-uniformly shaped box from where each coordinate inside this box will be mapped to a point in clip space. An image of a perspective frustum is seen below:
+</p>
+
+<img src="/img/getting-started/perspective_frustum.png" class="clean"/>
+
+  
+<p>
+Its first parameter defines the <def>fov</def> value, that stands for <def>field of view</def> and sets how large the viewspace is. For a realistic view it is usually set to 45 degrees, but for more doom-style results you could set it to a higher value. The second parameter sets the aspect ratio which is calculated by dividing the viewport's width by its height. The third and fourth parameter set the <em>near</em> and <em>far</em> plane of the frustum. We usually set the near distance to <code>0.1</code> and the far distance to <code>100.0</code>. All the vertices between the near and far plane and inside the frustum will be rendered.
+</p>
+
+<note> 
+  Whenever the <em>near</em> value of your perspective matrix is set too high (like <code>10.0</code>), OpenGL will clip all coordinates close to the camera (between <code>0.0</code> and <code>10.0</code>), which can give a visual result you maybe have seen before in videogames where you could see through certain objects when moving uncomfortably close to them. 
+</note>
+
+<p>
+  When using orthographic projection, each of the vertex coordinates are directly mapped to clip space without any fancy perspective division (it still does perspective division, but the <code>w</code> component is not manipulated (it stays <code>1</code>) and thus has no effect). Because the orthographic projection doesn't use perspective projection, objects farther away do not seem smaller, which produces a weird visual output. For this reason the orthographic projection is mainly used for 2D renderings and for some architectural or engineering applications where we'd rather not have vertices distorted by perspective. Applications like <em>Blender</em> that are used for 3D modeling sometimes use orthographic projection for modeling, because it more accurately depicts each object's dimensions. Below you'll see a comparison of both projection methods in Blender:   
+</p>
+
+<img src="/img/getting-started/perspective_orthographic.png" class="clean"/>
+
+<p>
+  You can see that with perspective projection, the vertices farther away appear much smaller, while in orthographic projection each vertex has the same distance to the user. 
+</p>
+
+<h2>Putting it all together</h2>
+<p>
+  We create a transformation matrix for each of the aforementioned steps: model, view and projection matrix. A vertex coordinate is then transformed to clip coordinates as follows:
+  
+ 	\[ V_{clip} = M_{projection} \cdot M_{view} \cdot M_{model} \cdot V_{local} \]
+  
+Note that the order of matrix multiplication is reversed (remember that we need to read matrix multiplication from right to left). The resulting vertex should then be assigned to <var>gl_Position</var> in the vertex shader and OpenGL will then automatically perform perspective division and clipping.
+</p>
+
+<note>
+  <strong>And then?</strong><br/>
+  The output of the vertex shader requires the coordinates to be in clip-space which is what we just did with the transformation matrices. OpenGL then performs <em>perspective division</em> on the <em>clip-space coordinates</em> to transform them to <em>normalized-device coordinates</em>. OpenGL then uses the parameters from <fun><function id='22'>glViewPort</function></fun> to map the normalized-device coordinates to <em>screen coordinates</em> where each coordinate corresponds to a point on your screen (in our case a 800x600 screen). This process is called the <em>viewport transform</em>. 
+</note>
+
+<p>
+  This is a difficult topic to understand so if you're still not exactly sure about what each space is used for you don't have to worry. Below you'll see how we can actually put these coordinate spaces to good use and enough examples will follow in the upcoming chapters.
+</p>
+
+<h1>Going 3D</h1>
+<p>
+  Now that we know how to transform 3D coordinates to 2D coordinates we can start rendering real 3D objects instead of the lame 2D plane we've been showing so far.
+</p>
+
+<p>
+  To start drawing in 3D we'll first create a model matrix. The model matrix consists of  translations, scaling and/or rotations we'd like to apply to <em>transform</em> all object's vertices  to the global world space. Let's transform our plane a bit by rotating it on the x-axis so it looks like it's laying on the floor. The model matrix then looks like this:
+</p>
+
+<pre><code>
+glm::mat4 model = glm::mat4(1.0f);
+model = <function id='57'>glm::rotate</function>(model, <function id='63'>glm::radians</function>(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f)); 
+</code></pre>
+
+<p>
+By multiplying the vertex coordinates with this model matrix we're transforming the vertex coordinates to world coordinates. Our plane that is slightly on the floor thus represents the plane in the global world. 
+    </p>
+  
+<p>
+  Next we need to create a view matrix. We want to move slightly backwards in the scene so the object becomes visible (when in world space we're located at the origin <code>(0,0,0)</code>). To move around the scene, think about the following:
+  <ul>
+    <li>To move a camera backwards, is the same as moving the entire scene forward.</li>
+  </ul>
+  That is exactly what a view matrix does, we move the entire scene around inversed to where we want the camera to move.<br/>
+  Because we want to move backwards and since OpenGL is a right-handed system we have to move in the positive z-axis. We do this by translating the scene towards the negative z-axis. This gives the impression that we are moving backwards. 
+</p>
+
+
+<note>
+  <strong>Right-handed system</strong>
+  <p>
+    By convention, OpenGL is a right-handed system. What this basically says is that the positive x-axis is to your right, the positive y-axis is up and the positive z-axis is backwards. Think of your screen being the center of the 3 axes and the positive z-axis going through your screen towards you. The axes are drawn as follows:
+</p>
+  <img src="/img/getting-started/coordinate_systems_right_handed.png" class="clean"/>
+  <p>
+    To understand why it's called right-handed do the following:
+    <ul>
+      <li>Stretch your right-arm along the positive y-axis with your hand up top.</li>
+      <li>Let your thumb point to the right.</li>
+      <li>Let your pointing finger point up.</li>
+      <li>Now bend your middle finger downwards 90 degrees.</li>
+    </ul>
+    If you did things right, your thumb should point towards the positive x-axis, the pointing finger towards the positive y-axis and your middle finger towards the positive z-axis. If you were to do this with your left-arm you would see the z-axis is reversed. This is known as a left-handed system and is commonly used by DirectX. Note that in normalized device coordinates OpenGL actually uses a left-handed system (the projection matrix switches the handedness).
+  </p>
+</note>
+
+<p>
+  We'll discuss how to move around the scene in more detail in the next chapter. For now the view matrix looks like this:
+</p>
+
+<pre><code>
+glm::mat4 view = glm::mat4(1.0f);
+// note that we're translating the scene in the reverse direction of where we want to move
+view = <function id='55'>glm::translate</function>(view, glm::vec3(0.0f, 0.0f, -3.0f)); 
+</code></pre>
+
+<p>
+  The last thing we need to define is the projection matrix. We want to use perspective projection for our scene so we'll declare the projection matrix like this:
+</p>
+
+<pre><code>
+glm::mat4 projection;
+projection = <function id='58'>glm::perspective</function>(<function id='63'>glm::radians</function>(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+</code></pre>
+
+<p>
+  Now that we created the transformation matrices we should pass them to our shaders. First let's declare the transformation matrices as uniforms in the vertex shader and multiply them with the vertex coordinates:
+</p>
+
+<pre><code>
+#version 330 core
+layout (location = 0) in vec3 aPos;
+...
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+
+void main()
+{
+    // note that we read the multiplication from right to left
+    gl_Position = projection * view * model * vec4(aPos, 1.0);
+    ...
+}
+</code></pre>
+
+<p>
+  We should also send the matrices to the shader (this is usually done each frame since  transformation matrices tend to change a lot):
+</p>
+
+<pre><code>
+int modelLoc = <function id='45'>glGetUniformLocation</function>(ourShader.ID, "model");
+<function id='44'>glUniform</function>Matrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+... // same for View Matrix and Projection Matrix
+</code></pre>
+
+<p>
+  Now that our vertex coordinates are transformed via the model, view and projection matrix the final object should be:
+  
+  <ul>
+    <li>Tilted backwards to the floor. </li>
+    <li>A bit farther away from us.</li>
+    <li>Be displayed with perspective (it should get smaller, the further its vertices are).</li>
+  </ul>
+  
+  Let's check if the result actually does fulfill these requirements:
+</p>
+
+<img src="/img/getting-started/coordinate_systems_result.png" class="clean"/>
+
+<p>
+  It does indeed look like the plane is a 3D plane that's resting at some imaginary floor. If you're not getting the same result, compare your code with the complete  <a href="/code_viewer_gh.php?code=src/1.getting_started/6.1.coordinate_systems/coordinate_systems.cpp" target="_blank">source code</a>.
+</p>
+
+<h2>More 3D</h2>
+<p>
+  So far we've been working with a 2D plane, even in 3D space, so let's take the adventurous  route and extend our 2D plane to a 3D cube. To render a cube we need a total of 36 vertices (6 faces * 2 triangles * 3 vertices each). 36 vertices are a lot to sum up so you can retrieve them from <a href="/code_viewer.php?code=getting-started/cube_vertices" target="_blank">here</a>. 
+</p>
+
+<p>
+ For fun, we'll let the cube rotate over time:  
+</p>
+
+<pre><code>
+model = <function id='57'>glm::rotate</function>(model, (float)<function id='47'>glfwGetTime</function>() * <function id='63'>glm::radians</function>(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));  
+</code></pre>
+
+<p>
+  And then we'll draw the cube using <fun><function id='1'>glDrawArrays</function></fun> (as we didn't specify indices), but this time with a count of 36 vertices.
+</p>
+
+<pre class="cpp"><code>
+<function id='1'>glDrawArrays</function>(GL_TRIANGLES, 0, 36);
+</code></pre>
+
+<p>
+  You should get something similar to the following:
+</p>
+
+<div class="video paused" onclick="ClickVideo(this)">
+  <video width="600" height="450" loop>
+    <source src="/video/getting-started/coordinate_system_no_depth.mp4" type="video/mp4" />
+    <img src="/img/getting-started/coordinate_systems_no_depth.png" class="clean"/>
+  </video>
+</div>
+
+
+<p>
+  It does resemble a cube slightly but something's off. Some sides of the cubes are being drawn over other sides of the cube. This happens because when OpenGL draws your cube triangle-by-triangle, fragment by fragment, it will overwrite any pixel color that may have already been drawn there before. Since OpenGL gives no guarantee on the order of triangles rendered (within the same draw call), some triangles are drawn on top of each other even though one should clearly be in front of the other.
+</p>
+
+<p>
+  Luckily, OpenGL stores depth information in a buffer called the <def>z-buffer</def> that allows OpenGL to decide when to draw over a pixel and when not to. Using the z-buffer we can configure OpenGL to do depth-testing.
+</p>
+
+<h3>Z-buffer</h3>
+<p>
+  OpenGL stores all its depth information in a z-buffer, also known as a <def>depth buffer</def>. GLFW automatically creates such a buffer for you (just like it has a color-buffer that stores the colors of the output image). The depth is stored within each fragment (as the fragment's <code>z</code> value) and whenever the fragment wants to output its color, OpenGL compares its depth values with the z-buffer. If the current fragment is behind the other fragment it is discarded, otherwise overwritten. This process is called <def>depth testing</def> and is done automatically by OpenGL.
+</p>
+
+<p>
+  However, if we want to make sure OpenGL actually performs the depth testing we first need to tell OpenGL we want to enable depth testing; it is disabled by default. We can enable depth testing using <fun><function id='60'>glEnable</function></fun>. The <fun><function id='60'>glEnable</function></fun> and <fun>glDisable</fun> functions allow us to enable/disable certain functionality in OpenGL. That functionality is then enabled/disabled until another call is made to disable/enable it. Right now we want to enable depth testing by enabling <var>GL_DEPTH_TEST</var>:
+</p>
+
+<pre><code>
+<function id='60'>glEnable</function>(GL_DEPTH_TEST);  
+</code></pre>
+
+<p>
+  Since we're using a depth buffer we also want to clear the depth buffer before each render iteration (otherwise the depth information of the previous frame stays in the buffer). Just like clearing the color buffer, we can clear the depth buffer by specifying the <var>DEPTH_BUFFER_BIT</var> bit in the <fun><function id='10'>glClear</function></fun> function:
+</p>
+
+<pre><code>
+<function id='10'>glClear</function>(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+</code></pre>
+
+<p>
+  Let's re-run our program and see if OpenGL now performs depth testing:
+</p>
+
+<div class="video paused" onclick="ClickVideo(this)">
+  <video width="600" height="450" loop>
+    <source src="/video/getting-started/coordinate_system_depth.mp4" type="video/mp4" />
+    <img src="/img/getting-started/coordinate_systems_with_depth.png" class="clean"/>
+  </video>
+</div>
+
+
+<p>
+  There we go! A fully textured cube with proper depth testing that rotates over time. Check the source code <a href="/code_viewer_gh.php?code=src/1.getting_started/6.2.coordinate_systems_depth/coordinate_systems_depth.cpp" target="_blank">here</a>.
+</p>
+
+
+
+<h3>More cubes!</h3>
+<p>
+  Say we wanted to display 10 of our cubes on screen. Each cube will look the same but will only differ in where it's located in the world with each a different rotation. The graphical layout of the cube is already defined so we don't have to change our buffers or attribute arrays when rendering more objects. The only thing we have to change for each object is its model matrix where we transform the cubes into the world.
+</p>
+
+<p>
+  First, let's define a translation vector for each cube that specifies its position in world space. We'll define 10 cube positions in a <code>glm::vec3</code> array:
+</p>
+
+<pre><code>
+glm::vec3 cubePositions[] = {
+    glm::vec3( 0.0f,  0.0f,  0.0f), 
+    glm::vec3( 2.0f,  5.0f, -15.0f), 
+    glm::vec3(-1.5f, -2.2f, -2.5f),  
+    glm::vec3(-3.8f, -2.0f, -12.3f),  
+    glm::vec3( 2.4f, -0.4f, -3.5f),  
+    glm::vec3(-1.7f,  3.0f, -7.5f),  
+    glm::vec3( 1.3f, -2.0f, -2.5f),  
+    glm::vec3( 1.5f,  2.0f, -2.5f), 
+    glm::vec3( 1.5f,  0.2f, -1.5f), 
+    glm::vec3(-1.3f,  1.0f, -1.5f)  
+};
+</code></pre>
+
+<p>
+  Now, within the render loop we want to call <fun><function id='1'>glDrawArrays</function></fun> 10 times, but this time send a different model matrix to the vertex shader each time before we send out the draw call. We will create a small loop within the render loop that renders our object 10 times with a different model matrix each time. Note that we also add a small unique rotation to each container.
+</p>
+
+<pre><code>
+<function id='27'>glBindVertexArray</function>(VAO);
+for(unsigned int i = 0; i &lt; 10; i++)
+{
+    glm::mat4 model = glm::mat4(1.0f);
+    model = <function id='55'>glm::translate</function>(model, cubePositions[i]);
+    float angle = 20.0f * i; 
+    model = <function id='57'>glm::rotate</function>(model, <function id='63'>glm::radians</function>(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+    ourShader.setMat4("model", model);
+
+    <function id='1'>glDrawArrays</function>(GL_TRIANGLES, 0, 36);
+}
+</code></pre>
+
+<p>
+  This snippet of code will update the model matrix each time a new cube is drawn and do this 10 times in total. Right now we should be looking into a world filled with 10 oddly rotated cubes:
+</p>
+
+<img src="/img/getting-started/coordinate_systems_multiple_objects.png" class="clean"/>
+
+<p>
+  Perfect! It looks like our container found some like-minded friends. If you're stuck see if you can compare your code with the  <a href="/code_viewer_gh.php?code=src/1.getting_started/6.3.coordinate_systems_multiple/coordinate_systems_multiple.cpp" target="_blank">source code</a>.
+</p>
+
+<h2>Exercises</h2>
+<ul>
+  <li>Try experimenting with the <code>FoV</code> and <code>aspect-ratio</code> parameters of GLM's <code>projection</code> function. See if you can figure out how those affect the perspective frustum.</li>
+  <li>Play with the view matrix by translating in several directions and see how the scene changes. Think of the view matrix as a camera object.</li>  
+  <li>Try to make every 3rd container (including the 1st) rotate over time, while leaving the other containers static using just the model matrix: <a href="/code_viewer_gh.php?code=src/1.getting_started/6.4.coordinate_systems_exercise3/coordinate_systems_exercise3.cpp" target="_blank">solution</a>.</li>
+</ul>       
+
+    </div>
+    
+    <div id="hover">
+        HI
+    </div>
+   <!-- 728x90/320x50 sticky footer -->
+<!--<div id="waldo-tag-6196"></div>-->
+
+   <div id="disqus_thread"></div>
+
+    
+
+
+</div> <!-- container div -->
+
+
+</div> <!-- super container div -->
+</body>
+</html>

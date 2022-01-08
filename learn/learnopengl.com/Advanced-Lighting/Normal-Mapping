@@ -1,0 +1,808 @@
+
+
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <meta charset="utf-8"/>
+    <title>LearnOpenGL - Normal Mapping</title>	<!--<title>Learn OpenGL, extensive tutorial resource for learning Modern OpenGL</title>-->
+    <link rel="shortcut icon" type="image/ico" href="/favicon.ico"  />
+    <meta name="description" content="Learn OpenGL . com provides good and clear modern 3.3+ OpenGL tutorials with clear examples. A great resource to learn modern OpenGL aimed at beginners.">
+	<meta name="fragment" content="!">
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-51879160-1', 'learnopengl.com');
+      ga('send', 'pageview');
+
+    </script>
+    <!--<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-7855791439695850",
+              enable_page_level_ads: true
+         });
+    </script>
+	<script async='async' src='https://www.googletagservices.com/tag/js/gpt.js'></script>
+	<script>
+	  var googletag = googletag || {};
+	  googletag.cmd = googletag.cmd || [];
+	</script>
+	<script>
+	  googletag.cmd.push(function() {
+		googletag.defineSlot('/8491498/learnopengl_video', [300, 225], 'div-gpt-ad-1540574378241-0').addService(googletag.pubads());
+		googletag.pubads().enableSingleRequest();
+		googletag.pubads().collapseEmptyDivs();
+		googletag.enableServices();
+	  });
+	</script>
+    <script type="text/javascript" src="//cdn.thisiswaldo.com/static/js/1681.js"></script>
+	<script src="/js/jquery-1.11.0.min.js"></script>
+	<script src="/js/hoverintent.js"></script>
+	<link rel="stylesheet" type="text/css" href="/layout.css">
+    <link rel="stylesheet" type="text/css" href="/js/styles/obsidian.css">
+    <script src="/js/highlight.pack.js"></script>    
+    <script src="/js/functions.js"></script>
+    <script type="text/javascript" src="/js/mathjax/MathJax.js?config=TeX-AMS_HTML"></script>
+    <script>
+    // Has to be loaded last due to content bug 
+    MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+    </script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script>  
+        $(document).ready(function() {
+            // check if user visited from the old # based urls, re-direct to ?p= form
+            if(window.location.hash)
+            {
+                var name = window.location.hash.substring(2);
+                // name = name.replace(/-/g," ");
+                var index = name.indexOf('#'); // Remove any hash fragments from the url (Disquss adds hash fragments for comments, but results in 404 pages)
+                if(index >= 0)
+                    name = name.substring(0, index);
+                
+                window.location.href = "https://learnopengl.com/" + name;
+            } else {
+                    // Check if data has been succesfully loaded, if so: change title bar as ajax hash fragment
+                    var title = $('#content-url').text();
+                  
+                    // Refresh syntax highlighting
+                    // $('pre').each(function(i, e) {hljs.highlightBlock(e)});
+                  
+                    // Reset DISQUS
+                    // if(title == '/dev/')
+                        // title = '';
+                    // alert('hoi');
+					
+					// place video tag
+					if(title != '') {
+						var videoad = "%3Cdiv id=\'waldo-tag-12074\'%3E %3Cscript%3Egoogletag.cmd.push(function() {googletag.display(\'waldo-tag-12074\'); }); %3C/script%3E%3C/div%3E";
+						$('#content p:nth-of-type(3)').after(unescape(videoad));
+					}
+					
+                    // Adjust ads for correct bottom positioning based on content size
+                    window.setTimeout(function() {  
+                        AdPositioning();
+                     }, 3000);
+                  
+                  
+                    // set API resets after time-out (once content is properly loaded)
+                    window.setTimeout(function() {  
+                        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);       
+                        MathJax.Hub.Queue(["resetEquationNumbers", MathJax.InputJax.TeX]);
+                        
+                        var page_url = title == "" ? "http://www.learnopengl.com/" : "http://www.learnopengl.com/" + title;
+                        if(typeof DISQUS !== 'undefined') {                                              
+                            DISQUS.reset({
+                              reload: true,
+                              config: function () {  
+                                this.page.identifier = title;  
+                                this.page.url = page_url;
+                              }
+                            });
+                            $('#disqus_thread').show();
+                        }
+                           // Refresh callbacks on <function> tags
+                        SetFunctionTagCallbacks();        
+                    }, 1000);
+                                        
+                    // Zet ook de juiste button op 'selected'
+                    $('#nav li span, #nav li a').removeClass('selected');                
+                    if(title != '')
+                    {                    
+                        $('#nav li[id=\'' + title + '\']').children('span, a').addClass('selected');
+                    }
+                    // En open menu waar nodig
+                    var parents = $('#nav span.selected, #nav a.selected').parents('li').children('span.closed, a.closed');
+                    var index = 0;
+                    for(index = parents.length - 1; index >= 0; index--)
+                    {             
+                        
+                        var id = $(parents[index]).attr("id").replace( /^\D+/g, '');
+                        MenuClick(id, false);
+                    }                          
+                
+            }
+        });
+		// var initialized = false;
+        // window.onpopstate = function() {
+            // if(initialized)
+                // LoadPage();
+			// else
+				// initialized = true;
+        // };
+        
+        // Set up DISQUS
+        // $(document).ready(function() {
+            var disqus_shortname = 'learnopengl';
+            (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();           
+        // });
+    </script>
+</head>
+<body>
+<a href="https://learnopengl.com">
+<div id="header">
+</div>
+</a>
+
+<div id="supercontainer">
+    <!-- 728x90/320x50 -->
+    <div id="header_ad">
+        <div id="waldo-tag-6194"></div>
+    </div>
+    <div id="rightad_container">
+        <div id="rightad">
+            <!-- /8491498/learnopengl_video -->
+            <!--<div id='div-gpt-ad-1540574378241-0' style='height:225px; width:300px;'>
+			<script>
+			googletag.cmd.push(function() { googletag.display('div-gpt-ad-1540574378241-0'); });
+			</script>
+			</div>            
+            <br/>-->
+			<!-- place in-content -->
+			<!--<div id='waldo-tag-12074'>
+			 <script>
+			   googletag.cmd.push(function() { googletag.display('waldo-tag-12074'); });
+			 </script>
+			</div>-->
+           
+            <div id="waldo-tag-1715"></div>
+        </div>
+
+        <div id="admessage">
+            If you're running AdBlock, please consider whitelisting this site if you'd like to support LearnOpenGL; and no worries, I won't be mad if you don't :)
+            <!--<br/><br/>
+            Also, check out this little local multiplayer-only game I've made: <a href="https://store.steampowered.com/app/983590/Tank_Blazers/" target="_blank">Tank Blazers</a>.
+            <br/>
+            <a href="https://store.steampowered.com/app/983590/Tank_Blazers" target="_blank"><img src="/img/tank_blazers.jpg"  style="width:278px; margin-top: 9px; margin-left: -3px;"/></a>-->
+        </div>
+        
+        <div id="rightonethirdad">
+            <div id="waldo-tag-2246"></div>
+        </div>
+        
+        <div id="rightbottomad">            
+			<div id="waldo-tag-2247"></div>								
+        </div>
+    </div>
+    <div id="container">
+        <div id="loading"></div>
+<script> 
+$(document).ready(function() {
+$('#menu-item4').mousedown(function() { MenuClick(4, true) });
+$('#menu-item48').mousedown(function() { MenuClick(48, true) });
+$('#menu-item56').mousedown(function() { MenuClick(56, true) });
+$('#menu-item63').mousedown(function() { MenuClick(63, true) });
+$('#menu-item100').mousedown(function() { MenuClick(100, true) });
+$('#menu-item102').mousedown(function() { MenuClick(102, true) });
+$('#menu-item113').mousedown(function() { MenuClick(113, true) });
+$('#menu-item116').mousedown(function() { MenuClick(116, true) });
+$('#menu-item78').mousedown(function() { MenuClick(78, true) });
+$('#menu-item81').mousedown(function() { MenuClick(81, true) });
+$('#menu-item85').mousedown(function() { MenuClick(85, true) });
+$('#menu-item125').mousedown(function() { MenuClick(125, true) });
+$('#menu-item128').mousedown(function() { MenuClick(128, true) });
+$('#menu-item129').mousedown(function() { MenuClick(129, true) });
+$('#menu-item133').mousedown(function() { MenuClick(133, true) });
+$('#menu-item134').mousedown(function() { MenuClick(134, true) });
+$('#menu-item138').mousedown(function() { MenuClick(138, true) });
+}); 
+</script>   
+    <div id="nav">
+         <div id="social">
+            <a href="https://github.com/JoeyDeVries/LearnOpenGL" target="_blank">
+                    <img src="/img/github.png" class="social_ico">
+            </a>
+             <!-- <a href="https://www.facebook.com/Learnopengl-2199631333595544/" target="_blank">
+                <img src="/img/facebook.png" class="social_ico">
+            </a>-->
+            <a href="https://twitter.com/JoeyDeVriez" target="_blank">
+                <img src="/img/twitter.png" class="social_ico">
+            </a>
+          
+        </div>
+    <img src='img/nav-button_bottom-arrow.png' style='display: none'><ol><li id='Introduction'><a id="menu-item1" href="https://learnopengl.com/Introduction">Introduction </a></li><li id='Getting-started'><span id="menu-item4" class="closed">Getting started </span><ol id="menu-items-of4" style="display:none;"><li id='Getting-started/OpenGL'><a id="menu-item49" href="https://learnopengl.com/Getting-started/OpenGL">OpenGL </a></li><li id='Getting-started/Creating-a-window'><a id="menu-item5" href="https://learnopengl.com/Getting-started/Creating-a-window">Creating a window </a></li><li id='Getting-started/Hello-Window'><a id="menu-item6" href="https://learnopengl.com/Getting-started/Hello-Window">Hello Window </a></li><li id='Getting-started/Hello-Triangle'><a id="menu-item38" href="https://learnopengl.com/Getting-started/Hello-Triangle">Hello Triangle </a></li><li id='Getting-started/Shaders'><a id="menu-item39" href="https://learnopengl.com/Getting-started/Shaders">Shaders </a></li><li id='Getting-started/Textures'><a id="menu-item40" href="https://learnopengl.com/Getting-started/Textures">Textures </a></li><li id='Getting-started/Transformations'><a id="menu-item43" href="https://learnopengl.com/Getting-started/Transformations">Transformations </a></li><li id='Getting-started/Coordinate-Systems'><a id="menu-item44" href="https://learnopengl.com/Getting-started/Coordinate-Systems">Coordinate Systems </a></li><li id='Getting-started/Camera'><a id="menu-item47" href="https://learnopengl.com/Getting-started/Camera">Camera </a></li><li id='Getting-started/Review'><a id="menu-item50" href="https://learnopengl.com/Getting-started/Review">Review </a></li></ol></li><li id='Lighting'><span id="menu-item48" class="closed">Lighting </span><ol id="menu-items-of48" style="display:none;"><li id='Lighting/Colors'><a id="menu-item51" href="https://learnopengl.com/Lighting/Colors">Colors </a></li><li id='Lighting/Basic-Lighting'><a id="menu-item52" href="https://learnopengl.com/Lighting/Basic-Lighting">Basic Lighting </a></li><li id='Lighting/Materials'><a id="menu-item53" href="https://learnopengl.com/Lighting/Materials">Materials </a></li><li id='Lighting/Lighting-maps'><a id="menu-item54" href="https://learnopengl.com/Lighting/Lighting-maps">Lighting maps </a></li><li id='Lighting/Light-casters'><a id="menu-item55" href="https://learnopengl.com/Lighting/Light-casters">Light casters </a></li><li id='Lighting/Multiple-lights'><a id="menu-item58" href="https://learnopengl.com/Lighting/Multiple-lights">Multiple lights </a></li><li id='Lighting/Review'><a id="menu-item57" href="https://learnopengl.com/Lighting/Review">Review </a></li></ol></li><li id='Model-Loading'><span id="menu-item56" class="closed">Model Loading </span><ol id="menu-items-of56" style="display:none;"><li id='Model-Loading/Assimp'><a id="menu-item59" href="https://learnopengl.com/Model-Loading/Assimp">Assimp </a></li><li id='Model-Loading/Mesh'><a id="menu-item60" href="https://learnopengl.com/Model-Loading/Mesh">Mesh </a></li><li id='Model-Loading/Model'><a id="menu-item61" href="https://learnopengl.com/Model-Loading/Model">Model </a></li></ol></li><li id='Advanced-OpenGL'><span id="menu-item63" class="closed">Advanced OpenGL </span><ol id="menu-items-of63" style="display:none;"><li id='Advanced-OpenGL/Depth-testing'><a id="menu-item72" href="https://learnopengl.com/Advanced-OpenGL/Depth-testing">Depth testing </a></li><li id='Advanced-OpenGL/Stencil-testing'><a id="menu-item73" href="https://learnopengl.com/Advanced-OpenGL/Stencil-testing">Stencil testing </a></li><li id='Advanced-OpenGL/Blending'><a id="menu-item74" href="https://learnopengl.com/Advanced-OpenGL/Blending">Blending </a></li><li id='Advanced-OpenGL/Face-culling'><a id="menu-item77" href="https://learnopengl.com/Advanced-OpenGL/Face-culling">Face culling </a></li><li id='Advanced-OpenGL/Framebuffers'><a id="menu-item65" href="https://learnopengl.com/Advanced-OpenGL/Framebuffers">Framebuffers </a></li><li id='Advanced-OpenGL/Cubemaps'><a id="menu-item66" href="https://learnopengl.com/Advanced-OpenGL/Cubemaps">Cubemaps </a></li><li id='Advanced-OpenGL/Advanced-Data'><a id="menu-item69" href="https://learnopengl.com/Advanced-OpenGL/Advanced-Data">Advanced Data </a></li><li id='Advanced-OpenGL/Advanced-GLSL'><a id="menu-item67" href="https://learnopengl.com/Advanced-OpenGL/Advanced-GLSL">Advanced GLSL </a></li><li id='Advanced-OpenGL/Geometry-Shader'><a id="menu-item68" href="https://learnopengl.com/Advanced-OpenGL/Geometry-Shader">Geometry Shader </a></li><li id='Advanced-OpenGL/Instancing'><a id="menu-item70" href="https://learnopengl.com/Advanced-OpenGL/Instancing">Instancing </a></li><li id='Advanced-OpenGL/Anti-Aliasing'><a id="menu-item75" href="https://learnopengl.com/Advanced-OpenGL/Anti-Aliasing">Anti Aliasing </a></li></ol></li><li id='Advanced-Lighting'><span id="menu-item100" class="closed">Advanced Lighting </span><ol id="menu-items-of100" style="display:none;"><li id='Advanced-Lighting/Advanced-Lighting'><a id="menu-item101" href="https://learnopengl.com/Advanced-Lighting/Advanced-Lighting">Advanced Lighting </a></li><li id='Advanced-Lighting/Gamma-Correction'><a id="menu-item110" href="https://learnopengl.com/Advanced-Lighting/Gamma-Correction">Gamma Correction </a></li><li id='Advanced-Lighting/Shadows'><span id="menu-item102" class="closed">Shadows </span><ol id="menu-items-of102" style="display:none;"><li id='Advanced-Lighting/Shadows/Shadow-Mapping'><a id="menu-item103" href="https://learnopengl.com/Advanced-Lighting/Shadows/Shadow-Mapping">Shadow Mapping </a></li><li id='Advanced-Lighting/Shadows/Point-Shadows'><a id="menu-item104" href="https://learnopengl.com/Advanced-Lighting/Shadows/Point-Shadows">Point Shadows </a></li></ol></li><li id='Advanced-Lighting/Normal-Mapping'><a id="menu-item106" href="https://learnopengl.com/Advanced-Lighting/Normal-Mapping">Normal Mapping </a></li><li id='Advanced-Lighting/Parallax-Mapping'><a id="menu-item107" href="https://learnopengl.com/Advanced-Lighting/Parallax-Mapping">Parallax Mapping </a></li><li id='Advanced-Lighting/HDR'><a id="menu-item111" href="https://learnopengl.com/Advanced-Lighting/HDR">HDR </a></li><li id='Advanced-Lighting/Bloom'><a id="menu-item112" href="https://learnopengl.com/Advanced-Lighting/Bloom">Bloom </a></li><li id='Advanced-Lighting/Deferred-Shading'><a id="menu-item108" href="https://learnopengl.com/Advanced-Lighting/Deferred-Shading">Deferred Shading </a></li><li id='Advanced-Lighting/SSAO'><a id="menu-item109" href="https://learnopengl.com/Advanced-Lighting/SSAO">SSAO </a></li></ol></li><li id='PBR'><span id="menu-item113" class="closed">PBR </span><ol id="menu-items-of113" style="display:none;"><li id='PBR/Theory'><a id="menu-item114" href="https://learnopengl.com/PBR/Theory">Theory </a></li><li id='PBR/Lighting'><a id="menu-item115" href="https://learnopengl.com/PBR/Lighting">Lighting </a></li><li id='PBR/IBL'><span id="menu-item116" class="closed">IBL </span><ol id="menu-items-of116" style="display:none;"><li id='PBR/IBL/Diffuse-irradiance'><a id="menu-item117" href="https://learnopengl.com/PBR/IBL/Diffuse-irradiance">Diffuse irradiance </a></li><li id='PBR/IBL/Specular-IBL'><a id="menu-item118" href="https://learnopengl.com/PBR/IBL/Specular-IBL">Specular IBL </a></li></ol></li></ol></li><li id='In-Practice'><span id="menu-item78" class="closed">In Practice </span><ol id="menu-items-of78" style="display:none;"><li id='In-Practice/Debugging'><a id="menu-item79" href="https://learnopengl.com/In-Practice/Debugging">Debugging </a></li><li id='In-Practice/Text-Rendering'><a id="menu-item80" href="https://learnopengl.com/In-Practice/Text-Rendering">Text Rendering </a></li><li id='In-Practice/2D-Game'><span id="menu-item81" class="closed">2D Game </span><ol id="menu-items-of81" style="display:none;"><li id='In-Practice/2D-Game/Breakout'><a id="menu-item82" href="https://learnopengl.com/In-Practice/2D-Game/Breakout">Breakout </a></li><li id='In-Practice/2D-Game/Setting-up'><a id="menu-item88" href="https://learnopengl.com/In-Practice/2D-Game/Setting-up">Setting up </a></li><li id='In-Practice/2D-Game/Rendering-Sprites'><a id="menu-item83" href="https://learnopengl.com/In-Practice/2D-Game/Rendering-Sprites">Rendering Sprites </a></li><li id='In-Practice/2D-Game/Levels'><a id="menu-item84" href="https://learnopengl.com/In-Practice/2D-Game/Levels">Levels </a></li><li id='In-Practice/2D-Game/Collisions'><span id="menu-item85" class="closed">Collisions </span><ol id="menu-items-of85" style="display:none;"><li id='In-Practice/2D-Game/Collisions/Ball'><a id="menu-item95" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Ball">Ball </a></li><li id='In-Practice/2D-Game/Collisions/Collision-detection'><a id="menu-item96" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Collision-detection">Collision detection </a></li><li id='In-Practice/2D-Game/Collisions/Collision-resolution'><a id="menu-item97" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Collision-resolution">Collision resolution </a></li></ol></li><li id='In-Practice/2D-Game/Particles'><a id="menu-item89" href="https://learnopengl.com/In-Practice/2D-Game/Particles">Particles </a></li><li id='In-Practice/2D-Game/Postprocessing'><a id="menu-item90" href="https://learnopengl.com/In-Practice/2D-Game/Postprocessing">Postprocessing </a></li><li id='In-Practice/2D-Game/Powerups'><a id="menu-item91" href="https://learnopengl.com/In-Practice/2D-Game/Powerups">Powerups </a></li><li id='In-Practice/2D-Game/Audio'><a id="menu-item94" href="https://learnopengl.com/In-Practice/2D-Game/Audio">Audio </a></li><li id='In-Practice/2D-Game/Render-text'><a id="menu-item92" href="https://learnopengl.com/In-Practice/2D-Game/Render-text">Render text </a></li><li id='In-Practice/2D-Game/Final-thoughts'><a id="menu-item93" href="https://learnopengl.com/In-Practice/2D-Game/Final-thoughts">Final thoughts </a></li></ol></li></ol></li><li id='Guest-Articles'><span id="menu-item125" class="closed">Guest Articles </span><ol id="menu-items-of125" style="display:none;"><li id='Guest-Articles/How-to-publish'><a id="menu-item126" href="https://learnopengl.com/Guest-Articles/How-to-publish">How to publish </a></li><li id='Guest-Articles/2020'><span id="menu-item128" class="closed">2020 </span><ol id="menu-items-of128" style="display:none;"><li id='Guest-Articles/2020/OIT'><span id="menu-item129" class="closed">OIT </span><ol id="menu-items-of129" style="display:none;"><li id='Guest-Articles/2020/OIT/Introduction'><a id="menu-item130" href="https://learnopengl.com/Guest-Articles/2020/OIT/Introduction">Introduction </a></li><li id='Guest-Articles/2020/OIT/Weighted-Blended'><a id="menu-item132" href="https://learnopengl.com/Guest-Articles/2020/OIT/Weighted-Blended">Weighted Blended </a></li></ol></li><li id='Guest-Articles/2020/Skeletal-Animation'><a id="menu-item131" href="https://learnopengl.com/Guest-Articles/2020/Skeletal-Animation">Skeletal Animation </a></li></ol></li><li id='Guest-Articles/2021'><span id="menu-item133" class="closed">2021 </span><ol id="menu-items-of133" style="display:none;"><li id='Guest-Articles/2021/CSM'><a id="menu-item137" href="https://learnopengl.com/Guest-Articles/2021/CSM">CSM </a></li><li id='Guest-Articles/2021/Scene'><span id="menu-item134" class="closed">Scene </span><ol id="menu-items-of134" style="display:none;"><li id='Guest-Articles/2021/Scene/Scene-Graph'><a id="menu-item135" href="https://learnopengl.com/Guest-Articles/2021/Scene/Scene-Graph">Scene Graph </a></li><li id='Guest-Articles/2021/Scene/Frustum-Culling'><a id="menu-item136" href="https://learnopengl.com/Guest-Articles/2021/Scene/Frustum-Culling">Frustum Culling </a></li></ol></li><li id='Guest-Articles/2021/Tessellation'><span id="menu-item138" class="closed">Tessellation </span><ol id="menu-items-of138" style="display:none;"><li id='Guest-Articles/2021/Tessellation/Height-map'><a id="menu-item139" href="https://learnopengl.com/Guest-Articles/2021/Tessellation/Height-map">Height map </a></li></ol></li></ol></li></ol></li><li id='Code-repository'><a id="menu-item99" href="https://learnopengl.com/Code-repository">Code repository </a></li><li id='Translations'><a id="menu-item119" href="https://learnopengl.com/Translations">Translations </a></li><li id='About'><a id="menu-item2" href="https://learnopengl.com/About">About </a></li></ol>		<div id="menu_book">
+            <a href="https://geni.us/learnopengl" target="_blank"><img src="/book/below_menu.png" class="clean"/></a>
+        </div>
+       <div id="donate">
+            <a href="https://www.paypal.me/learnopengl/" target="_blank">
+                <div id="donate_img"></div>
+                <img style="display: none" src="/img/donate_button_hover.png"/>
+                <!--<img id="donate_img" src="img/patreon.png"/>-->
+            </a>
+          <!--<div id="alipay">
+            <img style="width: 150px;" class="clean" src="/img/alipay_logo.png"/>
+            <img style="width: 150px; margin-top: 5px" src="/img/alipay.png"/>
+          </div>-->
+        </div> 
+		<!--
+		<div class="btc">
+			<h3>BTC</h3>
+			<p>
+				1CLGKgmBSuYJ1nnvDGAepVTKNNDpUjfpRa
+			</p>
+			<img src="/img/btc_qr.png"/>
+        </div> 
+		<div class="btc">
+			<h3>ETH/ERC20</h3>
+			<p>
+				0x1de59bd9e52521a46309474f8372531533bd7c43
+			</p>
+			<img src="/img/erc20_qr.png"/>
+        </div>       
+		!-->
+        <div id="ad">
+							<!--<div id="waldo-tag-1684"></div>-->
+			        </div>
+      
+        <div id="lefttwothirdad">
+            <div id="waldo-tag-2245"></div>
+        </div>
+    </div>
+    
+    <div id="content">
+    <h1 id="content-title">Normal Mapping</h1>
+<h1 id="content-url" style='display:none;'>Advanced-Lighting/Normal-Mapping</h1>
+<p>
+  All of our scenes are filled with meshes, each consisting of hundreds or maybe thousands of triangles. We boosted the realism by wrapping 2D textures on these flat triangles, hiding the fact that the polygons are just tiny flat triangles. Textures help, but when you take a good close look at the meshes it is still quite easy to see the underlying flat surfaces. Most real-life surface aren't flat however and exhibit a lot of (bumpy) details.
+</p>
+
+<p>
+  For instance, take a brick surface. A brick surface is quite a rough surface and obviously not completely flat: it contains sunken cement stripes and a lot of detailed little holes and cracks. If we were to view such a brick surface in a lit scene the immersion gets easily broken. Below we can see a brick texture applied to a flat surface lit by a point light.
+</p>
+
+<img src="/img/advanced-lighting/normal_mapping_flat.png" class="clean" alt="Brick surface lighted by point light in OpenGL. It's not too realistic; its flat structures is now quite obvious"/>
+  
+<p>
+  The lighting doesn't take any of the small cracks and holes into account and completely ignores the deep stripes between the bricks; the surface looks perfectly flat. We can partly fix the flat look by using a specular map to pretend some surfaces are less lit due to depth or other details, but that's more of a hack than a real solution. What we need is some way to inform the lighting system about all the little depth-like details of the surface.
+</p>
+  
+<p>
+  If we think about this from a light's perspective: how comes the surface is lit as a completely flat surface? The answer is the surface's normal vector. From the lighting technique's point of view, the only way it determines the shape of an object is by its perpendicular normal vector. The brick surface only has a single normal vector, and as a result the surface is uniformly lit based on this normal vector's direction.  What if we, instead of a per-surface normal that is the same for each fragment, use a per-fragment normal that is different for each fragment? This way we can slightly deviate the normal vector based on a surface's little details; this gives the illusion the surface is a lot more complex:
+</p>
+  
+  <img src="/img/advanced-lighting/normal_mapping_surfaces.png" class="clean" alt="Surfaces displaying per-surface normal and per-fragment normals for normal mapping in OpenGL"/>
+    
+<p>
+  By using per-fragment normals we can trick the lighting into believing a surface consists of tiny little planes (perpendicular to the normal vectors) giving the surface an enormous boost in detail. This technique to use per-fragment normals compared to per-surface normals is called <def>normal mapping</def> or <def>bump mapping</def>. Applied to the brick plane it looks a bit like this:
+</p>
+    
+<img src="/img/advanced-lighting/normal_mapping_compare.png" alt="Surface without and with normal mapping in OpenGL"/>
+  
+<p>
+  As you can see, it gives an enormous boost in detail and for a relatively low cost. Since we only change the normal vectors per fragment there is no need to change the lighting equation. We now pass a per-fragment normal, instead of an interpolated surface normal, to the lighting algorithm. The lighting then does the rest.
+</p>
+  
+<h2>Normal mapping</h2>
+<p>
+  To get normal mapping to work we're going to need a per-fragment normal. Similar to what we did with diffuse and specular maps we can use a 2D texture to store per-fragment normal data. This way we can sample a 2D texture to get a normal vector for that specific fragment.
+  </p>
+  
+  <p>
+    While normal vectors are geometric entities and textures are generally only used for color information, storing normal vectors in a texture may not be immediately obvious. If you think about color vectors in a texture they are represented as a 3D vector with an <code>r</code>, <code>g</code>, and <code>b</code> component. We can similarly store a normal vector's <code>x</code>, <code>y</code> and <code>z</code> component in the respective color components. Normal vectors range between <code>-1</code> and <code>1</code> so they're first mapped to [<code>0</code>,<code>1</code>]:
+</p>
+  
+<pre><code>
+vec3 rgb_normal = normal * 0.5 + 0.5; // transforms from [-1,1] to [0,1]  
+</code></pre>
+  
+<p>
+  With normal vectors transformed to an RGB color component like this, we can store a per-fragment normal derived from the shape of a surface onto a 2D texture. An example <def>normal map</def> of the brick surface at the start of this chapter is shown below:
+</p>
+  
+  <img src="/img/advanced-lighting/normal_mapping_normal_map.png" alt="Image of a normal map in OpenGL normal mapping"/>
+    
+<p>
+   This (and almost all normal maps you find online) will have a blue-ish tint. This is because the normals are all closely pointing outwards towards the positive z-axis \((0, 0, 1)\): a blue-ish color. The deviations in color represent normal vectors that are slightly offset from the general positive z direction, giving a sense of depth to the texture. For example, you can see that at the top of each brick the color tends to be more greenish, which makes sense as the top side of a brick would have normals pointing more in the positive y direction \((0, 1, 0)\) which happens to be the color green!
+</p>
+    
+<p>
+  With a simple plane, looking at the positive z-axis, we can take <a href="/img/textures/brickwall.jpg" target="_blank">this</a> diffuse texture and <a href="/img/textures/brickwall_normal.jpg" target="_blank">this</a> normal map to render the image from the previous section. Note that the linked normal map is different from the one shown above. The reason for this is that OpenGL reads texture coordinates with the y (or v) coordinate reversed from how textures are generally created. The linked normal map thus has its y (or green) component inversed (you can see the green colors are now pointing downwards); if you fail to take this into account, the lighting will be incorrect. Load both textures, bind them to the proper texture units, and render a plane with the following changes in the lighting fragment shader:
+</p>
+    
+<pre><code>
+uniform sampler2D normalMap;  
+
+void main()
+{           
+    // obtain normal from normal map in range [0,1]
+    normal = texture(normalMap, fs_in.TexCoords).rgb;
+    // transform normal vector to range [-1,1]
+    normal = normalize(normal * 2.0 - 1.0);   
+  
+    [...]
+    // proceed with lighting as normal
+}  
+</code></pre>
+  
+<p>
+  Here we reverse the process of mapping normals to RGB colors by remapping the sampled normal color from [<code>0</code>,<code>1</code>] back to [<code>-1</code>,<code>1</code>] and then use the sampled normal vectors for the upcoming lighting calculations. In this case we used a Blinn-Phong shader.
+</p>
+    
+<p>
+  By slowly moving the light source over time you really get a sense of depth using the normal map. Running this normal mapping example gives the exact results as shown at the start of this chapter:
+</p>
+  
+<img src="/img/advanced-lighting/normal_mapping_correct.png" class="clean" alt="Surface without and with normal mapping in OpenGL"/>
+  
+<p>
+  There is one issue however that greatly limits this use of normal maps. The normal map we used had normal vectors that all pointed somewhat in the positive z direction. This worked because the plane's surface normal was also pointing in the positive z direction. However, what would happen if we used the same normal map on a plane laying on the ground with a surface normal vector pointing in the positive y direction?
+</p>
+  
+  <img src="/img/advanced-lighting/normal_mapping_ground.png" class="clean" alt="Image of plane with normal mapping without tangent space transformation, looks off in OpenGL"/>
+    
+<p>
+  The lighting doesn't look right! This happens because the sampled normals of this plane still roughly point in the positive z direction even though they should mostly point in the positive y direction. As a result, the lighting thinks the surface's normals are the same as before when the plane was pointing towards the positive z direction; the lighting is incorrect. The image below shows what the sampled normals approximately look like on this surface:
+</p>
+    
+  <img src="/img/advanced-lighting/normal_mapping_ground_normals.png" class="clean" alt="Image of plane with normal mapping without tangent space transformation with displayed normals, looks off in OpenGL"/>
+    
+<p>
+  You can see that all the normals point somewhat in the positive z direction even though they should be pointing towards the positive y direction. One solution to this problem is to define a normal map for each possible direction of the surface; in the case of a cube we would need 6 normal maps. However, with advanced meshes that can have more than hundreds of possible surface directions this becomes an infeasible approach.
+</p>
+    
+<p>
+  A different solution exists that does all the lighting in a different coordinate space: a coordinate space where the normal map vectors always point towards the positive z direction; all other lighting vectors are then transformed relative to this positive z direction. This way we can always use the same normal map, regardless of orientation. This coordinate space is called <def>tangent space</def>.
+</p>
+    
+<h2>Tangent space</h2>
+<p>
+  Normal vectors in a normal map are expressed in tangent space where normals always point roughly in the positive z direction. Tangent space is a space that's local to the surface of a triangle: the normals are relative to the local reference frame of the individual triangles. Think of it as the local space of the normal map's vectors; they're all defined pointing in the positive z direction regardless of the final transformed direction. Using a specific matrix we can then transform normal vectors from this <em>local</em> tangent space to world or view coordinates, orienting them along the final mapped surface's direction.
+</p>
+    
+<p>
+  Let's say we have the incorrect normal mapped surface from the previous section looking in the positive y direction. The normal map is defined in tangent space, so one way to solve the problem is to calculate a matrix to transform normals from tangent space to a different space such that they're aligned with the surface's normal direction: the normal vectors are then all pointing roughly in the positive y direction. The great thing about tangent space is that we can calculate this matrix for any type of surface so that we can properly align the tangent space's z direction to the surface's normal direction. 
+</p>
+    
+<p>
+  Such a matrix is called a <def>TBN</def> matrix where the letters depict a <def>Tangent</def>, <def>Bitangent</def> and <def>Normal</def> vector. These are the vectors we need to construct this matrix. To construct such a <em>change-of-basis</em> matrix, that transforms a tangent-space vector to a different coordinate space, we need three perpendicular vectors that are aligned along the surface of a normal map: an up, right, and forward vector; similar to what we did in the <a href="https://learnopengl.com/Getting-Started/Camera" target="_blank">camera</a> chapter.
+</p>
+    
+<p>
+  We already know the up vector, which is the surface's normal vector. The right and forward vector are the tangent and bitangent vector respectively. The following image of a surface shows all three vectors on a surface:
+</p>
+    
+    <img src="/img/advanced-lighting/normal_mapping_tbn_vectors.png" class="clean" alt="Normal mapping tangent, bitangent and normal vectors on a surface in OpenGL"/>
+      
+<p>
+  Calculating the tangent and bitangent vectors is not as straightforward as the normal vector. We can see from the image that the direction of the normal map's tangent and bitangent vector align with the direction in which we define a surface's texture coordinates. We'll use this fact to calculate tangent and bitangent vectors for each surface. Retrieving them does require a bit of math; take a look at the following image:
+</p>
+
+   <img src="/img/advanced-lighting/normal_mapping_surface_edges.png" class="clean" alt="Edges of a surface in OpenGL required for calculating TBN matrix"/>
+     
+<p>
+  From the image we can see that the texture coordinate differences of an edge \(E_2\) of a triangle (denoted as \(\Delta U_2\) and \(\Delta V_2\)) are expressed in the same direction as the tangent vector \(T\) and bitangent vector \(B\). Because of this we can write both displayed edges \(E_1\) and \(E_2\) of the triangle as a linear combination of the tangent vector \(T\) and the bitangent vector \(B\):
+</p>     
+     
+     \[E_1 = \Delta U_1T + \Delta V_1B\]
+     \[E_2 = \Delta U_2T + \Delta V_2B\]
+     
+<p>
+  Which we can also write as:
+</p>
+     
+     \[(E_{1x}, E_{1y}, E_{1z}) = \Delta U_1(T_x, T_y, T_z) + \Delta V_1(B_x, B_y, B_z)\]
+     \[(E_{2x}, E_{2y}, E_{2z}) = \Delta U_2(T_x, T_y, T_z) + \Delta V_2(B_x, B_y, B_z)\]
+     
+<p>
+   We can calculate \(E\) as the difference vector between two triangle positions, and \(\Delta U\) and \(\Delta V\) as their texture coordinate differences. We're then left with two unknowns (tangent \(T\) and bitangent \(B\)) and two equations. You may remember from your algebra classes that this allows us to solve for \(T\) and \(B\).
+</p>
+     
+<p>
+  The last equation allows us to write it in a different form: that of matrix multiplication:
+</p>
+     
+   \[\begin{bmatrix} E_{1x} & E_{1y} & E_{1z} \\ E_{2x} & E_{2y} & E_{2z} \end{bmatrix} = \begin{bmatrix} \Delta U_1 & \Delta V_1 \\ \Delta U_2 & \Delta V_2 \end{bmatrix} \begin{bmatrix} T_x & T_y & T_z \\ B_x & B_y & B_z \end{bmatrix} \]
+     
+<p>
+  Try to visualize the matrix multiplications in your head and confirm that this is indeed the same equation. An advantage of rewriting the equations in matrix form is that solving for \(T\) and \(B\) is easier to understand. If we multiply both sides of the equations by the inverse of the \(\Delta U \Delta V\) matrix we get:
+</p>
+     
+     \[ \begin{bmatrix} \Delta U_1 & \Delta V_1 \\ \Delta U_2 & \Delta V_2 \end{bmatrix}^{-1} \begin{bmatrix} E_{1x} & E_{1y} & E_{1z} \\ E_{2x} & E_{2y} & E_{2z} \end{bmatrix} = \begin{bmatrix} T_x & T_y & T_z \\ B_x & B_y & B_z \end{bmatrix} \] 
+ 
+<p>
+  This allows us to solve for \(T\) and \(B\). This does require us to calculate the inverse of the delta texture coordinate matrix. I won't go into the mathematical details of calculating a matrix' inverse, but it roughly translates to 1 over the determinant of the matrix, multiplied by its adjugate matrix:
+</p>
+      \[ \begin{bmatrix} T_x & T_y & T_z \\ B_x & B_y & B_z \end{bmatrix}  = \frac{1}{\Delta U_1 \Delta V_2 - \Delta U_2 \Delta V_1} \begin{bmatrix} \Delta V_2 & -\Delta V_1 \\ -\Delta U_2 & \Delta U_1 \end{bmatrix} \begin{bmatrix} E_{1x} & E_{1y} & E_{1z} \\ E_{2x} & E_{2y} & E_{2z} \end{bmatrix} \] 
+     
+<p>
+  This final equation gives us a formula for calculating the tangent vector \(T\) and bitangent vector \(B\) from a triangle's two edges and its texture coordinates.
+</p>
+     
+<p>
+  Don't worry if you do not fully understand the mathematics behind this. As long as you understand that we can calculate tangents and bitangents from a triangle's vertices and its texture coordinates (since texture coordinates are in the same space as tangent vectors) you're halfway there.
+</p>
+     
+<h3>Manual calculation of tangents and bitangents</h3>
+<p>
+  In the previous demo we had a simple normal mapped plane facing the positive z direction. This time we want to implement normal mapping using tangent space so we can orient this plane however we want and normal mapping would still work. Using the previously discussed mathematics we're going to manually calculate this surface's tangent and bitangent vectors.
+</p>
+     
+<p>
+  Let's assume the plane is built up from the following vectors (with 1, 2, 3 and 1, 3, 4 as its two triangles):
+</p>
+     
+<pre><code>
+// positions
+glm::vec3 pos1(-1.0,  1.0, 0.0);
+glm::vec3 pos2(-1.0, -1.0, 0.0);
+glm::vec3 pos3( 1.0, -1.0, 0.0);
+glm::vec3 pos4( 1.0,  1.0, 0.0);
+// texture coordinates
+glm::vec2 uv1(0.0, 1.0);
+glm::vec2 uv2(0.0, 0.0);
+glm::vec2 uv3(1.0, 0.0);
+glm::vec2 uv4(1.0, 1.0);
+// normal vector
+glm::vec3 nm(0.0, 0.0, 1.0);  
+</code></pre>
+
+<p>
+  We first calculate the first triangle's edges and delta UV coordinates:
+</p>
+     
+<pre><code>
+glm::vec3 edge1 = pos2 - pos1;
+glm::vec3 edge2 = pos3 - pos1;
+glm::vec2 deltaUV1 = uv2 - uv1;
+glm::vec2 deltaUV2 = uv3 - uv1;  
+</code></pre>
+     
+<p>
+  With the required data for calculating tangents and bitangents we can start following the equation from the previous section:
+</p>
+     
+<pre><code>
+float f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
+
+tangent1.x = f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x);
+tangent1.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
+tangent1.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
+
+bitangent1.x = f * (-deltaUV2.x * edge1.x + deltaUV1.x * edge2.x);
+bitangent1.y = f * (-deltaUV2.x * edge1.y + deltaUV1.x * edge2.y);
+bitangent1.z = f * (-deltaUV2.x * edge1.z + deltaUV1.x * edge2.z);
+  
+[...] // similar procedure for calculating tangent/bitangent for plane's second triangle
+</code></pre>
+     
+<p>
+  Here we first pre-calculate the fractional part of the equation as <var>f</var> and then for each vector component we do the corresponding matrix multiplication multiplied by <var>f</var>. If you compare this code with the final equation you can see it is a direct translation. Because a triangle is always a flat shape, we only need to calculate a single tangent/bitangent pair per triangle as they will be the same for each of the triangle's vertices.
+</p>
+     
+<p>
+  The resulting tangent and bitangent vector should have a value of (<code>1</code>,<code>0</code>,<code>0</code>) and (<code>0</code>,<code>1</code>,<code>0</code>) respectively that together with the normal (<code>0</code>,<code>0</code>,<code>1</code>) forms an orthogonal TBN matrix. Visualized on the plane, the TBN vectors would look like this:
+</p>
+    
+     <img src="/img/advanced-lighting/normal_mapping_tbn_shown.png" class="clean" alt="Image of TBN vectors visualized on a plane in OpenGL"/>
+       
+<p>
+  With tangent and bitangent vectors defined per vertex we can start implementing <em>proper</em> normal mapping.
+</p>
+       
+<h3>Tangent space normal mapping</h3>
+<p>
+  To get normal mapping working, we first have to create a TBN matrix in the shaders. To do that, we pass the earlier calculated tangent and bitangent vectors to the vertex shader as vertex attributes:
+</p>
+       
+<pre><code>
+#version 330 core
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec3 aNormal;
+layout (location = 2) in vec2 aTexCoords;
+layout (location = 3) in vec3 aTangent;
+layout (location = 4) in vec3 aBitangent;  
+</code></pre>
+       
+<p>
+  Then within the vertex shader's <fun>main</fun> function we create the TBN matrix:
+</p>
+
+<pre><code>       
+void main()
+{
+   [...]
+   vec3 T = normalize(vec3(model * vec4(aTangent,   0.0)));
+   vec3 B = normalize(vec3(model * vec4(aBitangent, 0.0)));
+   vec3 N = normalize(vec3(model * vec4(aNormal,    0.0)));
+   mat3 TBN = mat3(T, B, N);
+}
+</code></pre>
+       
+<p>
+  Here we first transform all the TBN vectors to the coordinate system we'd like to work in, which in this case is world-space as we multiply them with the <var>model</var> matrix. Then we create the actual TBN matrix by directly supplying <fun>mat3</fun>'s constructor with the relevant column vectors. Note that if we want to be really precise, we would multiply the TBN vectors with the normal matrix as we only care about the orientation of the vectors.
+</p>
+
+<note>
+  Technically there is no need for the <var>bitangent</var> variable in the vertex shader. All three TBN vectors are perpendicular to each other so we can calculate the <var>bitangent</var> ourselves in the vertex shader by taking the cross product of the <var>T</var> and <var>N</var> vector: <code>vec3 B = cross(N, T);</code>
+</note>       
+       
+<p>
+  So now that we have a TBN matrix, how are we going to use it? There are two ways we can use a TBN matrix for normal mapping, and we'll demonstrate both of them:
+</p>
+              
+<ol>
+  <li>We take the TBN matrix that transforms any vector from tangent to world space, give it to the fragment shader, and transform the sampled normal from tangent space to world space using the TBN matrix; the normal is then in the same space as the other lighting variables.</li>
+  <li>We take the inverse of the TBN matrix that transforms any vector from world space to tangent space, and use this matrix to transform not the normal, but the other relevant lighting variables to tangent space; the normal is then again in the same space as the other lighting variables.</li>
+</ol>
+       
+<p>
+  Let's review the first case. The normal vector we sample from the normal map is expressed in tangent space whereas the other lighting vectors (light and view direction) are expressed in world space. By passing the TBN matrix to the fragment shader we can multiply the sampled tangent space normal with this TBN matrix to transform the normal vector to the same reference space as the other lighting vectors. This way, all the lighting calculations (specifically the dot product) make sense.
+</p>
+       
+<p>
+  Sending the TBN matrix to the fragment shader is easy:
+</p>
+       
+<pre><code>
+out VS_OUT {
+    vec3 FragPos;
+    vec2 TexCoords;
+    mat3 TBN;
+} vs_out;  
+  
+void main()
+{
+    [...]
+    vs_out.TBN = mat3(T, B, N);
+}
+</code></pre>
+       
+<p>
+  In the fragment shader we similarly take a <code>mat3</code> as an input variable:
+</p>
+       
+<pre><code>
+in VS_OUT {
+    vec3 FragPos;
+    vec2 TexCoords;
+    mat3 TBN;
+} fs_in;  
+</code></pre>
+       
+<p>
+  With this TBN matrix we can now update the normal mapping code to include the tangent-to-world space transformation:
+</p>
+       
+<pre class="cpp"><code>
+normal = texture(normalMap, fs_in.TexCoords).rgb;
+normal = normal * 2.0 - 1.0;   
+normal = normalize(fs_in.TBN * normal); 
+</code></pre>
+       
+<p>
+  Because the resulting <var>normal</var> is now in world space, there is no need to change any of the other fragment shader code as the lighting code assumes the normal vector to be in world space. 
+</p>
+       
+<p>
+  Let's also review the second case, where we take the inverse of the TBN matrix to transform all relevant world-space vectors to the space the sampled normal vectors are in: tangent space. The construction of the TBN matrix remains the same, but we first invert the matrix before sending it to the fragment shader:
+</p>
+       
+<pre><code>
+vs_out.TBN = transpose(mat3(T, B, N));   
+</code></pre>
+       
+<p>
+  Note that we use the <fun>transpose</fun> function instead of the <fun>inverse</fun> function here. A great property of orthogonal matrices (each axis is a perpendicular unit vector) is that the transpose of an orthogonal matrix equals its inverse. This is a great property as <fun>inverse</fun> is expensive and a transpose isn't.
+</p>
+       
+<p>
+  Within the fragment shader we do not transform the normal vector, but we transform the other relevant vectors to tangent space, namely the <var>lightDir</var> and <var>viewDir</var> vectors. That way, each vector is in the same coordinate space: tangent space.
+</p>
+       
+<pre><code>
+void main()
+{           
+    vec3 normal = texture(normalMap, fs_in.TexCoords).rgb;
+    normal = normalize(normal * 2.0 - 1.0);   
+   
+    vec3 lightDir = fs_in.TBN * normalize(lightPos - fs_in.FragPos);
+    vec3 viewDir  = fs_in.TBN * normalize(viewPos - fs_in.FragPos);    
+    [...]
+}  
+</code></pre>
+       
+<p>
+  The second approach looks like more work and also requires matrix multiplications in the fragment shader, so why would we bother with the second approach?
+</p>
+       
+<p>
+  Well, transforming vectors from world to tangent space has an added advantage in that we can transform all the relevant lighting vectors to tangent space in the vertex shader instead of in the fragment shader. This works, because <var>lightPos</var> and <var>viewPos</var> don't update every fragment run, and for <var>fs_in.FragPos</var> we can calculate its tangent-space position in the vertex shader and let fragment interpolation do its work. There is effectively no need to transform a vector to tangent space in the fragment shader, while it is necessary with the first approach as sampled normal vectors are specific to each fragment shader run.
+</p>
+       
+<p>
+  So instead of sending the inverse of the TBN matrix to the fragment shader, we send a tangent-space light position, view position, and vertex position to the fragment shader. This saves us from having to do matrix multiplications in the fragment shader. This is a nice optimization as the vertex shader runs considerably less often than the fragment shader. This is also the reason why this approach is often the preferred approach.
+</p>
+       
+<pre><code>
+out VS_OUT {
+    vec3 FragPos;
+    vec2 TexCoords;
+    vec3 TangentLightPos;
+    vec3 TangentViewPos;
+    vec3 TangentFragPos;
+} vs_out;
+
+uniform vec3 lightPos;
+uniform vec3 viewPos;
+ 
+[...]
+  
+void main()
+{    
+    [...]
+    mat3 TBN = transpose(mat3(T, B, N));
+    vs_out.TangentLightPos = TBN * lightPos;
+    vs_out.TangentViewPos  = TBN * viewPos;
+    vs_out.TangentFragPos  = TBN * vec3(model * vec4(aPos, 1.0));
+}  
+</code></pre>
+       
+<p>
+  In the fragment shader we then use these new input variables to calculate lighting in tangent space. As the normal vector is already in tangent space, the lighting makes sense.
+</p>
+       
+<p>
+   With normal mapping applied in tangent space, we should get similar results to what we had at the start of this chapter. This time however, we can orient our plane in any way we'd like and the lighting would still be correct:
+</p>
+       
+<pre><code>
+glm::mat4 model = glm::mat4(1.0f);
+model = <function id='57'>glm::rotate</function>(model, (float)<function id='47'>glfwGetTime</function>() * -10.0f, glm::normalize(glm::vec3(1.0, 0.0, 1.0)));
+shader.setMat4("model", model);
+RenderQuad();
+</code></pre>
+       
+<p>
+  Which indeed looks like proper normal mapping:
+</p>
+       
+       <img src="/img/advanced-lighting/normal_mapping_correct_tangent.png" class="clean" alt="Correct normal mapping with tangent space transformations in OpenGL"/>
+         
+<p>
+  You can find the source code <a href="/code_viewer_gh.php?code=src/5.advanced_lighting/4.normal_mapping/normal_mapping.cpp" target="_blank">here</a>.
+</p>
+               
+<h2>Complex objects</h2>
+<p>
+  We've demonstrated how we can use normal mapping, together with tangent space transformations, by manually calculating the tangent and bitangent vectors. Luckily for us, having to manually calculate these tangent and bitangent vectors is not something we do too often. Most of the time you implement it once in a custom model loader, or in our case use a <a href="https://learnopengl.com/Model-Loading/Assimp" target="_blank">model loader</a> using Assimp. 
+</p>
+         
+<p>
+   Assimp has a very useful configuration bit we can set when loading a model called <var>aiProcess_CalcTangentSpace</var>. When the <var>aiProcess_CalcTangentSpace</var> bit is supplied to Assimp's <fun>ReadFile</fun> function, Assimp calculates smooth tangent and bitangent vectors for each of the loaded vertices, similarly to how we did it in this chapter. 
+</p>
+
+<pre><code>
+const aiScene *scene = importer.ReadFile(
+    path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace
+);  
+</code></pre>
+         
+<p>
+    Within Assimp we can then retrieve the calculated tangents via:
+</p>
+         
+<pre><code>
+vector.x = mesh->mTangents[i].x;
+vector.y = mesh->mTangents[i].y;
+vector.z = mesh->mTangents[i].z;
+vertex.Tangent = vector;  
+</code></pre>
+         
+<p>
+  Then you'll have to update the model loader to also load normal maps from a textured model. The wavefront object format (.obj) exports normal maps slightly different from Assimp's conventions as <var>aiTextureType_NORMAL</var> doesn't load normal maps, while <var>aiTextureType_HEIGHT</var> does:
+</p>
+         
+<pre><code>
+vector&lt;Texture&gt; normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");  
+</code></pre>
+         
+<p>
+  Of course, this is different for each type of loaded model and file format.
+</p>
+         
+         <!--It's also important to realize that <var>aiProcess_CalcTangentSpace</var> doesn't always work. Calculating tangents is based on texture coordinates and some 3D artists do certain texture tricks like mirroring a texture surface over a model; this gives incorrect results when the mirroring is not taken into account. The nanosuit model for instance doesn't produce proper tangents as it has mirrored texture coordinates. Assimp gives us a multiplication factor (<code>1</code> or <code>-1</code>) in the tangent's <code>w</code> coordinate that we can use to multiply the bitangent with to account for the mirroring.
+</p>-->
+         
+<p>
+  Running the application on a model with specular and normal maps, using an updated model loader, gives the following result:
+</p>
+         
+         <img src="/img/advanced-lighting/normal_mapping_complex_compare.png" alt="Normal mapping in OpenGL on a complex object loaded with Assimp"/>
+           
+<p>
+  As you can see, normal mapping boosts the detail of an object by an incredible amount without too much extra cost. 
+</p>
+           
+<p>
+  Using normal maps is also a great way to boost performance. Before normal mapping, you had to use a large number of vertices to get a high number of detail on a mesh. With normal mapping, we can get the same level of detail on a mesh using a lot less vertices. The image below from Paolo Cignoni shows a nice comparison of both methods:
+</p>
+           
+           <img src="/img/advanced-lighting/normal_mapping_comparison.png" alt="Comparrison of visualizing details on a mesh with and without normal mapping"/>
+
+<p>
+  The details on both the high-vertex mesh and the low-vertex mesh with normal mapping are almost indistinguishable. So normal mapping doesn't only look nice, it's a great tool to replace high-vertex meshes with low-vertex meshes without losing (too much) detail.
+</p>
+             
+<h2>One last thing</h2>
+<p>
+  There is one last trick left to discuss that slightly improves quality without too much extra cost.
+</p>
+             
+<p>
+  When tangent vectors are calculated on larger meshes that share a considerable amount of vertices, the tangent vectors are generally averaged to give nice and smooth results. A problem with this approach is that the three TBN vectors could end up non-perpendicular, which means the resulting TBN matrix would no longer be orthogonal. Normal mapping would only be slightly off with a non-orthogonal TBN matrix, but it's still something we can improve.
+</p>
+             
+<p>
+  Using a mathematical trick called the <def>Gram-Schmidt process</def>, we can <def>re-orthogonalize</def> the TBN vectors such that each vector is again perpendicular to the other vectors. Within the vertex shader we would do it like this:
+</p>
+             
+<pre><code>
+vec3 T = normalize(vec3(model * vec4(aTangent, 0.0)));
+vec3 N = normalize(vec3(model * vec4(aNormal, 0.0)));
+// re-orthogonalize T with respect to N
+T = normalize(T - dot(T, N) * N);
+// then retrieve perpendicular vector B with the cross product of T and N
+vec3 B = cross(N, T);
+
+mat3 TBN = mat3(T, B, N)  
+</code></pre>
+             
+<p>
+  This, albeit by a little, generally improves the normal mapping results with a little extra cost. Take a look at the end of the <em>Normal Mapping Mathematics</em> video in the additional resources for a great explanation of how this process actually works.
+</p>
+
+<h2>Additional resources</h2>
+  <ul>
+     <li><a href="http://ogldev.atspace.co.uk/www/tutorial26/tutorial26.html" target="_blank">Tutorial 26: Normal Mapping</a>: normal mapping tutorial by ogldev.</li>
+    <li><a href="https://www.youtube.com/watch?v=LIOPYmknj5Q" target="_blank">How Normal Mapping Works</a>: a nice video tutorial of how normal mapping works by TheBennyBox.</li>
+    <li><a href="https://www.youtube.com/watch?v=4FaWLgsctqY" target="_blank">Normal Mapping Mathematics</a>: a similar video by TheBennyBox about the mathematics behind normal mapping.</li>
+    <li><a href="http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-13-normal-mapping/" target="_blank">Tutorial 13: Normal Mapping</a>: normal mapping tutorial by opengl-tutorial.org.</li>
+</ul>       
+
+    </div>
+    
+    <div id="hover">
+        HI
+    </div>
+   <!-- 728x90/320x50 sticky footer -->
+<!--<div id="waldo-tag-6196"></div>-->
+
+   <div id="disqus_thread"></div>
+
+    
+
+
+</div> <!-- container div -->
+
+
+</div> <!-- super container div -->
+</body>
+</html>

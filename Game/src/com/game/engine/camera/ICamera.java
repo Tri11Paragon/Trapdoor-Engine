@@ -20,7 +20,7 @@ public abstract class ICamera {
 	protected float pitch;
 	protected float yaw;
 	protected float roll;
-	protected Matrix4f viewMatrix;
+	protected Matrix4f viewMatrix = Maths.createViewMatrix(this);
 	
 	public abstract void move();
 	

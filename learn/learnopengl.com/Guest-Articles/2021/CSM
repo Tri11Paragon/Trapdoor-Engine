@@ -1,0 +1,747 @@
+
+
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <meta charset="utf-8"/>
+    <title>LearnOpenGL - CSM</title>	<!--<title>Learn OpenGL, extensive tutorial resource for learning Modern OpenGL</title>-->
+    <link rel="shortcut icon" type="image/ico" href="/favicon.ico"  />
+    <meta name="description" content="Learn OpenGL . com provides good and clear modern 3.3+ OpenGL tutorials with clear examples. A great resource to learn modern OpenGL aimed at beginners.">
+	<meta name="fragment" content="!">
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-51879160-1', 'learnopengl.com');
+      ga('send', 'pageview');
+
+    </script>
+    <!--<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-7855791439695850",
+              enable_page_level_ads: true
+         });
+    </script>
+	<script async='async' src='https://www.googletagservices.com/tag/js/gpt.js'></script>
+	<script>
+	  var googletag = googletag || {};
+	  googletag.cmd = googletag.cmd || [];
+	</script>
+	<script>
+	  googletag.cmd.push(function() {
+		googletag.defineSlot('/8491498/learnopengl_video', [300, 225], 'div-gpt-ad-1540574378241-0').addService(googletag.pubads());
+		googletag.pubads().enableSingleRequest();
+		googletag.pubads().collapseEmptyDivs();
+		googletag.enableServices();
+	  });
+	</script>
+    <script type="text/javascript" src="//cdn.thisiswaldo.com/static/js/1681.js"></script>
+	<script src="/js/jquery-1.11.0.min.js"></script>
+	<script src="/js/hoverintent.js"></script>
+	<link rel="stylesheet" type="text/css" href="/layout.css">
+    <link rel="stylesheet" type="text/css" href="/js/styles/obsidian.css">
+    <script src="/js/highlight.pack.js"></script>    
+    <script src="/js/functions.js"></script>
+    <script type="text/javascript" src="/js/mathjax/MathJax.js?config=TeX-AMS_HTML"></script>
+    <script>
+    // Has to be loaded last due to content bug 
+    MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+    </script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script>  
+        $(document).ready(function() {
+            // check if user visited from the old # based urls, re-direct to ?p= form
+            if(window.location.hash)
+            {
+                var name = window.location.hash.substring(2);
+                // name = name.replace(/-/g," ");
+                var index = name.indexOf('#'); // Remove any hash fragments from the url (Disquss adds hash fragments for comments, but results in 404 pages)
+                if(index >= 0)
+                    name = name.substring(0, index);
+                
+                window.location.href = "https://learnopengl.com/" + name;
+            } else {
+                    // Check if data has been succesfully loaded, if so: change title bar as ajax hash fragment
+                    var title = $('#content-url').text();
+                  
+                    // Refresh syntax highlighting
+                    // $('pre').each(function(i, e) {hljs.highlightBlock(e)});
+                  
+                    // Reset DISQUS
+                    // if(title == '/dev/')
+                        // title = '';
+                    // alert('hoi');
+					
+					// place video tag
+					if(title != '') {
+						var videoad = "%3Cdiv id=\'waldo-tag-12074\'%3E %3Cscript%3Egoogletag.cmd.push(function() {googletag.display(\'waldo-tag-12074\'); }); %3C/script%3E%3C/div%3E";
+						$('#content p:nth-of-type(3)').after(unescape(videoad));
+					}
+					
+                    // Adjust ads for correct bottom positioning based on content size
+                    window.setTimeout(function() {  
+                        AdPositioning();
+                     }, 3000);
+                  
+                  
+                    // set API resets after time-out (once content is properly loaded)
+                    window.setTimeout(function() {  
+                        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);       
+                        MathJax.Hub.Queue(["resetEquationNumbers", MathJax.InputJax.TeX]);
+                        
+                        var page_url = title == "" ? "http://www.learnopengl.com/" : "http://www.learnopengl.com/" + title;
+                        if(typeof DISQUS !== 'undefined') {                                              
+                            DISQUS.reset({
+                              reload: true,
+                              config: function () {  
+                                this.page.identifier = title;  
+                                this.page.url = page_url;
+                              }
+                            });
+                            $('#disqus_thread').show();
+                        }
+                           // Refresh callbacks on <function> tags
+                        SetFunctionTagCallbacks();        
+                    }, 1000);
+                                        
+                    // Zet ook de juiste button op 'selected'
+                    $('#nav li span, #nav li a').removeClass('selected');                
+                    if(title != '')
+                    {                    
+                        $('#nav li[id=\'' + title + '\']').children('span, a').addClass('selected');
+                    }
+                    // En open menu waar nodig
+                    var parents = $('#nav span.selected, #nav a.selected').parents('li').children('span.closed, a.closed');
+                    var index = 0;
+                    for(index = parents.length - 1; index >= 0; index--)
+                    {             
+                        
+                        var id = $(parents[index]).attr("id").replace( /^\D+/g, '');
+                        MenuClick(id, false);
+                    }                          
+                
+            }
+        });
+		// var initialized = false;
+        // window.onpopstate = function() {
+            // if(initialized)
+                // LoadPage();
+			// else
+				// initialized = true;
+        // };
+        
+        // Set up DISQUS
+        // $(document).ready(function() {
+            var disqus_shortname = 'learnopengl';
+            (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();           
+        // });
+    </script>
+</head>
+<body>
+<a href="https://learnopengl.com">
+<div id="header">
+</div>
+</a>
+
+<div id="supercontainer">
+    <!-- 728x90/320x50 -->
+    <div id="header_ad">
+        <div id="waldo-tag-6194"></div>
+    </div>
+    <div id="rightad_container">
+        <div id="rightad">
+            <!-- /8491498/learnopengl_video -->
+            <!--<div id='div-gpt-ad-1540574378241-0' style='height:225px; width:300px;'>
+			<script>
+			googletag.cmd.push(function() { googletag.display('div-gpt-ad-1540574378241-0'); });
+			</script>
+			</div>            
+            <br/>-->
+			<!-- place in-content -->
+			<!--<div id='waldo-tag-12074'>
+			 <script>
+			   googletag.cmd.push(function() { googletag.display('waldo-tag-12074'); });
+			 </script>
+			</div>-->
+           
+            <div id="waldo-tag-1715"></div>
+        </div>
+
+        <div id="admessage">
+            If you're running AdBlock, please consider whitelisting this site if you'd like to support LearnOpenGL; and no worries, I won't be mad if you don't :)
+            <!--<br/><br/>
+            Also, check out this little local multiplayer-only game I've made: <a href="https://store.steampowered.com/app/983590/Tank_Blazers/" target="_blank">Tank Blazers</a>.
+            <br/>
+            <a href="https://store.steampowered.com/app/983590/Tank_Blazers" target="_blank"><img src="/img/tank_blazers.jpg"  style="width:278px; margin-top: 9px; margin-left: -3px;"/></a>-->
+        </div>
+        
+        <div id="rightonethirdad">
+            <div id="waldo-tag-2246"></div>
+        </div>
+        
+        <div id="rightbottomad">            
+			<div id="waldo-tag-2247"></div>								
+        </div>
+    </div>
+    <div id="container">
+        <div id="loading"></div>
+<script> 
+$(document).ready(function() {
+$('#menu-item4').mousedown(function() { MenuClick(4, true) });
+$('#menu-item48').mousedown(function() { MenuClick(48, true) });
+$('#menu-item56').mousedown(function() { MenuClick(56, true) });
+$('#menu-item63').mousedown(function() { MenuClick(63, true) });
+$('#menu-item100').mousedown(function() { MenuClick(100, true) });
+$('#menu-item102').mousedown(function() { MenuClick(102, true) });
+$('#menu-item113').mousedown(function() { MenuClick(113, true) });
+$('#menu-item116').mousedown(function() { MenuClick(116, true) });
+$('#menu-item78').mousedown(function() { MenuClick(78, true) });
+$('#menu-item81').mousedown(function() { MenuClick(81, true) });
+$('#menu-item85').mousedown(function() { MenuClick(85, true) });
+$('#menu-item125').mousedown(function() { MenuClick(125, true) });
+$('#menu-item128').mousedown(function() { MenuClick(128, true) });
+$('#menu-item129').mousedown(function() { MenuClick(129, true) });
+$('#menu-item133').mousedown(function() { MenuClick(133, true) });
+$('#menu-item134').mousedown(function() { MenuClick(134, true) });
+$('#menu-item138').mousedown(function() { MenuClick(138, true) });
+}); 
+</script>   
+    <div id="nav">
+         <div id="social">
+            <a href="https://github.com/JoeyDeVries/LearnOpenGL" target="_blank">
+                    <img src="/img/github.png" class="social_ico">
+            </a>
+             <!-- <a href="https://www.facebook.com/Learnopengl-2199631333595544/" target="_blank">
+                <img src="/img/facebook.png" class="social_ico">
+            </a>-->
+            <a href="https://twitter.com/JoeyDeVriez" target="_blank">
+                <img src="/img/twitter.png" class="social_ico">
+            </a>
+          
+        </div>
+    <img src='img/nav-button_bottom-arrow.png' style='display: none'><ol><li id='Introduction'><a id="menu-item1" href="https://learnopengl.com/Introduction">Introduction </a></li><li id='Getting-started'><span id="menu-item4" class="closed">Getting started </span><ol id="menu-items-of4" style="display:none;"><li id='Getting-started/OpenGL'><a id="menu-item49" href="https://learnopengl.com/Getting-started/OpenGL">OpenGL </a></li><li id='Getting-started/Creating-a-window'><a id="menu-item5" href="https://learnopengl.com/Getting-started/Creating-a-window">Creating a window </a></li><li id='Getting-started/Hello-Window'><a id="menu-item6" href="https://learnopengl.com/Getting-started/Hello-Window">Hello Window </a></li><li id='Getting-started/Hello-Triangle'><a id="menu-item38" href="https://learnopengl.com/Getting-started/Hello-Triangle">Hello Triangle </a></li><li id='Getting-started/Shaders'><a id="menu-item39" href="https://learnopengl.com/Getting-started/Shaders">Shaders </a></li><li id='Getting-started/Textures'><a id="menu-item40" href="https://learnopengl.com/Getting-started/Textures">Textures </a></li><li id='Getting-started/Transformations'><a id="menu-item43" href="https://learnopengl.com/Getting-started/Transformations">Transformations </a></li><li id='Getting-started/Coordinate-Systems'><a id="menu-item44" href="https://learnopengl.com/Getting-started/Coordinate-Systems">Coordinate Systems </a></li><li id='Getting-started/Camera'><a id="menu-item47" href="https://learnopengl.com/Getting-started/Camera">Camera </a></li><li id='Getting-started/Review'><a id="menu-item50" href="https://learnopengl.com/Getting-started/Review">Review </a></li></ol></li><li id='Lighting'><span id="menu-item48" class="closed">Lighting </span><ol id="menu-items-of48" style="display:none;"><li id='Lighting/Colors'><a id="menu-item51" href="https://learnopengl.com/Lighting/Colors">Colors </a></li><li id='Lighting/Basic-Lighting'><a id="menu-item52" href="https://learnopengl.com/Lighting/Basic-Lighting">Basic Lighting </a></li><li id='Lighting/Materials'><a id="menu-item53" href="https://learnopengl.com/Lighting/Materials">Materials </a></li><li id='Lighting/Lighting-maps'><a id="menu-item54" href="https://learnopengl.com/Lighting/Lighting-maps">Lighting maps </a></li><li id='Lighting/Light-casters'><a id="menu-item55" href="https://learnopengl.com/Lighting/Light-casters">Light casters </a></li><li id='Lighting/Multiple-lights'><a id="menu-item58" href="https://learnopengl.com/Lighting/Multiple-lights">Multiple lights </a></li><li id='Lighting/Review'><a id="menu-item57" href="https://learnopengl.com/Lighting/Review">Review </a></li></ol></li><li id='Model-Loading'><span id="menu-item56" class="closed">Model Loading </span><ol id="menu-items-of56" style="display:none;"><li id='Model-Loading/Assimp'><a id="menu-item59" href="https://learnopengl.com/Model-Loading/Assimp">Assimp </a></li><li id='Model-Loading/Mesh'><a id="menu-item60" href="https://learnopengl.com/Model-Loading/Mesh">Mesh </a></li><li id='Model-Loading/Model'><a id="menu-item61" href="https://learnopengl.com/Model-Loading/Model">Model </a></li></ol></li><li id='Advanced-OpenGL'><span id="menu-item63" class="closed">Advanced OpenGL </span><ol id="menu-items-of63" style="display:none;"><li id='Advanced-OpenGL/Depth-testing'><a id="menu-item72" href="https://learnopengl.com/Advanced-OpenGL/Depth-testing">Depth testing </a></li><li id='Advanced-OpenGL/Stencil-testing'><a id="menu-item73" href="https://learnopengl.com/Advanced-OpenGL/Stencil-testing">Stencil testing </a></li><li id='Advanced-OpenGL/Blending'><a id="menu-item74" href="https://learnopengl.com/Advanced-OpenGL/Blending">Blending </a></li><li id='Advanced-OpenGL/Face-culling'><a id="menu-item77" href="https://learnopengl.com/Advanced-OpenGL/Face-culling">Face culling </a></li><li id='Advanced-OpenGL/Framebuffers'><a id="menu-item65" href="https://learnopengl.com/Advanced-OpenGL/Framebuffers">Framebuffers </a></li><li id='Advanced-OpenGL/Cubemaps'><a id="menu-item66" href="https://learnopengl.com/Advanced-OpenGL/Cubemaps">Cubemaps </a></li><li id='Advanced-OpenGL/Advanced-Data'><a id="menu-item69" href="https://learnopengl.com/Advanced-OpenGL/Advanced-Data">Advanced Data </a></li><li id='Advanced-OpenGL/Advanced-GLSL'><a id="menu-item67" href="https://learnopengl.com/Advanced-OpenGL/Advanced-GLSL">Advanced GLSL </a></li><li id='Advanced-OpenGL/Geometry-Shader'><a id="menu-item68" href="https://learnopengl.com/Advanced-OpenGL/Geometry-Shader">Geometry Shader </a></li><li id='Advanced-OpenGL/Instancing'><a id="menu-item70" href="https://learnopengl.com/Advanced-OpenGL/Instancing">Instancing </a></li><li id='Advanced-OpenGL/Anti-Aliasing'><a id="menu-item75" href="https://learnopengl.com/Advanced-OpenGL/Anti-Aliasing">Anti Aliasing </a></li></ol></li><li id='Advanced-Lighting'><span id="menu-item100" class="closed">Advanced Lighting </span><ol id="menu-items-of100" style="display:none;"><li id='Advanced-Lighting/Advanced-Lighting'><a id="menu-item101" href="https://learnopengl.com/Advanced-Lighting/Advanced-Lighting">Advanced Lighting </a></li><li id='Advanced-Lighting/Gamma-Correction'><a id="menu-item110" href="https://learnopengl.com/Advanced-Lighting/Gamma-Correction">Gamma Correction </a></li><li id='Advanced-Lighting/Shadows'><span id="menu-item102" class="closed">Shadows </span><ol id="menu-items-of102" style="display:none;"><li id='Advanced-Lighting/Shadows/Shadow-Mapping'><a id="menu-item103" href="https://learnopengl.com/Advanced-Lighting/Shadows/Shadow-Mapping">Shadow Mapping </a></li><li id='Advanced-Lighting/Shadows/Point-Shadows'><a id="menu-item104" href="https://learnopengl.com/Advanced-Lighting/Shadows/Point-Shadows">Point Shadows </a></li></ol></li><li id='Advanced-Lighting/Normal-Mapping'><a id="menu-item106" href="https://learnopengl.com/Advanced-Lighting/Normal-Mapping">Normal Mapping </a></li><li id='Advanced-Lighting/Parallax-Mapping'><a id="menu-item107" href="https://learnopengl.com/Advanced-Lighting/Parallax-Mapping">Parallax Mapping </a></li><li id='Advanced-Lighting/HDR'><a id="menu-item111" href="https://learnopengl.com/Advanced-Lighting/HDR">HDR </a></li><li id='Advanced-Lighting/Bloom'><a id="menu-item112" href="https://learnopengl.com/Advanced-Lighting/Bloom">Bloom </a></li><li id='Advanced-Lighting/Deferred-Shading'><a id="menu-item108" href="https://learnopengl.com/Advanced-Lighting/Deferred-Shading">Deferred Shading </a></li><li id='Advanced-Lighting/SSAO'><a id="menu-item109" href="https://learnopengl.com/Advanced-Lighting/SSAO">SSAO </a></li></ol></li><li id='PBR'><span id="menu-item113" class="closed">PBR </span><ol id="menu-items-of113" style="display:none;"><li id='PBR/Theory'><a id="menu-item114" href="https://learnopengl.com/PBR/Theory">Theory </a></li><li id='PBR/Lighting'><a id="menu-item115" href="https://learnopengl.com/PBR/Lighting">Lighting </a></li><li id='PBR/IBL'><span id="menu-item116" class="closed">IBL </span><ol id="menu-items-of116" style="display:none;"><li id='PBR/IBL/Diffuse-irradiance'><a id="menu-item117" href="https://learnopengl.com/PBR/IBL/Diffuse-irradiance">Diffuse irradiance </a></li><li id='PBR/IBL/Specular-IBL'><a id="menu-item118" href="https://learnopengl.com/PBR/IBL/Specular-IBL">Specular IBL </a></li></ol></li></ol></li><li id='In-Practice'><span id="menu-item78" class="closed">In Practice </span><ol id="menu-items-of78" style="display:none;"><li id='In-Practice/Debugging'><a id="menu-item79" href="https://learnopengl.com/In-Practice/Debugging">Debugging </a></li><li id='In-Practice/Text-Rendering'><a id="menu-item80" href="https://learnopengl.com/In-Practice/Text-Rendering">Text Rendering </a></li><li id='In-Practice/2D-Game'><span id="menu-item81" class="closed">2D Game </span><ol id="menu-items-of81" style="display:none;"><li id='In-Practice/2D-Game/Breakout'><a id="menu-item82" href="https://learnopengl.com/In-Practice/2D-Game/Breakout">Breakout </a></li><li id='In-Practice/2D-Game/Setting-up'><a id="menu-item88" href="https://learnopengl.com/In-Practice/2D-Game/Setting-up">Setting up </a></li><li id='In-Practice/2D-Game/Rendering-Sprites'><a id="menu-item83" href="https://learnopengl.com/In-Practice/2D-Game/Rendering-Sprites">Rendering Sprites </a></li><li id='In-Practice/2D-Game/Levels'><a id="menu-item84" href="https://learnopengl.com/In-Practice/2D-Game/Levels">Levels </a></li><li id='In-Practice/2D-Game/Collisions'><span id="menu-item85" class="closed">Collisions </span><ol id="menu-items-of85" style="display:none;"><li id='In-Practice/2D-Game/Collisions/Ball'><a id="menu-item95" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Ball">Ball </a></li><li id='In-Practice/2D-Game/Collisions/Collision-detection'><a id="menu-item96" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Collision-detection">Collision detection </a></li><li id='In-Practice/2D-Game/Collisions/Collision-resolution'><a id="menu-item97" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Collision-resolution">Collision resolution </a></li></ol></li><li id='In-Practice/2D-Game/Particles'><a id="menu-item89" href="https://learnopengl.com/In-Practice/2D-Game/Particles">Particles </a></li><li id='In-Practice/2D-Game/Postprocessing'><a id="menu-item90" href="https://learnopengl.com/In-Practice/2D-Game/Postprocessing">Postprocessing </a></li><li id='In-Practice/2D-Game/Powerups'><a id="menu-item91" href="https://learnopengl.com/In-Practice/2D-Game/Powerups">Powerups </a></li><li id='In-Practice/2D-Game/Audio'><a id="menu-item94" href="https://learnopengl.com/In-Practice/2D-Game/Audio">Audio </a></li><li id='In-Practice/2D-Game/Render-text'><a id="menu-item92" href="https://learnopengl.com/In-Practice/2D-Game/Render-text">Render text </a></li><li id='In-Practice/2D-Game/Final-thoughts'><a id="menu-item93" href="https://learnopengl.com/In-Practice/2D-Game/Final-thoughts">Final thoughts </a></li></ol></li></ol></li><li id='Guest-Articles'><span id="menu-item125" class="closed">Guest Articles </span><ol id="menu-items-of125" style="display:none;"><li id='Guest-Articles/How-to-publish'><a id="menu-item126" href="https://learnopengl.com/Guest-Articles/How-to-publish">How to publish </a></li><li id='Guest-Articles/2020'><span id="menu-item128" class="closed">2020 </span><ol id="menu-items-of128" style="display:none;"><li id='Guest-Articles/2020/OIT'><span id="menu-item129" class="closed">OIT </span><ol id="menu-items-of129" style="display:none;"><li id='Guest-Articles/2020/OIT/Introduction'><a id="menu-item130" href="https://learnopengl.com/Guest-Articles/2020/OIT/Introduction">Introduction </a></li><li id='Guest-Articles/2020/OIT/Weighted-Blended'><a id="menu-item132" href="https://learnopengl.com/Guest-Articles/2020/OIT/Weighted-Blended">Weighted Blended </a></li></ol></li><li id='Guest-Articles/2020/Skeletal-Animation'><a id="menu-item131" href="https://learnopengl.com/Guest-Articles/2020/Skeletal-Animation">Skeletal Animation </a></li></ol></li><li id='Guest-Articles/2021'><span id="menu-item133" class="closed">2021 </span><ol id="menu-items-of133" style="display:none;"><li id='Guest-Articles/2021/CSM'><a id="menu-item137" href="https://learnopengl.com/Guest-Articles/2021/CSM">CSM </a></li><li id='Guest-Articles/2021/Scene'><span id="menu-item134" class="closed">Scene </span><ol id="menu-items-of134" style="display:none;"><li id='Guest-Articles/2021/Scene/Scene-Graph'><a id="menu-item135" href="https://learnopengl.com/Guest-Articles/2021/Scene/Scene-Graph">Scene Graph </a></li><li id='Guest-Articles/2021/Scene/Frustum-Culling'><a id="menu-item136" href="https://learnopengl.com/Guest-Articles/2021/Scene/Frustum-Culling">Frustum Culling </a></li></ol></li><li id='Guest-Articles/2021/Tessellation'><span id="menu-item138" class="closed">Tessellation </span><ol id="menu-items-of138" style="display:none;"><li id='Guest-Articles/2021/Tessellation/Height-map'><a id="menu-item139" href="https://learnopengl.com/Guest-Articles/2021/Tessellation/Height-map">Height map </a></li></ol></li></ol></li></ol></li><li id='Code-repository'><a id="menu-item99" href="https://learnopengl.com/Code-repository">Code repository </a></li><li id='Translations'><a id="menu-item119" href="https://learnopengl.com/Translations">Translations </a></li><li id='About'><a id="menu-item2" href="https://learnopengl.com/About">About </a></li></ol>		<div id="menu_book">
+            <a href="https://geni.us/learnopengl" target="_blank"><img src="/book/below_menu.png" class="clean"/></a>
+        </div>
+       <div id="donate">
+            <a href="https://www.paypal.me/learnopengl/" target="_blank">
+                <div id="donate_img"></div>
+                <img style="display: none" src="/img/donate_button_hover.png"/>
+                <!--<img id="donate_img" src="img/patreon.png"/>-->
+            </a>
+          <!--<div id="alipay">
+            <img style="width: 150px;" class="clean" src="/img/alipay_logo.png"/>
+            <img style="width: 150px; margin-top: 5px" src="/img/alipay.png"/>
+          </div>-->
+        </div> 
+		<!--
+		<div class="btc">
+			<h3>BTC</h3>
+			<p>
+				1CLGKgmBSuYJ1nnvDGAepVTKNNDpUjfpRa
+			</p>
+			<img src="/img/btc_qr.png"/>
+        </div> 
+		<div class="btc">
+			<h3>ETH/ERC20</h3>
+			<p>
+				0x1de59bd9e52521a46309474f8372531533bd7c43
+			</p>
+			<img src="/img/erc20_qr.png"/>
+        </div>       
+		!-->
+        <div id="ad">
+							<!--<div id="waldo-tag-1684"></div>-->
+			        </div>
+      
+        <div id="lefttwothirdad">
+            <div id="waldo-tag-2245"></div>
+        </div>
+    </div>
+    
+    <div id="content">
+    <h1 id="content-title">CSM</h1>
+<h1 id="content-url" style='display:none;'>Guest-Articles/2021/CSM</h1>
+<style layout="text/css">
+  #content-title {
+  	display: none;
+  }
+</style>
+
+<h1>Cascaded Shadow Mapping</h1>
+<p>
+		<a href="https://learnopengl.com/Advanced-Lighting/Shadows/Shadow-Mapping" target="_blank">Shadow mapping</a> as described on LearnOpenGL is a powerful, and relatively simple technique. However, if implemented as-is from the above referred tutorial, the avid OpenGL student will notice a few shortcomings.
+	</p>
+	<ul>
+		<li>The shadow map is always created around the origin, and not on the area the camera is actually looking at. It would be best of course if we could shadow map the whole scene, with sufficient resolution, but on current hardware this is not feasible. In reality we want the shadow maps to be created on objects that are in view, saving our precious GPU memory for things that matter. </li>
+		<li>The shadow map orthographic projection matrix is not properly fitted onto the view frustum. To achieve the best possible resolution for our shadow maps, the ortho matrix needs to be as tightly fit to the camera frustum as possible, because again: if it’s larger that means that less detail is spent on the objects that are actually visible.</li>
+		<li>The shadow maps (even with advanced PCF functions) are blurry if we want the shadow rendering distance to be large, as we would in a game with a first-person camera. We can increase the resolution of the shadow maps to mitigate this, but GPU memory is a resource we should be conservative of.</li>
+	</ul>
+	<p>
+		Cascaded shadow mapping is a direct answer to the third point, however while implementing it we will solve the first two points, too. The core insight in cascaded shadow mapping is, that we don’t need the same amount of shadow detail for things that are far from us. We want crisp shadows for stuff that’s near to the near plane, and we are absolutely fine with blurriness for objects that are hundreds of units away: it’s not going to be noticeable at all. How can we achieve this? The answer is beautiful in its simplicity: just render different shadow maps for things that are close and for those that are far away, and sample from them according to the depth of the fragment in the fragment shader. The high-level algorithm is as follows:
+	</p>
+	<ul>
+		<li>Divide our ordinary view frustum into n subfrusta, where the far plane of the <code>i</code>-th frustum is the near plane of the <code>(i+1)</code>-th frustum</li>
+		<li>Compute the tightly fitting ortho matrix for each frustum</li>
+		<li>For each frustum render a shadow map as if seen from our directional light</li>
+		<li>Send all shadow maps to our fragment shader</li>
+		<li>Render the scene, and according to the fragment’s depth value sample from the correct shadow map</li>
+	</ul>
+	<p>
+		Sounds simple right? Well, it is, but as it often is when it comes to our friend OpenGL: the devil is in the details.
+	</p>
+	<img src="/img/guest/2021/CSM/cs_go.png" width="800px">
+	<p>
+		In the above image we can see the edges of shadow cascades in Counter-Strike: Global Offensive. The image was captured on low graphics settings.
+	</p>
+      
+	<h2>World coordinates of the view frustum</h2>
+	<p>
+		Before getting our hands dirty with shadows, we need to tackle a more abstract problem: making our projection matrix fit nicely onto a generic frustum. To be able to do this, we need to know the world space coordinates of the frustum in question. While this might sound daunting at first, we already have all the tools necessary in our repertoire.  If we think back on the excellent <a href="https://learnopengl.com/Getting-started/Coordinate-Systems" target="_blank"> coordinate systems</a> tutorial, the beheaded pyramid of the frustum only looks that way in world coordinates, and our view and projection matrices do the job of transforming this unusual shape into the NDC cube. And we know the coordinates of the corners of the NDC cube: the coordinates are in the range <code>[-1,1]</code>  on the three axes. Because matrix multiplication is a reversible process, we can apply the inverse of the view and projection matrices on the corner points of the NDC cube to get the frustum corners in world space.
+	</p>
+	<math>
+		$$v_{NDC} = M_{proj} M_{view} v_{world}$$
+		$$v_{world} = (M_{proj} M_{view})^{-1} v_{NDC}$$
+	</math>
+
+<pre><code>
+std::vector&lt;glm::vec4&gt; getFrustumCornersWorldSpace(const glm::mat4& proj, const glm::mat4& view)
+{
+    const auto inv = glm::inverse(proj * view);
+    
+    std::vector&lt;glm::vec4> frustumCorners;
+    for (unsigned int x = 0; x &lt; 2; ++x)
+    {
+        for (unsigned int y = 0; y &lt; 2; ++y)
+        {
+            for (unsigned int z = 0; z &lt; 2; ++z)
+            {
+                const glm::vec4 pt = 
+                    inv * glm::vec4(
+                        2.0f * x - 1.0f,
+                        2.0f * y - 1.0f,
+                        2.0f * z - 1.0f,
+                        1.0f);
+                frustumCorners.push_back(pt / pt.w);
+            }
+        }
+    }
+    
+    return frustumCorners;
+}
+</code></pre>
+  
+	<p>
+		The projection matrix described here is a perspective matrix, using the camera’s aspect ratio and fov, and using the near and far plane of the current frustum being analyzed. The view matrix is the view matrix of our camera.
+	</p>
+      
+<pre><code>
+const auto proj = <function id='58'>glm::perspective</function>(
+    <function id='63'>glm::radians</function>(camera.Zoom),
+    (float)SCR_WIDTH / (float)SCR_HEIGHT,
+    nearPlane,
+    farPlane
+);
+</code></pre>
+      
+	<img src="/img/guest/2021/CSM/frustum_fitting.png">
+	<p>
+		The above image is the courtesy of <a href="https://ogldev.org/www/tutorial49/tutorial49.html" target="_blank">OGLDev</a>
+	</p>
+	<br>
+      
+	<h2>The light view-projection matrix</h2>
+	<p>
+		This matrix - as in ordinary shadow mapping – is the product of the view and projection matrix that transforms the scene as if it were seen by the light. Calculating the view matrix is simple, we know the direction our light is coming from, and we know a point in world space that it definitely is looking at: the center of the frustum. The position of the frustum center can be obtained by averaging the coordinates of the frustum corners. (This is so because averaging the coordinates of the near and far plane gives us the center of those rectangles, and taking the midpoint of these two points gives us the center of the frustum.)
+	</p>
+	<pre><code>
+glm::vec3 center = glm::vec3(0, 0, 0);
+for (const auto& v : corners)
+{
+    center += glm::vec3(v);
+}
+center /= corners.size();
+    
+const auto lightView = <function id='62'>glm::lookAt</function>(
+    center + lightDir,
+    center,
+    glm::vec3(0.0f, 1.0f, 0.0f)
+);
+    </code></pre>
+	<p>
+		The projection matrix is bit more complex. Because the light in question is a directional light, the matrix needs to be an orthographic projection matrix, this much is clear. To understand how we determine the left, right, top etc. parameters of the matrix imagine the scene you are drawing from the perspective of the light. From this viewpoint the shadow map we are trying to render is going to be an axis aligned rectangle, and this rectangle – as we established before – needs to fit on the frustum tightly. So we need to obtain the coordinates of the frustum in this space, and take the maximum and minimum of the coordinates along the coordinate axes. While this might sound daunting at first, this perspective is exactly what our light view matrix transformation gives us. We need to transform the frustum corner points in the light view space, and find the maximum and minimum coordinates.
+	</p>
+      
+	<pre><code>
+float minX = std::numeric_limits&lt;float>::max();
+float maxX = std::numeric_limits&lt;float>::min();
+float minY = std::numeric_limits&lt;float>::max();
+float maxY = std::numeric_limits&lt;float>::min();
+float minZ = std::numeric_limits&lt;float>::max();
+float maxZ = std::numeric_limits&lt;float>::min();
+for (const auto& v : corners)
+{
+    const auto trf = lightView * v;
+    minX = std::min(minX, trf.x);
+    maxX = std::max(maxX, trf.x);
+    minY = std::min(minY, trf.y);
+    maxY = std::max(maxY, trf.y);
+    minZ = std::min(minZ, trf.z);
+    maxZ = std::max(maxZ, trf.z);
+}
+	</code></pre>
+      
+	<p>
+		We are going to create our projection matrix from the product of two matrices. First, we are going to create an ortho projection matrix, with the left, right, top, bottom parameters set to <code>-1</code> or <code>1</code>, and the z values set to <var>minZ</var> and <var>maxZ</var>. This creates a 3D rectangle sitting on the origin with width and height of <code>2</code>, and depth of (<var>maxZ</var> – <var>minZ</var>). In the code we increase the amount of space covered by <var>minZ</var> and <var>maxZ</var> by multiplying or dividing them with a <var>zMult</var>. This is because we want to include geometry which is behind or in front of our frustum in camera space. Think about it: not only geometry which is in the frustum can cast shadows on a surface in the frustum!
+	</p>
+	<p>
+		Before creating the actual projection matrix we are going to increase the size of the space covered by the near and far plane of the light frustum. We do this by "pulling back" the near plane, and "pushing away" the far plane. In the code we achieve this by dividing or multiplying by <var>zMult</var>. This is because we want to include geometry which is behind or in front of our frustum in camera space. Think about it: not only geometry which is in the frustum can cast shadows on a surface in the frustum!
+	</p>
+      
+<pre><code>
+// Tune this parameter according to the scene
+constexpr float zMult = 10.0f;
+if (minZ &lt; 0)
+{
+    minZ *= zMult;
+}
+else
+{
+    minZ /= zMult;
+}
+if (maxZ &lt; 0)
+{
+    maxZ /= zMult;
+}
+else
+{
+    maxZ *= zMult;
+}
+   
+const glm::mat4 lightProjection = <function id='59'>glm::ortho</function>(minX, maxX, minY, maxY, minZ, maxZ);
+
+return lightProjection * lightView;
+</code></pre>
+	
+	<p>
+		Multiplying the view and projection matrices together, we get the view-projection matrix of the light for the given frustum. We need to do this procedure for every frustum in our cascade.
+	</p>
+      
+	<h2>2D array textures</h2>
+	<p>
+		While we let our stomachs digest what we learned about frustum fitting we should figure out how to store our shadow maps. In principle there is no limit on how many cascades we can do, so hardcoding an arbitrary value doesn’t seem like a wise idea. Also, it quickly becomes tiresome typing out and binding sampler2Ds for our shaders. OpenGL has a good solution to this problem in the form of <def>2D array textures</def>. This object is an array of textures, which have the same dimensions. To use them in shaders declare them like this:
+	</p>
+      
+<pre><code>
+uniform sampler2DArray shadowMap;
+</code></pre>
+      
+	<p>
+		To sample from them we can use the regular texture function with a vec3 parameter for texture coordinates, the third dimension specifying which layer to sample from, starting from <code>0</code>.
+	</p>
+      
+<pre><code>
+texture(depthMap, vec3(TexCoords, currentLayer))
+</code></pre>
+      
+	<p>
+		Creating our array texture is slightly different than creating a regular old texture2D. Instead of <function id='52'>glTexImage2D</function> we use glTexImage3D to allocate memory, and when binding the texture to the framebuffer we use glFramebufferTexture instead of <function id='81'>glFramebufferTexture2D</function>. The parameters of these functions are somewhat self-explanatory if we know the old versions. When calling the OpenGL functions, we need to pass <var>GL_TEXTURE_2D_ARRAY</var> instead of <var>GL_TEXTURE_2D</var> as the target, to tell OpenGL what kind of texture we are dealing with.
+	</p>
+	
+<pre><code>
+<function id='76'>glGenFramebuffers</function>(1, &lightFBO);
+    
+<function id='50'>glGenTextures</function>(1, &lightDepthMaps);
+<function id='48'>glBindTexture</function>(GL_TEXTURE_2D_ARRAY, lightDepthMaps);
+glTexImage3D(
+    GL_TEXTURE_2D_ARRAY,
+    0,
+    GL_DEPTH_COMPONENT32F,
+    depthMapResolution,
+    depthMapResolution,
+    int(shadowCascadeLevels.size()) + 1,
+    0,
+    GL_DEPTH_COMPONENT,
+    GL_FLOAT,
+    nullptr);
+    
+<function id='15'>glTexParameter</function>i(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+<function id='15'>glTexParameter</function>i(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+<function id='15'>glTexParameter</function>i(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+<function id='15'>glTexParameter</function>i(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    
+constexpr float bordercolor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+<function id='15'>glTexParameter</function>fv(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_BORDER_COLOR, bordercolor);
+    
+<function id='77'>glBindFramebuffer</function>(GL_FRAMEBUFFER, lightFBO);
+glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, lightDepthMaps, 0);
+glDrawBuffer(GL_NONE);
+glReadBuffer(GL_NONE);
+    
+int status = <function id='79'>glCheckFramebufferStatus</function>(GL_FRAMEBUFFER);
+if (status != GL_FRAMEBUFFER_COMPLETE)
+{
+    std::cout &lt;&lt; "ERROR::FRAMEBUFFER:: Framebuffer is not complete!";
+    throw 0;
+}
+    
+<function id='77'>glBindFramebuffer</function>(GL_FRAMEBUFFER, 0);
+</code></pre>
+      
+	<p>
+		Take care when binding this texture to a sampler. Again: we need to use <var>GL_TEXTURE_2D_ARRAY</var> as the target parameter.
+	</p>
+      
+<pre><code>
+<function id='49'>glActiveTexture</function>(GL_TEXTURE1);
+<function id='48'>glBindTexture</function>(GL_TEXTURE_2D_ARRAY, lightDepthMaps);
+</code></pre>
+	
+	<p>
+		So far so good, now we know the semantics of using a texture array. It all seems straightforward, but OpenGL has one more curveball to throw at us: we can’t render into this texture the ordinary way, we need to do something called <def>layered rendering</def>. This process is very similar to what we did with <a href="https://learnopengl.com/Advanced-Lighting/Shadows/Point-Shadows" target="_blank">cubemaps and pointlights</a> , we coax the <a href="https://learnopengl.com/Advanced-OpenGL/Geometry-Shader" target="_blank">geometry shader</a> into generating multiple layers of geometry for us at the same time. If we recall our depthmap shader is very simple: transform the vertices to light space in the vertex stage, and let the hardware do the rest with an empty fragment shader. In our new depthmap shader we are going to only do the world space transformation in the vertex shader.
+	</p>
+      
+<pre><code>
+#version 460 core
+layout (location = 0) in vec3 aPos;
+    
+uniform mat4 model;
+    
+void main()
+{
+    gl_Position = model * vec4(aPos, 1.0);
+}
+</code></pre>
+  
+	<p>
+	The newly inserted geometry shader will look something like this:
+	</p>
+      
+<pre><code>
+#version 460 core
+    
+layout(triangles, invocations = 5) in;
+layout(triangle_strip, max_vertices = 3) out;
+    
+layout (std140, binding = 0) uniform LightSpaceMatrices
+{
+    mat4 lightSpaceMatrices[16];
+};
+    
+void main()
+{          
+    for (int i = 0; i &lt; 3; ++i)
+    {
+        gl_Position = 
+            lightSpaceMatrices[gl_InvocationID] * gl_in[i].gl_Position;
+        gl_Layer = gl_InvocationID;
+        EmitVertex();
+    }
+    EndPrimitive();
+}  
+</code></pre>
+      
+	<p>
+		The input declaration has a new member, specifying the <def>invocation count</def>. This number means, that this shader will be instanced, these instances running in parallel, and we can refer the current instance by the inbuilt variable <var>gl_InvocationID</var>. We will use this number in the shader code to reference which layer of the array texture we are rendering to, and which shadow matrix we are going to use to do the light space transform. We are iterating over all triangles, and setting <var>gl_Layer</var> and <var>gl_Position</var> accordingly. 
+	</p>
+      
+	<note>
+		I strongly suggest modifying your Shader class in your engine to enable the possibility of inserting variables into the shader code before shader compilation, so that you can make the <i>invocations</i> parameter dynamic. This way if you modify the number of cascades in the C++ code you dont have to modify the shader itself, removing one cog from the complex machine that is your engine. I didn't include this in the tutorial for the sake of simplicity.
+	</note>
+      
+	<p>
+		The fragment shader remains the same empty, passthrough shader.
+	</p>
+      
+<pre><code>
+#version 460 core
+    
+void main()
+{             
+}
+</code></pre>
+      
+	<p>
+		Our draw call invoking the shader looks something like this:
+	</p>
+      
+<pre><code>
+simpleDepthShader.use();
+    
+<function id='77'>glBindFramebuffer</function>(GL_FRAMEBUFFER, lightFBO);
+glFramebufferTexture(GL_FRAMEBUFFER, GL_TEXTURE_2D_ARRAY, lightDepthMaps, 0);
+<function id='22'>glViewport</function>(0, 0, depthMapResolution, depthMapResolution);
+<function id='10'>glClear</function>(GL_DEPTH_BUFFER_BIT);
+<function id='74'>glCullFace</function>(GL_FRONT);  // peter panning
+renderScene(simpleDepthShader);
+<function id='74'>glCullFace</function>(GL_BACK);
+<function id='77'>glBindFramebuffer</function>(GL_FRAMEBUFFER, 0);
+</code></pre>
+      
+	<img src="/img/guest/2021/CSM/cascades.png" width="800px">
+
+	<h2>Scene rendering</h2>
+	<p>
+		Now the only thing remaining is doing the actual shadow rendering. In our ordinary phong/deferred fragment shader where we calculate whether the current fragment is occluded or not, we need to insert some logic to decide which light space matrix to use, and which texture to sample from.
+	</p>
+      
+<pre><code>
+// select cascade layer
+vec4 fragPosViewSpace = view * vec4(fragPosWorldSpace, 1.0);
+float depthValue = abs(fragPosViewSpace.z);
+    
+int layer = -1;
+for (int i = 0; i &lt; cascadeCount; ++i)
+{
+    if (depthValue &lt; cascadePlaneDistances[i])
+    {
+        layer = i;
+        break;
+    }
+}
+if (layer == -1)
+{
+    layer = cascadeCount;
+}
+    
+vec4 fragPosLightSpace = lightSpaceMatrices[layer] * vec4(fragPosWorldSpace, 1.0);
+</code></pre>
+      
+	<p>
+		If you remember to prevent shadow acne we applied a depth bias to our image. We need to do the same here, but keep in mind that we are dealing with multiple shadow maps, and on each of them the pixels cover a widely different amount of space, and a unit increase in pixel value means  different depth increase in all of them. Because of this we need to apply a different bias depending on which shadow map we sample from. In my experience scaling the bias inversely proportionally with the far plane works nicely.
+	</p>
+      
+<pre><code>
+// perform perspective divide
+vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+// transform to [0,1] range
+projCoords = projCoords * 0.5 + 0.5;
+    
+// get depth of current fragment from light's perspective
+float currentDepth = projCoords.z;
+if (currentDepth  &gt; 1.0)
+{
+    return 0.0;
+}
+// calculate bias (based on depth map resolution and slope)
+vec3 normal = normalize(fs_in.Normal);
+float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);
+if (layer == cascadeCount)
+{
+    bias *= 1 / (farPlane * 0.5f);
+}
+else
+{
+    bias *= 1 / (cascadePlaneDistances[layer] * 0.5f);
+}
+</code></pre>
+      
+	<note>
+		Please note that there are different strategies for applying bias when dealing with shadow maps. I will link to a few sources detailing these in the citations section.
+	</note>
+      
+	<p>
+		The rest of the function is the same as before, the only difference is that we are sampling from a 2D array texture, hence we need to add a third parameter to the <fun>texture</fun> and the <fun>textureSize</fun> functions.
+	</p>
+      
+<pre><code>
+// PCF
+float shadow = 0.0;
+vec2 texelSize = 1.0 / vec2(textureSize(shadowMap, 0));
+for(int x = -1; x &lt;= 1; ++x)
+{
+    for(int y = -1; y &lt;= 1; ++y)
+    {
+        float pcfDepth = texture(
+                    shadowMap,
+                    vec3(projCoords.xy + vec2(x, y) * texelSize,
+                    layer)
+                    ).r; 
+        shadow += (currentDepth - bias) > pcfDepth ? 1.0 : 0.0;        
+    }    
+}
+shadow /= 9.0;
+    
+// keep the shadow at 0.0 when outside the far_plane region of the light's frustum.
+if(projCoords.z &gt; 1.0)
+{
+    shadow = 0.0;
+}
+    	
+return shadow;
+</code></pre>
+      
+	<p>
+		And that's it! If we did everything correctly we should see that the renderer switches between shadow maps based on the distance. Try setting some unreasonable cascade plane distances (for example only one, which is a few units from the camera) to see if the code really does work. You should see a noticable degradation in shadow quality between the two sides of the plane. If you see moire artifacts on the screen try changing around bias parameters a bit.
+	</p>
+      
+      <img src="/img/guest/2021/CSM/demoscene.png" width="800px">
+        
+        <p>
+          You can find the full source code for the cascaded shadow mapping demo <a href="/code_viewer_gh.php?code=src/8.guest/2021/2.csm/shadow_mapping.cpp" target="_blank">here</a>.
+        </p>
+
+	<h2>Closing thoughts</h2>
+	<p>
+		In the sample project provided you can toggle depthmap visualization by pressing <kbd>F</kbd>. When in depthmap visualization mode you can press the <kbd>+</kbd> key to swap between the different layers.
+	</p>
+	<p>
+		When browsing through the code you might wonder why is the UBO array length <code>16</code>. This is just an arbitrary choice, to me it seemed unlikely that anyone would use more than <code>16</code> shadow cascades, so this seemed like a nice number to allocate.
+	</p>
+	<p>
+		In the code example the cube positions and rotations are randomized. If you want to try the example with static geometry I suggest you seed the <a href="https://en.cppreference.com/w/cpp/numeric/random/mersenne_twister_engine" target="_blank">random number generator</a>.
+	</p>
+	<p>
+		If you are going through the sources given below you might notice that the NVIDIA article is tackling the light projection matrix creation in a roundabout way compared to what is given in this article. However, what they are doing is mathematically equivalent to what we are doing in respect to the x-y coordinates in light view space, which is what matters. This can be seen by plugging stuff into the matrix given in <a href="http://www.songho.ca/opengl/gl_projectionmatrix.html" target="_blank">this</a> article by songho.
+	</p>
+      
+	<h2>Additional Resources</h2>
+	<ul>
+		<li><a href="https://developer.download.nvidia.com/SDK/10.5/opengl/src/cascaded_shadow_maps/doc/cascaded_shadow_maps.pdf" target="_blank">NVIDIA paper on the subject:</a> incomprehensible in my opinion but has to be mentioned</li>
+		<li><a href="https://www.gamedev.net/forums/topic/672664-fitting-directional-light-in-view-frustum/?page=1" target="_blank">A series of incredibly helpful and useful forum posts</a></li>
+		<li><a href="https://ogldev.org/www/tutorial49/tutorial49.html" target="_blank">Another interesting tutorial from OGLDev</a></li>
+		<li><a href="https://docs.microsoft.com/en-us/windows/win32/dxtecharts/cascaded-shadow-maps" target="_blank">An article from Microsoft:</a> nice pictures illustrating some issues with CSM</li>
+		<li><a href="https://digitalrune.github.io/DigitalRune-Documentation/html/3f4d959e-9c98-4a97-8d85-7a73c26145d7.htm" target="_blank">An article about shadow bias</a></li>
+		<li><a href="http://c0de517e.blogspot.com/2011/05/shadowmap-bias-notes.html" target="_blank">Some informative drawings about shadow bias strategies</a></li>
+	</ul>
+	<br>
+      
+<author>
+  <strong>Article by: </strong>Márton Árbócz<br/>
+  <!--<strong>Contact: </strong><a href="mailto:eklavyagames@gmail.com" target="_blank">e-mail</a>-->
+  <div>
+				<a href="https://www.linkedin.com/in/m%C3%A1rton-%C3%A1rb%C3%B3cz-786112149/" target="_blank">
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" style="margin-top: 4px;" viewBox="0 0 34 34" class="global-nav__logo">
+						<path d="M34,2.5v29A2.5,2.5,0,0,1,31.5,34H2.5A2.5,2.5,0,0,1,0,31.5V2.5A2.5,2.5,0,0,1,2.5,0h29A2.5,2.5,0,0,1,34,2.5ZM10,13H5V29h5Zm.45-5.5A2.88,2.88,0,0,0,7.59,4.6H7.5a2.9,2.9,0,0,0,0,5.8h0a2.88,2.88,0,0,0,2.95-2.81ZM29,19.28c0-4.81-3.06-6.68-6.1-6.68a5.7,5.7,0,0,0-5.06,2.58H17.7V13H13V29h5V20.49a3.32,3.32,0,0,1,3-3.58h.19c1.59,0,2.77,1,2.77,3.52V29h5Z" fill="currentColor"></path>
+					</svg>
+				</a>
+			</div>
+</author>       
+
+    </div>
+    
+    <div id="hover">
+        HI
+    </div>
+   <!-- 728x90/320x50 sticky footer -->
+<!--<div id="waldo-tag-6196"></div>-->
+
+   <div id="disqus_thread"></div>
+
+    
+
+
+</div> <!-- container div -->
+
+
+</div> <!-- super container div -->
+</body>
+</html>
