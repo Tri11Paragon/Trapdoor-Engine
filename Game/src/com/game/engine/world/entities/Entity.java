@@ -273,6 +273,14 @@ public class Entity {
 			return this;
 		}
 	}
+	public Entity changeModel(Model model) {
+		synchronized (model) {
+			if (world != null && this.model != model)
+				world.modelChanged(this, this.model, model);
+			this.model = model;
+			return this;
+		}
+	}
 	public synchronized float getSx() {
 		return sx;
 	}

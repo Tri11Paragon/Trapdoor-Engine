@@ -17,6 +17,7 @@ import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
 import com.bulletphysics.dynamics.constraintsolver.ConstraintSolver;
 import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
 import com.game.engine.camera.Camera;
+import com.game.engine.datatypes.ogl.assimp.Model;
 import com.game.engine.renderer.EntityRenderer;
 import com.game.engine.threading.Threading;
 import com.game.engine.world.entities.Entity;
@@ -97,6 +98,10 @@ public class World {
 		// calcualte the phys, stepped relative to the game speed
 		// faster it is running the smaller the steps.
 		physWorld.stepSimulation((float) Threading.getFrameTimeSeconds());
+	}
+	
+	public void modelChanged(Entity e, Model old, Model n) {
+		this.entityStorage.changeModel(e, old, n);
 	}
 	
 	public void removeEntityPhysics(Entity e) {

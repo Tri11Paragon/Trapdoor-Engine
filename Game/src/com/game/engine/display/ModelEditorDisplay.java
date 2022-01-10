@@ -61,7 +61,7 @@ public class ModelEditorDisplay extends IDisplay {
 		
 		currentModel = GameRegistry.getErrorModel();
 		currentMaterial = GameRegistry.getErrorMaterial();
-		e = new Entity();
+		e = new Entity(0, false);
 		e.setModel(currentModel);
 		e.setPosition(0, 0, 0);
 		this.world.addEntityToWorld(e);
@@ -271,7 +271,7 @@ public class ModelEditorDisplay extends IDisplay {
 				
 				Model associatedModel = m.getValue();
 				currentModel = associatedModel;
-				e.setModel(currentModel);
+				e.changeModel(currentModel);
 				// remove old materials
 				for (int ir = 0; ir < selectMesh.getSelectBoxElements().size(); ir++) {
 					selectMesh.removeElement(ir);

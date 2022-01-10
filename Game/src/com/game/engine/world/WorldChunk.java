@@ -32,6 +32,18 @@ public class WorldChunk {
 		this.renderer = renderer;
 	}
 	
+	public void changeModel(Entity e, Model old, Model n) {
+		ArrayList<Entity> ents = this.entityMap.get(old);
+		if (ents != null)
+			ents.remove(e);
+		ents = this.entityMap.get(n);
+		if (ents == null) {
+			ents = new ArrayList<Entity>();
+			this.entityMap.put(n, ents);
+		}
+		ents.add(e);
+	}
+	
 	public void render(int i, int j, int k) {
 		//Vector3d pos = camera.getPosition();
 		//float fx = (((int) (pos.x / CHUNK_SIZE)) + i) * CHUNK_SIZE;

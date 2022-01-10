@@ -2,6 +2,8 @@ package com.game.engine.world;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 import org.joml.Vector3d;
 
@@ -39,8 +41,31 @@ public class WorldEntityStorage {
 		this.renderer = renderer;
 	}
 	
-	public void changeModel(Model old, Entity e) {
-		// TODO?
+	public void changeModel(Entity e, Model old, Model n) {
+		if (e.isStatic()) {
+			int x = (int)e.getX();
+			int y = (int)e.getY();
+			int z = (int)e.getZ();
+			
+			int cx = x >> 5;
+			int cy = y >> 5;
+			int cz = z >> 5;
+			
+			WorldChunk c = this.chunks.get(cx, cy, cz);
+			
+			if (c != null)
+				c.changeModel(e, old, n);
+		} else {
+			ArrayList<Entity> ents = this.mappedEntities.get(old);
+			if (ents != null)
+				ents.remove(e);
+			ents = this.mappedEntities.get(n);
+			if (ents == null) {
+				ents = new ArrayList<Entity>();
+				this.mappedEntities.put(n, ents);
+			}
+			ents.add(e);
+		}
 	}
 	
 	public void render() {
@@ -65,6 +90,19 @@ public class WorldEntityStorage {
 				}
 			}
 		}
+		
+		Iterator<Entry<Model, ArrayList<Entity>>> iter = mappedEntities.entrySet().iterator();
+		
+		while (iter.hasNext()) {
+			Entry<Model, ArrayList<Entity>> entry = iter.next();
+			ArrayList<Entity> lis = entry.getValue();
+			Model m = entry.getKey();
+			
+			if (m == null)
+				continue;
+			
+			this.renderer.renderChunk(m, lis);
+		}
 	}
 	
 	public void addEntity(Entity e) {
@@ -87,7 +125,6 @@ public class WorldEntityStorage {
 			}
 			
 			c.addEntity(e);
-			entities.add(e);
 			
 		} else {
 			ArrayList<Entity> ents = this.mappedEntities.get(e.getModel());
@@ -96,8 +133,8 @@ public class WorldEntityStorage {
 				this.mappedEntities.put(e.getModel(), ents);
 			}
 			ents.add(e);
-			entities.add(e);
-			}
+		}
+		entities.add(e);
 	}
 	
 	public void removeEntity(Entity e) {
@@ -121,8 +158,8 @@ public class WorldEntityStorage {
 			ArrayList<Entity> ents = this.mappedEntities.get(e.getModel());
 			if (ents != null)
 				ents.remove(e);
-			entities.remove(e);
 		}
+		entities.remove(e);
 	}
 	
 	public WorldChunk getEntityChunk(float x, float y, float z) {
