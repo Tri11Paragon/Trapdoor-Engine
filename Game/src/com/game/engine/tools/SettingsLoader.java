@@ -38,6 +38,7 @@ public class SettingsLoader {
 	public static double SENSITIVITY = 0.5d;
 	public static double MUSIC = 0.5d;
 	public static int VSYNC = 0;
+	public static int RENDER_DISTANCE = 6;
 	
 	private static int readLines = 1;
 	public static void loadSettings() {

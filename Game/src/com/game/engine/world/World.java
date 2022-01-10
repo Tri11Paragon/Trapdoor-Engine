@@ -17,7 +17,6 @@ import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
 import com.bulletphysics.dynamics.constraintsolver.ConstraintSolver;
 import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
 import com.game.engine.camera.Camera;
-import com.game.engine.datatypes.util.NdHashMap;
 import com.game.engine.renderer.EntityRenderer;
 import com.game.engine.threading.Threading;
 import com.game.engine.world.entities.Entity;
@@ -40,8 +39,8 @@ public class World {
 	public static final CollisionShape defaultSphereShape = new SphereShape(1.0f);
 	public static final CollisionShape defaultEntityShape = new BoxShape(new Vector3f(0.5f, 0.5f, 0.5f));
 	
-	// fuzzy world pos (static entities only, ie non-movings)
-	private NdHashMap<Integer, ArrayList<Entity>> entitiesAtPos = new NdHashMap<Integer, ArrayList<Entity>>();
+	private final WorldEntityStorage entityStorage;
+	
 	// Physics container
 	private DiscreteDynamicsWorld physWorld;
 	
@@ -54,13 +53,12 @@ public class World {
 	private EntityRenderer renderer;
 	private SkyboxRenderer skyboxRenderer;
 	
-	private ArrayList<Entity> entitiesInWorld = new ArrayList<Entity>();
-	
 	public World(Camera c) {
 		// entitiesinworld is shared memory between the renderer and the world object.
-		this.renderer = new EntityRenderer(c, entitiesInWorld);
+		this.renderer = new EntityRenderer(c);
 		this.skyboxRenderer = new SkyboxRenderer();
 		this.c = c;
+		this.entityStorage = new WorldEntityStorage(c, this.renderer);
 		
 		// setup physics
 		BroadphaseInterface broadphase = new DbvtBroadphase();
@@ -79,40 +77,26 @@ public class World {
 	public void render() {
 		//this.c.move();
 		this.skyboxRenderer.render(c);
-		this.renderer.render();
+		this.entityStorage.render();
 	}
 	
 	/**
 	 * called by the physics thread
 	 */
 	public void update() {
-		entityCount = entitiesInWorld.size();
+		ArrayList<Entity> allEnts = this.entityStorage.getAllEntities();
+		entityCount = allEnts.size();
 		c.move();
 		c.updateViewMatrix();
 		
-		for (int i = 0; i < entitiesInWorld.size(); i++) {
-			Entity a = entitiesInWorld.get(i);
+		for (int i = 0; i < entityCount; i++) {
+			Entity a = allEnts.get(i);
 			a.update();
 		}
 		
 		// calcualte the phys, stepped relative to the game speed
 		// faster it is running the smaller the steps.
 		physWorld.stepSimulation((float) Threading.getFrameTimeSeconds());
-	}
-	
-	@Deprecated
-	public void addStaticEntityToWorld(Entity e) {
-		this.entitiesInWorld.add(e);
-		e.setWorld(this);
-		// stores the entity at its integer position allowing for easy access of entities at a pos
-		int x = (int)e.getX(),y = (int)e.getY(),z = (int)e.getZ();
-		ArrayList<Entity> el = this.entitiesAtPos.get(x, y, z);
-		if (el == null) {
-			el = new ArrayList<Entity>();
-			this.entitiesAtPos.set(x, y, z, el);
-		}
-		el.add(e);
-		this.physWorld.addRigidBody(e.getRigidbody());
 	}
 	
 	public void removeEntityPhysics(Entity e) {
@@ -124,7 +108,7 @@ public class World {
 	}
 	
 	public void addEntityToWorld(Entity e) {
-		this.entitiesInWorld.add(e);
+		this.entityStorage.addEntity(e);
 		e.setWorld(this);
 		this.physWorld.addRigidBody(e.getRigidbody());
 	}

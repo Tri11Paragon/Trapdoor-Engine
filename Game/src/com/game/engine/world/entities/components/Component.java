@@ -26,6 +26,10 @@ public abstract class Component {
 		this.world = world;
 	}
 	
+	// called on render tick
+	public abstract void render();
+	
+	// called on physics tick
 	public abstract void update();
 	
 	public Entity getAssociatedEntity() {

@@ -9,11 +9,13 @@ import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
 import com.bulletphysics.collision.shapes.BoxShape;
+import com.bulletphysics.collision.shapes.CollisionShape;
 import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.dynamics.RigidBodyConstructionInfo;
 import com.bulletphysics.linearmath.DefaultMotionState;
 import com.bulletphysics.linearmath.Transform;
 import com.game.engine.datatypes.ogl.assimp.Model;
+import com.game.engine.tools.math.Maths;
 import com.game.engine.world.World;
 import com.game.engine.world.entities.components.Component;
 
@@ -24,7 +26,6 @@ import com.game.engine.world.entities.components.Component;
  */
 public class Entity {
 	
-	//private float x,y,z;
 	private float sx=1,sy=1,sz=1;
 	private Model model;
 	
@@ -39,13 +40,32 @@ public class Entity {
 	// world reference
 	private World world;
 	
+	// entity flags (8 boolean)
+	// 0000 0000
+	// nnnn nnns
+	// where:
+	// n is unassigned
+	// s is isentitystatic
+	private byte flags = 0;
+	
 	public Entity() {
-		this(0);
+		// entities with no mass are effectively static
+		this(0, true);
 	}
 	
 	public Entity(float mass) {
+		this(mass, false);
+	}
+	
+	public Entity(float mass, boolean isStatic) {
+		this(mass, isStatic, new BoxShape(new Vector3f(0.5f, 0.5f, 0.5f)));
+	}
+	
+	public Entity(float mass, boolean isStatic, CollisionShape collider) {
 		this.transformOut = new Transform();
 		this.positionStore = new Vector3f();
+		byte mask = isStatic ? (byte) 1 : (byte) 0;
+		this.flags = (byte) (flags | mask);
 		// default no mass (ie collision object, nothing else.
 		RigidBodyConstructionInfo cor = new RigidBodyConstructionInfo(mass, new DefaultMotionState(
 				new Transform(
@@ -56,7 +76,7 @@ public class Entity {
 								new Vector3f(0,0,0), 1.0f
 								)
 						)
-				), new BoxShape(new Vector3f(0.5f, 0.5f, 0.5f)));
+				), collider);
 		cor.restitution = 0.0f;
 		cor.angularDamping = 0.95f;
 		cor.friction = 0.5f;
@@ -68,10 +88,13 @@ public class Entity {
 	
 	public void update() {
 		this.rigidbody.getWorldTransform(transformOut);
+		for (int i = 0; i < entityComponents.size(); i++)
+			entityComponents.get(i).update();
 	}
 	
 	public void render() {
-		
+		for (int i = 0; i < entityComponents.size(); i++)
+			entityComponents.get(i).render();
 	}
 	
 	/**
@@ -217,7 +240,7 @@ public class Entity {
 	}
 	
 	public float getPitch() {
-		float sqrt = invSqrt((this.transformOut.basis.m21 * this.transformOut.basis.m21) + (this.transformOut.basis.m22 * this.transformOut.basis.m22));
+		float sqrt = Maths.invSqrt((this.transformOut.basis.m21 * this.transformOut.basis.m21) + (this.transformOut.basis.m22 * this.transformOut.basis.m22));
 		return (float) Math.atan(-this.transformOut.basis.m20 * sqrt);
 	}
 	
@@ -277,6 +300,10 @@ public class Entity {
 		this.sz = s;
 		return this;
 	}
+	
+	public boolean isStatic() {
+		return (flags & 0x01) == 0x01;
+	}
 
 	public RigidBody getRigidbody() {
 		return rigidbody;
@@ -290,15 +317,6 @@ public class Entity {
 		if (world != null)
 			this.world.addEntityPhysics(this);
 		return this;
-	}
-	
-	private static float invSqrt(float x) {
-	    float xhalf = 0.5f * x;
-	    int i = Float.floatToIntBits(x);
-	    i = 0x5f3759df - (i >> 1);
-	    x = Float.intBitsToFloat(i);
-	    x *= (1.5f - xhalf * x * x);
-	    return x;
 	}
 	
 }

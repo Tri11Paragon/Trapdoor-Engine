@@ -36,20 +36,18 @@ public class Main {
 	public static String username = null;
 	public static String password = null;
 	public static boolean verbose = true;
-	public static boolean devMode = true;
+	public static boolean devMode = false;
 	public static int processors = 8;
 	
 	public static void main(String[] args) throws InterruptedException {
 		// mvn clean compile assembly:single 
 		
+		System.out.println(153 >> 5);
+		System.out.println(153 & 0x07);
+		System.out.println(153 / 32);
+		
 		//https://mkyong.com/maven/how-to-create-a-manifest-file-with-maven/
 		// https://github.com/SpinyOwl/legui
-		
-		//gb(strr, "", 3);
-		
-		//for (int i = 0; i < strr.size(); i++) {
-		//	System.out.println(strr.get(i));
-		//}
 		
 		// decode data supplied through the command line
 		CommandLineInput.decode(args);
