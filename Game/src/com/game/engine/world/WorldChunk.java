@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 
 import com.game.engine.datatypes.ogl.assimp.Model;
 import com.game.engine.renderer.EntityRenderer;
+import com.game.engine.shaders.DeferredFirstPassShader;
 import com.game.engine.world.entities.Entity;
 
 /**
@@ -44,13 +45,7 @@ public class WorldChunk {
 		ents.add(e);
 	}
 	
-	public void render(int i, int j, int k) {
-		//Vector3d pos = camera.getPosition();
-		//float fx = (((int) (pos.x / CHUNK_SIZE)) + i) * CHUNK_SIZE;
-		//float fy = (((int) (pos.y / CHUNK_SIZE)) + j) * CHUNK_SIZE;
-		//float fz = (((int) (pos.z / CHUNK_SIZE)) + k) * CHUNK_SIZE;
-		//if (!camera.cubeInFrustum(fx, fy, fz, fx + CHUNK_SIZE, fy + CHUNK_SIZE, fz + CHUNK_SIZE))
-		//	return;
+	public void render(DeferredFirstPassShader shader, int i, int j, int k) {
 		
 		Iterator<Entry<Model, ArrayList<Entity>>> iter = entityMap.entrySet().iterator();
 		
@@ -62,7 +57,7 @@ public class WorldChunk {
 			if (m == null)
 				continue;
 			
-			renderer.renderChunk(m, lis);
+			renderer.renderChunk(shader, m, lis);
 		}
 	}
 	

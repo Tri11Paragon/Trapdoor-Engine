@@ -13,6 +13,7 @@ public abstract class IDisplay {
 		
 	}
 	
+	public static final Vector3f defaultSkyColor = new Vector3f(0.5444f, 0.62f, 0.69f);
 	private final Vector3f skyColor = new Vector3f(0.5444f, 0.62f, 0.69f);
 	
 	// called when the game loads

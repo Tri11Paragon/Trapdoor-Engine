@@ -4,6 +4,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
+import com.game.engine.ProjectionMatrix;
 import com.game.engine.tools.math.Maths;
 
 /**
@@ -21,11 +22,16 @@ public abstract class ICamera {
 	protected float yaw;
 	protected float roll;
 	protected Matrix4f viewMatrix = Maths.createViewMatrix(this);
+	private Matrix4f temp = new Matrix4f();
+	protected Matrix4f projectViewMatrix = ProjectionMatrix.projectionMatrix;
 	
 	public abstract void move();
 	
 	public void updateViewMatrix() {
 		this.viewMatrix = Maths.createViewMatrix(this);
+		temp.identity();
+		temp.set(ProjectionMatrix.projectionMatrix);
+		this.projectViewMatrix = temp.mul(viewMatrix);
 	}
 	
 	/**
@@ -95,6 +101,10 @@ public abstract class ICamera {
 	
 	public Matrix4f getViewMatrix() {
 		return viewMatrix;
+	}
+	
+	public Matrix4f getProjectViewMatrix() {
+		return projectViewMatrix;
 	}
 	
 }

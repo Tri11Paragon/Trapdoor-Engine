@@ -20,7 +20,7 @@ import org.lwjgl.opengl.GL32;
 public abstract class ShaderProgram {
 	
 	// this is the shader id;
-	private int programID;
+	protected int programID;
 
 	// individual shader ids.
 	private int vertexShaderID;

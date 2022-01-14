@@ -1,11 +1,15 @@
-#version 150
+#version 330 core
 
 const vec4 colour1 = vec4(0.88, 0.67, 0.219, 1.0);
 const vec4 colour2 = vec4(0.2, 0.6, 0.7, 1.0);
 
 in float pass_height;
+in vec3 fragpos;
 
-out vec4 out_colour;
+layout (location = 0) out vec4 gPosition;
+layout (location = 1) out vec4 gNormal;
+layout (location = 2) out vec4 gAlbedoSpec;
+layout (location = 3) out vec4 gRenderState;
 
 //I want to use the glsl smoothstep function, but for some unknown reason it doesn't work on my laptop when exported as a jar. But always works fine in Eclipse!
 float smoothlyStep(float edge0, float edge1, float x){
@@ -15,7 +19,10 @@ float smoothlyStep(float edge0, float edge1, float x){
 
 void main(void){
 
+    gPosition = vec4(fragpos, 1.0f);
+
 	float fadeFactor = 1.0 - smoothlyStep(-50.0, 70.0, pass_height);
-	out_colour = mix(colour2, colour1, fadeFactor);
+	gAlbedoSpec = mix(colour2, colour1, fadeFactor);
+    gRenderState = vec4(0.0f);
 	
 }

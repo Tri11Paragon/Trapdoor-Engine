@@ -158,6 +158,32 @@ public class TextureLoader {
 				bias, minmag_filter, minmag_mipmap);
 	}
 	
+	/**
+	 * Textures must be in order:
+	 * Right
+	 * Left
+	 * Top
+	 * Bottom
+	 * Back
+	 * Front
+	 * @param textures
+	 * @return
+	 */
+	public static Texture loadCubeMap(TextureData[] textures) {
+		int id = GL11.glGenTextures();
+		GL13.glActiveTexture(GL13.GL_TEXTURE0);
+		GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, id);
+		
+		Texture t = new Texture(id, textures[0].getWidth(), textures[0].getHeight(), textures[0].getChannels());
+		for (int i = 0; i < textures.length; i++) {
+			GL11.glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL11.GL_RGBA, textures[i].getWidth(), textures[i].getHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, textures[i].getBuffer());
+		}
+		GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+		GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+		TextureLoader.textures.add(id);
+		return t;
+	}
+	
 	public static Texture loadTextureI(String texture, TextureData d, float bias, int minmag_filter, int minmag_mipmap) {
 		try {
 			// generate a new texture buffer

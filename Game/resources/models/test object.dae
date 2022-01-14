@@ -5,8 +5,8 @@
       <author>Blender User</author>
       <authoring_tool>Blender 2.93.5</authoring_tool>
     </contributor>
-    <created>2022-01-01T01:34:57</created>
-    <modified>2022-01-01T01:34:57</modified>
+    <created>2022-01-13T19:53:07</created>
+    <modified>2022-01-13T19:53:07</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -40,14 +40,14 @@
     </effect>
     <effect id="Brick_Material-effect">
       <profile_COMMON>
-        <newparam sid="bricks-surface">
+        <newparam sid="cobblestone_floor_04_diff_1k_png-surface">
           <surface type="2D">
-            <init_from>bricks</init_from>
+            <init_from>cobblestone_floor_04_diff_1k_png</init_from>
           </surface>
         </newparam>
-        <newparam sid="bricks-sampler">
+        <newparam sid="cobblestone_floor_04_diff_1k_png-sampler">
           <sampler2D>
-            <source>bricks-surface</source>
+            <source>cobblestone_floor_04_diff_1k_png-surface</source>
           </sampler2D>
         </newparam>
         <technique sid="common">
@@ -56,7 +56,7 @@
               <color sid="emission">0 0 0 1</color>
             </emission>
             <diffuse>
-              <texture texture="bricks-sampler" texcoord="UVMap"/>
+              <texture texture="cobblestone_floor_04_diff_1k_png-sampler" texcoord="UVMap"/>
             </diffuse>
             <index_of_refraction>
               <float sid="ior">1.45</float>
@@ -70,8 +70,8 @@
     <image id="_12_png" name="_12_png">
       <init_from>/home/brett/Documents/Brock/Gamers/Java%20Brock%202021%20Project/Game/resources/textures/512.png</init_from>
     </image>
-    <image id="bricks" name="bricks">
-      <init_from>/home/brett/Documents/Brock/Gamers/Java%20Brock%202021%20Project/Game/resources/textures/materials/Bricks074_1K-PNG/Bricks074_1K_Color.png</init_from>
+    <image id="cobblestone_floor_04_diff_1k_png" name="cobblestone_floor_04_diff_1k_png">
+      <init_from>/home/brett/Documents/Brock/Gamers/Java%20Brock%202021%20Project/Game/resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_diff_1k.png</init_from>
     </image>
   </library_images>
   <library_materials>

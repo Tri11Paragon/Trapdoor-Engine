@@ -6,12 +6,10 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
-import com.game.engine.ProjectionMatrix;
-import com.game.engine.camera.ICamera;
 import com.game.engine.datatypes.ogl.assimp.Mesh;
 import com.game.engine.datatypes.ogl.assimp.Model;
 import com.game.engine.datatypes.ogl.obj.VAO;
-import com.game.engine.shaders.EntityShader;
+import com.game.engine.shaders.DeferredFirstPassShader;
 import com.game.engine.tools.math.Maths;
 import com.game.engine.world.entities.Entity;
 
@@ -22,24 +20,7 @@ import com.game.engine.world.entities.Entity;
  */
 public class EntityRenderer {
 	
-	private EntityShader shader;
-	private ICamera c;
-	
-	public EntityRenderer(ICamera c) {
-		this.shader = new EntityShader("entity.vs", "entity.fs");
-		this.shader.start();
-		this.shader.loadProjectionMatrix(ProjectionMatrix.projectionMatrix);
-		this.shader.stop();
-		this.c = c;
-	}
-	
-	public void prepare() {
-		shader.start();
-		shader.loadViewMatrix(c.getViewMatrix());
-		GL13.glActiveTexture(GL13.GL_TEXTURE0);	
-	}
-	
-	public void renderChunk(Model m, ArrayList<Entity> lis) {
+	public void renderChunk(DeferredFirstPassShader shader, Model m, ArrayList<Entity> lis) {
 		Mesh[] meshes = m.getMeshes();
 		for (int i = 0; i < meshes.length; i++) {
 			VAO mod = meshes[i].getVAO();

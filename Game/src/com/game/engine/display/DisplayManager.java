@@ -107,6 +107,13 @@ public class DisplayManager {
 	// debugger nonsense
 	private static DebugInfo debugInfoLayer;
 	
+	public static Vector3f getClearColor() {
+		if (currentDisplay != null)
+			return currentDisplay.getSkyColor();
+		else
+			return IDisplay.defaultSkyColor;
+	}
+	
 	// display updating
 	public static void updateDisplay() {
 		while(!GLFW.glfwWindowShouldClose(DisplayManager.window)) {

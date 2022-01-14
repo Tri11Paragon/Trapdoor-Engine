@@ -18,6 +18,8 @@ import com.bulletphysics.dynamics.constraintsolver.ConstraintSolver;
 import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
 import com.game.engine.camera.Camera;
 import com.game.engine.datatypes.ogl.assimp.Model;
+import com.game.engine.display.DisplayManager;
+import com.game.engine.renderer.DeferredRenderer;
 import com.game.engine.renderer.EntityRenderer;
 import com.game.engine.threading.Threading;
 import com.game.engine.world.entities.Entity;
@@ -53,10 +55,12 @@ public class World {
 	private Camera c;
 	private EntityRenderer renderer;
 	private SkyboxRenderer skyboxRenderer;
-	
+	private DeferredRenderer deferredRenderer;
+
 	public World(Camera c) {
 		// entitiesinworld is shared memory between the renderer and the world object.
-		this.renderer = new EntityRenderer(c);
+		this.renderer = new EntityRenderer();
+		this.deferredRenderer = new DeferredRenderer(c);
 		this.skyboxRenderer = new SkyboxRenderer();
 		this.c = c;
 		this.entityStorage = new WorldEntityStorage(c, this.renderer);
@@ -77,8 +81,20 @@ public class World {
 	 */
 	public void render() {
 		//this.c.move();
+		
+		DisplayManager.enableCulling();
+		DisplayManager.disableTransparentcy(); 
+		
+		this.deferredRenderer.startFirstPass();
 		this.skyboxRenderer.render(c);
-		this.entityStorage.render();
+		
+		this.deferredRenderer.enableMainShaders();
+		this.entityStorage.render(this.deferredRenderer.getShader());
+		this.deferredRenderer.endFirstPass();
+		
+		this.deferredRenderer.runSecondPass();
+		
+		DisplayManager.disableCulling();
 	}
 	
 	/**
@@ -89,6 +105,8 @@ public class World {
 		entityCount = allEnts.size();
 		c.move();
 		c.updateViewMatrix();
+		// TODO: fix this
+		//c.calculateFrustum(ProjectionMatrix.projectionMatrix, c.getViewMatrix());
 		
 		for (int i = 0; i < entityCount; i++) {
 			Entity a = allEnts.get(i);

@@ -11,6 +11,7 @@ import com.game.engine.camera.Camera;
 import com.game.engine.datatypes.ogl.assimp.Model;
 import com.game.engine.datatypes.util.NdHashMap;
 import com.game.engine.renderer.EntityRenderer;
+import com.game.engine.shaders.DeferredFirstPassShader;
 import com.game.engine.tools.SettingsLoader;
 import com.game.engine.world.entities.Entity;
 
@@ -68,8 +69,7 @@ public class WorldEntityStorage {
 		}
 	}
 	
-	public void render() {
-		this.renderer.prepare();
+	public void render(DeferredFirstPassShader shader) {
 		final int f = SettingsLoader.RENDER_DISTANCE;
 		Vector3d pos = camera.getPosition();
 		for (int i = -f; i < f; i++) {
@@ -83,10 +83,19 @@ public class WorldEntityStorage {
 					int cy = (y >> 5) + j;
 					int cz = (z >> 5) + k;
 					
+					//int ccx = cx * 32;
+					//int ccy = cy * 32;
+					//int ccz = cz * 32;
+					
+					//final float padding = 16;
+					
+					//if (!camera.cubeInFrustum(ccx - padding, ccy - padding, ccz - padding, ccx+32 + padding, ccy+32 + padding, ccz+32 + padding))
+						//continue;
+					
 					WorldChunk c = this.chunks.get(cx, cy, cz);
 					
 					if (c != null)
-						c.render(i, j, k);
+						c.render(shader, i, j, k);
 				}
 			}
 		}
@@ -101,7 +110,7 @@ public class WorldEntityStorage {
 			if (m == null)
 				continue;
 			
-			this.renderer.renderChunk(m, lis);
+			this.renderer.renderChunk(shader, m, lis);
 		}
 	}
 	

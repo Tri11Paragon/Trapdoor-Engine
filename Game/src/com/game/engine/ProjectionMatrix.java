@@ -1,5 +1,6 @@
 package com.game.engine;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -25,6 +26,7 @@ public class ProjectionMatrix {
 	public static final Matrix4f projectionMatrixOrtho = new Matrix4f();
 	
 	public static HashMap<Integer, WorldShader> shaders = new HashMap<Integer, WorldShader>();
+	public static ArrayList<Runnable> projectionChanges = new ArrayList<Runnable>();
 	private static int lastIndex = 0;
 	
 	public static void updateProjectionMatrix(){
@@ -52,6 +54,9 @@ public class ProjectionMatrix {
 			localShader.stop();
 		}
 		
+		for (int i = 0; i < projectionChanges.size(); i++)
+			projectionChanges.get(i).run();
+		
 		//GUIShader guishader = VoxelScreenManager.ui.getRenderer().getShader();
 		//guishader.start();1
 		//guishader.loadProjectionMatrix(projectionMatrixOrtho);
@@ -77,6 +82,10 @@ public class ProjectionMatrix {
 		shaders.put(lastIndex, shader);
 		lastIndex++;
 		return lastIndex-1;
+	}
+	
+	public static void addProjectionUpdateListener(Runnable run) {
+		projectionChanges.add(run);
 	}
 	
 }
