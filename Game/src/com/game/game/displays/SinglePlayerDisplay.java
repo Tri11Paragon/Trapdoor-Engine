@@ -65,7 +65,7 @@ public class SinglePlayerDisplay extends IDisplay{
 	@Override
 	public void onDestory() {
 		// TODO Auto-generated method stub
-		
+		this.world.cleanup();
 	}
 	
 }

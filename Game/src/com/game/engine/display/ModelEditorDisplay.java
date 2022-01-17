@@ -329,7 +329,7 @@ public class ModelEditorDisplay extends IDisplay {
 
 	@Override
 	public void onDestory() {
-		
+		this.world.cleanup();
 	}
 
 	

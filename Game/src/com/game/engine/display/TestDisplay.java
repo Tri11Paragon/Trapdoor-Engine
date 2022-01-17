@@ -1,8 +1,5 @@
 package com.game.engine.display;
 
-import javax.vecmath.Vector3f;
-
-import com.bulletphysics.collision.shapes.BoxShape;
 import com.game.engine.camera.CreativeFirstPerson;
 import com.game.engine.datatypes.lighting.Light;
 import com.game.engine.datatypes.ogl.assimp.Model;
@@ -33,7 +30,7 @@ public class TestDisplay extends IDisplay {
 		this.world.addEntityToWorld(new EntityCamera(this.camera));
 		
 		this.world.addEntityToWorld(
-				new Entity(0, true, new BoxShape(new Vector3f(50.0f, 0.1f, 50.0f)))
+				new Entity(0, true, null)
 					.setModel(GameRegistry.getModel("resources/models/floor.dae"))
 					.setPosition(0, -20, 0)
 				);
@@ -93,7 +90,7 @@ public class TestDisplay extends IDisplay {
 
 	@Override
 	public void onDestory() {
-		
+		this.world.cleanup();
 	}
 	
 }

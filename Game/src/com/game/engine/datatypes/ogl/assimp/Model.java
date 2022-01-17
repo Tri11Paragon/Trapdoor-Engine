@@ -2,6 +2,7 @@ package com.game.engine.datatypes.ogl.assimp;
 
 import org.lwjgl.assimp.AIScene;
 
+import com.bulletphysics.collision.shapes.TriangleIndexVertexArray;
 import com.game.engine.threading.GameRegistry;
 
 /**
@@ -15,12 +16,17 @@ public class Model {
 	private Material[] materials;
 	private AIScene scene;
 	private String path;
+	private TriangleIndexVertexArray meshColliderData;
 	
 	public Model(Mesh[] meshes, Material[] materials, AIScene scene, String path) {
 		this.meshes = meshes;
 		this.materials = materials;
 		this.scene = scene;
 		this.path = path;
+		meshColliderData = new TriangleIndexVertexArray();
+		for (int i = 0; i < meshes.length; i++) {
+			meshColliderData.addIndexedMesh(meshes[i].getMeshColliderInfo());
+		}
 	}
 	
 	/**
@@ -60,6 +66,10 @@ public class Model {
 	
 	public String getPath() {
 		return this.path;
+	}
+	
+	public TriangleIndexVertexArray getMeshColliderData() {
+		return this.meshColliderData;
 	}
 	
 }

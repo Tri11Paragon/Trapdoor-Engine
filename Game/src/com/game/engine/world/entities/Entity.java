@@ -8,7 +8,7 @@ import javax.vecmath.Matrix4f;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
-import com.bulletphysics.collision.shapes.BoxShape;
+import com.bulletphysics.collision.shapes.BvhTriangleMeshShape;
 import com.bulletphysics.collision.shapes.CollisionShape;
 import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.dynamics.RigidBodyConstructionInfo;
@@ -29,6 +29,8 @@ public class Entity {
 	
 	private float sx=1,sy=1,sz=1;
 	private Model model;
+	private float mass = 0;
+	private boolean usingAssignedCollisonState = false;
 	
 	// physics stuff
 	private RigidBody rigidbody;
@@ -61,7 +63,7 @@ public class Entity {
 	}
 	
 	public Entity(float mass, boolean isStatic) {
-		this(mass, isStatic, new BoxShape(new Vector3f(0.5f, 0.5f, 0.5f)));
+		this(mass, isStatic, null);
 	}
 	
 	public Entity(CollisionShape shape) {
@@ -74,21 +76,25 @@ public class Entity {
 		byte mask = isStatic ? (byte) 1 : (byte) 0;
 		this.flags = (byte) (flags | mask);
 		// default no mass (ie collision object, nothing else.
-		RigidBodyConstructionInfo cor = new RigidBodyConstructionInfo(mass, new DefaultMotionState(
-				new Transform(
-						new Matrix4f(
-								// rotation
-								new Quat4f(0,0,0,1),
-								// position, + w
-								new Vector3f(0,0,0), 1.0f
-								)
-						)
-				), collider);
-		cor.restitution = 0.0f;
-		cor.angularDamping = 0.95f;
-		cor.friction = 0.5f;
-		rigidbody = new RigidBody(cor);
-		this.rigidbody.getWorldTransform(transformOut);
+		if (collider != null) {
+			RigidBodyConstructionInfo cor = new RigidBodyConstructionInfo(mass, new DefaultMotionState(
+					new Transform(
+							new Matrix4f(
+									// rotation
+									new Quat4f(0,0,0,1),
+									// position, + w
+									new Vector3f(0,0,0), 1.0f
+									)
+							)
+					), collider);
+			cor.restitution = 0.0f;
+			cor.angularDamping = 0.95f;
+			cor.friction = 0.5f;
+			rigidbody = new RigidBody(cor);
+			this.rigidbody.getWorldTransform(transformOut);
+			usingAssignedCollisonState = true;
+		}
+		this.mass = mass;
 		
 		//this.rigidbody.setActivationState(CollisionObject.DISABLE_DEACTIVATION);
 	}
@@ -281,7 +287,7 @@ public class Entity {
 	public Entity setModel(Model model) {
 		synchronized (model) {
 			this.model = model;
-			return this;
+			return generateRigidBodyFromModel();
 		}
 	}
 	public Entity changeModel(Model model) {
@@ -289,9 +295,58 @@ public class Entity {
 			if (world != null && this.model != model)
 				world.modelChanged(this, this.model, model);
 			this.model = model;
-			return this;
+			return updateCollisionStateFromModel();
 		}
 	}
+	/**
+	 * creates an entity rigid body with mesh collider from the assigned model
+	 * @return
+	 */
+	public Entity generateRigidBodyFromModel() {
+		if (this.model == null)
+			throw new RuntimeException("Model cannot be null while trying to generate ridigid body from model!");
+		// only generate if it hasn't been generated before
+		if (!usingAssignedCollisonState) {
+			RigidBodyConstructionInfo cor = new RigidBodyConstructionInfo(this.mass, new DefaultMotionState(
+					new Transform(
+							new Matrix4f(
+									// rotation
+									new Quat4f(0,0,0,1),
+									// position, + w
+									new Vector3f(0,0,0), 1.0f
+									)
+							)
+					), new BvhTriangleMeshShape(this.model.getMeshColliderData(), true, true));
+			cor.restitution = 0.0f;
+			cor.angularDamping = 0.95f;
+			cor.friction = 0.5f;
+			rigidbody = new RigidBody(cor);
+			this.rigidbody.getWorldTransform(transformOut);
+		}
+		return this;
+	}
+	
+	public Entity updateCollisionStateFromModel() {
+		if (this.model == null)
+			throw new RuntimeException("Model cannot be null while trying to generate ridigid body from model!");
+		if (usingAssignedCollisonState)
+			return this;
+		this.rigidbody.setCollisionShape(new BvhTriangleMeshShape(this.model.getMeshColliderData(), true, true));
+		return this;
+	}
+	
+	// these are unlikely to be needed but are availible
+	
+	public Entity setUsingModelMeshCollider() {
+		this.usingAssignedCollisonState = false;
+		return this;
+	}
+	
+	public Entity setUsingAssignedCollider() {
+		this.usingAssignedCollisonState = true;
+		return this;
+	}
+	
 	public synchronized float getSx() {
 		return sx;
 	}

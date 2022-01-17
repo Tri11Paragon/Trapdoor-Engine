@@ -22,6 +22,7 @@ import com.game.engine.display.DisplayManager;
 import com.game.engine.renderer.DeferredRenderer;
 import com.game.engine.renderer.EntityRenderer;
 import com.game.engine.threading.Threading;
+import com.game.engine.tools.Logger;
 import com.game.engine.world.entities.Entity;
 import com.karl.Engine.skybox.SkyboxRenderer;
 
@@ -138,6 +139,11 @@ public class World {
 	
 	public Camera getCamera() {
 		return c;
+	}
+	
+	public void cleanup() {
+		Logger.writeln("Destorying world!");
+		this.deferredRenderer.cleanup();
 	}
 	
 }

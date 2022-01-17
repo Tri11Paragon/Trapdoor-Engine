@@ -1,10 +1,12 @@
 package com.game.engine.tools.models;
 
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIColor4D;
 import org.lwjgl.assimp.AIFace;
@@ -15,6 +17,7 @@ import org.lwjgl.assimp.AIString;
 import org.lwjgl.assimp.AIVector3D;
 import org.lwjgl.assimp.Assimp;
 
+import com.bulletphysics.collision.shapes.IndexedMesh;
 import com.game.engine.datatypes.ogl.assimp.Material;
 import com.game.engine.datatypes.ogl.assimp.Mesh;
 import com.game.engine.datatypes.ogl.assimp.Model;
@@ -130,6 +133,7 @@ public class ModelLoader {
 		ArrayList<Float> normals = new ArrayList<Float>();
 		ArrayList<Integer> indices = new ArrayList<Integer>();
 	    
+		
 		processVertices(mesh, vertices);
 	    processNormals(mesh, normals);
 	    processTextCoords(mesh, textures);
@@ -146,7 +150,36 @@ public class ModelLoader {
 		    }
 	    }
 	    
-		return new Mesh(m, toFloatArray(vertices), toFloatArray(textures), toFloatArray(normals), toIntArray(indices));
+	    // now construct the mesh collider information
+	    int numberOfVertices = vertices.size();
+	    int numberofTriangles = numberOfVertices / 3;
+	    
+	    final int triangleIndexStride = 3 * 4;
+	    final int triangleVertexStride = 3 * 4;
+	    
+	    final ByteBuffer indexBuffer = BufferUtils.createByteBuffer(numberofTriangles * 3 * Integer.SIZE); // yes this is just number of vertices
+	    final ByteBuffer vertexBuffer = BufferUtils.createByteBuffer(numberOfVertices * Float.SIZE);
+	    
+	    for (int i = 0; i < indices.size(); i++) {
+	    	Integer ind = indices.get(i);
+	    	indexBuffer.putInt(ind);
+	    }
+	    
+	    for (int i = 0; i < vertices.size(); i++) {
+	    	Float vert = vertices.get(i);
+	    	vertexBuffer.putFloat(vert);
+	    }
+	    
+	    IndexedMesh meshInfo = new IndexedMesh();
+	    
+	    meshInfo.numTriangles = numberofTriangles;
+	    meshInfo.triangleIndexBase = indexBuffer;
+	    meshInfo.triangleIndexStride = triangleIndexStride;
+	    meshInfo.numVertices = numberOfVertices;
+	    meshInfo.vertexBase = vertexBuffer;
+	    meshInfo.vertexStride = triangleVertexStride;
+	    
+		return new Mesh(m, toFloatArray(vertices), toFloatArray(textures), toFloatArray(normals), toIntArray(indices), meshInfo);
 	}
 	
 	private static void processVertices(AIMesh mesh, ArrayList<Float> vertices) {

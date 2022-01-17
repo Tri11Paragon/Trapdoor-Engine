@@ -173,6 +173,8 @@ public class DeferredRenderer implements Runnable {
 	
 	public void cleanup() {
 		destroyFrameBuffers();
+		secondPassShader.cleanUp();
+		firstPassShader.cleanUp();
 	}
 	
 	private void destroyFrameBuffers() {
