@@ -328,6 +328,7 @@ public class Entity {
 	}
 	public synchronized Entity setSx(float sx) {
 		this.sx = sx;
+		this.rigidbody.getCollisionShape().setLocalScaling(new Vector3f(sx, sy, sz));
 		return this;
 	}
 	public synchronized float getSy() {
@@ -335,6 +336,7 @@ public class Entity {
 	}
 	public synchronized Entity setSy(float sy) {
 		this.sy = sy;
+		this.rigidbody.getCollisionShape().setLocalScaling(new Vector3f(sx, sy, sz));
 		return this;
 	}
 	public synchronized float getSz() {
@@ -342,12 +344,15 @@ public class Entity {
 	}
 	public synchronized Entity setSz(float sz) {
 		this.sz = sz;
+		this.rigidbody.getCollisionShape().setLocalScaling(new Vector3f(sx, sy, sz));
 		return this;
 	}
 	public synchronized Entity setScale(float s) {
 		this.sx = s;
 		this.sy = s;
 		this.sz = s;
+		// TODO: this work? (it seems to)
+		this.rigidbody.getCollisionShape().setLocalScaling(new Vector3f(sx, sy, sz));
 		return this;
 	}
 	

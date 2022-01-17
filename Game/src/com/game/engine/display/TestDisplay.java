@@ -56,7 +56,7 @@ public class TestDisplay extends IDisplay {
 					.setModel(
 							GameRegistry.getModel("resources/models/lll3.obj"))
 					// change position
-					.setPosition(15, 5, 25)); 
+					.setPosition(15, 5, 25).setScale(1.5f)); 
 		//add poop
 		this.world.addEntityToWorld(
 				new EntityPoop()
