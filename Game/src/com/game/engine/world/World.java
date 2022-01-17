@@ -89,7 +89,7 @@ public class World {
 		this.skyboxRenderer.render(c);
 		
 		this.deferredRenderer.enableMainShaders();
-		this.entityStorage.render(this.deferredRenderer.getShader());
+		this.entityStorage.render(this.deferredRenderer);
 		this.deferredRenderer.endFirstPass();
 		
 		this.deferredRenderer.runSecondPass();

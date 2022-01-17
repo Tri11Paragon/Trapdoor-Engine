@@ -39,6 +39,8 @@ public class Light {
 	private float linear = 0.7f, quadratic = 1.2f;
 	private float r = 1.0f,g = 1.0f,b = 1.0f;
 	private float x,y,z;
+	private float dx, dy, dz;
+	private boolean directional;
 	
 	public Light(float[] lighting, float r, float g, float b, float x, float y, float z) {
 		this.linear = lighting[0];
@@ -170,6 +172,40 @@ public class Light {
 	public Light setZ(float z) {
 		this.z = z;
 		return this;
+	}
+
+	public float getDx() {
+		return dx;
+	}
+
+	public Light setDx(float dx) {
+		this.dx = dx;
+		directional = true;
+		return this;
+	}
+
+	public float getDy() {
+		return dy;
+	}
+
+	public Light setDy(float dy) {
+		this.dy = dy;
+		directional = true;
+		return this;
+	}
+
+	public float getDz() {
+		return dz;
+	}
+
+	public Light setDz(float dz) {
+		this.dz = dz;
+		directional = true;
+		return this;
+	}
+	
+	public boolean isDirectional() {
+		return directional;
 	}
 	
 }

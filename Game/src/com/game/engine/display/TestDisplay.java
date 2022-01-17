@@ -1,6 +1,10 @@
 package com.game.engine.display;
 
+import javax.vecmath.Vector3f;
+
+import com.bulletphysics.collision.shapes.BoxShape;
 import com.game.engine.camera.CreativeFirstPerson;
+import com.game.engine.datatypes.lighting.Light;
 import com.game.engine.datatypes.ogl.assimp.Model;
 import com.game.engine.threading.GameRegistry;
 import com.game.engine.world.World;
@@ -28,13 +32,26 @@ public class TestDisplay extends IDisplay {
 		
 		this.world.addEntityToWorld(new EntityCamera(this.camera));
 		
+		this.world.addEntityToWorld(
+				new Entity(0, true, new BoxShape(new Vector3f(50.0f, 0.1f, 50.0f)))
+					.setModel(GameRegistry.getModel("resources/models/floor.dae"))
+					.setPosition(0, -20, 0)
+				);
+		
 		this.cubeModel = GameRegistry.getModel("resources/models/depression.dae");
 		this.world.addEntityToWorld(new Entity().setModel(GameRegistry.getModel("resources/models/test object.dae")).setPosition(0, -10.0f, 0));
 		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(25, 0, 0));
 		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(-25, 0, 0));
 		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(0, 0, 25));
 		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(0, 0, -25));
-		this.world.addEntityToWorld(new Entity().setModel(GameRegistry.getModel("resources/models/hellolosers.obj")).setPosition(5, 5, 5));
+		this.world.addEntityToWorld(
+				new Entity()
+					.setModel(GameRegistry.getModel("resources/models/hellolosers.obj"))
+					.setPosition(5, 5, 5)
+					.addLight(
+							new Light(Light.lightings[7], 1.0f, 1.0f, 1.0f, -5, -5, -5)
+							 )
+					);
 		// add entity
 		this.world.addEntityToWorld(
 				new Entity()

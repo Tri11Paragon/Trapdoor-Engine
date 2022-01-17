@@ -42,10 +42,6 @@ public class Main {
 	public static void main(String[] args) throws InterruptedException {
 		// mvn clean compile assembly:single 
 		
-		System.out.println(153 >> 5);
-		System.out.println(153 & 0x07);
-		System.out.println(153 / 32);
-		
 		//https://mkyong.com/maven/how-to-create-a-manifest-file-with-maven/
 		// https://github.com/SpinyOwl/legui
 		

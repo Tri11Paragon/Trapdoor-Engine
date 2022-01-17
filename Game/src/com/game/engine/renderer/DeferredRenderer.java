@@ -1,16 +1,18 @@
 package com.game.engine.renderer;
 
 import java.nio.ByteBuffer;
-import org.joml.Vector3f;
+import java.util.ArrayList;
+
 import org.lwjgl.opengl.GL33;
 
 import com.game.engine.ProjectionMatrix;
-import com.game.engine.UBOLoader;
 import com.game.engine.camera.Camera;
+import com.game.engine.datatypes.lighting.ExtensibleLightingArray;
 import com.game.engine.datatypes.lighting.Light;
 import com.game.engine.display.DisplayManager;
 import com.game.engine.shaders.DeferredFirstPassShader;
 import com.game.engine.shaders.DeferredSecondPassShader;
+import com.game.engine.world.entities.Entity;
 
 /**
  * @author brett
@@ -36,22 +38,14 @@ public class DeferredRenderer implements Runnable {
 	
 	private Camera camera;
 	
-	private int index = 0;
-	private float[] lightData = new float[DeferredSecondPassShader.MAX_LIGHTS * DeferredSecondPassShader.STRIDE_SIZE];
+	private ExtensibleLightingArray lights = new ExtensibleLightingArray();
 	
 	public DeferredRenderer(Camera camera) {
-		
+		this.camera = camera;
 		firstPassShader = new DeferredFirstPassShader();
 		secondPassShader = new DeferredSecondPassShader();
-		setLightingData(new Light(Light.lightings[6], 1.0f, 1.0f, 1.0f, 0, 0, 0));
-		setLightingData(new Light(0.22f, 0.20f, 1.0f, 0.0f, 1.0f, 30, 0, 0));
-		setLightingData(new Light(0.22f, 0.20f, 1.0f, 0.0f, 0.0f, 0, 0, 30));
-		setLightingData(new Light(0.22f, 0.20f, 1.0f, 1.0f, 0.0f, -30, 0, 0));
-		setLightingData(new Light(0.22f, 0.20f, 0.0f, 1.0f, 0.0f, 0, 0, -30));
-		setLightingData(new Light(0.22f, 0.20f, 0.0f, 0.0f, 1.0f, 0, 30, 0));
-		setLightingData(new Light(0.22f, 0.20f, 0.0f, 1.0f, 1.0f, 0, -30, 0));
 		ProjectionMatrix.addProjectionUpdateListener(this);
-		this.camera = camera;
+		
 		
 		final float quadVertices[] = {
 	            // positions        	// texture Coords
@@ -154,7 +148,8 @@ public class DeferredRenderer implements Runnable {
 		secondPassShader.loadViewMatrix(camera.getViewMatrix());
 		secondPassShader.loadViewPos(camera.getPosition());
 
-		UBOLoader.updateLightingUBO(lightData);
+		lights.updateUBO();
+		lights.clear();
 		
 		GL33.glActiveTexture(GL33.GL_TEXTURE0);
 		GL33.glBindTexture(GL33.GL_TEXTURE_2D, gPosition);
@@ -172,22 +167,6 @@ public class DeferredRenderer implements Runnable {
 	    secondPassShader.stop();
 	}
 	
-	public void setLightingData(Light l) {
-		if (index >= lightData.length)
-			return;
-		int base = index * 4;
-		lightData[base] = l.getX();
-		lightData[base+1] = l.getY();
-		lightData[base+2] = l.getZ();
-		lightData[base+3] = l.getLinear();
-		int baseOffset = base + 512 / 4;
-		lightData[baseOffset] = l.getQuadratic();
-		lightData[baseOffset+1] = l.getR();
-		lightData[baseOffset+2] = l.getG();
-		lightData[baseOffset+3] = l.getB();
-		index++;
-	}
-	
 	public DeferredFirstPassShader getShader() {
 		return firstPassShader;
 	}
@@ -203,6 +182,10 @@ public class DeferredRenderer implements Runnable {
 		GL33.glDeleteTextures(gColorSpec);
 		GL33.glDeleteTextures(gRenderState);
 		GL33.glDeleteRenderbuffers(rboDepth);
+	}
+	
+	public void addLightingArray(ArrayList<Light> lights, Entity e) {
+		this.lights.add(lights, e);
 	}
 
 	@Override

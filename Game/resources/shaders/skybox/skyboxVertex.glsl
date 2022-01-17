@@ -5,13 +5,16 @@ in vec3 in_position;
 out float pass_height;
 out vec3 fragpos;
 
-uniform mat4 projectionMatrix;
-uniform mat4 viewMatrix;
+layout (std140) uniform Matricies {
+    mat4 projectionMatrix;
+    mat4 viewMatrix;
+    mat4 projectionViewMatrix;
+};
 
 void main(void){
 	fragpos = in_position;
 
-	gl_Position = projectionMatrix * viewMatrix * vec4(in_position, 1.0);
+	gl_Position = projectionViewMatrix * vec4(in_position, 1.0);
 	pass_height = in_position.y;
 	
 }

@@ -30,8 +30,7 @@ import com.game.engine.tools.SettingsLoader;
 public class TextureLoader {
 	
 	public static float TEXTURE_LOD = -0.2f;
-	public static int MINMAG_FILTER = GL11.GL_NEAREST;
-	public static int MINMAG_MIPMAP_FILTER = GL11.GL_LINEAR_MIPMAP_LINEAR;
+	public static final int MINMAG_FILTER = GL11.GL_NEAREST_MIPMAP_LINEAR;
 	public static int TEXTURE_SCALE = 1;
 	
 	public static Texture nullTexture = new Texture(0, 32, 32, 4);
@@ -52,67 +51,6 @@ public class TextureLoader {
 	 */
 	public static void init(String path) {
 		nullTexture = new Texture(0, 32, 32, 4);
-		/*Logger.writeln("Loading texture atlas(es):");
-		
-		File root = new File(path);
-		ArrayList<File> subdirs = new ArrayList<File>();
-		
-		File[] files = root.listFiles();
-		for (int i = 0; i < files.length; i++) {
-			File f = files[i];
-			if (f == null)
-				continue;
-			if (f.isDirectory())
-				subdirs.add(f);
-		}
-		
-		ArrayList<Atlas> atlases = new ArrayList<Atlas>();
-		
-		for (File d : subdirs) {
-			Logger.writeln("Loading " + d.getName());
-			File[] contents = d.listFiles();
-			ArrayList<File> textures = new ArrayList<File>();
-			int width = 0;
-			int height = 0;
-			for (File f : contents) {
-				if (f.getName().contains(".properties")) {
-					try {
-						BufferedReader reader = new BufferedReader(new FileReader(f));
-						width = Integer.parseInt(reader.readLine());
-						try {
-							height = Integer.parseInt(reader.readLine());
-						} catch (Exception e) {
-							height = width;
-						}
-						reader.close();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				} else {
-					textures.add(f);
-					if (Main.verbose)
-						Logger.writeln("Loading texture " + f.getName());
-				}
-			}
-			if (width == 0 || height == 0) {
-				if (d.getName().contains("SIZE_")) {
-					String[] size = d.getName().split("_");
-					width = height = Integer.parseInt(size[1]);
-				} else {
-					width = height = 128;
-					Logger.writeErrorln("UNABLE TO FIND ATLAS SIZE. ASSUMING 128x128. \n "
-							+ "If you are seeing this, please include the size in the folder title \n "
-							+ "or include a atlas.properties with the width and height on separate lines.");
-				}
-			}
-			Logger.printBoxY(new String[] {"Loaded atlas appears to be " + width + " width and " + height + " height"});
-			atlases.add(new Atlas(textures, width, height));
-		}
-		
-		for (Atlas e : atlases) {
-			loadSpecialTextureATLAS(e);
-		} */
-		
 	}
 	
 	/**
@@ -126,27 +64,27 @@ public class TextureLoader {
 	 * loads a texture to a specified width and height
 	 */
 	public static Texture loadTexture(String filename, int width, int height) {
-		return loadTexture(filename, width, height, TEXTURE_LOD, MINMAG_FILTER, MINMAG_MIPMAP_FILTER);
+		return loadTexture(filename, width, height, TEXTURE_LOD, MINMAG_FILTER);
 	}
 	
 	/**
 	 * Loads a texture with specified LOD bias, min/mag filtering and mipmap filtering.
 	 */
-	public static Texture loadTexture(String texture, int width, int height, float bias, int minmag_filter, int minmag_mipmap) {
+	public static Texture loadTexture(String texture, int width, int height, float bias, int minmag_filter) {
 		// return the texture if its already been loaded.
 		if (textureMap.containsKey(texture))
 			return textureMap.get(texture);
 		// don't load if we don't have a window with OpenGL (we are the server)
 		if (GL.getCapabilities() == null)
 			return nullTexture;
-		return loadTextureI(texture, decodeTextureToSize("resources/textures/" + texture, true, false, width, height), bias, minmag_filter, minmag_mipmap);
+		return loadTextureI(texture, decodeTextureToSize("resources/textures/" + texture, true, false, width, height), bias, minmag_filter);
 	}
 	
 	public static Texture loadTexture(int width, int height, String texture1, String texture2, String texture3, String texture4) {
-		return loadTexture(width, height, texture1, texture2, texture3, texture4, -0.2f, GL11.GL_NEAREST, GL11.GL_LINEAR_MIPMAP_LINEAR);
+		return loadTexture(width, height, texture1, texture2, texture3, texture4, TEXTURE_LOD, MINMAG_FILTER);
 	}
 	
-	public static Texture loadTexture(int width, int height, String texture1, String texture2, String texture3, String texture4, float bias, int minmag_filter, int minmag_mipmap) {
+	public static Texture loadTexture(int width, int height, String texture1, String texture2, String texture3, String texture4, float bias, int minmag_filter) {
 		// don't load if we don't have a window with OpenGL (we are the server)
 		if (GL.getCapabilities() == null)
 			return nullTexture;
@@ -155,7 +93,7 @@ public class TextureLoader {
 				"resources/textures/" + texture2, 
 				"resources/textures/" + texture3, 
 				"resources/textures/" + texture4), 
-				bias, minmag_filter, minmag_mipmap);
+				bias, minmag_filter);
 	}
 	
 	/**
@@ -184,7 +122,7 @@ public class TextureLoader {
 		return t;
 	}
 	
-	public static Texture loadTextureI(String texture, TextureData d, float bias, int minmag_filter, int minmag_mipmap) {
+	public static Texture loadTextureI(String texture, TextureData d, float bias, int minmag_filter) {
 		try {
 			// generate a new texture buffer
 			int id = GL11.glGenTextures();
@@ -192,18 +130,9 @@ public class TextureLoader {
 			GL13.glActiveTexture(GL13.GL_TEXTURE0);
 			// bind the texture buffer
 			GL11.glBindTexture(GL11.GL_TEXTURE_2D, id);
-			// Min and Mag filter is for when a texture is upscaled or downscaled.
-			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, minmag_filter); 
-	        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, minmag_filter); 
-	        
-	        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT); 
-	        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT); 
+			
+			assignTextureModes(minmag_filter, GL11.GL_REPEAT);
 
-			// Min and Mag filter is for when a texture is upscaled or downscaled.
-			// im pretty sure i only need to call this ^ but i'd like to make sure that
-			// the mipmaps use the same filters.
-			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, minmag_mipmap);
-			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, minmag_mipmap);
 			// this bias is how fast a texture loses detail (LOD = level of detail)
 			// > 0 = less detail
 			GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_LOD_BIAS, bias);
@@ -214,7 +143,7 @@ public class TextureLoader {
 	        
 	        // put the texture data into the texture buffer.
 			// TODO: fix non alpha channel loading
-			GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, d.getChannels() == 4 ? GL11.GL_RGBA : GL11.GL_RGB, d.getWidth(), d.getHeight(), 0, d.getChannels() == 4 ? GL11.GL_RGBA : GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, d.getBuffer());
+			GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, d.getWidth(), d.getHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, d.getBuffer());
 	        
 	        // generates the mipmaps
 			GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
@@ -263,21 +192,16 @@ public class TextureLoader {
 	        			// width, height depth
 	        			data.getWidth(), data.getHeight(), 1, 
 	        			// format, format
-	        			data.getChannels() == 4 ? GL11.GL_RGBA : GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, 
+	        			GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, 
 	        			// decode the image texture
 	        			data.getBuffer());
 	        	// AF
 	        	GL11.glTexParameterf(GL30.GL_TEXTURE_2D_ARRAY, EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT, anisf);
 	        }
 	        
-	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST); 
-	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
-	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT);
+	        assignTextureModes(GL11.GL_NEAREST_MIPMAP_LINEAR, GL11.GL_REPEAT);
 	        
 	        GL30.glGenerateMipmap(GL30.GL_TEXTURE_2D_ARRAY);
-			GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST_MIPMAP_LINEAR);
-			GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST_MIPMAP_LINEAR);
 			// > 0 = less detail
 			GL11.glTexParameterf(GL30.GL_TEXTURE_2D_ARRAY, GL14.GL_TEXTURE_LOD_BIAS, 0.2f);
 	        
@@ -375,6 +299,8 @@ public class TextureLoader {
 			wd = w[0];
 			hd = h[0];
 			channels = ch[0];
+			// loaded in to 4
+			channels = 4;
 			
 			if ((wd == width && hd == height) || (width <= 0 && height <= 0)) {
 				if (buffer.position() != 0 && flip)
@@ -463,6 +389,15 @@ public class TextureLoader {
 	public static void print() {
 		Logger.writeln("Textures Size: " + textures.size());
 		Logger.writeln("Texture Map Size: " + textureMap.size());
+	}
+	
+	private static void assignTextureModes(int mingmag, int textureWrap) {
+		// Min and Mag filter is for when a texture is upscaled or downscaled.
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, mingmag);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, mingmag);
+
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, textureWrap);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, textureWrap);
 	}
 	
 }

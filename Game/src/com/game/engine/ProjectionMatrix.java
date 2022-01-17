@@ -57,6 +57,8 @@ public class ProjectionMatrix {
 		for (int i = 0; i < projectionChanges.size(); i++)
 			projectionChanges.get(i).run();
 		
+		UBOLoader.updateProjectionMatrix(projectionMatrix);
+		
 		//GUIShader guishader = VoxelScreenManager.ui.getRenderer().getShader();
 		//guishader.start();1
 		//guishader.loadProjectionMatrix(projectionMatrixOrtho);

@@ -5,6 +5,7 @@ import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import com.game.engine.ProjectionMatrix;
+import com.game.engine.UBOLoader;
 import com.game.engine.tools.math.Maths;
 
 /**
@@ -29,9 +30,13 @@ public abstract class ICamera {
 	
 	public void updateViewMatrix() {
 		this.viewMatrix = Maths.createViewMatrix(this);
+		
 		temp.identity();
 		temp.set(ProjectionMatrix.projectionMatrix);
 		this.projectViewMatrix = temp.mul(viewMatrix);
+		
+		UBOLoader.updateViewMatrix(viewMatrix);
+		UBOLoader.updateProjectViewMatrix(projectViewMatrix);
 	}
 	
 	/**

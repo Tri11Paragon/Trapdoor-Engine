@@ -14,6 +14,7 @@ import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.dynamics.RigidBodyConstructionInfo;
 import com.bulletphysics.linearmath.DefaultMotionState;
 import com.bulletphysics.linearmath.Transform;
+import com.game.engine.datatypes.lighting.Light;
 import com.game.engine.datatypes.ogl.assimp.Model;
 import com.game.engine.tools.math.Maths;
 import com.game.engine.world.World;
@@ -37,8 +38,10 @@ public class Entity {
 	// components stuff
 	private ArrayList<Component> entityComponents = new ArrayList<Component>();
 	private HashMap<String, ArrayList<Component>> componentMap = new HashMap<String, ArrayList<Component>>();
+	// TODO: make sub-entity for entity that has lights, since most don't need light array
+	protected ArrayList<Light> lights = new ArrayList<Light>();
 	// world reference
-	private World world;
+	protected World world;
 	
 	// entity flags (8 boolean)
 	// 0000 0000
@@ -263,6 +266,10 @@ public class Entity {
 		//this.roll = roll;
 		return this;
 	}
+	public Entity addLight(Light l) {
+		this.lights.add(l);
+		return this;
+	}
 
 	public Model getModel() {
 		return model;
@@ -307,6 +314,10 @@ public class Entity {
 		this.sy = s;
 		this.sz = s;
 		return this;
+	}
+	
+	public ArrayList<Light> getLights(){
+		return lights;
 	}
 	
 	public boolean isStatic() {

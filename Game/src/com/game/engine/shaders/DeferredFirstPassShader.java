@@ -19,6 +19,7 @@ public class DeferredFirstPassShader extends ShaderProgram {
 		super("deferredFirstPass.vs", "deferredFirstPass.fs");
 		this.start();
 		this.connectTextureUnits();
+		setUniformBlockLocation("Matricies", 1);
 		this.stop();
 	}
 

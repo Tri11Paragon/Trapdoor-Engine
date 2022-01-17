@@ -53,6 +53,7 @@ import org.lwjgl.system.MemoryStack;
 
 import com.game.engine.ProjectionMatrix;
 import com.game.engine.TextureLoader;
+import com.game.engine.UBOLoader;
 import com.game.engine.renderer.SyncSave;
 import com.game.engine.renderer.ui.DebugInfo;
 import com.game.engine.renderer.ui.UIMaster;
@@ -122,11 +123,14 @@ public class DisplayManager {
 				GL11.glEnable(GL11.GL_DEPTH_TEST);
 				Vector3f skyColor = currentDisplay.getSkyColor();
 				GL11.glClearColor(skyColor.x, skyColor.y, skyColor.z, 1.0f);
+				// TODO: cleanup this
 				GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
 				GL11.glEnable(GL13.GL_BLEND);
 				GL13.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 				GL11.glEnable(GL11.GL_CULL_FACE);
 				GL11.glCullFace(GL11.GL_BACK);
+				
+				UBOLoader.updateMatrixUBO();
 				
 				currentDisplay.render();
 				
@@ -196,11 +200,6 @@ public class DisplayManager {
 		if ( window == NULL )
 			throw new RuntimeException("Failed to create the GLFW window");
 		
-		// FUCKING WHY
-		// THEY DEPRECATE LWJGL 2
-		// THEN COME UP WITH THIS SHIT
-		// FUCK OFF
-		// (I actually like the bindings and changes but this stack nonsense is fucking gay)
 		try ( MemoryStack stack = stackPush() ) {
 			IntBuffer pWidth = stack.mallocInt(1);
 			IntBuffer pHeight = stack.mallocInt(1);
@@ -230,6 +229,9 @@ public class DisplayManager {
 		
 		GLIcon gli = new GLIcon("resources/textures/icon/icon16.png", "resources/textures/icon/icon32.png");
 		glfwSetWindowIcon(window, gli.getBuffer());
+		
+		UBOLoader.createMatrixUBO();
+		
 		ProjectionMatrix.updateProjectionMatrix();
 		
 		// load the texture atlas stuff

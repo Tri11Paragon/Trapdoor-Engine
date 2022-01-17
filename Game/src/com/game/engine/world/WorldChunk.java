@@ -6,8 +6,8 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 
 import com.game.engine.datatypes.ogl.assimp.Model;
+import com.game.engine.renderer.DeferredRenderer;
 import com.game.engine.renderer.EntityRenderer;
-import com.game.engine.shaders.DeferredFirstPassShader;
 import com.game.engine.world.entities.Entity;
 
 /**
@@ -45,7 +45,7 @@ public class WorldChunk {
 		ents.add(e);
 	}
 	
-	public void render(DeferredFirstPassShader shader, int i, int j, int k) {
+	public void render(DeferredRenderer render, int i, int j, int k) {
 		
 		Iterator<Entry<Model, ArrayList<Entity>>> iter = entityMap.entrySet().iterator();
 		
@@ -57,7 +57,7 @@ public class WorldChunk {
 			if (m == null)
 				continue;
 			
-			renderer.renderChunk(shader, m, lis);
+			renderer.renderChunk(render, m, lis);
 		}
 	}
 	

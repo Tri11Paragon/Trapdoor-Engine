@@ -2,8 +2,6 @@ package com.game.engine.shaders;
 
 import org.joml.Vector3d;
 import org.joml.Vector3f;
-import org.lwjgl.opengl.GL33;
-
 import com.game.engine.UBOLoader;
 
 /**
@@ -14,17 +12,8 @@ import com.game.engine.UBOLoader;
 public class DeferredSecondPassShader extends WorldShader {
 	
 	public static final int MAX_LIGHTS = 32;
+	// number of floats
 	public static final int STRIDE_SIZE = 8;
-	
-	public DeferredSecondPassShader() {
-		super("deferredSecondPass.vs", "deferredSecondPass.fs");
-		this.start();
-		setUniformBlockLocation();
-		connectTextureUnits();
-		UBOLoader.createLightingUBO();
-		//loadLightDir(new Vector3f(50, -100, 0));
-		this.stop();
-	}
 	
 	private int location_gposition;
 	private int location_gnormal;
@@ -33,9 +22,14 @@ public class DeferredSecondPassShader extends WorldShader {
 	private int location_view;
 	private int location_lightDir;
 	
-	public void setUniformBlockLocation() {
-		int lights_index = GL33.glGetUniformBlockIndex(this.programID, "Lightings");   
-		GL33.glUniformBlockBinding(this.programID, lights_index, 2);
+	public DeferredSecondPassShader() {
+		super("deferredSecondPass.vs", "deferredSecondPass.fs");
+		this.start();
+		setUniformBlockLocation("Lightings", 2);
+		connectTextureUnits();
+		UBOLoader.createLightingUBO();
+		//loadLightDir(new Vector3f(50, -100, 0));
+		this.stop();
 	}
 	
 	@Override

@@ -2,8 +2,6 @@ package com.game.engine.shaders;
 
 import org.joml.Matrix4f;
 
-import com.game.engine.ProjectionMatrix;
-
 /**
 * @author Brett
 * @date Jun. 21, 2020
@@ -11,20 +9,23 @@ import com.game.engine.ProjectionMatrix;
 
 public class WorldShader extends ShaderProgram {
 	
-	public int location_projectionMatrix;
+	//public int location_projectionMatrix;
 	public int location_translationMatrix;
-	public int location_viewMatrix;
+	//public int location_viewMatrix;
 	
 	public WorldShader(String vertexFile, String fragmentFile) {
 		super(vertexFile, fragmentFile);
-		ProjectionMatrix.addShader(this);
+		//ProjectionMatrix.addShader(this);
+		this.start();
+		setUniformBlockLocation("Matricies", 1);
+		this.stop();
 	}
 
 	@Override
 	protected void getAllUniformLocations() {
-		location_projectionMatrix = super.getUniformLocation("projectionMatrix");
+		//location_projectionMatrix = super.getUniformLocation("projectionMatrix");
 		location_translationMatrix = super.getUniformLocation("translationMatrix");
-		location_viewMatrix = super.getUniformLocation("viewMatrix");
+		//location_viewMatrix = super.getUniformLocation("viewMatrix");
 	}
 
 	@Override
@@ -32,7 +33,7 @@ public class WorldShader extends ShaderProgram {
 	}
 	
 	public void loadProjectionMatrix(Matrix4f matrix) {
-		super.loadMatrix(location_projectionMatrix, matrix);
+		//super.loadMatrix(location_projectionMatrix, matrix);
 	}
 	
 	public void loadTranslationMatrix(Matrix4f matrix) {
@@ -44,7 +45,7 @@ public class WorldShader extends ShaderProgram {
 	}
 	
 	public void loadViewMatrix(Matrix4f matrix) {
-		super.loadMatrix(location_viewMatrix, matrix);
+		//super.loadMatrix(location_viewMatrix, matrix);
 	}
 
 }

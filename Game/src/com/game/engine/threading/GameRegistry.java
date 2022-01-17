@@ -175,7 +175,7 @@ public class GameRegistry {
 			if (Main.verbose)
 				Logger.writeln(rt);
 			
-			Texture t = TextureLoader.loadTextureI(fd,GameRegistry.textureDatas.get(fd), TextureLoader.TEXTURE_LOD, GL11.GL_LINEAR, TextureLoader.MINMAG_MIPMAP_FILTER);
+			Texture t = TextureLoader.loadTextureI(fd,GameRegistry.textureDatas.get(fd), TextureLoader.TEXTURE_LOD, GL11.GL_LINEAR_MIPMAP_LINEAR);
 			GameRegistry.textures.put(fd, t);
 			LoadingScreenDisplay.progress();
 		}));

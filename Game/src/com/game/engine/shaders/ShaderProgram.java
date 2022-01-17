@@ -11,6 +11,7 @@ import org.joml.Vector4f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL32;
+import org.lwjgl.opengl.GL33;
 
 /**
 * @author Brett
@@ -176,6 +177,10 @@ public abstract class ShaderProgram {
 	protected void loadMatrix(int location, Matrix4f matrix) {
 		matrix.get(matrixBuffer);
 		GL20.glUniformMatrix4fv(location, false, matrixBuffer);
+	}
+	
+	protected void setUniformBlockLocation(String name, int location) {
+		GL33.glUniformBlockBinding(this.programID, GL33.glGetUniformBlockIndex(this.programID, name), location);
 	}
 
 	/**

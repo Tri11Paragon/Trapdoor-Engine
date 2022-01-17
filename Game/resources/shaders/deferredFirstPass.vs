@@ -8,12 +8,17 @@ out vec2 textureCoords;
 out vec3 normalo;
 out vec3 fragpos;
 
+layout (std140) uniform Matricies {
+    mat4 projectionMatrix;
+    mat4 viewMatrix;
+    mat4 projectionViewMatrix;
+};
+
 uniform mat4 translationMatrix;
-uniform mat4 projectViewMatrix;
 
 void main(void){
 	vec4 worldPosition = translationMatrix * vec4(position,1.0);
-	vec4 positionRelativeToCam = projectViewMatrix * worldPosition;
+	vec4 positionRelativeToCam = projectionViewMatrix * worldPosition;
 
     fragpos = worldPosition.xyz;
 	normalo = normal * transpose(inverse(mat3(translationMatrix)));

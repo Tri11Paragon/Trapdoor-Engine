@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
+import com.game.engine.datatypes.lighting.Light;
 import com.game.engine.datatypes.ogl.assimp.Mesh;
 import com.game.engine.datatypes.ogl.assimp.Model;
 import com.game.engine.datatypes.ogl.obj.VAO;
@@ -20,10 +21,16 @@ import com.game.engine.world.entities.Entity;
  */
 public class EntityRenderer {
 	
-	public void renderChunk(DeferredFirstPassShader shader, Model m, ArrayList<Entity> lis) {
+	public void renderChunk(DeferredRenderer renderer, Model m, ArrayList<Entity> lis) {
+		DeferredFirstPassShader shader = renderer.getShader();
 		Mesh[] meshes = m.getMeshes();
+		// don't want to add all lights for each submesh
+		boolean first = true;
 		for (int i = 0; i < meshes.length; i++) {
 			VAO mod = meshes[i].getVAO();
+			
+			if (mod == null)
+				continue;
 			
 			GL30.glBindVertexArray(mod.getVaoID());
 			GL20.glEnableVertexAttribArray(0);
@@ -42,9 +49,14 @@ public class EntityRenderer {
 						entity.getRotationMatrix(), 
 						entity.getSx(), entity.getSy(), entity.getSz()));
 				
+				ArrayList<Light> lights = entity.getLights();
+				if (first && lights.size() > 0)
+					renderer.addLightingArray(lights, entity);
+				
 				GL11.glDrawElements(GL11.GL_TRIANGLES, mod.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
 			}
 			
+			first = false;
 			GL20.glDisableVertexAttribArray(0);
 			GL20.glDisableVertexAttribArray(1);
 			GL20.glDisableVertexAttribArray(2);
