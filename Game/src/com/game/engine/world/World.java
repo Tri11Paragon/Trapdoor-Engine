@@ -72,7 +72,7 @@ public class World {
 		ConstraintSolver solver = new SequentialImpulseConstraintSolver();
 		
 		this.physWorld = new DiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfig);
-		this.physWorld.setGravity(new Vector3f(0.0f, 0, 0.0f));
+		this.physWorld.setGravity(new Vector3f(0.0f, 0.0f, 0.0f));
 		
 	}
 	

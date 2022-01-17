@@ -64,6 +64,10 @@ public class Entity {
 		this(mass, isStatic, new BoxShape(new Vector3f(0.5f, 0.5f, 0.5f)));
 	}
 	
+	public Entity(CollisionShape shape) {
+		this(0, true, shape);
+	}
+	
 	public Entity(float mass, boolean isStatic, CollisionShape collider) {
 		this.transformOut = new Transform();
 		this.positionStore = new Vector3f();

@@ -48,6 +48,7 @@ public class EntityCamera extends Entity {
 								)
 						)
 				), new BoxShape(new javax.vecmath.Vector3f(0.75f, 0.75f, 0.75f))) );
+		
 	}
 	
 	@Override

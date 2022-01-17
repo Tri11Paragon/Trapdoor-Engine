@@ -3,6 +3,7 @@ package com.game.engine.display;
 import com.game.engine.renderer.ui.UIMaster;
 import com.game.engine.threading.GameRegistry;
 import com.game.engine.threading.Threading;
+import com.game.engine.tools.Logger;
 import com.game.game.displays.MainMenuDisplay;
 import com.spinyowl.legui.component.Label;
 import com.spinyowl.legui.component.Layer;
@@ -93,10 +94,15 @@ public class LoadingScreenDisplay extends IDisplay {
 		//bar.setValue((PROGRESS/MAX) * 100);
 		updateBar();
 		
+		if ((Threading.isEmpty() && System.currentTimeMillis() - time > TIME)) {
 		// make sure we have loaded all assets and the splash screen has existed for some time.
-		if ((Threading.isEmpty() && System.currentTimeMillis() - time > TIME) && bar.getValue() >= 98) {
-			DisplayManager.createDisplay(singlePlayer);
-			DisplayManager.changeDisplay(singlePlayer);
+			if (bar.getValue() >= 98) {
+				Logger.writeln("Loading finished!");
+				DisplayManager.createDisplay(singlePlayer);
+				DisplayManager.changeDisplay(singlePlayer);
+			} else {
+				LoadingScreenDisplay.progress();
+			}
 		}
 		if (System.currentTimeMillis() - time > (TIME+50) * 5)
 			Threading.d();

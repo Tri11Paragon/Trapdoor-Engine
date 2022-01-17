@@ -50,12 +50,16 @@ void main(){
             vec3 lightDir = normalize(lmp);
             vec3 lightColor = vec3(LightInfo[i].yzw);
             vec3 diffuse = max(dot(Normal, lightDir), 0.0) * Diffuse * lightColor;
-                // specular (blinn phong)
-            vec3 halfwayDir = normalize(lightDir + viewDir);  
-            
-            float specAmount = pow(max(dot(Normal, halfwayDir), 0.0), 16.0);
-            
-            vec3 specular = lightColor * specAmount * Specular;
+
+            vec3 specular = vec3(0.0f);
+            if (diffuse != 0.0f){
+                    // specular (blinn phong)
+                vec3 halfwayDir = normalize(lightDir + viewDir);  
+                
+                float specAmount = pow(max(dot(Normal, halfwayDir), 0.0), 16.0);
+                
+                specular = lightColor * specAmount * Specular;
+            }
                 // attenuation, 0.7f (l) 1.2f (q)
             float attenuation = 1.0 / (1.0 + Position[i].w * distance + LightInfo[i].x * distance * distance);
             diffuse *= attenuation;
