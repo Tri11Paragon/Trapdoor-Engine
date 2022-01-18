@@ -21,6 +21,7 @@ public class DeferredSecondPassShader extends WorldShader {
 	private int location_gRenderState;
 	private int location_view;
 	private int location_lightDir;
+	private int location_lightDirColor;
 	
 	public DeferredSecondPassShader() {
 		super("deferredSecondPass.vs", "deferredSecondPass.fs");
@@ -29,6 +30,7 @@ public class DeferredSecondPassShader extends WorldShader {
 		connectTextureUnits();
 		UBOLoader.createLightingUBO();
 		//loadLightDir(new Vector3f(50, -100, 0));
+		//loadLightColor(new Vector3f(0.4f, 0.1f, 0.1f));
 		this.stop();
 	}
 	
@@ -46,12 +48,18 @@ public class DeferredSecondPassShader extends WorldShader {
 		location_gcolor = getUniformLocation("gAlbedoSpec");
 		location_gRenderState = getUniformLocation("gRenderState");
 		location_view = super.getUniformLocation("viewPos");
-		location_lightDir = super.getUniformLocation("directlight");
+		location_lightDir = super.getUniformLocation("directLight");
+		location_lightDirColor = super.getUniformLocation("directLightColor");
 	}
 	
 	public void loadLightDir(Vector3f dir) {
 		super.loadVector(location_lightDir, dir);
 	}
+	
+	public void loadLightColor(Vector3f dir) {
+		super.loadVector(location_lightDirColor, dir);
+	}
+
 
 	public void loadViewPos(Vector3d pos) {
 		super.loadVector(location_view, pos);

@@ -13,6 +13,7 @@ import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL33;
 import org.lwjgl.opengl.GL42;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.stb.STBImageResize;
@@ -116,8 +117,7 @@ public class TextureLoader {
 		for (int i = 0; i < textures.length; i++) {
 			GL11.glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL11.GL_RGBA, textures[i].getWidth(), textures[i].getHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, textures[i].getBuffer());
 		}
-		GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-		GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+		assignTextureModes(GL11.GL_LINEAR, GL11.GL_REPEAT);
 		TextureLoader.textures.add(id);
 		return t;
 	}
@@ -143,7 +143,8 @@ public class TextureLoader {
 	        
 	        // put the texture data into the texture buffer.
 			// TODO: fix non alpha channel loading
-			GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, d.getWidth(), d.getHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, d.getBuffer());
+			int GL_RGBI = SettingsLoader.GAMMA != 0.0 ? GL33.GL_SRGB_ALPHA : GL33.GL_RGBA;
+			GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL_RGBI, d.getWidth(), d.getHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, d.getBuffer());
 	        
 	        // generates the mipmaps
 			GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);

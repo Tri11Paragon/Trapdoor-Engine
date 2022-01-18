@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.game.engine.UBOLoader;
 import com.game.engine.datatypes.Tuple;
+import com.game.engine.datatypes.util.ExtensibleArray;
 import com.game.engine.shaders.DeferredSecondPassShader;
 import com.game.engine.world.entities.Entity;
 
@@ -31,10 +32,11 @@ public class ExtensibleLightingArray {
 	private float[] lightArray = new float[DeferredSecondPassShader.MAX_LIGHTS * DeferredSecondPassShader.STRIDE_SIZE];
 	
 	// TODO: create own better memory reusing array list
-	private ArrayList<Tuple<ArrayList<Light>, Entity>> lights;
+	//private ArrayList<Tuple<ArrayList<Light>, Entity>> lights;
+	private ExtensibleArray<Tuple<ArrayList<Light>, Entity>> lights;
 	
 	public ExtensibleLightingArray() {
-		lights = new ArrayList<Tuple<ArrayList<Light>, Entity>>();
+		this.lights = new ExtensibleArray<Tuple<ArrayList<Light>, Entity>>();
 	}
 	
 	public void add(ArrayList<Light> lightList, Entity e) {
@@ -47,7 +49,8 @@ public class ExtensibleLightingArray {
 	}
 	
 	public void clear() {
-		lights = new ArrayList<>();
+		//lights = new ArrayList<>();
+		this.lights.clear();
 	}
 	
 	private void setLightingDataArray() {

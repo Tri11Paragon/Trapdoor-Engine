@@ -18,28 +18,33 @@ layout (std140) uniform Lightings {
     vec4 LightInfo[NR_LIGHTS];
 };
 uniform vec3 viewPos;
-uniform vec3 directlight;
-uniform float diffuseComponent;
+
+uniform vec3 directLight;
+uniform vec3 directLightColor;
 
 uniform mat4 translationMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 
+const float gamma = 2.2;
+
 void main(){
     vec4 renderState = texture(gRenderState, textureCoords);
 
-    vec3 directlightDir = normalize(-directlight);
+    vec3 directlightDir = normalize(-directLight);
     vec3 FragPos = texture(gPosition, textureCoords).rgb;
     vec3 Normal = texture(gNormal, textureCoords).rgb;
     vec4 albedoSpec = texture(gAlbedoSpec, textureCoords);
     vec3 Diffuse = albedoSpec.xyz;
-    float Specular = albedoSpec.w;
+    // TODO: impliment this
+    float specularMapAmount = albedoSpec.w;
     
     if (renderState.x > 0.5f){
         // then calculate lighting as usual
-        vec3 lighting  = Diffuse * max(diffuseComponent, 0.1); // hard-coded ambient component
+        vec3 lighting = Diffuse * 0.005f; // hard-coded ambient component
 
-        lighting += Diffuse * max(dot(Normal, directlightDir), 0.0);
+        // add directional lighting
+        lighting += Diffuse * (max(dot(Normal, directlightDir), 0.0) * directLightColor);
 
         vec3 viewDir  = normalize(viewPos - FragPos);
         for(int i = 0; i < NR_LIGHTS; ++i) {
@@ -58,7 +63,7 @@ void main(){
                 
                 float specAmount = pow(max(dot(Normal, halfwayDir), 0.0), 16.0);
                 
-                specular = lightColor * specAmount * Specular;
+                specular = lightColor * specAmount * specularMapAmount;
             }
                 // attenuation, 0.7f (l) 1.2f (q)
             float attenuation = 1.0 / (1.0 + Position[i].w * distance + LightInfo[i].x * distance * distance);
@@ -69,6 +74,8 @@ void main(){
         }    
         
         out_Color = vec4(lighting, 1.0);
+        // apply gamma correction
+        out_Color.rgb = pow(out_Color.rgb, vec3(1.0/gamma));;
     } else {
         out_Color = vec4(Diffuse, 1.0);
     }

@@ -39,9 +39,11 @@ public class SettingsLoader {
 	public static double MUSIC = 0.5d;
 	public static int VSYNC = 0;
 	public static int RENDER_DISTANCE = 6;
+	public static float GAMMA = 2.2f;
 	
 	private static int readLines = 1;
 	public static void loadSettings() {
+		Logger.writeln("Loading settings!");
 		try {
 			// load the settings file
 			new File(SETTINGS_LOCATION).createNewFile();
@@ -83,6 +85,8 @@ public class SettingsLoader {
 					TextureLoader.TEXTURE_LOD = Float.parseFloat(name[1]);
 				if (name[0].equals("tscale"))
 					TextureLoader.TEXTURE_SCALE = (int) Float.parseFloat(name[1]);
+				if (name[0].equals("gamma"))
+					GAMMA = Float.parseFloat(name[1]);
 			}
 			reader.close();
 		} catch (FileNotFoundException e) {
@@ -110,6 +114,7 @@ public class SettingsLoader {
 			writeLine(writer, "music: " + MUSIC);
 			writeLine(writer, "lod: " + TextureLoader.TEXTURE_LOD);
 			writeLine(writer, "tscale: " + TextureLoader.TEXTURE_SCALE);
+			writeLine(writer, "gamma: " + GAMMA);
 			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();

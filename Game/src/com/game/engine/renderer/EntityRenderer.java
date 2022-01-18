@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 import com.game.engine.datatypes.lighting.Light;
+import com.game.engine.datatypes.ogl.assimp.Material;
 import com.game.engine.datatypes.ogl.assimp.Mesh;
 import com.game.engine.datatypes.ogl.assimp.Model;
 import com.game.engine.datatypes.ogl.obj.VAO;
@@ -32,15 +33,22 @@ public class EntityRenderer {
 			if (mod == null)
 				continue;
 			
+			Material mat = meshes[i].getMaterial();
+			
+			if (mat.getDiffuseTexture() == null)
+				continue;
+			
 			GL30.glBindVertexArray(mod.getVaoID());
 			GL20.glEnableVertexAttribArray(0);
 			GL20.glEnableVertexAttribArray(1);
 			GL20.glEnableVertexAttribArray(2);
 			
 			GL13.glActiveTexture(GL13.GL_TEXTURE0);	
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, meshes[i].getMaterial().getDiffuseTexture().getID());
+			GL11.glBindTexture(GL11.GL_TEXTURE_2D, mat.getDiffuseTexture().getID());
 			GL13.glActiveTexture(GL13.GL_TEXTURE1);	
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, meshes[i].getMaterial().getNormalTexture().getID());
+			GL11.glBindTexture(GL11.GL_TEXTURE_2D, mat.getNormalTexture().getID());
+			
+			shader.loadSpecAmount(mat.getColorInformation().y);
 			
 			for (int j = 0; j < lis.size(); j++) {
 				Entity entity = lis.get(j);

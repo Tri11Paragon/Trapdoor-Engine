@@ -1,7 +1,6 @@
 package com.game.engine.datatypes.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import com.game.engine.shaders.DeferredSecondPassShader;
 
 /**
  * @author brett
@@ -10,13 +9,45 @@ import java.util.HashMap;
  */
 public class ExtensibleArray<T> {
 	
-	@SuppressWarnings("unused")
-	private ArrayList<T[]> arrays = new ArrayList<T[]>(); 
-	@SuppressWarnings("unused")
-	private HashMap<Integer, Integer> lengths = new HashMap<Integer, Integer>();
+	private Object[] array;
+	
+	// pos points to the next open spot, length contains number of elements
+	private int pos = 0;
 	
 	public ExtensibleArray(){
-		
+		array = new Object[DeferredSecondPassShader.MAX_LIGHTS];
+	}
+	
+	@SuppressWarnings("unchecked")
+	public T get(int i) {
+		if (i > pos)
+			return null;
+		return (T) array[i];
+	}
+	
+	public void add(T t) {
+		if (pos >= array.length)
+			expandArray();
+		array[pos] = t;
+				
+		this.pos++;
+	}
+	
+	public int size() {
+		return pos;
+	}
+	
+	public void clear() {
+		this.pos = 0;
+	}
+	
+	private void expandArray() {
+		// create the new array
+		Object[] newArray = new Object[this.array.length * 2];
+		// copy the old array over
+		System.arraycopy(array, 0, newArray, 0, array.length);
+		// assign to the new array
+		this.array = newArray;
 	}
 	
 }

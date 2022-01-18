@@ -85,7 +85,8 @@ public class ModelLoader {
 			}
 			
 			String texturePath = (texturesDir + "/" + materialTexturePath).replace("//", "/");
-			GameRegistry.registerTexture(texturePath);
+			if (!materialTexturePath.contains("NORENDER"))
+				GameRegistry.registerTexture(texturePath);
 			
 			Vector4f ambient = Material.DEFAULT_COLOUR;
 		    int result = Assimp.aiGetMaterialColor(material, Assimp.AI_MATKEY_COLOR_AMBIENT, Assimp.aiTextureType_NONE, 0, colour);

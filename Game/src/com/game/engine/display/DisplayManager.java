@@ -11,7 +11,6 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
-import static org.lwjgl.glfw.GLFW.GLFW_SAMPLES;
 import static org.lwjgl.glfw.GLFW.GLFW_TRUE;
 import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
 import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
@@ -223,9 +222,9 @@ public class DisplayManager {
 		
 		GL.createCapabilities();
 		
-		glfwWindowHint(GLFW_SAMPLES, SettingsLoader.SAMPLES);
-		if (SettingsLoader.SAMPLES > 0)
-			GL11.glEnable(GL13.GL_MULTISAMPLE);
+		//glfwWindowHint(GLFW_SAMPLES, SettingsLoader.SAMPLES);
+		//if (SettingsLoader.SAMPLES > 0)
+		//	GL11.glEnable(GL13.GL_MULTISAMPLE);
 		
 		GLIcon gli = new GLIcon("resources/textures/icon/icon16.png", "resources/textures/icon/icon32.png");
 		glfwSetWindowIcon(window, gli.getBuffer());

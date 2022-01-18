@@ -34,6 +34,12 @@ public class TestDisplay extends IDisplay {
 					.setModel(GameRegistry.getModel("resources/models/floor.dae"))
 					.setPosition(0, -20, 0)
 				);
+		this.world.addEntityToWorld(
+				new Entity(0, true, null)
+					.setModel(GameRegistry.getModel("resources/models/tuber.dae"))
+					.setPosition(0, -19.7f, -58)
+					.setScale(1)
+				);
 		
 		this.cubeModel = GameRegistry.getModel("resources/models/depression.dae");
 		this.world.addEntityToWorld(new Entity().setModel(GameRegistry.getModel("resources/models/test object.dae")).setPosition(0, -10.0f, 0));
@@ -46,7 +52,7 @@ public class TestDisplay extends IDisplay {
 					.setModel(GameRegistry.getModel("resources/models/hellolosers.obj"))
 					.setPosition(5, 5, 5)
 					.addLight(
-							new Light(Light.lightings[7], 1.0f, 1.0f, 1.0f, -5, -5, -5)
+							new Light(Light.lightings[6], 2.5f, 2.5f, 1.5f, -5, -5, -5)
 							 )
 					);
 		// add entity

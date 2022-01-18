@@ -30,8 +30,9 @@ public class Material {
 	}
 	
 	public void loadTexturesFromGameRegistry() {
-		this.diffuseTexture = GameRegistry.getTexture(diffuseTexturePath);
-		this.normalTexture = GameRegistry.getTexture(normalTexturePath);
+		if (!this.diffuseTexturePath.contains("NORENDER"))
+			this.diffuseTexture = GameRegistry.getTexture(this.diffuseTexturePath);
+		this.normalTexture = GameRegistry.getTexture(this.normalTexturePath);
 	}
 
 	public String getDiffuseTexturePath() {

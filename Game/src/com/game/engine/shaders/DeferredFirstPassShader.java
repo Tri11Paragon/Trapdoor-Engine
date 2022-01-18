@@ -15,6 +15,8 @@ public class DeferredFirstPassShader extends ShaderProgram {
 	private int location_diffuseTexture;
 	private int location_normalMap;
 	
+	private int location_specAmount;
+	
 	public DeferredFirstPassShader() {
 		super("deferredFirstPass.vs", "deferredFirstPass.fs");
 		this.start();
@@ -36,6 +38,11 @@ public class DeferredFirstPassShader extends ShaderProgram {
 		location_projectViewMatrix = super.getUniformLocation("projectViewMatrix");
 		location_diffuseTexture = super.getUniformLocation("diffuseTexture");
 		location_normalMap = super.getUniformLocation("normalMap");
+		location_specAmount = super.getUniformLocation("specAmount");
+	}
+	
+	public void loadSpecAmount(float amount) {
+		super.loadFloat(location_specAmount, amount);
 	}
 	
 	public void loadTranslationMatrix(Matrix4f matrix) {

@@ -307,6 +307,7 @@ public class Entity {
 			throw new RuntimeException("Model cannot be null while trying to generate ridigid body from model!");
 		if (usingAssignedCollisonState)
 			return this;
+		// TODO: fix this
 		this.rigidbody.setCollisionShape(new BvhTriangleMeshShape(this.model.getMeshColliderData(), true, true));
 		return this;
 	}
