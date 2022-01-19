@@ -100,6 +100,16 @@
 
 	<dependencies>
 		<dependency>
+		  <groupId>com.jcabi</groupId>
+		  <artifactId>jcabi-log</artifactId>
+		  <version>0.20.1</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.logging.log4j</groupId>
+		    <artifactId>log4j-core</artifactId>
+		    <version>2.17.1</version>
+		</dependency>
+		<dependency>
 		    <groupId>org.ode4j</groupId>
 		    <artifactId>core</artifactId>
 		    <version>0.4.0</version>
@@ -325,6 +335,14 @@
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
+		<resources>
+	        <resource>
+	        	<directory>config</directory>
+	        	<includes>
+	        		<include>log4j.properties</include>
+	            </includes>
+	        </resource>
+    	</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

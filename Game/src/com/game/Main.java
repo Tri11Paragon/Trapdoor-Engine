@@ -12,7 +12,7 @@ import com.game.engine.display.IDisplay;
 import com.game.engine.display.LoadingScreenDisplay;
 import com.game.engine.threading.Threading;
 import com.game.engine.tools.CommandLineInput;
-import com.game.engine.tools.Logger;
+import com.game.engine.tools.Logging;
 import com.game.engine.tools.SettingsLoader;
 
 
@@ -78,7 +78,7 @@ public class Main {
 		CommandLineInput.callOptionAssigners();
 		
 		// create the logger instance
-		Logger.init("logs.txt");
+		Logging.init();
 		
 		/**
 		 * Assign system variables
@@ -109,14 +109,10 @@ public class Main {
 		/**
 		 * Display important info about OS (After game info is displayed)
 		 */
-		Logger.writeln();
-		Logger.printBoxYln(new String[] {
-				"OS: " + os + " " + os_version + " " + os_arch,
-				"User: " + user_name + "@" + user_home,
-				"Working Directory: " + user_workingdir,
-				"Number of cores: " + processors,
-				"Current Thread: " + Thread.currentThread()
-				});
+		Logging.logger.info("OS: " + os + " " + os_version + " " + os_arch);
+		Logging.logger.info("Working Directory: " + user_workingdir);
+		Logging.logger.info("Number of cores: " + processors);
+		Logging.logger.info("Current Thread: " + Thread.currentThread() + "\n");
 		
 		IDisplay dis = new LoadingScreenDisplay();
 		DisplayManager.createDisplay(dis);
@@ -127,9 +123,6 @@ public class Main {
 		// delete all glfw / gl stuff
 		DisplayManager.closeDisplay();
 		SettingsLoader.saveSettings();
-		
-		// close the file stream
-		Logger.close();
 		
 		while (DisplayManager.exited < DisplayManager.createdThreads) 
 			Thread.sleep(16);

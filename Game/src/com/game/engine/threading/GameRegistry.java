@@ -18,7 +18,7 @@ import com.game.engine.datatypes.ogl.TextureData;
 import com.game.engine.datatypes.ogl.assimp.Material;
 import com.game.engine.datatypes.ogl.assimp.Model;
 import com.game.engine.display.LoadingScreenDisplay;
-import com.game.engine.tools.Logger;
+import com.game.engine.tools.Logging;
 import com.game.engine.tools.ScreenShot;
 import com.game.engine.tools.input.InputMaster;
 import com.game.engine.tools.models.ModelLoader;
@@ -34,8 +34,14 @@ import com.spinyowl.legui.style.font.FontRegistry;
 public class GameRegistry {
 
 	public static final String DEFAULT_EMPTY_NORMAL_MAP = "resources/textures/error/default_normal.png";
+	public static final String DEFAULT_EMPTY_DISPLACEMENT_MAP = "resources/textures/error/default_disp.png";
+	public static final String DEFAULT_EMPTY_AO_MAP = "resources/textures/error/default_ao.png";
+	public static final String DEFAULT_EMPTY_SPEC_MAP = "resources/textures/error/default_spec.png";
 	private static Texture errorTexture;
 	private static Texture defaultNormalTexture;
+	private static Texture defaultDisplacementTexture;
+	private static Texture defaultAOTexture;
+	private static Texture defaultSpecTexture;
 	private static Material errorMaterial;
 	private static Model errorModel;
 	
@@ -66,10 +72,22 @@ public class GameRegistry {
 	public static void init() {
 		errorTexture = TextureLoader.loadTexture("error/error3.png");
 		defaultNormalTexture = TextureLoader.loadTexture("error/default_normal.png");
-		errorMaterial = new Material("resources/textures/error/error3.png", DEFAULT_EMPTY_NORMAL_MAP, new Vector3f());
+		defaultDisplacementTexture = TextureLoader.loadTexture("error/default_disp.png");
+		defaultAOTexture = TextureLoader.loadTexture("error/default_ao.png");
+		defaultSpecTexture = TextureLoader.loadTexture("error/default_spec.png");
+		errorMaterial = new Material("resources/textures/error/error3.png", DEFAULT_EMPTY_NORMAL_MAP, 
+				DEFAULT_EMPTY_DISPLACEMENT_MAP, DEFAULT_EMPTY_AO_MAP, DEFAULT_EMPTY_SPEC_MAP, new Vector3f(0.0f, 0.0f, 0.0f));
 		
 		errorMaterial.setDiffuseTexture(errorTexture);
 		errorMaterial.setNormalTexture(defaultNormalTexture);
+		errorMaterial.setDisplacementTexture(defaultDisplacementTexture);
+		errorMaterial.setAmbientOcclusionTexture(defaultAOTexture);
+		errorMaterial.setSpecularTexture(defaultSpecTexture);
+		
+		GameRegistry.textures.put(DEFAULT_EMPTY_NORMAL_MAP, defaultNormalTexture);
+		GameRegistry.textures.put(DEFAULT_EMPTY_DISPLACEMENT_MAP, defaultDisplacementTexture);
+		GameRegistry.textures.put(DEFAULT_EMPTY_AO_MAP, defaultAOTexture);
+		GameRegistry.textures.put(DEFAULT_EMPTY_SPEC_MAP, defaultSpecTexture);
 		
 		errorModel = ModelLoader.load("resources/models/error.dae", "resources/textures/");
 		VAOLoader.loadToVAO(errorModel);
@@ -86,18 +104,9 @@ public class GameRegistry {
 		}
 	}
 	
-	public static Material registerMaterial(String diffusePath, String normalPath, Vector3f colorInformation) {
-		Material m = materials.get(diffusePath);
-		if (m == null) {
-			m = new Material(diffusePath, normalPath, colorInformation);
-			materials.put(diffusePath, m);
-		}
-		registeredMaterials.add(m);
-		return m;
-	}
-	
-	public static Material registerMaterial2(String diffusePath, String normalPath, Vector3f colorInformation) {
-		Material m = new Material(diffusePath, normalPath, colorInformation);
+	public static Material registerMaterial2(String diffuseTexture, String normalMapTexture, String displacementTexturePath, 
+			String ambientOcclusionTexturePath, String specularTexturePath, Vector3f colorInformation) {
+		Material m = new Material(diffuseTexture, normalMapTexture, displacementTexturePath, ambientOcclusionTexturePath, specularTexturePath, colorInformation);
 		registeredMaterials.add(m);
 		return m;
 	}
@@ -127,7 +136,7 @@ public class GameRegistry {
 			String rt = "Loading model: " + fd;
 			LoadingScreenDisplay.info.getTextState().setText(rt);
 			if (Main.verbose)
-				Logger.writeln(rt);
+				Logging.logger.debug(rt);
 			
 			GameRegistry.meshes.put(fd, ModelLoader.load(fd, "resources/textures/"));
 		}, () -> {
@@ -135,7 +144,7 @@ public class GameRegistry {
 			String rt = "Loaded model: " + fd;
 			LoadingScreenDisplay.info.getTextState().setText(rt);
 			if (Main.verbose)
-				Logger.writeln(rt);
+				Logging.logger.debug(rt);
 			
 			Model m = GameRegistry.meshes.get(fd);
 			VAOLoader.loadToVAO(m);
@@ -163,7 +172,7 @@ public class GameRegistry {
 			String rt = "Loading texture: " + fd;
 			LoadingScreenDisplay.info.getTextState().setText(rt);
 			if (Main.verbose)
-				Logger.writeln(rt);
+				Logging.logger.debug(rt);
 			GameRegistry.textureDatas.put(fd, TextureLoader.decodeTextureToSize(fd, false, true, 0, 0));
 		}, () -> {
 			String fd = file;
@@ -171,7 +180,7 @@ public class GameRegistry {
 			String rt = "Loaded texture: " + fd;
 			LoadingScreenDisplay.info.getTextState().setText(rt);
 			if (Main.verbose)
-				Logger.writeln(rt);
+				Logging.logger.debug(rt);
 			
 			Texture t = TextureLoader.loadTextureI(fd,GameRegistry.textureDatas.get(fd), TextureLoader.TEXTURE_LOD, GL11.GL_LINEAR_MIPMAP_LINEAR);
 			GameRegistry.textures.put(fd, t);

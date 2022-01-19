@@ -22,7 +22,7 @@ import com.game.engine.display.DisplayManager;
 import com.game.engine.renderer.DeferredRenderer;
 import com.game.engine.renderer.EntityRenderer;
 import com.game.engine.threading.Threading;
-import com.game.engine.tools.Logger;
+import com.game.engine.tools.Logging;
 import com.game.engine.world.entities.Entity;
 import com.karl.Engine.skybox.SkyboxRenderer;
 
@@ -90,6 +90,7 @@ public class World {
 		this.skyboxRenderer.render(c);
 		
 		this.deferredRenderer.enableMainShaders();
+		this.deferredRenderer.getShader().loadViewPos(this.c.getPosition());
 		this.entityStorage.render(this.deferredRenderer);
 		this.deferredRenderer.endFirstPass();
 		
@@ -142,7 +143,7 @@ public class World {
 	}
 	
 	public void cleanup() {
-		Logger.writeln("Destorying world!");
+		Logging.logger.debug("Destorying world!");
 		this.deferredRenderer.cleanup();
 	}
 	

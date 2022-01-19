@@ -43,7 +43,7 @@ public class SettingsLoader {
 	
 	private static int readLines = 1;
 	public static void loadSettings() {
-		Logger.writeln("Loading settings!");
+		Logging.logger.debug("Loading settings!");
 		try {
 			// load the settings file
 			new File(SETTINGS_LOCATION).createNewFile();

@@ -1,5 +1,6 @@
 package com.game.engine.tools.models;
 
+import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import com.game.engine.datatypes.ogl.assimp.Mesh;
 import com.game.engine.datatypes.ogl.assimp.Model;
 import com.game.engine.datatypes.ogl.assimp.ModelNotFoundException;
 import com.game.engine.threading.GameRegistry;
+import com.game.engine.tools.Logging;
 
 /**
  * @author brett
@@ -105,8 +107,7 @@ public class ModelLoader {
 		    if (result == 0) {
 		        specular = new Vector4f(colour.r(), colour.g(), colour.b(), colour.a());
 		    }
-
-			
+		    
 			AIString normalPath = AIString.calloc();
 			Assimp.aiGetMaterialTexture(material, Assimp.aiTextureType_NORMALS, 0, normalPath, (IntBuffer) null, null, null, null, null, null);
 			String normalTexture = normalPath.dataString();
@@ -114,11 +115,44 @@ public class ModelLoader {
 			
 			if (normalTexture != null && normalTexture.length() > 0) {
 				GameRegistry.registerTexture(normalTexturePath);
-				System.out.println(normalTexture);
+				Logging.logger.error(normalTexture);
 			} else
-				normalTexturePath = GameRegistry.DEFAULT_EMPTY_NORMAL_MAP;
+				normalTexturePath = findNormalMap(texturePath);
 			
-			return GameRegistry.registerMaterial2(texturePath, normalTexturePath, new Vector3f(average(diffuse), average(specular), average(ambient)));
+			AIString displacementPath = AIString.calloc();
+			Assimp.aiGetMaterialTexture(material, Assimp.aiTextureType_DISPLACEMENT, 0, displacementPath, (IntBuffer) null, null, null, null, null, null);
+			String displacementTexture = displacementPath.dataString();
+			String displacementTexturePath = (texturesDir + "/" + displacementTexture).replace("//", "/");
+			
+			if (displacementTexture != null && displacementTexture.length() > 0) {
+				GameRegistry.registerTexture(displacementTexturePath);
+				Logging.logger.error(displacementTexturePath);
+			} else
+				displacementTexturePath = findDisplacementMap(texturePath);
+			
+			AIString AOPath = AIString.calloc();
+			Assimp.aiGetMaterialTexture(material, Assimp.aiTextureType_DISPLACEMENT, 0, AOPath, (IntBuffer) null, null, null, null, null, null);
+			String AOTexture = AOPath.dataString();
+			String AOTexturePath = (texturesDir + "/" + AOTexture).replace("//", "/");
+			
+			if (AOTexture != null && AOTexture.length() > 0) {
+				GameRegistry.registerTexture(AOTexturePath);
+				Logging.logger.error(AOTexturePath);
+			} else
+				AOTexturePath = findAOMap(texturePath);
+			
+			AIString SpecPath = AIString.calloc();
+			Assimp.aiGetMaterialTexture(material, Assimp.aiTextureType_DISPLACEMENT, 0, SpecPath, (IntBuffer) null, null, null, null, null, null);
+			String SpecTexture = SpecPath.dataString();
+			String SpecTexturePath = (texturesDir + "/" + SpecTexture).replace("//", "/");
+			
+			if (SpecTexture != null && SpecTexture.length() > 0) {
+				GameRegistry.registerTexture(SpecTexturePath);
+				Logging.logger.error(SpecTexturePath);
+			} else
+				SpecTexturePath = findSpecMap(texturePath);
+			
+			return GameRegistry.registerMaterial2(texturePath, normalTexturePath, displacementTexturePath, AOTexturePath, SpecTexturePath, new Vector3f(average(diffuse), average(specular), average(ambient)));
 		}
 		// can't load texture, meaning we need to load error material
 		return GameRegistry.getErrorMaterial();
@@ -239,6 +273,113 @@ public class ModelLoader {
 		for (int i = 0; i < arr.length; i++)
 			arr[i] = list.get(i);
 		return arr;
+	}
+	
+	private static String findNormalMap(String diffuseTexturePath) {
+		String returnval = GameRegistry.DEFAULT_EMPTY_NORMAL_MAP;
+		
+		String dir = getParentDir(diffuseTexturePath);
+		if (dir == null)
+			return returnval;
+		
+		String name = getName(diffuseTexturePath);
+		
+		// TODO: add more?
+		String newPath = checkPossibleLocations(dir, name, "diff", "nor", "normal", "normalmap", "normalMap", "norMap", "normap");
+		if (newPath == null)
+			newPath = checkPossibleLocations(dir, name, "diffuse", "nor", "normal", "normalmap", "normalMap", "norMap", "normap");
+		if (newPath == null)
+			return returnval;
+		else {
+			GameRegistry.registerTexture(newPath);
+			return newPath;
+		}
+	}
+	
+	private static String findDisplacementMap(String diffuseTexturePath) {
+		String returnval = GameRegistry.DEFAULT_EMPTY_DISPLACEMENT_MAP;
+		
+		String dir = getParentDir(diffuseTexturePath);
+		if (dir == null)
+			return returnval;
+		
+		String name = getName(diffuseTexturePath);
+		
+		String newPath = checkPossibleLocations(dir, name, "diff", "disp", "displacement", "dispMap", "displacementMap", "dispmap", "displacementmap");
+		if (newPath == null)
+			newPath = checkPossibleLocations(dir, name, "diffuse", "disp", "displacement", "dispMap", "displacementMap", "dispmap", "displacementmap");
+		if (newPath == null)
+			return returnval;
+		else {
+			GameRegistry.registerTexture(newPath);
+			return newPath;
+		}
+	}
+	
+	private static String findAOMap(String diffuseTexturePath) {
+		String returnval = GameRegistry.DEFAULT_EMPTY_AO_MAP;
+		
+		String dir = getParentDir(diffuseTexturePath);
+		if (dir == null)
+			return returnval;
+		
+		String name = getName(diffuseTexturePath);
+		
+		String newPath = checkPossibleLocations(dir, name, "diff", "AO", "ao", "ambientocclusion", "ambientOcclusion");
+		if (newPath == null)
+			newPath = checkPossibleLocations(dir, name, "diffuse", "AO", "ao", "ambientocclusion", "ambientOcclusion");
+		if (newPath == null)
+			return returnval;
+		else {
+			GameRegistry.registerTexture(newPath);
+			return newPath;
+		}
+	}
+	
+	private static String findSpecMap(String diffuseTexturePath) {
+		String returnval = GameRegistry.DEFAULT_EMPTY_SPEC_MAP;
+		
+		String dir = getParentDir(diffuseTexturePath);
+		if (dir == null)
+			return returnval;
+		
+		String name = getName(diffuseTexturePath);
+		
+		String newPath = checkPossibleLocations(dir, name, "diff", "spec", "specular", "specMap", "specmap");
+		if (newPath == null)
+			newPath = checkPossibleLocations(dir, name, "diffuse", "spec", "specular", "specMap", "specmap");
+		if (newPath == null)
+			return returnval;
+		else {
+			GameRegistry.registerTexture(newPath);
+			return newPath;
+		}
+	}
+	
+	private static String checkPossibleLocations(String dir, String name, String find, String... replace) {
+		
+		for (int i = 0; i < replace.length; i++) {
+			String replaceName = name.replace(find, replace[i]);
+			if (replaceName == name)
+				continue;
+			String fullPath = dir + "/" + replaceName;
+			fullPath = fullPath.replace("//", "/");
+			Logging.logger.trace("Trying to load: " + fullPath);
+			if (new File(fullPath).exists())
+				return fullPath;
+		}
+		
+		Logging.logger.warn("Failed to load all possible resource locations! :(");
+		
+		return null;
+	}
+	
+	private static String getName(String path) {
+		return new File(path).getName();
+	}
+	
+	private static String getParentDir(String path) {
+		return new File(path).getParent();
 	}
 	
 }

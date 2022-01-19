@@ -15,7 +15,7 @@ import com.game.engine.datatypes.ogl.obj.VAO;
 import com.game.engine.datatypes.ogl.assimp.Mesh;
 import com.game.engine.datatypes.ogl.assimp.Model;
 import com.game.engine.datatypes.ogl.obj.ModelData;
-import com.game.engine.tools.Logger;
+import com.game.engine.tools.Logging;
 
 /*
  * THIS CLASS IS NOT TO BE TOUCHED BY ANYONE
@@ -379,8 +379,8 @@ public class VAOLoader {
 	 * prints the sizes of all the maps
 	 */
 	public static void printSizes() {
-		Logger.writeln("VAOs Size: " + vaos.size());
-		Logger.writeln("VBOs Size: " + vbos.size());
+		Logging.logger.info("VAOs Size: " + vaos.size());
+		Logging.logger.info("VBOs Size: " + vbos.size());
 		TextureLoader.print();
 	}
 	

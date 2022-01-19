@@ -12,7 +12,7 @@ import com.game.engine.datatypes.ogl.assimp.Mesh;
 import com.game.engine.datatypes.ogl.assimp.Model;
 import com.game.engine.renderer.ui.UIMaster;
 import com.game.engine.threading.GameRegistry;
-import com.game.engine.tools.Logger;
+import com.game.engine.tools.Logging;
 import com.game.engine.tools.models.MaterialFSFormater;
 import com.game.engine.world.World;
 import com.game.engine.world.entities.Entity;
@@ -208,7 +208,7 @@ public class ModelEditorDisplay extends IDisplay {
 			if (e.getAction() != MouseClickAction.RELEASE)
 				return;
 			if (Main.verbose)
-				Logger.writeln("Saving " + currentModel + "'s materials!");
+				Logging.logger.info("Saving " + currentModel + "'s materials!");
 			MaterialFSFormater.saveMaterialsToFile(currentModel);
 		});
 		matPanel.getContainer().add(save);

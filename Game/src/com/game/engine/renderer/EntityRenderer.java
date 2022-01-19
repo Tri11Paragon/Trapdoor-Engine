@@ -47,6 +47,12 @@ public class EntityRenderer {
 			GL11.glBindTexture(GL11.GL_TEXTURE_2D, mat.getDiffuseTexture().getID());
 			GL13.glActiveTexture(GL13.GL_TEXTURE1);	
 			GL11.glBindTexture(GL11.GL_TEXTURE_2D, mat.getNormalTexture().getID());
+			GL13.glActiveTexture(GL13.GL_TEXTURE2);	
+			GL11.glBindTexture(GL11.GL_TEXTURE_2D, mat.getDisplacementTexture().getID());
+			GL13.glActiveTexture(GL13.GL_TEXTURE3);	
+			GL11.glBindTexture(GL11.GL_TEXTURE_2D, mat.getSpecularTexture().getID());
+			GL13.glActiveTexture(GL13.GL_TEXTURE4);	
+			GL11.glBindTexture(GL11.GL_TEXTURE_2D, mat.getAmbientOcclusionTexture().getID());
 			
 			shader.loadSpecAmount(mat.getColorInformation().y);
 			

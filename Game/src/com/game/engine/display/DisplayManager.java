@@ -58,7 +58,7 @@ import com.game.engine.renderer.ui.DebugInfo;
 import com.game.engine.renderer.ui.UIMaster;
 import com.game.engine.threading.GameRegistry;
 import com.game.engine.threading.Threading;
-import com.game.engine.tools.Logger;
+import com.game.engine.tools.Logging;
 import com.game.engine.tools.RescaleEvent;
 import com.game.engine.tools.SettingsLoader;
 import com.game.engine.tools.icon.GLIcon;
@@ -178,10 +178,10 @@ public class DisplayManager {
 	
 	public static void createDisplay(boolean isUsingFBOs) {
 		mainThreadID = Thread.currentThread().getId();
-		Logger.writeln("LWJGL Version: " + Version.getVersion() + "!");
-		Logger.writeln("Game Version: " + gameVersion);
-		Logger.writeln("Engine Version: " + engineVersion);
-		Logger.writeln();
+		Logging.logger.info("LWJGL Version: " + Version.getVersion() + "!");
+		Logging.logger.info("Game Version: " + gameVersion);
+		Logging.logger.info("Engine Version: " + engineVersion);
+		Logging.logger.info("");
 		
 		GLFWErrorCallback.createPrint(System.err).set();
 		
@@ -240,11 +240,11 @@ public class DisplayManager {
 		int[] in = new int[1];
 		GL30.glGetIntegerv(GL30.GL_MAX_TEXTURE_IMAGE_UNITS, in);
 		MAX_SHADER_TEXTURES = in[0];
-		Logger.writeln("Max allowed shader texures: " + in[0]);
+		Logging.logger.info("Max allowed shader texures: " + in[0]);
 		// this is actually a very big problem if anyone runs into this.
 		// we can use 32 but will only use 16 for safety
 		if (in[0] < 16) {
-			Logger.writeErrorln("Your OpenGL drivers do not support this game. Please report this to the developers.");
+			Logging.logger.fatal("Your OpenGL drivers do not support this game. Please report this to the developers.");
 			// we cannot recover from this.
 			System.exit(-1);
 		}

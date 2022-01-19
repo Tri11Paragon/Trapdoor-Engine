@@ -17,22 +17,35 @@ public class Material {
 	
 	private String diffuseTexturePath;
 	private String normalTexturePath;
+	private String displacementTexturePath;
+	private String ambientOcclusionTexturePath;
+	private String specularTexturePath;
+	
 	
 	private Vector3f colorInformation;
 	
 	private Texture diffuseTexture;
 	private Texture normalTexture;
+	private Texture displacementTexture;
+	private Texture ambientOcclusionTexture;
+	private Texture specularTexture;
 	
-	public Material(String diffuseTexture, String normalMapTexture, Vector3f colorInformation) {
+	public Material(String diffuseTexture, String normalMapTexture, String displacementTexturePath, String ambientOcclusionTexturePath, String specularTexturePath, Vector3f colorInformation) {
 		this.diffuseTexturePath = diffuseTexture;
 		this.normalTexturePath = normalMapTexture;
 		this.colorInformation = colorInformation;
+		this.displacementTexturePath = displacementTexturePath;
+		this.ambientOcclusionTexturePath = ambientOcclusionTexturePath;
+		this.specularTexturePath = specularTexturePath;
 	}
 	
 	public void loadTexturesFromGameRegistry() {
 		if (!this.diffuseTexturePath.contains("NORENDER"))
 			this.diffuseTexture = GameRegistry.getTexture(this.diffuseTexturePath);
 		this.normalTexture = GameRegistry.getTexture(this.normalTexturePath);
+		this.displacementTexture = GameRegistry.getTexture(this.displacementTexturePath);
+		this.ambientOcclusionTexture = GameRegistry.getTexture(this.ambientOcclusionTexturePath);
+		this.specularTexture = GameRegistry.getTexture(this.specularTexturePath);
 	}
 
 	public String getDiffuseTexturePath() {
@@ -45,6 +58,18 @@ public class Material {
 
 	public Texture getDiffuseTexture() {
 		return diffuseTexture;
+	}
+
+	public Texture getDisplacementTexture() {
+		return displacementTexture;
+	}
+
+	public Texture getAmbientOcclusionTexture() {
+		return ambientOcclusionTexture;
+	}
+
+	public Texture getSpecularTexture() {
+		return specularTexture;
 	}
 
 	public void setDiffuseTexture(Texture diffuseTexture) {
@@ -69,6 +94,42 @@ public class Material {
 	
 	public Vector3f getColorInformation() {
 		return this.colorInformation;
+	}
+
+	public String getDisplacementTexturePath() {
+		return displacementTexturePath;
+	}
+
+	public void setDisplacementTexturePath(String displacementTexturePath) {
+		this.displacementTexturePath = displacementTexturePath;
+	}
+
+	public String getAmbientOcclusionTexturePath() {
+		return ambientOcclusionTexturePath;
+	}
+
+	public void setAmbientOcclusionTexturePath(String ambientOcclusionTexturePath) {
+		this.ambientOcclusionTexturePath = ambientOcclusionTexturePath;
+	}
+
+	public String getSpecularTexturePath() {
+		return specularTexturePath;
+	}
+
+	public void setSpecularTexturePath(String specularTexturePath) {
+		this.specularTexturePath = specularTexturePath;
+	}
+
+	public void setDisplacementTexture(Texture displacementTexture) {
+		this.displacementTexture = displacementTexture;
+	}
+
+	public void setAmbientOcclusionTexture(Texture ambientOcclusionTexture) {
+		this.ambientOcclusionTexture = ambientOcclusionTexture;
+	}
+
+	public void setSpecularTexture(Texture specularTexture) {
+		this.specularTexture = specularTexture;
 	}
 	
 }

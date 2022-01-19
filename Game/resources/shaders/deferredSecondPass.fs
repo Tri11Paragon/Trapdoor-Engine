@@ -47,6 +47,8 @@ void main(){
         lighting += Diffuse * (max(dot(Normal, directlightDir), 0.0) * directLightColor);
 
         vec3 viewDir  = normalize(viewPos - FragPos);
+
+        // Normal Lighting
         for(int i = 0; i < NR_LIGHTS; ++i) {
             // calculate distance between light source and current fragment
             vec3 lmp = Position[i].xyz - FragPos;

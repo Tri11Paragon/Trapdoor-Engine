@@ -39,6 +39,9 @@ public class TestDisplay extends IDisplay {
 					.setModel(GameRegistry.getModel("resources/models/tuber.dae"))
 					.setPosition(0, -19.7f, -58)
 					.setScale(1)
+					.addLight(new Light(Light.lightings[5], 1.0f, 1.0f, 1.0f, 0, 5, -5))
+					.addLight(new Light(Light.lightings[5], 1.0f, 1.0f, 1.0f, 0, 5, 0))
+					.addLight(new Light(Light.lightings[5], 1.0f, 1.0f, 1.0f, 0, 5, 5))
 				);
 		
 		this.cubeModel = GameRegistry.getModel("resources/models/depression.dae");

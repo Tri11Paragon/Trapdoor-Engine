@@ -20,7 +20,7 @@ import org.lwjgl.stb.STBImageResize;
 
 import com.game.engine.datatypes.ogl.Texture;
 import com.game.engine.datatypes.ogl.TextureData;
-import com.game.engine.tools.Logger;
+import com.game.engine.tools.Logging;
 import com.game.engine.tools.SettingsLoader;
 
 /**
@@ -388,8 +388,8 @@ public class TextureLoader {
 	}
 	
 	public static void print() {
-		Logger.writeln("Textures Size: " + textures.size());
-		Logger.writeln("Texture Map Size: " + textureMap.size());
+		Logging.logger.info("Textures Size: " + textures.size());
+		Logging.logger.info("Texture Map Size: " + textureMap.size());
 	}
 	
 	private static void assignTextureModes(int mingmag, int textureWrap) {

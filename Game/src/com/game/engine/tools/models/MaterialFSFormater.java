@@ -43,6 +43,9 @@ public class MaterialFSFormater {
 				Material m = model.getMaterials()[i];
 				writeString(dos, m.getDiffuseTexturePath());
 				writeString(dos, m.getNormalTexturePath());
+				writeString(dos, m.getDisplacementTexturePath());
+				writeString(dos, m.getAmbientOcclusionTexturePath());
+				writeString(dos, m.getSpecularTexturePath());
 				dos.writeChar('f');
 				dos.writeFloat(m.getColorInformation().x);
 				dos.writeChar('f');
@@ -101,6 +104,15 @@ public class MaterialFSFormater {
 				if (dis.readChar() != 's')
 					throw new InvalidMaterialFileException("Something broke the material file! Missing data char! (2) \n" + modelPath);
 				String normalTexture = readString(dis);
+				if (dis.readChar() != 's')
+					throw new InvalidMaterialFileException("Something broke the material file! Missing data char! (2) \n" + modelPath);
+				String displacementTexture = readString(dis);
+				if (dis.readChar() != 's')
+					throw new InvalidMaterialFileException("Something broke the material file! Missing data char! (2) \n" + modelPath);
+				String AOTexture = readString(dis);
+				if (dis.readChar() != 's')
+					throw new InvalidMaterialFileException("Something broke the material file! Missing data char! (2) \n" + modelPath);
+				String SpecTexture = readString(dis);
 				if (dis.readChar() != 'f')
 					throw new InvalidMaterialFileException("Something broke the material file! Missing data char! (3) \n" + modelPath);
 				float diffuse = dis.readFloat();
@@ -113,9 +125,10 @@ public class MaterialFSFormater {
 				if ((c = dis.readChar()) != 'e')
 					throw new InvalidMaterialFileException("Something broke the material file! Missing data char! (6) " + c + " \n" + modelPath);
 				
-				GameRegistry.registerTexture(diffuseTexture);
+				if (!diffuseTexture.contains("NORENDER"))
+					GameRegistry.registerTexture(diffuseTexture);
 				GameRegistry.registerTexture(normalTexture);
-				m.add(GameRegistry.registerMaterial2(diffuseTexture, normalTexture, new Vector3f(diffuse, specular, ambient)));
+				m.add(GameRegistry.registerMaterial2(diffuseTexture, normalTexture, displacementTexture, AOTexture, SpecTexture, new Vector3f(diffuse, specular, ambient)));
 			}
 			
 			Material[] mats = new Material[m.size()];
