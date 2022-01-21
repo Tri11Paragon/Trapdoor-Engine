@@ -158,7 +158,12 @@ public class TextureLoader {
 			textures.add(id);
 			// return the buffer.
 			return t;
-		} catch (Exception e) {return nullTexture;}
+		} catch (Exception e) {
+			Logging.logger.fatal(e.getMessage(), e);
+			Logging.logger.fatal("Unable load " + texture + " to GPU!");
+			System.exit(-1);
+			return nullTexture;
+		}
 	}
 	
 	public static int loadSpecialTextureATLAS(List<TextureData> textures) {
@@ -340,8 +345,8 @@ public class TextureLoader {
 				buffer.flip();
 		} catch (Exception e) {
 			// we had issue loading texture. exit the game.
-			e.printStackTrace();
-			System.err.println("Tried to load texture " + fileName + ", didn't work");
+			Logging.logger.fatal(e.getMessage(), e);
+			Logging.logger.fatal("Tried to load texture " + fileName + ", didn't work!");
 			System.exit(-1);
 		}
 		// return the texture data.
@@ -373,8 +378,8 @@ public class TextureLoader {
 			
 		} catch (Exception e) {
 			// we had issue loading texture. exit the game.
-			e.printStackTrace();
-			System.err.println("Tried to load texture " + loc + ", didn't work");
+			Logging.logger.fatal(e.getMessage(), e);
+			Logging.logger.fatal("Tried to load texture " + loc + ", didn't work!");
 			System.exit(-1);
 		}
 

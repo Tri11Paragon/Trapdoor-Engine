@@ -1,5 +1,7 @@
 package com.game.engine.display;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import com.game.engine.renderer.ui.UIMaster;
 import com.game.engine.threading.GameRegistry;
 import com.game.engine.threading.Threading;
@@ -26,15 +28,15 @@ import com.spinyowl.legui.style.Style.DisplayType;
 public class LoadingScreenDisplay extends IDisplay {
 
 	public static final int TIME = 50;
-	public static volatile float MAX = 1;
-	public static volatile float PROGRESS = 1;
+	public static final AtomicInteger MAX = new AtomicInteger();
+	public static final AtomicInteger PROGRESS = new AtomicInteger();
 	
 	public static synchronized void progress() {
-		PROGRESS++;
+		PROGRESS.incrementAndGet();
 	}
 	
 	public static synchronized void max() {
-		MAX++;
+		MAX.incrementAndGet();
 	}
 	
 	public IDisplay singlePlayer;
@@ -46,11 +48,11 @@ public class LoadingScreenDisplay extends IDisplay {
 	public static Label info;
 	
 	public static void updateBar() {
-		bar.setValue((PROGRESS/MAX) * 100);
+		bar.setValue((PROGRESS.get()/MAX.get()) * 100);
 	}
 	
 	@Override
-	public void onCreate() {		
+	public void onCreate() {
 		createUI();
 		
 		singlePlayer = new MainMenuDisplay();

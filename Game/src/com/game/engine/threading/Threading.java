@@ -20,8 +20,8 @@ import com.game.engine.tools.Logging;
 public class Threading {
 	
 	//private static ThreadPoolExecutor pool;
-	private static ExecutorService pool;
-	private static Queue<Runnable> mainRuns = new ArrayDeque<Runnable>();
+	private static volatile ExecutorService pool;
+	private static volatile Queue<Runnable> mainRuns = new ArrayDeque<Runnable>();
 	private static final AtomicInteger counter = new AtomicInteger(1);
 	
 	private static Thread physics;
@@ -104,16 +104,19 @@ public class Threading {
 		}
 	}
 	
-	public static void addToMains(Runnable r) {
+	public static synchronized void addToMains(Runnable r) {
 		mainRuns.add(r);
 	}
 	
 	public static void execute(DualExecution execute) {
 		pool.submit(() -> {
 			counter.incrementAndGet();
+			
 			execute.run();
+			
 			if (mainRuns != null)
-				mainRuns.add(execute.main());
+				addToMains(execute.main());
+			
 			counter.decrementAndGet();
 		});
 	}
