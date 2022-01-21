@@ -39,7 +39,7 @@ void main(){
     // TODO: impliment this
     float specularMapAmount = albedoSpec.w;
     
-    if (renderState.x > 0.5f){
+    if (renderState.x != 0.0f){
         // then calculate lighting as usual
         vec3 lighting = Diffuse * 0.005f; // hard-coded ambient component
 

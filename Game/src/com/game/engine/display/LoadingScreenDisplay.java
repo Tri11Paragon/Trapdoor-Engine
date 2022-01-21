@@ -102,7 +102,7 @@ public class LoadingScreenDisplay extends IDisplay {
 				DisplayManager.createDisplay(singlePlayer);
 				DisplayManager.changeDisplay(singlePlayer);
 			} else {
-				LoadingScreenDisplay.progress();
+				//LoadingScreenDisplay.progress();
 			}
 		}
 		if (System.currentTimeMillis() - time > (TIME+50) * 5)

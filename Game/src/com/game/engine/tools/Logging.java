@@ -1,82 +1,89 @@
 package com.game.engine.tools;
 
-import java.net.URI;
-
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.appender.ConsoleAppender;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.Order;
-import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
-import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
-import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
 
 public class Logging {
 
-	static {
-		ConfigurationFactory.setConfigurationFactory(new CustomConfigFactory());
-	}
+	//static {
+		//ConfigurationFactory.setConfigurationFactory(new CustomConfigFactory());
+	//}
 	public static final Logger logger = LogManager.getRootLogger();;
 	
 	public static void init() {
 		logger.debug("Logger Init Successful");
 	}
 	
-	// TODO: more functions?
+	public static void infoInsideBox(String... lines) {
+		String[] box = createBox(lines, 0);
+		for (int i = 0; i < box.length; i++)
+			logger.info(box[i]);
+	}
 	
-	@Plugin(name = "CustomConfigFactory", category = ConfigurationFactory.CATEGORY)
-	@Order(50)
-	public static class CustomConfigFactory extends ConfigurationFactory {
+	public static void infoInsideBox(int buffer, String... lines) {
+		String[] box = createBox(lines, buffer);
+		for (int i = 0; i < box.length; i++)
+			logger.info(box[i]);
+	}
+	
+	public static void debugInsideBox(String... lines) {
+		String[] box = createBox(lines, 0);
+		for (int i = 0; i < box.length; i++)
+			logger.debug(box[i]);
+	}
+	
+	public static void debugInsideBox(int buffer, String... lines) {
+		String[] box = createBox(lines, buffer);
+		for (int i = 0; i < box.length; i++)
+			logger.debug(box[i]);
+	}
+	
+	public static void traceInsideBox(String... lines) {
+		String[] box = createBox(lines, 0);
+		for (int i = 0; i < box.length; i++)
+			logger.trace(box[i]);
+	}
+	
+	public static void traceInsideBox(int buffer, String... lines) {
+		String[] box = createBox(lines, buffer);
+		for (int i = 0; i < box.length; i++)
+			logger.trace(box[i]);
+	}
+	
+	public static void errorInsideBox(String... lines) {
+		String[] box = createBox(lines, 0);
+		for (int i = 0; i < box.length; i++)
+			logger.error(box[i]);
+	}
+	
+	public static void errorInsideBox(int buffer, String... lines) {
+		String[] box = createBox(lines, buffer);
+		for (int i = 0; i < box.length; i++)
+			logger.error(box[i]);
+	}
+	
+	private static String[] createBox(String[] lines, int buffer) {
+		String[] returnLines = new String[lines.length + 2];
 		
-		static Configuration createConfiguration(final String name, ConfigurationBuilder<BuiltConfiguration> builder) {
-	        builder.setConfigurationName(name);
-	        builder.setStatusLevel(Level.ALL);
-	        
-	        // TODO: file logger
-	        
-	        builder.add(builder.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Result.NEUTRAL).
-	            addAttribute("level", Level.ALL));
-	        
-	        AppenderComponentBuilder appenderBuilder = builder.newAppender("Stdout", "CONSOLE").
-	            addAttribute("target", ConsoleAppender.Target.SYSTEM_OUT);
-	        // %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %5p %F:%L - %msg%n
-	        appenderBuilder.add(builder.newLayout("PatternLayout").
-	            addAttribute("pattern", "[%d{HH:mm:ss.SSS}] [%t/%p]: (%F:%L): %msg%n"));
-	        appenderBuilder.add(builder.newFilter("MarkerFilter", Filter.Result.DENY,
-	            Filter.Result.NEUTRAL).addAttribute("marker", "FLOW"));
-	        builder.add(appenderBuilder);
-	        
-	        builder.add(builder.newLogger("org.apache.logging.log4j", Level.DEBUG).
-	            add(builder.newAppenderRef("Stdout")).
-	            addAttribute("additivity", false));
-	        
-	        builder.add(builder.newRootLogger(Level.ALL).add(builder.newAppenderRef("Stdout")));
-	        
-	        return builder.build();
-	    }
-		
-		@Override
-		protected String[] getSupportedTypes() {
-			return new String[] {"*"};
+		int maxLength = 0;
+		for (int i = 0; i < lines.length; i++) {
+			char[] charArr = lines[i].toCharArray();
+			if (charArr.length > maxLength)
+				maxLength = charArr.length;
 		}
-
-		@Override
-	    public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
-	        return getConfiguration(loggerContext, source.toString(), null);
-	    }
-
-	    @Override
-	    public Configuration getConfiguration(final LoggerContext loggerContext, final String name, final URI configLocation) {
-	        ConfigurationBuilder<BuiltConfiguration> builder = newConfigurationBuilder();
-	        return createConfiguration(name, builder);
-	    }
+		maxLength += buffer;
 		
+		StringBuilder linebuilder = new StringBuilder();
+		for (int i = 0; i < maxLength; i++)
+			linebuilder.append('-');
+		
+		for (int i = 0; i < lines.length; i++)
+			returnLines[i + 1] = lines[i];
+		
+		returnLines[0] = linebuilder.toString();
+		returnLines[returnLines.length - 1] = returnLines[0];
+		
+		return returnLines;
 	}
 	
 }

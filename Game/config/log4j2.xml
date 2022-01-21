@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <configuration status="TRACE">
+  <appenders>
+   <Console name="Console" target="SYSTEM_OUT">
+    <PatternLayout pattern="%highlight{[%d{HH:mm:ss.SSS}] [%t/%-5p]: (%F:%L): %msg%n}{FATAL=bg_red, ERROR=red, WARN=bright yellow, INFO=bright green, DEBUG=cyan, TRACE=white}"/>
+   </Console>
+   <RollingFile name="RollingFileAppender" fileName="logs/latest.log"
+      filePattern="logs/%d{yyyy-MM-dd}-%i.log.gz">
+        <PatternLayout>
+            <Pattern>[%d{HH:mm:ss.SSS}] [%t/%-5p]: (%F:%L): %msg%n</Pattern>
+        </PatternLayout>
+        <Policies>
+            <OnStartupTriggeringPolicy />
+            <TimeBasedTriggeringPolicy />
+            <SizeBasedTriggeringPolicy size="50 MB" />
+        </Policies>
+        <DefaultRolloverStrategy max="20" />
+    </RollingFile>
+  </appenders>
+ <loggers>
+  <root level="all">
+   <appender-ref ref="Console"/>
+  </root>
+ </loggers>
+</configuration> 

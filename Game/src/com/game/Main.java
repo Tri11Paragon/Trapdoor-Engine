@@ -40,6 +40,7 @@ public class Main {
 	public static int processors = 8;
 	
 	public static void main(String[] args) throws InterruptedException {
+		Thread.currentThread().setName("Render Thread");
 		// mvn clean compile assembly:single 
 		
 		//https://mkyong.com/maven/how-to-create-a-manifest-file-with-maven/
@@ -109,10 +110,12 @@ public class Main {
 		/**
 		 * Display important info about OS (After game info is displayed)
 		 */
-		Logging.logger.info("OS: " + os + " " + os_version + " " + os_arch);
-		Logging.logger.info("Working Directory: " + user_workingdir);
-		Logging.logger.info("Number of cores: " + processors);
-		Logging.logger.info("Current Thread: " + Thread.currentThread() + "\n");
+		Logging.infoInsideBox(
+				"OS: " + os + " " + os_version + " " + os_arch,
+				"Working Directory: " + user_workingdir,
+				"Number of cores: " + processors,
+				"Current Thread: " + Thread.currentThread() + "\n"
+				);
 		
 		IDisplay dis = new LoadingScreenDisplay();
 		DisplayManager.createDisplay(dis);

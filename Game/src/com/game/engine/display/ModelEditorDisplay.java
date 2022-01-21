@@ -13,7 +13,7 @@ import com.game.engine.datatypes.ogl.assimp.Model;
 import com.game.engine.renderer.ui.UIMaster;
 import com.game.engine.threading.GameRegistry;
 import com.game.engine.tools.Logging;
-import com.game.engine.tools.models.MaterialFSFormater;
+import com.game.engine.tools.models.materials.MaterialFSFormater;
 import com.game.engine.world.World;
 import com.game.engine.world.entities.Entity;
 import com.spinyowl.legui.component.Button;

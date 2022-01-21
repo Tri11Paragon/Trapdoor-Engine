@@ -25,6 +25,7 @@ import com.game.engine.datatypes.ogl.assimp.Model;
 import com.game.engine.datatypes.ogl.assimp.ModelNotFoundException;
 import com.game.engine.threading.GameRegistry;
 import com.game.engine.tools.Logging;
+import com.game.engine.tools.models.materials.MaterialFSFormater;
 
 /**
  * @author brett
@@ -152,7 +153,20 @@ public class ModelLoader {
 			} else
 				SpecTexturePath = findSpecMap(texturePath);
 			
-			return GameRegistry.registerMaterial2(texturePath, normalTexturePath, displacementTexturePath, AOTexturePath, SpecTexturePath, new Vector3f(average(diffuse), average(specular), average(ambient)));
+			if (normalTexturePath == GameRegistry.DEFAULT_EMPTY_NORMAL_MAP && displacementTexturePath == GameRegistry.DEFAULT_EMPTY_DISPLACEMENT_MAP &&
+					AOTexturePath == GameRegistry.DEFAULT_EMPTY_AO_MAP && SpecTexturePath == GameRegistry.DEFAULT_EMPTY_SPEC_MAP)
+				Logging.logger.warn("Failed to load extra texture maps after checking possible resource locations! :(");
+			
+			return GameRegistry.registerMaterial2(
+					new Material(
+							texturePath, 
+							normalTexturePath, 
+							displacementTexturePath, 
+							AOTexturePath, 
+							SpecTexturePath, 
+							new Vector3f(average(diffuse), average(specular), average(ambient))
+						)
+					);
 		}
 		// can't load texture, meaning we need to load error material
 		return GameRegistry.getErrorMaterial();
@@ -282,12 +296,10 @@ public class ModelLoader {
 		if (dir == null)
 			return returnval;
 		
-		String name = getName(diffuseTexturePath);
-		
 		// TODO: add more?
-		String newPath = checkPossibleLocations(dir, name, "diff", "nor", "normal", "normalmap", "normalMap", "norMap", "normap");
-		if (newPath == null)
-			newPath = checkPossibleLocations(dir, name, "diffuse", "nor", "normal", "normalmap", "normalMap", "norMap", "normap");
+		String name = getName(diffuseTexturePath);
+		String newPath = findPathForMap(dir, name, new String[] {"diff", "diffuse"}, new String[] {"nor", "normal", "normalmap", "normalMap", "norMap", "normap"});
+
 		if (newPath == null)
 			return returnval;
 		else {
@@ -304,10 +316,8 @@ public class ModelLoader {
 			return returnval;
 		
 		String name = getName(diffuseTexturePath);
+		String newPath = findPathForMap(dir, name, new String[] {"diff", "diffuse"}, new String[] {"disp", "displacement", "dispMap", "displacementMap", "dispmap", "displacementmap"});
 		
-		String newPath = checkPossibleLocations(dir, name, "diff", "disp", "displacement", "dispMap", "displacementMap", "dispmap", "displacementmap");
-		if (newPath == null)
-			newPath = checkPossibleLocations(dir, name, "diffuse", "disp", "displacement", "dispMap", "displacementMap", "dispmap", "displacementmap");
 		if (newPath == null)
 			return returnval;
 		else {
@@ -324,10 +334,8 @@ public class ModelLoader {
 			return returnval;
 		
 		String name = getName(diffuseTexturePath);
+		String newPath = findPathForMap(dir, name, new String[] {"diff", "diffuse"}, new String[] {"AO", "ao", "ambientocclusion", "ambientOcclusion"});
 		
-		String newPath = checkPossibleLocations(dir, name, "diff", "AO", "ao", "ambientocclusion", "ambientOcclusion");
-		if (newPath == null)
-			newPath = checkPossibleLocations(dir, name, "diffuse", "AO", "ao", "ambientocclusion", "ambientOcclusion");
 		if (newPath == null)
 			return returnval;
 		else {
@@ -344,10 +352,8 @@ public class ModelLoader {
 			return returnval;
 		
 		String name = getName(diffuseTexturePath);
+		String newPath = findPathForMap(dir, name, new String[] {"diff", "diffuse"}, new String[] {"spec", "specular", "specMap", "specmap"});
 		
-		String newPath = checkPossibleLocations(dir, name, "diff", "spec", "specular", "specMap", "specmap");
-		if (newPath == null)
-			newPath = checkPossibleLocations(dir, name, "diffuse", "spec", "specular", "specMap", "specmap");
 		if (newPath == null)
 			return returnval;
 		else {
@@ -356,7 +362,17 @@ public class ModelLoader {
 		}
 	}
 	
-	private static String checkPossibleLocations(String dir, String name, String find, String... replace) {
+	private static String findPathForMap(String dir, String name, String[] find, String[] replace) {
+		String path = null;
+		for (int i = 0; i < find.length; i++) {
+			path = checkPossibleLocations(dir, name, find[i], replace);
+			if (path != null)
+				break;
+		}
+		return path;
+	}
+	
+	private static String checkPossibleLocations(String dir, String name, String find, String[] replace) {
 		
 		for (int i = 0; i < replace.length; i++) {
 			String replaceName = name.replace(find, replace[i]);
@@ -368,8 +384,6 @@ public class ModelLoader {
 			if (new File(fullPath).exists())
 				return fullPath;
 		}
-		
-		Logging.logger.warn("Failed to load all possible resource locations! :(");
 		
 		return null;
 	}

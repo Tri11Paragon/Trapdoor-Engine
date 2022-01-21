@@ -104,9 +104,7 @@ public class GameRegistry {
 		}
 	}
 	
-	public static Material registerMaterial2(String diffuseTexture, String normalMapTexture, String displacementTexturePath, 
-			String ambientOcclusionTexturePath, String specularTexturePath, Vector3f colorInformation) {
-		Material m = new Material(diffuseTexture, normalMapTexture, displacementTexturePath, ambientOcclusionTexturePath, specularTexturePath, colorInformation);
+	public static Material registerMaterial2(Material m) {
 		registeredMaterials.add(m);
 		return m;
 	}
