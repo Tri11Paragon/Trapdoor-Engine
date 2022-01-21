@@ -38,8 +38,9 @@ import com.game.engine.tools.Logging;
 public class MaterialFSFormater {
 	
 	public static void saveMaterialsToFile(Model model) {
+		// extensive versioned material format
 		try {
-			DataOutputStream dos = new DataOutputStream(new GZIPOutputStream(new FileOutputStream(model.getPath() + ".mtl.gz")));
+			DataOutputStream dos = new DataOutputStream(new GZIPOutputStream(new FileOutputStream(model.getPath() + ".evmf")));
 			for (int i = 0; i < model.getMaterials().length; i++) {
 				Material m = model.getMaterials()[i];
 				writeString(dos, m.getDiffuseTexturePath());
@@ -99,7 +100,7 @@ public class MaterialFSFormater {
 		if (!new File(modelPath + ".mtl.gz").exists())
 			return null;
 		try {
-			DataInputStream dis = new DataInputStream(new GZIPInputStream(new FileInputStream(modelPath + ".mtl.gz")));
+			DataInputStream dis = new DataInputStream(new GZIPInputStream(new FileInputStream(modelPath + ".evmf")));
 			ArrayList<Material> m = new ArrayList<Material>();
 			
 			while (true) {

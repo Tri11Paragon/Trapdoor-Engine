@@ -129,7 +129,7 @@ public class Main {
 		
 		while (DisplayManager.exited < DisplayManager.createdThreads) 
 			Thread.sleep(16);
-		System.out.println("Goodbye!");
+		Logging.logger.info("Goodbye!");
 		System.exit(0);
 	}
 	

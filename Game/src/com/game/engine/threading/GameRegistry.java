@@ -1,16 +1,16 @@
 package com.game.engine.threading;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 
-import com.game.Main;
 import com.game.engine.TextureLoader;
 import com.game.engine.VAOLoader;
 import com.game.engine.datatypes.ogl.Texture;
@@ -45,29 +45,33 @@ public class GameRegistry {
 	private static Material errorMaterial;
 	private static Model errorModel;
 	
+	/**
+	 * this is the max number of method callers to be printed during an error
+	 */
+	private static final int MAX_CALLERS_LOG = 5;
 	//private static final HashMap<String, String> allowedFormats = new HashMap<String, String>();
 	//private static final ArrayList<IDisplay> registeredDisplays = new ArrayList<IDisplay>();
 	
 	/*
 	 * Data(s) and Lock(s)
 	 */
-	private static final Map<String, TextureData> textureDatas = Collections.synchronizedMap(new HashMap<String, TextureData>());
-	private static final Map<String, Integer> textureLocks = Collections.synchronizedMap(new HashMap<String, Integer>());
-	private static final Map<String, Integer> meshLocks = Collections.synchronizedMap(new HashMap<String, Integer>());
+	private static final Map<String, TextureData> textureDatas = Collections.synchronizedMap(new ConcurrentHashMap<String, TextureData>());
+	private static final Map<String, Integer> textureLocks = Collections.synchronizedMap(new ConcurrentHashMap<String, Integer>());
+	private static final Map<String, Integer> meshLocks = Collections.synchronizedMap(new ConcurrentHashMap<String, Integer>());
 	
 	/*
 	 * important entity related storage
 	 */
-	private static final Map<String, Texture> textures = Collections.synchronizedMap(new HashMap<String, Texture>());
-	private static final Map<String, Material> materials = Collections.synchronizedMap(new HashMap<String, Material>());
+	private static final Map<String, Texture> textures = Collections.synchronizedMap(new ConcurrentHashMap<String, Texture>());
+	private static final Map<String, Material> materials = Collections.synchronizedMap(new ConcurrentHashMap<String, Material>());
 	private static final ArrayList<Material> registeredMaterials = new ArrayList<Material>();
-	private static final Map<String, Model> meshes = Collections.synchronizedMap(new HashMap<String, Model>());
+	private static final Map<String, Model> meshes = Collections.synchronizedMap(new ConcurrentHashMap<String, Model>());
 	
 	/*
 	 * texture atlases
 	 */
-	private static final Map<String, Integer> textureAtlas = Collections.synchronizedMap(new HashMap<String, Integer>());
-	private static final Map<String, Integer> textureInteralAtlas = Collections.synchronizedMap(new HashMap<String, Integer>());
+	private static final Map<String, Integer> textureAtlas = Collections.synchronizedMap(new ConcurrentHashMap<String, Integer>());
+	private static final Map<String, Integer> textureInteralAtlas = Collections.synchronizedMap(new ConcurrentHashMap<String, Integer>());
 	
 	public static void init() {
 		errorTexture = TextureLoader.loadTexture("error/error3.png");
@@ -115,38 +119,50 @@ public class GameRegistry {
 	
 	public static void registerModel(String file, String texturesDir) {
 		LoadingScreenDisplay.max();
+		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
 		
 		Threading.execute(new DualExecution(() -> {
-			String fd = file;
-			// we already loaded the file
-			if (GameRegistry.meshes.get(fd) != null || GameRegistry.meshLocks.get(fd) != null) {
-				LoadingScreenDisplay.progress();
-				return;
+			try {
+				String fd = file;
+				// we already loaded the file
+				if (GameRegistry.meshes.get(fd) != null || GameRegistry.meshLocks.get(fd) != null) {
+					LoadingScreenDisplay.progress();
+					return;
+				}
+				GameRegistry.meshLocks.put(fd, 1);
+				
+				String textureLocation = texturesDir;
+				
+				char[] tc = textureLocation.toCharArray();
+				if (tc[tc.length-1] == '/')
+					textureLocation = textureLocation.substring(0, tc.length-1);
+				
+				String rt = "Loading model: " + fd;
+				if (LoadingScreenDisplay.info != null)
+					LoadingScreenDisplay.info.getTextState().setText(rt);
+				Logging.logger.debug(rt);
+				
+				GameRegistry.meshes.put(fd, ModelLoader.load(fd, "resources/textures/"));
+			} catch (Exception e) {
+				Logging.logger.fatal("Error loading entity (" + file +  ")!", e);
+				printFatalMethodCallers(stackTraceElements);
+				System.exit(-1);
 			}
-			GameRegistry.meshLocks.put(fd, 1);
-			
-			String textureLocation = texturesDir;
-			
-			char[] tc = textureLocation.toCharArray();
-			if (tc[tc.length-1] == '/')
-				textureLocation = textureLocation.substring(0, tc.length-1);
-			
-			String rt = "Loading model: " + fd;
-			LoadingScreenDisplay.info.getTextState().setText(rt);
-			if (Main.verbose)
-				Logging.logger.debug(rt);
-			
-			GameRegistry.meshes.put(fd, ModelLoader.load(fd, "resources/textures/"));
 		}, () -> {
-			String fd = file;
-			String rt = "Loaded model: " + fd;
-			LoadingScreenDisplay.info.getTextState().setText(rt);
-			if (Main.verbose)
+			try {
+				String fd = file;
+				String rt = "Loaded model: " + fd;
+				if (LoadingScreenDisplay.info != null)
+					LoadingScreenDisplay.info.getTextState().setText(rt);
 				Logging.logger.debug(rt);
-			
-			Model m = GameRegistry.meshes.get(fd);
-			VAOLoader.loadToVAO(m);
-			
+				
+				Model m = GameRegistry.meshes.get(fd);
+				VAOLoader.loadToVAO(m);
+			} catch (Exception e) {
+				Logging.logger.fatal("Error loading entity VAO (" + file + ")!", e);
+				printFatalMethodCallers(stackTraceElements);
+				System.exit(-1);
+			}
 			LoadingScreenDisplay.progress();
 		}));
 	}
@@ -154,34 +170,59 @@ public class GameRegistry {
 	public static void registerTexture(String file) {
 		if (!file.contains("."))
 			return;
+		if (!new File(file).exists()) {
+			Logging.logger.error("File: " + file + " does not exist!");
+			return;
+		}
 		LoadingScreenDisplay.max();
-		// I wonder if this is bad?
-		// like accessing memory from threads which is local
-		// tbh I don't care
+		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+		
 		Threading.execute(new DualExecution(() -> {
-			String fd = file;
-			// we already loaded the file
-			if (GameRegistry.textureDatas.get(fd) != null || GameRegistry.textureLocks.get(fd) != null) {
-				LoadingScreenDisplay.progress();
-				return;
+			try {
+				String fd = file;
+				// we already loaded the file
+				if (GameRegistry.textureDatas.get(fd) != null || GameRegistry.textureLocks.get(fd) != null) {
+					LoadingScreenDisplay.progress();
+					return;
+				}
+				GameRegistry.textureLocks.put(fd, 1);
+				
+				String rt = "Loading texture: " + fd;
+				if (LoadingScreenDisplay.info != null)
+					LoadingScreenDisplay.info.getTextState().setText(rt);
+				Logging.logger.debug(rt);
+				
+				GameRegistry.textureDatas.put(fd, TextureLoader.decodeTextureToSize(fd, false, true, 0, 0));
+				
+			} catch (Exception e) {
+				Logging.logger.fatal(e.getMessage(), e);
+				Logging.logger.fatal("Tried to load texture " + file + ", didn't work!");
+				printFatalMethodCallers(stackTraceElements);
+				System.exit(-1);
 			}
-			GameRegistry.textureLocks.put(fd, 1);
-			
-			String rt = "Loading texture: " + fd;
-			LoadingScreenDisplay.info.getTextState().setText(rt);
-			if (Main.verbose)
-				Logging.logger.debug(rt);
-			GameRegistry.textureDatas.put(fd, TextureLoader.decodeTextureToSize(fd, false, true, 0, 0));
 		}, () -> {
-			String fd = file;
-			
-			String rt = "Loaded texture: " + fd;
-			LoadingScreenDisplay.info.getTextState().setText(rt);
-			if (Main.verbose)
+			try {
+				String fd = file;
+				
+				String rt = "Loaded texture: " + fd;
+				if (LoadingScreenDisplay.info != null)
+					LoadingScreenDisplay.info.getTextState().setText(rt);
 				Logging.logger.debug(rt);
-			
-			Texture t = TextureLoader.loadTextureI(fd,GameRegistry.textureDatas.get(fd), TextureLoader.TEXTURE_LOD, GL11.GL_LINEAR_MIPMAP_LINEAR);
-			GameRegistry.textures.put(fd, t);
+				
+				// due to thread locality, this is required
+				// despite the fact that we are using concurrent hash maps
+				// TODO: find a way around this
+				while (GameRegistry.textureDatas.get(fd) == null)
+					Thread.sleep(0, 500); // sleeps for 500ns
+				
+				Texture t = TextureLoader.loadTextureI(fd,GameRegistry.textureDatas.get(fd), TextureLoader.TEXTURE_LOD, GL11.GL_LINEAR_MIPMAP_LINEAR);
+				GameRegistry.textures.put(fd, t);
+			} catch (Exception e) {
+				Logging.logger.fatal(e.getMessage(), e);
+				Logging.logger.fatal("Tried to load texture " + file + " to GPU, didn't work!");
+				printFatalMethodCallers(stackTraceElements);
+				System.exit(-1);
+			}
 			LoadingScreenDisplay.progress();
 		}));
 	}
@@ -265,23 +306,84 @@ public class GameRegistry {
 	}
 	
 	/**
-	 * Efficiently combines two input arrays, a and b, returning the result.
+	 * prints the method call stack of the local thread. <br>
+	 * Note: it will print MAX_CALLERS_LOG ({@value #MAX_CALLERS_LOG})
+	 * or the length of the call stack (whatever is smaller)
 	 */
-	/*private static File[] combineArrays(File[] a, File[] b) {
-		File[] r = new File[a.length + b.length];
-		for (int i = 0; i < a.length; i++)
-			r[i] = a[i];
-		System.arraycopy(b, 0, r, a.length, b.length);
-		return r;
-	}*/
-	
-	/*public static void registerIDisplay(IDisplay display) {
-		registeredDisplays.add(display);
+	public static void printFatalMethodCallers() {
+		printFatalMethodCallers(getStackTraceElements(), MAX_CALLERS_LOG);
 	}
 	
-	public static void doPreRegister() {
-		for (int i = 0; i < registeredDisplays.size(); i++)
-			registeredDisplays.get(i).preRegister();
-	}*/
+	/**
+	 * prints the method call stack of the local thread. <br>
+	 * Note: it will print MAX_CALLERS_LOG ({@value #MAX_CALLERS_LOG})
+	 * or the length of the call stack (whatever is smaller)
+	 */
+	public static void printErrorMethodCallers() {
+		printErrorMethodCallers(getStackTraceElements(), MAX_CALLERS_LOG);
+	}
+	
+	/**
+	 * prints the method call stack of the local thread. <br>
+	 * Note: it will print supplied <b>max</b> number of traces
+	 * or the length of the call stack (whatever is smaller)
+	 */
+	public static void printFatalMethodCallers(int max) {
+		printFatalMethodCallers(getStackTraceElements(), max);
+	}
+	
+	/**
+	 * prints the method call stack of the local thread. <br>
+	 * Note: it will print supplied <b>max</b> number of traces
+	 * or the length of the call stack (whatever is smaller)
+	 */
+	public static void printErrorMethodCallers(int max) {
+		printErrorMethodCallers(getStackTraceElements(), max);
+	}
+	
+	/**
+	 * prints the method call stack of the provided stack trace. <br>
+	 * Note: it will print MAX_CALLERS_LOG ({@value #MAX_CALLERS_LOG})
+	 * or the length of the call stack (whatever is smaller)
+	 */
+	public static void printErrorMethodCallers(StackTraceElement[] stackTraceElements) {
+		printErrorMethodCallers(stackTraceElements, MAX_CALLERS_LOG);
+	}
+	
+	/**
+	 * prints the method call stack of the provided stack trace. <br>
+	 * Note: it will print MAX_CALLERS_LOG ({@value #MAX_CALLERS_LOG})
+	 * or the length of the call stack (whatever is smaller)
+	 */
+	public static void printFatalMethodCallers(StackTraceElement[] stackTraceElements) {
+		printFatalMethodCallers(stackTraceElements, MAX_CALLERS_LOG);
+	}
+	
+	/**
+	 * prints the method call stack of the provided stack trace. <br>
+	 * Note: it will print supplied <b>max</b> callers
+	 * or the length of the call stack (whatever is smaller)
+	 */
+	public static void printErrorMethodCallers(StackTraceElement[] stackTraceElements, int max) {
+		for (int i = 0; i < Math.min(stackTraceElements.length, max); i++)
+			Logging.logger.error("Method Stack Callers: (" + stackTraceElements[i].getFileName() + ":" + stackTraceElements[i].getLineNumber() + ")");
+	}
+	
+	/**
+	 * prints the method call stack of the provided stack trace. <br>
+	 * Note: it will print supplied <b>max</b> callers
+	 * or the length of the call stack (whatever is smaller)
+	 */
+	public static void printFatalMethodCallers(StackTraceElement[] stackTraceElements, int max) {
+		for (int i = 0; i < Math.min(stackTraceElements.length, max); i++)
+			Logging.logger.fatal("Method Stack Callers: (" + stackTraceElements[i].getFileName() + ":" + stackTraceElements[i].getLineNumber() + ")");
+	}
+	
+	/**
+	 * returns the local thread's stack trace
+	 */
+	public static StackTraceElement[] getStackTraceElements() {
+		return Thread.currentThread().getStackTrace();
+	}
 	
 }
