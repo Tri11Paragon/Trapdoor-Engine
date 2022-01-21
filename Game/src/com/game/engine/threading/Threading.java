@@ -1,7 +1,7 @@
 package com.game.engine.threading;
 
-import java.util.ArrayDeque;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -21,7 +21,7 @@ public class Threading {
 	
 	//private static ThreadPoolExecutor pool;
 	private static volatile ExecutorService pool;
-	private static volatile Queue<Runnable> mainRuns = new ArrayDeque<Runnable>();
+	private static volatile Queue<Runnable> mainRuns = new ConcurrentLinkedDeque<Runnable>();
 	private static final AtomicInteger counter = new AtomicInteger(1);
 	
 	private static Thread physics;
@@ -104,7 +104,7 @@ public class Threading {
 		}
 	}
 	
-	public static synchronized void addToMains(Runnable r) {
+	public static void addToMains(Runnable r) {
 		mainRuns.add(r);
 	}
 	

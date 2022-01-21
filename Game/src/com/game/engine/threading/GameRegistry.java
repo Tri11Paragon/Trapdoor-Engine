@@ -209,6 +209,12 @@ public class GameRegistry {
 					LoadingScreenDisplay.info.getTextState().setText(rt);
 				Logging.logger.debug(rt);
 				
+				// due to thread locality, this is required
+				// despite the fact that we are using concurrent hash maps
+				// TODO: find a way around this
+				while (GameRegistry.textureDatas.get(fd) == null)
+					Thread.sleep(0, 500); // sleeps for 500ns
+				
 				Texture t = TextureLoader.loadTextureI(fd,GameRegistry.textureDatas.get(fd), TextureLoader.TEXTURE_LOD, GL11.GL_LINEAR_MIPMAP_LINEAR);
 				GameRegistry.textures.put(fd, t);
 			} catch (Exception e) {
