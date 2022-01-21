@@ -178,10 +178,11 @@ public class DisplayManager {
 	
 	public static void createDisplay(boolean isUsingFBOs) {
 		mainThreadID = Thread.currentThread().getId();
-		Logging.logger.info("LWJGL Version: " + Version.getVersion() + "!");
-		Logging.logger.info("Game Version: " + gameVersion);
-		Logging.logger.info("Engine Version: " + engineVersion);
-		Logging.logger.info("");
+		Logging.infoInsideBox(
+				"LWJGL Version: " + Version.getVersion() + "!",
+				"Game Version: " + gameVersion,
+				"Engine Version: " + engineVersion
+				);
 		
 		GLFWErrorCallback.createPrint(System.err).set();
 		
@@ -222,9 +223,9 @@ public class DisplayManager {
 		
 		GL.createCapabilities();
 		
-		//glfwWindowHint(GLFW_SAMPLES, SettingsLoader.SAMPLES);
-		//if (SettingsLoader.SAMPLES > 0)
-		//	GL11.glEnable(GL13.GL_MULTISAMPLE);
+		glfwWindowHint(GLFW.GLFW_SAMPLES, SettingsLoader.SAMPLES);
+		if (SettingsLoader.SAMPLES > 0)
+			GL11.glEnable(GL13.GL_MULTISAMPLE);
 		
 		GLIcon gli = new GLIcon("resources/textures/icon/icon16.png", "resources/textures/icon/icon32.png");
 		glfwSetWindowIcon(window, gli.getBuffer());

@@ -4,10 +4,13 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.game.engine.display.DisplayManager;
 import com.game.engine.display.IDisplay;
 import com.game.engine.renderer.SyncSave;
+import com.game.engine.tools.Logging;
 
 /**
  * @author brett
@@ -19,7 +22,7 @@ public class Threading {
 	//private static ThreadPoolExecutor pool;
 	private static ExecutorService pool;
 	private static Queue<Runnable> mainRuns = new ArrayDeque<Runnable>();
-	private static volatile int h = 0;
+	private static final AtomicInteger counter = new AtomicInteger(1);
 	
 	private static Thread physics;
 	private static long lastFrameTime;
@@ -30,7 +33,16 @@ public class Threading {
 	public static void init(int systemCores) {
 		DisplayManager.createdThreads++;
 		//pool = new ThreadPoolExecutor(systemCores, systemCores, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
-		pool = Executors.newCachedThreadPool();
+		pool = Executors.newCachedThreadPool(new ThreadFactory() {
+			private final AtomicInteger counter = new AtomicInteger(1);
+			@Override
+			public Thread newThread(Runnable r) {
+				Thread th = new Thread(r);
+				counter.getAndIncrement();
+				th.setName("Misc&. Thread");
+				return th;
+			}
+		});
 		physics = new Thread(() -> {
 			while (DisplayManager.displayOpen) {
 				
@@ -47,15 +59,16 @@ public class Threading {
 				frameTimeS = delta / 1000000000d;
 				fps = 1000d/frameTimeMs;
 			}
-			System.out.println("Physics thread exiting! ");
+			Logging.logger.info("Physics thread exiting! ");
 			DisplayManager.exited++;
 		});
 		physics.start();
+		physics.setName("Phys&. Thread");
 		DisplayManager.createdThreads++;
 	}
 	
 	public static void cleanup() {
-		System.out.println("Threadpool shutting down! ");
+		Logging.logger.info("Threadpool shutting down! ");
 		pool.shutdown();
 		pool.shutdownNow();
 		pool = null;
@@ -82,12 +95,12 @@ public class Threading {
 	
 	public static boolean isEmpty() {
 		// triple check bullshit lol
-		return mainRuns.size() == 0 && h <= 0;
+		return mainRuns.size() == 0 && counter.get() <= 0;
 	}
 	
 	public static void d() {
 		if (mainRuns.size() == 0) {
-			h--;
+			counter.decrementAndGet();
 		}
 	}
 	
@@ -97,19 +110,19 @@ public class Threading {
 	
 	public static void execute(DualExecution execute) {
 		pool.submit(() -> {
-			h++;
+			counter.incrementAndGet();
 			execute.run();
 			if (mainRuns != null)
 				mainRuns.add(execute.main());
-			h--;
+			counter.decrementAndGet();
 		});
 	}
 	
 	public static void execute(Runnable runnable) {
 		pool.submit(() -> {
-			h++;
+			counter.incrementAndGet();
 			runnable.run();
-			h--;
+			counter.decrementAndGet();
 		});
 	}
 	

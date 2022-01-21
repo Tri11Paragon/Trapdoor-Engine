@@ -21,7 +21,7 @@ public class Material {
 	private String ambientOcclusionTexturePath;
 	private String specularTexturePath;
 	
-	
+	private boolean usingSpecialMaterial = false;
 	private Vector3f colorInformation;
 	
 	private Texture diffuseTexture;
@@ -32,6 +32,12 @@ public class Material {
 	
 	public Material(String diffuseTexture, String normalMapTexture, String displacementTexturePath, String ambientOcclusionTexturePath, String specularTexturePath, Vector3f colorInformation) {
 		this.diffuseTexturePath = diffuseTexture;
+		
+		//if (normalMapTexture == GameRegistry.DEFAULT_EMPTY_NORMAL_MAP)
+		//	normalMapTexture = null;
+		
+		if (normalMapTexture != null || displacementTexturePath != null || ambientOcclusionTexturePath != null)
+			usingSpecialMaterial = true;
 		this.normalTexturePath = normalMapTexture;
 		this.colorInformation = colorInformation;
 		this.displacementTexturePath = displacementTexturePath;
@@ -42,10 +48,12 @@ public class Material {
 	public void loadTexturesFromGameRegistry() {
 		if (!this.diffuseTexturePath.contains("NORENDER"))
 			this.diffuseTexture = GameRegistry.getTexture(this.diffuseTexturePath);
-		this.normalTexture = GameRegistry.getTexture(this.normalTexturePath);
-		this.displacementTexture = GameRegistry.getTexture(this.displacementTexturePath);
-		this.ambientOcclusionTexture = GameRegistry.getTexture(this.ambientOcclusionTexturePath);
-		this.specularTexture = GameRegistry.getTexture(this.specularTexturePath);
+		if (usingSpecialMaterial) {
+			this.normalTexture = GameRegistry.getTexture(this.normalTexturePath);
+			this.displacementTexture = GameRegistry.getTexture(this.displacementTexturePath);
+			this.ambientOcclusionTexture = GameRegistry.getTexture(this.ambientOcclusionTexturePath);
+			this.specularTexture = GameRegistry.getTexture(this.specularTexturePath);
+		}
 	}
 
 	public String getDiffuseTexturePath() {
