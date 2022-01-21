@@ -3,10 +3,10 @@ package com.game.engine.threading;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
@@ -55,23 +55,23 @@ public class GameRegistry {
 	/*
 	 * Data(s) and Lock(s)
 	 */
-	private static final Map<String, TextureData> textureDatas = Collections.synchronizedMap(new HashMap<String, TextureData>());
-	private static final Map<String, Integer> textureLocks = Collections.synchronizedMap(new HashMap<String, Integer>());
-	private static final Map<String, Integer> meshLocks = Collections.synchronizedMap(new HashMap<String, Integer>());
+	private static final Map<String, TextureData> textureDatas = Collections.synchronizedMap(new ConcurrentHashMap<String, TextureData>());
+	private static final Map<String, Integer> textureLocks = Collections.synchronizedMap(new ConcurrentHashMap<String, Integer>());
+	private static final Map<String, Integer> meshLocks = Collections.synchronizedMap(new ConcurrentHashMap<String, Integer>());
 	
 	/*
 	 * important entity related storage
 	 */
-	private static final Map<String, Texture> textures = Collections.synchronizedMap(new HashMap<String, Texture>());
-	private static final Map<String, Material> materials = Collections.synchronizedMap(new HashMap<String, Material>());
+	private static final Map<String, Texture> textures = Collections.synchronizedMap(new ConcurrentHashMap<String, Texture>());
+	private static final Map<String, Material> materials = Collections.synchronizedMap(new ConcurrentHashMap<String, Material>());
 	private static final ArrayList<Material> registeredMaterials = new ArrayList<Material>();
-	private static final Map<String, Model> meshes = Collections.synchronizedMap(new HashMap<String, Model>());
+	private static final Map<String, Model> meshes = Collections.synchronizedMap(new ConcurrentHashMap<String, Model>());
 	
 	/*
 	 * texture atlases
 	 */
-	private static final Map<String, Integer> textureAtlas = Collections.synchronizedMap(new HashMap<String, Integer>());
-	private static final Map<String, Integer> textureInteralAtlas = Collections.synchronizedMap(new HashMap<String, Integer>());
+	private static final Map<String, Integer> textureAtlas = Collections.synchronizedMap(new ConcurrentHashMap<String, Integer>());
+	private static final Map<String, Integer> textureInteralAtlas = Collections.synchronizedMap(new ConcurrentHashMap<String, Integer>());
 	
 	public static void init() {
 		errorTexture = TextureLoader.loadTexture("error/error3.png");
@@ -193,6 +193,7 @@ public class GameRegistry {
 				Logging.logger.debug(rt);
 				
 				GameRegistry.textureDatas.put(fd, TextureLoader.decodeTextureToSize(fd, false, true, 0, 0));
+				
 			} catch (Exception e) {
 				Logging.logger.fatal(e.getMessage(), e);
 				Logging.logger.fatal("Tried to load texture " + file + ", didn't work!");
