@@ -1,8 +1,8 @@
 package com.karl.Engine.textures;
 
-import com.game.engine.TextureLoader;
-import com.game.engine.datatypes.ogl.TextureData;
 import com.karl.Engine.utils.MyFile;
+import com.trapdoor.engine.TextureLoader;
+import com.trapdoor.engine.datatypes.ogl.TextureData;
 
 public class TextureBuilder {
 	

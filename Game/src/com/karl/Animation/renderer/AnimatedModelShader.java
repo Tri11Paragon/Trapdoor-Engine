@@ -3,8 +3,8 @@ package com.karl.Animation.renderer;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-import com.game.engine.shaders.WorldShader;
 import com.karl.Engine.utils.MyFile;
+import com.trapdoor.engine.shaders.WorldShader;
 
 public class AnimatedModelShader extends WorldShader {
 

@@ -1,7 +1,7 @@
 package com.karl.Engine.skybox;
 
-import com.game.engine.shaders.WorldShader;
 import com.karl.Engine.utils.MyFile;
+import com.trapdoor.engine.shaders.WorldShader;
 
 public class SkyboxShader extends WorldShader {
 

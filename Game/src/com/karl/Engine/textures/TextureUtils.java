@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL30;
 
-import com.game.engine.datatypes.ogl.TextureData;
+import com.trapdoor.engine.datatypes.ogl.TextureData;
 
 public class TextureUtils {
 

@@ -3,9 +3,9 @@ package com.karl.Animation.renderer;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 
-import com.game.engine.camera.ICamera;
 import com.karl.Animation.animatedModel.AnimatedModel;
 import com.karl.Engine.utils.OpenGlUtils;
+import com.trapdoor.engine.camera.ICamera;
 
 /**
  * 

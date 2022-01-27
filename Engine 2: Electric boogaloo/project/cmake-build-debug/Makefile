@@ -130,17 +130,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named project
+# Target rules for targets named Trapdoor
 
 # Build rule for target.
-project: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 project
-.PHONY : project
+Trapdoor: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Trapdoor
+.PHONY : Trapdoor
 
 # fast build rule for target.
-project/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/project.dir/build.make CMakeFiles/project.dir/build
-.PHONY : project/fast
+Trapdoor/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Trapdoor.dir/build.make CMakeFiles/Trapdoor.dir/build
+.PHONY : Trapdoor/fast
 
 src/main.o: src/main.cpp.o
 
@@ -148,7 +148,7 @@ src/main.o: src/main.cpp.o
 
 # target to build an object file
 src/main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/project.dir/build.make CMakeFiles/project.dir/src/main.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Trapdoor.dir/build.make CMakeFiles/Trapdoor.dir/src/main.cpp.o
 .PHONY : src/main.cpp.o
 
 src/main.i: src/main.cpp.i
@@ -157,7 +157,7 @@ src/main.i: src/main.cpp.i
 
 # target to preprocess a source file
 src/main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/project.dir/build.make CMakeFiles/project.dir/src/main.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Trapdoor.dir/build.make CMakeFiles/Trapdoor.dir/src/main.cpp.i
 .PHONY : src/main.cpp.i
 
 src/main.s: src/main.cpp.s
@@ -166,7 +166,7 @@ src/main.s: src/main.cpp.s
 
 # target to generate assembly for a file
 src/main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/project.dir/build.make CMakeFiles/project.dir/src/main.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Trapdoor.dir/build.make CMakeFiles/Trapdoor.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
 src/tools/maths.o: src/tools/maths.cpp.o
@@ -175,7 +175,7 @@ src/tools/maths.o: src/tools/maths.cpp.o
 
 # target to build an object file
 src/tools/maths.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/project.dir/build.make CMakeFiles/project.dir/src/tools/maths.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Trapdoor.dir/build.make CMakeFiles/Trapdoor.dir/src/tools/maths.cpp.o
 .PHONY : src/tools/maths.cpp.o
 
 src/tools/maths.i: src/tools/maths.cpp.i
@@ -184,7 +184,7 @@ src/tools/maths.i: src/tools/maths.cpp.i
 
 # target to preprocess a source file
 src/tools/maths.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/project.dir/build.make CMakeFiles/project.dir/src/tools/maths.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Trapdoor.dir/build.make CMakeFiles/Trapdoor.dir/src/tools/maths.cpp.i
 .PHONY : src/tools/maths.cpp.i
 
 src/tools/maths.s: src/tools/maths.cpp.s
@@ -193,7 +193,7 @@ src/tools/maths.s: src/tools/maths.cpp.s
 
 # target to generate assembly for a file
 src/tools/maths.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/project.dir/build.make CMakeFiles/project.dir/src/tools/maths.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Trapdoor.dir/build.make CMakeFiles/Trapdoor.dir/src/tools/maths.cpp.s
 .PHONY : src/tools/maths.cpp.s
 
 # Help Target
@@ -204,7 +204,7 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... project"
+	@echo "... Trapdoor"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

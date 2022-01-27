@@ -2,8 +2,8 @@ package com.karl.Engine.scene;
 
 import org.joml.Vector3f;
 
-import com.game.engine.camera.ICamera;
 import com.karl.Animation.animatedModel.AnimatedModel;
+import com.trapdoor.engine.camera.ICamera;
 
 /**
  * Represents all the stuff in the scene (just the camera, light, and model

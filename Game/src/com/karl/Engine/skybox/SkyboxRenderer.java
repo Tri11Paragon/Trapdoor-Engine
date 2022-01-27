@@ -2,8 +2,8 @@ package com.karl.Engine.skybox;
 
 import org.lwjgl.opengl.GL11;
 
-import com.game.engine.camera.ICamera;
 import com.karl.Engine.openglObjects.Vao;
+import com.trapdoor.engine.camera.ICamera;
 
 public class SkyboxRenderer {
 
