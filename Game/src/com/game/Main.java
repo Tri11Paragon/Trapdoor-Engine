@@ -10,7 +10,8 @@ import java.util.ArrayList;
 import com.game.engine.display.DisplayManager;
 import com.game.engine.display.IDisplay;
 import com.game.engine.display.LoadingScreenDisplay;
-import com.game.engine.threading.Threading;
+import com.game.engine.registry.Threading;
+import com.game.engine.registry.annotations.AnnotationHandler;
 import com.game.engine.tools.CommandLineInput;
 import com.game.engine.tools.Logging;
 import com.game.engine.tools.SettingsLoader;
@@ -80,6 +81,7 @@ public class Main {
 		
 		// create the logger instance
 		Logging.init();
+		AnnotationHandler.init();
 		
 		/**
 		 * Assign system variables

@@ -14,7 +14,7 @@ import org.joml.Vector3f;
 
 import com.game.engine.datatypes.ogl.assimp.Material;
 import com.game.engine.datatypes.ogl.assimp.Model;
-import com.game.engine.threading.GameRegistry;
+import com.game.engine.registry.GameRegistry;
 import com.game.engine.tools.Logging;
 
 /**

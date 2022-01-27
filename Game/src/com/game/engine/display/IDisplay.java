@@ -2,12 +2,19 @@ package com.game.engine.display;
 
 import org.joml.Vector3f;
 
+import com.game.engine.registry.annotations.AnnotatedClass;
+
 /**
  * @author brett
  * @date Oct. 18, 2021
  * 
+ * IDisplay implements annotated class, meaning it can subscribe to any number of events
+ * 
+ * to register your models with the engine you can create a STATIC method
+ * which is annotated with the @RegistrationEventSubscriber
+ * This method will then be called at runtime before the loading screen runs (ie during registration).
  */
-public abstract class IDisplay {
+public abstract class IDisplay implements AnnotatedClass {
 	
 	public IDisplay() {
 		

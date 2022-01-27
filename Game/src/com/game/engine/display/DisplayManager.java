@@ -53,11 +53,12 @@ import org.lwjgl.system.MemoryStack;
 import com.game.engine.ProjectionMatrix;
 import com.game.engine.TextureLoader;
 import com.game.engine.UBOLoader;
+import com.game.engine.registry.GameRegistry;
+import com.game.engine.registry.Threading;
 import com.game.engine.renderer.SyncSave;
+import com.game.engine.renderer.ui.Console;
 import com.game.engine.renderer.ui.DebugInfo;
 import com.game.engine.renderer.ui.UIMaster;
-import com.game.engine.threading.GameRegistry;
-import com.game.engine.threading.Threading;
 import com.game.engine.tools.Logging;
 import com.game.engine.tools.RescaleEvent;
 import com.game.engine.tools.SettingsLoader;
@@ -106,6 +107,7 @@ public class DisplayManager {
 	
 	// debugger nonsense
 	private static DebugInfo debugInfoLayer;
+	private static Console consoleLayer;
 	
 	public static Vector3f getClearColor() {
 		if (currentDisplay != null)
@@ -291,7 +293,10 @@ public class DisplayManager {
 		keeper.getChainWindowCloseCallback().add((window) -> {
 			displayOpen = false;
 		});
+		// TODO: something better than this
 		debugInfoLayer = new DebugInfo();
+		consoleLayer = new Console(debugInfoLayer);
+		debugInfoLayer.setConsole(consoleLayer);
 		InputMaster.registerKeyListener(debugInfoLayer);
 	}
 

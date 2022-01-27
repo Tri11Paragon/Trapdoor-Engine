@@ -4,7 +4,7 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import com.game.engine.datatypes.ogl.Texture;
-import com.game.engine.threading.GameRegistry;
+import com.game.engine.registry.GameRegistry;
 
 /**
  * @author brett

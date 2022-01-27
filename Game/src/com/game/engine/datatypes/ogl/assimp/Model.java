@@ -3,7 +3,7 @@ package com.game.engine.datatypes.ogl.assimp;
 import org.lwjgl.assimp.AIScene;
 
 import com.bulletphysics.collision.shapes.TriangleIndexVertexArray;
-import com.game.engine.threading.GameRegistry;
+import com.game.engine.registry.GameRegistry;
 
 /**
  * @author brett

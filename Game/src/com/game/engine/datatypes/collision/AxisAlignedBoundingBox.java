@@ -1,69 +1,86 @@
-package com.game.engine.datatypes.collision.colliders;
+package com.game.engine.datatypes.collision;
 
 import org.joml.Vector3d;
+
+import com.game.engine.registry.GameRegistry;
+import com.game.engine.tools.Logging;
 
 /**
  * @author brett
  * @date Dec. 15, 2021
  * 
  */
-public class AABB implements ICollider {
+public class AxisAlignedBoundingBox implements ICollider {
 	
 	private boolean useJavaHash = false;
 	private Vector3d centered = new Vector3d();
+	private AxisAlignedBoundingBox store;
 	
-	private final double minXF,minYF,minZF;
-	private final double maxXF,maxYF,maxZF;
 	private double minX,minY,minZ;
 	private double maxX,maxY,maxZ;
 	
-	public AABB(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+	public AxisAlignedBoundingBox() {
+		this.minX = 0;
+		this.minY = 0;
+		this.minZ = 0;
+		this.maxX = 0;
+		this.maxY = 0;
+		this.maxZ = 0;
+	}
+	
+	public AxisAlignedBoundingBox(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
 		this.minX = minX;
 		this.minY = minY;
 		this.minZ = minZ;
 		this.maxX = maxX;
 		this.maxY = maxY;
 		this.maxZ = maxZ;
-		
-		this.minXF = minX;
-		this.minYF = minY;
-		this.minZF = minZ;
-		this.maxXF = maxX;
-		this.maxYF = maxY;
-		this.maxZF = maxZ;
+		this.store = new AxisAlignedBoundingBox();
 	}
 	
-	public AABB(double x, double y, double z, double size) {
+	public AxisAlignedBoundingBox(double x, double y, double z, double size) {
 		this(x, y, z, x+size, y+size, z+size);
-	}
-	
-	public AABB(double x, double y, double z) {
-		this(x, y, z, 1);
 	}
 	
 	/**
 	 * translates based on the x,y,z provided, returning a new object
 	 * @return A hard copy of this AABB
 	 */
-	public AABB translate(double x, double y, double z) {
-    	return new AABB(this.minXF + x, this.minYF + y, this.minZF + z, this.maxXF + x, this.maxYF + y, this.maxZF + z);
+	public AxisAlignedBoundingBox translate(double x, double y, double z) {
+    	return new AxisAlignedBoundingBox(this.minX + x, this.minY + y, this.minZ + z, this.maxX + x, this.maxY + y, this.maxZ + z);
+    }
+	
+	public AxisAlignedBoundingBox translateInteral(double x, double y, double z) {
+		try {
+			this.store.minX = this.minX + x;
+			this.store.minY = this.minY + y;
+			this.store.minZ = this.minZ + z;
+			this.store.maxX = this.maxX + x;
+			this.store.maxY = this.maxY + y;
+			this.store.maxZ = this.maxZ + z;
+		} catch (NullPointerException e) {
+			Logging.logger.error("Incorrect usage of the translate internal function!");
+			Logging.logger.error(e.getMessage(), e);
+			GameRegistry.printErrorMethodCallers();
+		}
+    	return this.store;
     }
 	
 	/**
-	 * translates this AABB object based on an X Y Z.
-	 * @return this AABB
+	 * translates the supplied AABB object based on an X Y Z.
+	 * @return the supplied aabb
 	 */
-	public AABB translateThis(double x, double y, double z) {
-		this.minX = minXF + x;
-		this.minY = minYF + y;
-		this.minZ = minZF + z;
-		this.maxX = maxXF + x;
-		this.maxY = maxYF + y;
-		this.maxZ = maxZF + z;
-		return this;
+	public AxisAlignedBoundingBox translate(AxisAlignedBoundingBox box, double x, double y, double z) {
+		box.minX = this.minX + x;
+		box.minY = this.minY + y;
+		box.minZ = this.minZ + z;
+		box.maxX = this.maxX + x;
+		box.maxY = this.maxY + y;
+		box.maxZ = this.maxZ + z;
+		return box;
 	}
 	
-	public boolean intersects(AABB other) {
+	public boolean intersects(AxisAlignedBoundingBox other) {
         return this.intersects(other.minX, other.minY, other.minZ, other.maxX, other.maxY, other.maxZ);
     }
 
@@ -145,9 +162,9 @@ public class AABB implements ICollider {
 	public boolean equals(Object o) {
 		if (o == this)
 			return true;
-		if (!(o instanceof AABB))
+		if (!(o instanceof AxisAlignedBoundingBox))
 			return false;
-		AABB other = (AABB) o;
+		AxisAlignedBoundingBox other = (AxisAlignedBoundingBox) o;
 		return other.maxX == this.maxX && other.maxY == this.maxY && other.maxZ == this.maxZ 
 				&& other.minX == this.minX && other.minY == this.maxY && other.minZ == this.minZ;
 	}
@@ -186,9 +203,9 @@ public class AABB implements ICollider {
 
 	@Override
 	public boolean intersects(ICollider c) {
-		if (!(c instanceof AABB))
+		if (!(c instanceof AxisAlignedBoundingBox))
 			return false;
-		AABB o = (AABB) c;
+		AxisAlignedBoundingBox o = (AxisAlignedBoundingBox) c;
 		return o.intersects(this);
 	}
 	
