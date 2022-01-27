@@ -55,12 +55,12 @@ import com.game.engine.TextureLoader;
 import com.game.engine.UBOLoader;
 import com.game.engine.registry.GameRegistry;
 import com.game.engine.registry.Threading;
+import com.game.engine.registry.annotations.AnnotationHandler;
 import com.game.engine.renderer.SyncSave;
 import com.game.engine.renderer.ui.Console;
 import com.game.engine.renderer.ui.DebugInfo;
 import com.game.engine.renderer.ui.UIMaster;
 import com.game.engine.tools.Logging;
-import com.game.engine.tools.RescaleEvent;
 import com.game.engine.tools.SettingsLoader;
 import com.game.engine.tools.icon.GLIcon;
 import com.game.engine.tools.input.InputMaster;
@@ -69,7 +69,7 @@ import com.spinyowl.legui.system.context.CallbackKeeper;
 public class DisplayManager {
 
 	public static final String gameVersion = "0.0A";
-	public static final String engineVersion = "0.3.2A";
+	public static final String engineVersion = "0.3.3A";
 	public static final String gameName = "Total Femboy Donamania";
 	public static final String engineName = "Trapdoor";
 	public static final String title = gameName + " - V" + gameVersion + " // " + engineName + " V" + engineVersion;
@@ -98,16 +98,12 @@ public class DisplayManager {
 	private static double lx, ly;
 	public static boolean isMouseGrabbed = false;
 	
-	// classes needing to change when the window resizes
-	public static List<RescaleEvent> rescales = new ArrayList<RescaleEvent>();
-	
 	// display
 	private static IDisplay currentDisplay; 
 	private static List<IDisplay> allDisplays = new ArrayList<IDisplay>();
 	
 	// debugger nonsense
 	private static DebugInfo debugInfoLayer;
-	private static Console consoleLayer;
 	
 	public static Vector3f getClearColor() {
 		if (currentDisplay != null)
@@ -280,8 +276,7 @@ public class DisplayManager {
 			GL11.glViewport(0, 0, x, y);
 			UIMaster.updateScreenSize();
 			ProjectionMatrix.updateProjectionMatrix();
-			for (int i = 0; i < rescales.size(); i++)
-				rescales.get(i).rescale();
+			AnnotationHandler.runRescaleEvent(x, y);
 		});
 		keeper.getChainScrollCallback().add((window, x, y) -> {
 			InputMaster.scrollMoved((int)y);
@@ -293,10 +288,8 @@ public class DisplayManager {
 		keeper.getChainWindowCloseCallback().add((window) -> {
 			displayOpen = false;
 		});
-		// TODO: something better than this
 		debugInfoLayer = new DebugInfo();
-		consoleLayer = new Console(debugInfoLayer);
-		debugInfoLayer.setConsole(consoleLayer);
+		InputMaster.registerKeyListener(new Console());
 		InputMaster.registerKeyListener(debugInfoLayer);
 	}
 

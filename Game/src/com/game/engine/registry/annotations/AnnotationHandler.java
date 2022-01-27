@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.reflections.Reflections;
 
+import com.game.engine.display.DisplayManager;
 import com.game.engine.tools.Logging;
 
 /**
@@ -22,6 +23,8 @@ public class AnnotationHandler {
 	private static final ArrayList<Method> preRegistrationEventSubscribers = new ArrayList<Method>();
 	private static final ArrayList<Method> registrationEventSubscribers = new ArrayList<Method>();
 	private static final ArrayList<Method> postRegistrationEventSubscribers = new ArrayList<Method>();
+	private static final ArrayList<Method> rescaleEventSubscribers = new ArrayList<Method>();
+	private static final ArrayList<Method> clearScreenEventSubscribers = new ArrayList<Method>();
 	
 	public static void init() {
 		Logging.logger.debug("Loading event subscribers");
@@ -41,9 +44,31 @@ public class AnnotationHandler {
 						registrationEventSubscribers.add(m);
 					else if (a instanceof PostRegistrationEventSubscriber)
 						postRegistrationEventSubscribers.add(m);
+					else if (a instanceof RescaleEventSubscriber)
+						rescaleEventSubscribers.add(m);
+					else if (a instanceof ClearScreenEventSubscriber)
+						clearScreenEventSubscribers.add(m);
 				}
 			}
 		});
+	}
+	
+	/**
+	 * Use this to close all open layers which may be intrusive (ie Console, DebugScreen)
+	 */
+	public static void cleanScreen() {
+		Logging.logger.debug("Clearing the screen");
+		for (Method m : preRegistrationEventSubscribers) {
+			invokeMethod(m);
+		}
+	}
+	
+	public static void runRescaleEvent(int width, int height) {
+		Logging.logger.debug("Running rescale events! (" + width + ", " + height + ")");
+		for (Method m : rescaleEventSubscribers) {
+			Logging.logger.trace("Running rescale on class: " + m.getDeclaringClass().getSimpleName() + " Method: " + m.getName());
+			invokeMethod(m, DisplayManager.WIDTH, DisplayManager.HEIGHT);
+		}
 	}
 	
 	public static void runPreRegistration() {
@@ -71,8 +96,12 @@ public class AnnotationHandler {
 	}
 	
 	private static void invokeMethod(Method m) {
+		invokeMethod(m, (Object[]) null);
+	}
+	
+	private static void invokeMethod(Method m, Object... args) {
 		try {
-			m.invoke(null, (Object[]) null);
+			m.invoke(null, args);
 		} catch (IllegalAccessException e) {
 			Logging.logger.fatal(e.getMessage(), e);
 		} catch (IllegalArgumentException e) {

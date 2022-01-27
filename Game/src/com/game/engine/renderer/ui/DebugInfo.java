@@ -8,6 +8,7 @@ import com.game.engine.TextureLoader;
 import com.game.engine.VAOLoader;
 import com.game.engine.display.DisplayManager;
 import com.game.engine.registry.Threading;
+import com.game.engine.registry.annotations.AnnotationHandler;
 import com.game.engine.tools.input.IKeyState;
 import com.game.engine.world.World;
 import com.spinyowl.legui.component.Label;
@@ -39,7 +40,6 @@ public class DebugInfo implements IKeyState {
 	
 	private boolean enabled = false;
 	private StringBuilder builder;
-	private Console console;
 	
 	public DebugInfo() {
 		builder = new StringBuilder();
@@ -193,8 +193,7 @@ public class DebugInfo implements IKeyState {
 	@Override
 	public void onKeyPressed(int keys) {
 		if (keys == GLFW.GLFW_KEY_F3) {
-			if (console.isEnabled())
-				console.setEnabled(false);
+			AnnotationHandler.cleanScreen();
 			enabled = !enabled;
 			layer.setEnabled(enabled);
 			layer.getStyle().setDisplay(enabled == true ? DisplayType.MANUAL : DisplayType.NONE);
@@ -204,10 +203,6 @@ public class DebugInfo implements IKeyState {
 	@Override
 	public void onKeyReleased(int keys) {
 		
-	}
-
-	public void setConsole(Console console) {
-		this.console = console;
 	}
 
 	public boolean isEnabled() {
