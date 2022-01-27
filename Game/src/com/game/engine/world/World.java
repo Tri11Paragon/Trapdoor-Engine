@@ -19,9 +19,9 @@ import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSo
 import com.game.engine.camera.Camera;
 import com.game.engine.datatypes.ogl.assimp.Model;
 import com.game.engine.display.DisplayManager;
+import com.game.engine.registry.Threading;
 import com.game.engine.renderer.DeferredRenderer;
 import com.game.engine.renderer.EntityRenderer;
-import com.game.engine.threading.Threading;
 import com.game.engine.tools.Logging;
 import com.game.engine.world.entities.Entity;
 import com.karl.Engine.skybox.SkyboxRenderer;

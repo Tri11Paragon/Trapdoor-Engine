@@ -19,11 +19,12 @@ import org.lwjgl.assimp.AIVector3D;
 import org.lwjgl.assimp.Assimp;
 
 import com.bulletphysics.collision.shapes.IndexedMesh;
+import com.game.engine.datatypes.collision.AxisAlignedBoundingBox;
 import com.game.engine.datatypes.ogl.assimp.Material;
 import com.game.engine.datatypes.ogl.assimp.Mesh;
 import com.game.engine.datatypes.ogl.assimp.Model;
 import com.game.engine.datatypes.ogl.assimp.ModelNotFoundException;
-import com.game.engine.threading.GameRegistry;
+import com.game.engine.registry.GameRegistry;
 import com.game.engine.tools.Logging;
 import com.game.engine.tools.models.materials.MaterialFSFormater;
 
@@ -183,7 +184,7 @@ public class ModelLoader {
 		ArrayList<Integer> indices = new ArrayList<Integer>();
 	    
 		
-		processVertices(mesh, vertices);
+		AxisAlignedBoundingBox aabb = processVertices(mesh, vertices);
 	    processNormals(mesh, normals);
 	    processTextCoords(mesh, textures);
 	    processIndices(mesh, indices);
@@ -228,17 +229,35 @@ public class ModelLoader {
 	    meshInfo.vertexBase = vertexBuffer;
 	    meshInfo.vertexStride = triangleVertexStride;
 	    
-		return new Mesh(m, toFloatArray(vertices), toFloatArray(textures), toFloatArray(normals), toIntArray(indices), meshInfo);
+		return new Mesh(m, aabb, toFloatArray(vertices), toFloatArray(textures), toFloatArray(normals), toIntArray(indices), meshInfo);
 	}
 	
-	private static void processVertices(AIMesh mesh, ArrayList<Float> vertices) {
+	private static AxisAlignedBoundingBox processVertices(AIMesh mesh, ArrayList<Float> vertices) {
+		float maxX = 0, maxY = 0, maxZ = 0;
+		float minX = 0, minY = 0, minZ = 0;
 	    AIVector3D.Buffer verts = mesh.mVertices();
 	    while (verts.remaining() > 0) {
 	        AIVector3D aiVertex = verts.get();
-	        vertices.add(aiVertex.x());
-	        vertices.add(aiVertex.y());
-	        vertices.add(aiVertex.z());
+	        float x = aiVertex.x(), y = aiVertex.y(), z = aiVertex.z();
+	        
+	        if (maxX < x)
+	        	maxX = x;
+	        if (maxY < y)
+	        	maxY = y;
+	        if (maxZ < z)
+	        	maxZ = z;
+	        if (minX > x)
+	        	minX = x;
+	        if (minY > y)
+	        	minY = y;
+	        if (minZ > z)
+	        	minZ = z;
+	        
+	        vertices.add(x);
+	        vertices.add(y);
+	        vertices.add(z);
 	    }
+	    return new AxisAlignedBoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
 	}
 	
 	private static void processNormals(AIMesh mesh, ArrayList<Float> normals) {

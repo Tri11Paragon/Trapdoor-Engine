@@ -2,9 +2,10 @@ package com.game.engine.display;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.game.engine.registry.GameRegistry;
+import com.game.engine.registry.Threading;
+import com.game.engine.registry.annotations.AnnotationHandler;
 import com.game.engine.renderer.ui.UIMaster;
-import com.game.engine.threading.GameRegistry;
-import com.game.engine.threading.Threading;
 import com.game.engine.tools.Logging;
 import com.game.game.displays.MainMenuDisplay;
 import com.spinyowl.legui.component.Label;
@@ -58,28 +59,9 @@ public class LoadingScreenDisplay extends IDisplay {
 		singlePlayer = new MainMenuDisplay();
 		time = System.currentTimeMillis();
 		
-		GameRegistry.registerTexture("resources/textures/character Texture.png");
+		AnnotationHandler.runPreRegistration();
 		
-		GameRegistry.registerModel("resources/models/depression.dae");
-		GameRegistry.registerModel("resources/models/model.dae");
-		GameRegistry.registerModel("resources/models/test object.dae");
-		GameRegistry.registerModel("resources/models/supercube.dae");
-		GameRegistry.registerModel("resources/models/floor.dae");
-		GameRegistry.registerModel("resources/models/tuber.dae");
-
-		GameRegistry.registerModel("resources/models/poop.dae");
-		GameRegistry.registerModel("resources/models/chess/w_king.dae");
-
-		GameRegistry.registerModel("resources/models/chess/w_king_bt.dae");
-		GameRegistry.registerModel("resources/models/chess/w_king_bt2.dae");
-		GameRegistry.registerModel("resources/models/chess/w_king_bt3.dae");
-
-		GameRegistry.registerModel("resources/models/chess/w_queen.dae");
-		GameRegistry.registerModel("resources/models/chess/w_bishop.dae");
-		GameRegistry.registerModel("resources/models/chess/w_knight.dae");
-		GameRegistry.registerModel("resources/models/chess/w_rook.dae");
-
-		
+		AnnotationHandler.runRegistration();
 		
 		GameRegistry.registerFont("bettergrade", "resources/fonts/bettergrade/BetterGrade-519DV.ttf");
 		
@@ -101,6 +83,9 @@ public class LoadingScreenDisplay extends IDisplay {
 		// make sure we have loaded all assets and the splash screen has existed for some time.
 			if (bar.getValue() >= 98) {
 				Logging.logger.info("Loading finished!");
+				
+				AnnotationHandler.runPostRegistration();
+				
 				DisplayManager.createDisplay(singlePlayer);
 				DisplayManager.changeDisplay(singlePlayer);
 			} else {

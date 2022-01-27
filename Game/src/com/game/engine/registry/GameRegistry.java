@@ -1,4 +1,4 @@
-package com.game.engine.threading;
+package com.game.engine.registry;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -74,6 +74,8 @@ public class GameRegistry {
 	private static final Map<String, Integer> textureInteralAtlas = Collections.synchronizedMap(new ConcurrentHashMap<String, Integer>());
 	
 	public static void init() {
+		Logging.logger.info("GameRegistry Init!");
+		
 		errorTexture = TextureLoader.loadTexture("error/error3.png");
 		defaultNormalTexture = TextureLoader.loadTexture("error/default_normal.png");
 		defaultDisplacementTexture = TextureLoader.loadTexture("error/default_disp.png");
@@ -155,6 +157,9 @@ public class GameRegistry {
 				if (LoadingScreenDisplay.info != null)
 					LoadingScreenDisplay.info.getTextState().setText(rt);
 				Logging.logger.debug(rt);
+				
+				while (GameRegistry.meshes.get(fd) == null)
+					Thread.sleep(0, 500); // sleeps for 500ns
 				
 				Model m = GameRegistry.meshes.get(fd);
 				VAOLoader.loadToVAO(m);

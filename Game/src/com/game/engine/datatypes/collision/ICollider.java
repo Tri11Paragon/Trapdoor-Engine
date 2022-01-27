@@ -1,4 +1,4 @@
-package com.game.engine.datatypes.collision.colliders;
+package com.game.engine.datatypes.collision;
 
 /**
  * @author brett

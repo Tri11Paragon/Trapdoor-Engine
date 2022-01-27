@@ -3,7 +3,8 @@ package com.game.engine.display;
 import com.game.engine.camera.CreativeFirstPerson;
 import com.game.engine.datatypes.lighting.Light;
 import com.game.engine.datatypes.ogl.assimp.Model;
-import com.game.engine.threading.GameRegistry;
+import com.game.engine.registry.GameRegistry;
+import com.game.engine.registry.annotations.RegistrationEventSubscriber;
 import com.game.engine.world.World;
 import com.game.engine.world.entities.Entity;
 import com.game.engine.world.entities.EntityCamera;
@@ -21,6 +22,20 @@ public class TestDisplay extends IDisplay {
 	private CreativeFirstPerson camera;
 	private World world;
 	private Model cubeModel;
+	
+	@RegistrationEventSubscriber
+	public static void register() {
+		GameRegistry.registerTexture("resources/textures/character Texture.png");
+		
+		GameRegistry.registerModel("resources/models/depression.dae");
+		GameRegistry.registerModel("resources/models/model.dae");
+		GameRegistry.registerModel("resources/models/test object.dae");
+		GameRegistry.registerModel("resources/models/supercube.dae");
+		GameRegistry.registerModel("resources/models/floor.dae");
+		GameRegistry.registerModel("resources/models/tuber.dae");
+		
+		GameRegistry.registerModel("resources/models/poop.dae");
+	}
 	
 	@Override
 	public void onCreate() {

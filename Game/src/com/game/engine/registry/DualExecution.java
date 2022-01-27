@@ -1,4 +1,4 @@
-package com.game.engine.threading;
+package com.game.engine.registry;
 
 /**
  * @author brett

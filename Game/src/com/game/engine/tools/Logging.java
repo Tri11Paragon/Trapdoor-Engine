@@ -8,7 +8,7 @@ public class Logging {
 	//static {
 		//ConfigurationFactory.setConfigurationFactory(new CustomConfigFactory());
 	//}
-	public static final Logger logger = LogManager.getRootLogger();;
+	public static final Logger logger = LogManager.getRootLogger();
 	
 	public static void init() {
 		logger.debug("Logger Init Successful");
