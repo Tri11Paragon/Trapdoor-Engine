@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.trapdoor.engine.display.DisplayManager;
 import com.trapdoor.engine.display.IDisplay;
+import com.trapdoor.engine.registry.helpers.DualExecution;
 import com.trapdoor.engine.renderer.SyncSave;
 import com.trapdoor.engine.tools.Logging;
 
@@ -127,6 +128,13 @@ public class Threading {
 			runnable.run();
 			counter.decrementAndGet();
 		});
+	}
+	
+	/**
+	 * @return true if calling thread is the physcis thread.
+	 */
+	public static boolean isThreadLocal() {
+		return Thread.currentThread() == physics;
 	}
 	
 	public static double getFrameTimeMilis() {

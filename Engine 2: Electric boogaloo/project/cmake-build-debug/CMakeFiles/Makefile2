@@ -93,12 +93,12 @@ clean: CMakeFiles/Trapdoor.dir/clean
 CMakeFiles/Trapdoor.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Trapdoor.dir/build.make CMakeFiles/Trapdoor.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Trapdoor.dir/build.make CMakeFiles/Trapdoor.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir="/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/cmake-build-debug/CMakeFiles" --progress-num=1,2,3 "Built target Trapdoor"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir="/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/cmake-build-debug/CMakeFiles" --progress-num=1,2,3,4 "Built target Trapdoor"
 .PHONY : CMakeFiles/Trapdoor.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/Trapdoor.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start "/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/cmake-build-debug/CMakeFiles" 3
+	$(CMAKE_COMMAND) -E cmake_progress_start "/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/cmake-build-debug/CMakeFiles" 4
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/Trapdoor.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start "/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/cmake-build-debug/CMakeFiles" 0
 .PHONY : CMakeFiles/Trapdoor.dir/rule

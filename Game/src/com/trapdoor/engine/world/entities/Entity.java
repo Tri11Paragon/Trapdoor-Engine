@@ -1,8 +1,6 @@
 package com.trapdoor.engine.world.entities;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Quat4f;
@@ -19,7 +17,7 @@ import com.trapdoor.engine.datatypes.lighting.Light;
 import com.trapdoor.engine.datatypes.ogl.assimp.Model;
 import com.trapdoor.engine.tools.math.Maths;
 import com.trapdoor.engine.world.World;
-import com.trapdoor.engine.world.entities.components.Component;
+import com.trapdoor.engine.world.entities.components.IComponent;
 
 /**
  * @author laptop
@@ -38,8 +36,8 @@ public class Entity {
 	private final Vector3f positionStore;
 	
 	// components stuff
-	private ArrayList<Component> entityComponents = new ArrayList<Component>();
-	private HashMap<String, ArrayList<Component>> componentMap = new HashMap<String, ArrayList<Component>>();
+	private ArrayList<IComponent> entityComponents = new ArrayList<IComponent>();
+	
 	// TODO: make sub-entity for entity that has lights, since most don't need light array
 	protected ArrayList<Light> lights = new ArrayList<Light>();
 	// world reference
@@ -194,24 +192,13 @@ public class Entity {
 		return this;
 	}
 	
-	public Entity addComponent(Component c) {
+	public Entity addComponent(IComponent c) {
 		this.entityComponents.add(c);
-		ArrayList<Component> components = this.componentMap.get(c.getType());
-		if (components == null) {
-			components = new ArrayList<Component>();
-			this.componentMap.put(c.getType(), components);
-		}
-		components.add(c);
-		c.componentAddedToEntity(this, world);
 		return this;
 	}
 	
-	public ArrayList<Component> getComponents(){
+	public ArrayList<IComponent> getComponents(){
 		return entityComponents;
-	}
-	
-	public ArrayList<Component> getComponentsByType(String type){
-		return this.componentMap.get(type);
 	}
 	
 	public void setWorld(World w) {

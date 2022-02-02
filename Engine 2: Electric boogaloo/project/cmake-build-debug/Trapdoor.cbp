@@ -5,7 +5,7 @@
 		<Option title="Trapdoor"/>
 		<Option makefile_is_custom="1"/>
 		<Option compiler="gcc"/>
-		<Option virtualFolders="CMake Files\;"/>
+		<Option virtualFolders="CMake Files\;CMake Files\include\;CMake Files\include\config\;"/>
 		<Build>
 			<Target title="all">
 				<Option working_dir="/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/cmake-build-debug"/>
@@ -82,6 +82,15 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/include/config/version.h">
+			<Option target="Trapdoor"/>
+		</Unit>
+		<Unit filename="/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/src/display/DisplayManager.cpp">
+			<Option target="Trapdoor"/>
+		</Unit>
+		<Unit filename="/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/src/display/DisplayManager.h">
+			<Option target="Trapdoor"/>
+		</Unit>
 		<Unit filename="/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/src/main.cpp">
 			<Option target="Trapdoor"/>
 		</Unit>
@@ -93,6 +102,9 @@
 		</Unit>
 		<Unit filename="/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/include/config/config.h.in">
+			<Option virtualFolder="CMake Files\include\config\"/>
 		</Unit>
 	</Project>
 </CodeBlocks_project_file>

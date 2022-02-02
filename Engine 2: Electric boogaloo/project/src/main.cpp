@@ -1,8 +1,19 @@
-#include <iostream>
-#include "tools/maths.h"
 
-int main() {
-    std::cout << "Min of 3, 5: " << min(3, 5) << "\n";
-    std::cout << "Hello, World!" << std::endl;
-    return 0;
+#include <iostream>
+#include "config/version.h"
+#include "display/DisplayManager.h"
+
+int main(){
+
+    std::cout << "Loading " << TRAPDOOR_NAME << " Engine v";
+    printClean();
+
+    createDisplay();
+
+    while (!isCloseRequested()){
+        updateDisplay();
+    }
+
+    closeDisplay();
+
 }

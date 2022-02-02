@@ -1,520 +1,199 @@
-[20:06:12.900] [Render Thread/DEBUG]: (Logging.java:14): Logger Init Successful
-[20:06:12.902] [Render Thread/DEBUG]: (AnnotationHandler.java:29): Loading event subscribers
-[20:06:12.975] [Render Thread/DEBUG]: (SettingsLoader.java:46): Loading settings!
-[20:06:12.990] [Render Thread/INFO ]: (Logging.java:20): ------------------------------
-[20:06:12.990] [Render Thread/INFO ]: (Logging.java:20): LWJGL Version: 3.3.0 build 21!
-[20:06:12.990] [Render Thread/INFO ]: (Logging.java:20): Game Version: 0.0A
-[20:06:12.990] [Render Thread/INFO ]: (Logging.java:20): Engine Version: 0.3.3A
-[20:06:12.991] [Render Thread/INFO ]: (Logging.java:20): ------------------------------
-[20:06:13.296] [Render Thread/INFO ]: (DisplayManager.java:243): Max allowed shader texures: 32
-[20:06:13.297] [Render Thread/INFO ]: (GameRegistry.java:77): GameRegistry Init!
-[20:06:13.361] [Render Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
-[20:06:13.361] [Misc&. Thread/DEBUG]: (GameRegistry.java:198): Loading texture: resources/textures/error/error3.png
-[20:06:13.515] [Render Thread/INFO ]: (Logging.java:20): ----------------------------------------------------------------------------------
-[20:06:13.515] [Render Thread/INFO ]: (Logging.java:20): OS: Linux 5.10.0-9-amd64 amd64
-[20:06:13.515] [Render Thread/INFO ]: (Logging.java:20): Working Directory: /home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Game
-[20:06:13.515] [Render Thread/INFO ]: (Logging.java:20): Number of cores: 16
-[20:06:13.516] [Render Thread/INFO ]: (Logging.java:20): Current Thread: Thread[Render Thread,5,main]
+[15:43:13.538] [Render Thread/DEBUG]: (Logging.java:14): Logger Init Successful
+[15:43:13.540] [Render Thread/DEBUG]: (AnnotationHandler.java:30): Loading event subscribers
+[15:43:13.676] [Render Thread/DEBUG]: (SettingsLoader.java:46): Loading settings!
+[15:43:13.690] [Render Thread/INFO ]: (Logging.java:20): ------------------------------
+[15:43:13.691] [Render Thread/INFO ]: (Logging.java:20): LWJGL Version: 3.3.0 build 21!
+[15:43:13.691] [Render Thread/INFO ]: (Logging.java:20): Game Version: 0.0A
+[15:43:13.691] [Render Thread/INFO ]: (Logging.java:20): Engine Version: 0.3.3A
+[15:43:13.691] [Render Thread/INFO ]: (Logging.java:20): ------------------------------
+[15:43:13.982] [Render Thread/INFO ]: (DisplayManager.java:242): Max allowed shader texures: 32
+[15:43:13.983] [Render Thread/INFO ]: (GameRegistry.java:78): GameRegistry Init!
+[15:43:14.081] [Render Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
+[15:43:14.081] [Misc&. Thread/DEBUG]: (GameRegistry.java:199): Loading texture: resources/textures/error/error3.png
+[15:43:14.280] [Render Thread/INFO ]: (Logging.java:20): ----------------------------------------------------------------------------------
+[15:43:14.280] [Render Thread/INFO ]: (Logging.java:20): OS: Linux 5.10.0-9-amd64 amd64
+[15:43:14.280] [Render Thread/INFO ]: (Logging.java:20): Working Directory: /home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Game
+[15:43:14.281] [Render Thread/INFO ]: (Logging.java:20): Number of cores: 16
+[15:43:14.281] [Render Thread/INFO ]: (Logging.java:20): Current Thread: Thread[Render Thread,5,main]
 
-[20:06:13.516] [Render Thread/INFO ]: (Logging.java:20): ----------------------------------------------------------------------------------
-[20:06:13.517] [Render Thread/DEBUG]: (AnnotationHandler.java:62): Running pre-registration
-[20:06:13.517] [Render Thread/DEBUG]: (AnnotationHandler.java:70): Running registration
-[20:06:13.517] [Render Thread/TRACE]: (AnnotationHandler.java:72): Running registration on class: SinglePlayerDisplay Method: register
-[20:06:13.518] [Misc&. Thread/DEBUG]: (GameRegistry.java:145): Loading model: resources/models/poop.dae
-[20:06:13.518] [Misc&. Thread/DEBUG]: (GameRegistry.java:145): Loading model: resources/models/chess/w_king.dae
-[20:06:13.518] [Misc&. Thread/DEBUG]: (GameRegistry.java:145): Loading model: resources/models/chess/w_king_bt.dae
-[20:06:13.519] [Misc&. Thread/DEBUG]: (GameRegistry.java:145): Loading model: resources/models/chess/w_king_bt2.dae
-[20:06:13.519] [Misc&. Thread/DEBUG]: (GameRegistry.java:145): Loading model: resources/models/chess/w_queen.dae
-[20:06:13.519] [Misc&. Thread/DEBUG]: (GameRegistry.java:145): Loading model: resources/models/chess/w_king_bt3.dae
-[20:06:13.520] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
-[20:06:13.520] [Misc&. Thread/DEBUG]: (GameRegistry.java:145): Loading model: resources/models/chess/w_bishop.dae
-[20:06:13.521] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
-[20:06:13.521] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
-[20:06:13.521] [Render Thread/TRACE]: (AnnotationHandler.java:72): Running registration on class: TestDisplay Method: register
-[20:06:13.521] [Misc&. Thread/DEBUG]: (GameRegistry.java:198): Loading texture: resources/textures/w_king.png
-[20:06:13.521] [Misc&. Thread/DEBUG]: (GameRegistry.java:145): Loading model: resources/models/chess/w_knight.dae
-[20:06:13.521] [Misc&. Thread/DEBUG]: (GameRegistry.java:198): Loading texture: resources/textures/poop.png
-[20:06:13.521] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
-[20:06:13.521] [Misc&. Thread/DEBUG]: (GameRegistry.java:145): Loading model: resources/models/chess/w_rook.dae
-[20:06:13.521] [Misc&. Thread/DEBUG]: (GameRegistry.java:198): Loading texture: resources/textures/character Texture.png
-[20:06:13.522] [Misc&. Thread/DEBUG]: (GameRegistry.java:145): Loading model: resources/models/model.dae
-[20:06:13.522] [Misc&. Thread/DEBUG]: (GameRegistry.java:145): Loading model: resources/models/depression.dae
-[20:06:13.523] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
-[20:06:13.523] [Misc&. Thread/DEBUG]: (GameRegistry.java:198): Loading texture: resources/textures/depression.png
-[20:06:13.526] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
-[20:06:13.526] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
-[20:06:13.526] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
-[20:06:13.526] [Misc&. Thread/DEBUG]: (GameRegistry.java:145): Loading model: resources/models/floor.dae
-[20:06:13.526] [Misc&. Thread/DEBUG]: (GameRegistry.java:198): Loading texture: resources/textures/w_queen.png
-[20:06:13.527] [Misc&. Thread/DEBUG]: (GameRegistry.java:145): Loading model: resources/models/supercube.dae
-[20:06:13.528] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
-[20:06:13.526] [Misc&. Thread/DEBUG]: (GameRegistry.java:145): Loading model: resources/models/tuber.dae
-[20:06:13.528] [Misc&. Thread/DEBUG]: (GameRegistry.java:198): Loading texture: resources/textures/512.png
-[20:06:13.526] [Misc&. Thread/DEBUG]: (GameRegistry.java:145): Loading model: resources/models/test object.dae
-[20:06:13.528] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
-[20:06:13.529] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_nor_1k.png
-[20:06:13.529] [Misc&. Thread/DEBUG]: (GameRegistry.java:198): Loading texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_diff_1k.png
-[20:06:13.530] [Misc&. Thread/DEBUG]: (GameRegistry.java:198): Loading texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_nor_1k.png
-[20:06:13.533] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
-[20:06:13.533] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_disp_1k.png
-[20:06:13.534] [Misc&. Thread/DEBUG]: (GameRegistry.java:198): Loading texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_disp_1k.png
-[20:06:13.536] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
-[20:06:13.536] [Misc&. Thread/DEBUG]: (GameRegistry.java:198): Loading texture: resources/textures/w_knight.png
-[20:06:13.538] [Misc&. Thread/DEBUG]: (GameRegistry.java:198): Loading texture: resources/textures/w_bishop.png
-[20:06:13.533] [Misc&. Thread/DEBUG]: (GameRegistry.java:198): Loading texture: resources/textures/w_rook.png
-[20:06:13.540] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_AO_1k.png
-[20:06:13.540] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_ao_1k.png
-[20:06:13.552] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_spec_1k.png
-[20:06:13.552] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_specular_1k.png
-[20:06:13.552] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_specMap_1k.png
-[20:06:13.552] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_specmap_1k.png
-[20:06:13.547] [Misc&. Thread/DEBUG]: (GameRegistry.java:198): Loading texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_ao_1k.png
-[20:06:13.553] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
-[20:06:13.553] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_nor_1k.png
-[20:06:13.557] [Misc&. Thread/DEBUG]: (GameRegistry.java:198): Loading texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_diff_1k.png
-[20:06:13.557] [Misc&. Thread/DEBUG]: (GameRegistry.java:198): Loading texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_nor_1k.png
-[20:06:13.557] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_disp_1k.png
-[20:06:13.557] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_AO_1k.png
-[20:06:13.558] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_spec_1k.png
-[20:06:13.558] [Misc&. Thread/DEBUG]: (GameRegistry.java:198): Loading texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_disp_1k.png
-[20:06:13.559] [Misc&. Thread/DEBUG]: (GameRegistry.java:198): Loading texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_AO_1k.png
-[20:06:13.561] [Misc&. Thread/DEBUG]: (GameRegistry.java:198): Loading texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_spec_1k.png
-[20:06:13.561] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_nor_1k.png
-[20:06:13.561] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_disp_1k.png
-[20:06:13.562] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_AO_1k.png
-[20:06:13.562] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_spec_1k.png
-[20:06:13.562] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_nor_1k.png
-[20:06:13.562] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_disp_1k.png
-[20:06:13.562] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_AO_1k.png
-[20:06:13.563] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_spec_1k.png
-[20:06:13.563] [Misc&. Thread/DEBUG]: (GameRegistry.java:198): Loading texture: resources/textures/atlas/Other SIZE_512/1540139171163.jpg
-[20:06:13.566] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/error/error3.png
-[20:06:13.567] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/w_king.png
-[20:06:13.567] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/w_king.png
-[20:06:13.568] [Render Thread/DEBUG]: (GameRegistry.java:159): Loaded model: resources/models/poop.dae
-[20:06:13.568] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/w_king.png
-[20:06:13.568] [Render Thread/DEBUG]: (GameRegistry.java:159): Loaded model: resources/models/depression.dae
-[20:06:13.568] [Render Thread/DEBUG]: (GameRegistry.java:159): Loaded model: resources/models/poop.dae
-[20:06:13.569] [Render Thread/DEBUG]: (GameRegistry.java:159): Loaded model: resources/models/chess/w_king_bt2.dae
-[20:06:13.569] [Render Thread/DEBUG]: (GameRegistry.java:159): Loaded model: resources/models/chess/w_king_bt3.dae
-[20:06:13.569] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/w_king.png
-[20:06:13.569] [Render Thread/DEBUG]: (GameRegistry.java:159): Loaded model: resources/models/supercube.dae
-[20:06:13.570] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/character Texture.png
-[20:06:13.563] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
-[20:06:13.572] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
-[20:06:13.572] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
-[20:06:13.573] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
-[20:06:13.573] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
-[20:06:13.573] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
-[20:06:13.573] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_nor_1k.png
-[20:06:13.573] [Misc&. Thread/DEBUG]: (GameRegistry.java:198): Loading texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_diff_1k.png
-[20:06:13.573] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_disp_1k.png
-[20:06:13.574] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_AO_1k.png
-[20:06:13.574] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_ao_1k.png
-[20:06:13.574] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_spec_1k.png
-[20:06:13.574] [Misc&. Thread/DEBUG]: (GameRegistry.java:198): Loading texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_disp_1k.png
-[20:06:13.574] [Misc&. Thread/DEBUG]: (GameRegistry.java:198): Loading texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_spec_1k.png
-[20:06:13.575] [Misc&. Thread/DEBUG]: (GameRegistry.java:198): Loading texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_ao_1k.png
-[20:06:13.575] [Misc&. Thread/DEBUG]: (GameRegistry.java:198): Loading texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_nor_1k.png
-[20:06:13.574] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
-[20:06:13.575] [Misc&. Thread/DEBUG]: (GameRegistry.java:198): Loading texture: resources/textures/atlas/Other SIZE_512/1531692584494.jpg
-[20:06:13.577] [Misc&. Thread/DEBUG]: (GameRegistry.java:198): Loading texture: resources/textures/atlas/Other SIZE_512/1539212443187.png
-[20:06:13.578] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
-[20:06:13.581] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
-[20:06:13.586] [Misc&. Thread/DEBUG]: (GameRegistry.java:198): Loading texture: resources/textures/atlas/Other SIZE_512/1540146676067.png
-[20:06:13.746] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_nor_1k.png
-[20:06:13.746] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_disp_1k.png
-[20:06:13.746] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_AO_1k.png
-[20:06:13.746] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_ao_1k.png
-[20:06:13.747] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_spec_1k.png
-[20:06:13.747] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_specular_1k.png
-[20:06:13.747] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_specMap_1k.png
-[20:06:13.747] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_specmap_1k.png
-[20:06:13.747] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/brick_4_1k_png/brick_4_nor_1k.png
-[20:06:13.747] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/brick_4_1k_png/brick_4_disp_1k.png
-[20:06:13.747] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/brick_4_1k_png/brick_4_AO_1k.png
-[20:06:13.748] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/brick_4_1k_png/brick_4_spec_1k.png
-[20:06:13.753] [Misc&. Thread/DEBUG]: (GameRegistry.java:198): Loading texture: resources/textures/materials/brick_4_1k_png/brick_4_AO_1k.png
-[20:06:13.753] [Misc&. Thread/DEBUG]: (GameRegistry.java:198): Loading texture: resources/textures/materials/brick_4_1k_png/brick_4_spec_1k.png
-[20:06:13.753] [Misc&. Thread/DEBUG]: (GameRegistry.java:198): Loading texture: resources/textures/materials/brick_4_1k_png/brick_4_disp_1k.png
-[20:06:13.760] [Misc&. Thread/DEBUG]: (GameRegistry.java:198): Loading texture: resources/textures/materials/brick_4_1k_png/brick_4_nor_1k.png
-[20:06:13.761] [Misc&. Thread/DEBUG]: (GameRegistry.java:198): Loading texture: resources/textures/materials/brick_4_1k_png/brick_4_diff_1k.png
-[20:06:13.869] [Render Thread/DEBUG]: (GameRegistry.java:159): Loaded model: resources/models/chess/w_king.dae
-[20:06:13.869] [Render Thread/DEBUG]: (GameRegistry.java:159): Loaded model: resources/models/chess/w_rook.dae
-[20:06:13.869] [Render Thread/DEBUG]: (GameRegistry.java:159): Loaded model: resources/models/chess/w_king_bt.dae
-[20:06:13.870] [Render Thread/DEBUG]: (GameRegistry.java:159): Loaded model: resources/models/chess/w_queen.dae
-[20:06:13.870] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/w_queen.png
-[20:06:13.871] [Render Thread/DEBUG]: (GameRegistry.java:159): Loaded model: resources/models/chess/w_knight.dae
-[20:06:13.871] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/depression.png
-[20:06:13.871] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/512.png
-[20:06:13.871] [Render Thread/DEBUG]: (GameRegistry.java:159): Loaded model: resources/models/chess/w_bishop.dae
-[20:06:13.872] [Render Thread/DEBUG]: (GameRegistry.java:159): Loaded model: resources/models/test object.dae
-[20:06:13.872] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/w_rook.png
-[20:06:13.872] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/w_knight.png
-[20:06:13.872] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/512.png
-[20:06:13.874] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/w_bishop.png
-[20:06:13.874] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_diff_1k.png
-[20:06:13.875] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_disp_1k.png
-[20:06:13.876] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_AO_1k.png
-[20:06:13.880] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_spec_1k.png
-[20:06:13.881] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_diff_1k.png
-[20:06:13.883] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_nor_1k.png
-[20:06:13.884] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_disp_1k.png
-[20:06:13.885] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_AO_1k.png
-[20:06:13.886] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_spec_1k.png
-[20:06:13.887] [Render Thread/DEBUG]: (GameRegistry.java:159): Loaded model: resources/models/model.dae
-[20:06:13.887] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_nor_1k.png
-[20:06:13.888] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/poop.png
-[20:06:13.889] [Render Thread/DEBUG]: (GameRegistry.java:159): Loaded model: resources/models/tuber.dae
-[20:06:13.890] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/atlas/Other SIZE_512/1531692584494.jpg
-[20:06:13.891] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/atlas/Other SIZE_512/1540146676067.png
-[20:06:13.891] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_AO_1k.png
-[20:06:13.892] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_spec_1k.png
-[20:06:13.893] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/atlas/Other SIZE_512/1539212443187.png
-[20:06:13.895] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_disp_1k.png
-[20:06:13.896] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_spec_1k.png
-[20:06:13.896] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_disp_1k.png
-[20:06:13.897] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_ao_1k.png
-[20:06:13.899] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_nor_1k.png
-[20:06:13.900] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_disp_1k.png
-[20:06:13.900] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_nor_1k.png
-[20:06:13.901] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_ao_1k.png
-[20:06:13.902] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_diff_1k.png
-[20:06:13.903] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_ao_1k.png
-[20:06:13.904] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_nor_1k.png
-[20:06:13.905] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_diff_1k.png
-[20:06:13.906] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_disp_1k.png
-[20:06:13.907] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_diff_1k.png
-[20:06:13.908] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/materials/brick_4_1k_png/brick_4_AO_1k.png
-[20:06:13.909] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/materials/brick_4_1k_png/brick_4_disp_1k.png
-[20:06:13.910] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/materials/brick_4_1k_png/brick_4_spec_1k.png
-[20:06:13.911] [Render Thread/DEBUG]: (GameRegistry.java:159): Loaded model: resources/models/floor.dae
-[20:06:13.914] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/character Texture.png
-[20:06:13.916] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_nor_1k.png
-[20:06:13.918] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/materials/brick_4_1k_png/brick_4_diff_1k.png
-[20:06:13.923] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_diff_1k.png
-[20:06:13.924] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/materials/brick_4_1k_png/brick_4_nor_1k.png
-[20:06:13.926] [Render Thread/DEBUG]: (GameRegistry.java:215): Loaded texture: resources/textures/atlas/Other SIZE_512/1540139171163.jpg
-[20:06:14.032] [Render Thread/INFO ]: (LoadingScreenDisplay.java:85): Loading finished!
-[20:06:14.032] [Render Thread/DEBUG]: (AnnotationHandler.java:78): Running post-registration
-[20:06:17.354] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (1272, 720)
-[20:06:17.354] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:17.354] [Render Thread/DEBUG]: (Console.java:36): 1272 : 720
-[20:06:17.363] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (1258, 720)
-[20:06:17.363] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:17.363] [Render Thread/DEBUG]: (Console.java:36): 1258 : 720
-[20:06:17.397] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (1240, 720)
-[20:06:17.397] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:17.397] [Render Thread/DEBUG]: (Console.java:36): 1240 : 720
-[20:06:17.453] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (1222, 720)
-[20:06:17.453] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:17.454] [Render Thread/DEBUG]: (Console.java:36): 1222 : 720
-[20:06:17.488] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (1198, 720)
-[20:06:17.488] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:17.488] [Render Thread/DEBUG]: (Console.java:36): 1198 : 720
-[20:06:17.520] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (1177, 720)
-[20:06:17.520] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:17.520] [Render Thread/DEBUG]: (Console.java:36): 1177 : 720
-[20:06:17.553] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (1157, 720)
-[20:06:17.553] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:17.553] [Render Thread/DEBUG]: (Console.java:36): 1157 : 720
-[20:06:17.586] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (1139, 720)
-[20:06:17.587] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:17.587] [Render Thread/DEBUG]: (Console.java:36): 1139 : 720
-[20:06:17.629] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (1121, 720)
-[20:06:17.629] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:17.629] [Render Thread/DEBUG]: (Console.java:36): 1121 : 720
-[20:06:17.653] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (1095, 720)
-[20:06:17.653] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:17.653] [Render Thread/DEBUG]: (Console.java:36): 1095 : 720
-[20:06:17.687] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (1076, 720)
-[20:06:17.687] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:17.688] [Render Thread/DEBUG]: (Console.java:36): 1076 : 720
-[20:06:17.721] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (1063, 720)
-[20:06:17.721] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:17.721] [Render Thread/DEBUG]: (Console.java:36): 1063 : 720
-[20:06:17.755] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (1049, 720)
-[20:06:17.755] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:17.755] [Render Thread/DEBUG]: (Console.java:36): 1049 : 720
-[20:06:17.790] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (1034, 720)
-[20:06:17.790] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:17.790] [Render Thread/DEBUG]: (Console.java:36): 1034 : 720
-[20:06:17.819] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (1021, 720)
-[20:06:17.820] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:17.820] [Render Thread/DEBUG]: (Console.java:36): 1021 : 720
-[20:06:17.868] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (1013, 720)
-[20:06:17.869] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:17.869] [Render Thread/DEBUG]: (Console.java:36): 1013 : 720
-[20:06:17.886] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (1007, 720)
-[20:06:17.886] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:17.886] [Render Thread/DEBUG]: (Console.java:36): 1007 : 720
-[20:06:17.919] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (1001, 720)
-[20:06:17.920] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:17.920] [Render Thread/DEBUG]: (Console.java:36): 1001 : 720
-[20:06:17.953] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (994, 720)
-[20:06:17.954] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:17.954] [Render Thread/DEBUG]: (Console.java:36): 994 : 720
-[20:06:17.987] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (990, 720)
-[20:06:17.987] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:17.987] [Render Thread/DEBUG]: (Console.java:36): 990 : 720
-[20:06:18.029] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (988, 720)
-[20:06:18.029] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:18.029] [Render Thread/DEBUG]: (Console.java:36): 988 : 720
-[20:06:18.063] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (984, 720)
-[20:06:18.063] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:18.063] [Render Thread/DEBUG]: (Console.java:36): 984 : 720
-[20:06:18.086] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (977, 720)
-[20:06:18.086] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:18.086] [Render Thread/DEBUG]: (Console.java:36): 977 : 720
-[20:06:18.129] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (972, 720)
-[20:06:18.129] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:18.129] [Render Thread/DEBUG]: (Console.java:36): 972 : 720
-[20:06:18.162] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (970, 720)
-[20:06:18.163] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:18.163] [Render Thread/DEBUG]: (Console.java:36): 970 : 720
-[20:06:18.194] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (966, 720)
-[20:06:18.194] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:18.194] [Render Thread/DEBUG]: (Console.java:36): 966 : 720
-[20:06:18.252] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (963, 720)
-[20:06:18.252] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:18.252] [Render Thread/DEBUG]: (Console.java:36): 963 : 720
-[20:06:21.023] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (962, 720)
-[20:06:21.023] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:21.023] [Render Thread/DEBUG]: (Console.java:36): 962 : 720
-[20:06:21.056] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (946, 720)
-[20:06:21.056] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:21.056] [Render Thread/DEBUG]: (Console.java:36): 946 : 720
-[20:06:21.089] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (925, 720)
-[20:06:21.090] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:21.090] [Render Thread/DEBUG]: (Console.java:36): 925 : 720
-[20:06:21.124] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (907, 720)
-[20:06:21.125] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:21.125] [Render Thread/DEBUG]: (Console.java:36): 907 : 720
-[20:06:21.153] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (889, 720)
-[20:06:21.153] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:21.153] [Render Thread/DEBUG]: (Console.java:36): 889 : 720
-[20:06:21.186] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (863, 720)
-[20:06:21.186] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:21.186] [Render Thread/DEBUG]: (Console.java:36): 863 : 720
-[20:06:21.220] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (834, 720)
-[20:06:21.220] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:21.220] [Render Thread/DEBUG]: (Console.java:36): 834 : 720
-[20:06:21.253] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (807, 720)
-[20:06:21.253] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:21.253] [Render Thread/DEBUG]: (Console.java:36): 807 : 720
-[20:06:21.291] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (776, 720)
-[20:06:21.291] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:21.291] [Render Thread/DEBUG]: (Console.java:36): 776 : 720
-[20:06:21.324] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (747, 720)
-[20:06:21.324] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:21.325] [Render Thread/DEBUG]: (Console.java:36): 747 : 720
-[20:06:21.358] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (719, 720)
-[20:06:21.358] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:21.358] [Render Thread/DEBUG]: (Console.java:36): 719 : 720
-[20:06:21.389] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (687, 720)
-[20:06:21.389] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:21.389] [Render Thread/DEBUG]: (Console.java:36): 687 : 720
-[20:06:21.420] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (644, 720)
-[20:06:21.421] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:21.421] [Render Thread/DEBUG]: (Console.java:36): 644 : 720
-[20:06:21.503] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (608, 720)
-[20:06:21.504] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:21.504] [Render Thread/DEBUG]: (Console.java:36): 608 : 720
-[20:06:21.519] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (541, 720)
-[20:06:21.519] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:21.519] [Render Thread/DEBUG]: (Console.java:36): 541 : 720
-[20:06:21.553] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (520, 720)
-[20:06:21.553] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:21.553] [Render Thread/DEBUG]: (Console.java:36): 520 : 720
-[20:06:21.585] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (510, 720)
-[20:06:21.585] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:21.585] [Render Thread/DEBUG]: (Console.java:36): 510 : 720
-[20:06:21.619] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (503, 720)
-[20:06:21.619] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:21.619] [Render Thread/DEBUG]: (Console.java:36): 503 : 720
-[20:06:21.652] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (496, 720)
-[20:06:21.652] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:21.652] [Render Thread/DEBUG]: (Console.java:36): 496 : 720
-[20:06:21.695] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (489, 720)
-[20:06:21.695] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:21.695] [Render Thread/DEBUG]: (Console.java:36): 489 : 720
-[20:06:21.719] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (483, 720)
-[20:06:21.719] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:21.719] [Render Thread/DEBUG]: (Console.java:36): 483 : 720
-[20:06:21.752] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (477, 720)
-[20:06:21.752] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:21.752] [Render Thread/DEBUG]: (Console.java:36): 477 : 720
-[20:06:21.786] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (468, 720)
-[20:06:21.786] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:21.786] [Render Thread/DEBUG]: (Console.java:36): 468 : 720
-[20:06:21.822] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (456, 720)
-[20:06:21.822] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:21.822] [Render Thread/DEBUG]: (Console.java:36): 456 : 720
-[20:06:22.406] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (449, 720)
-[20:06:22.406] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:22.406] [Render Thread/DEBUG]: (Console.java:36): 449 : 720
-[20:06:22.541] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (443, 720)
-[20:06:22.541] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:22.541] [Render Thread/DEBUG]: (Console.java:36): 443 : 720
-[20:06:22.631] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (432, 720)
-[20:06:22.631] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:22.631] [Render Thread/DEBUG]: (Console.java:36): 432 : 720
-[20:06:22.712] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (423, 720)
-[20:06:22.712] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:22.712] [Render Thread/DEBUG]: (Console.java:36): 423 : 720
-[20:06:22.847] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (422, 720)
-[20:06:22.847] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:22.847] [Render Thread/DEBUG]: (Console.java:36): 422 : 720
-[20:06:22.925] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (418, 720)
-[20:06:22.925] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:22.925] [Render Thread/DEBUG]: (Console.java:36): 418 : 720
-[20:06:23.020] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (410, 720)
-[20:06:23.021] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:23.021] [Render Thread/DEBUG]: (Console.java:36): 410 : 720
-[20:06:23.109] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (401, 720)
-[20:06:23.109] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:23.109] [Render Thread/DEBUG]: (Console.java:36): 401 : 720
-[20:06:23.161] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (393, 720)
-[20:06:23.162] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:23.162] [Render Thread/DEBUG]: (Console.java:36): 393 : 720
-[20:06:23.222] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (384, 720)
-[20:06:23.222] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:23.222] [Render Thread/DEBUG]: (Console.java:36): 384 : 720
-[20:06:23.313] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (370, 720)
-[20:06:23.314] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:23.314] [Render Thread/DEBUG]: (Console.java:36): 370 : 720
-[20:06:23.389] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (356, 720)
-[20:06:23.389] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:23.389] [Render Thread/DEBUG]: (Console.java:36): 356 : 720
-[20:06:23.450] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (351, 720)
-[20:06:23.450] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:23.450] [Render Thread/DEBUG]: (Console.java:36): 351 : 720
-[20:06:23.535] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (352, 720)
-[20:06:23.536] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:23.536] [Render Thread/DEBUG]: (Console.java:36): 352 : 720
-[20:06:23.611] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (353, 720)
-[20:06:23.611] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:23.611] [Render Thread/DEBUG]: (Console.java:36): 353 : 720
-[20:06:23.673] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (357, 720)
-[20:06:23.673] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:23.673] [Render Thread/DEBUG]: (Console.java:36): 357 : 720
-[20:06:23.795] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (370, 720)
-[20:06:23.795] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:23.795] [Render Thread/DEBUG]: (Console.java:36): 370 : 720
-[20:06:25.456] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (393, 720)
-[20:06:25.456] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:25.456] [Render Thread/DEBUG]: (Console.java:36): 393 : 720
-[20:06:25.461] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (439, 720)
-[20:06:25.461] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:25.461] [Render Thread/DEBUG]: (Console.java:36): 439 : 720
-[20:06:25.466] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (494, 720)
-[20:06:25.466] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:25.466] [Render Thread/DEBUG]: (Console.java:36): 494 : 720
-[20:06:25.471] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (556, 720)
-[20:06:25.471] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:25.472] [Render Thread/DEBUG]: (Console.java:36): 556 : 720
-[20:06:25.477] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (596, 720)
-[20:06:25.478] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:25.478] [Render Thread/DEBUG]: (Console.java:36): 596 : 720
-[20:06:25.483] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (632, 720)
-[20:06:25.483] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:25.483] [Render Thread/DEBUG]: (Console.java:36): 632 : 720
-[20:06:25.488] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (656, 720)
-[20:06:25.488] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:25.488] [Render Thread/DEBUG]: (Console.java:36): 656 : 720
-[20:06:25.495] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (681, 720)
-[20:06:25.495] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:25.495] [Render Thread/DEBUG]: (Console.java:36): 681 : 720
-[20:06:25.501] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (707, 720)
-[20:06:25.502] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:25.502] [Render Thread/DEBUG]: (Console.java:36): 707 : 720
-[20:06:25.507] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (730, 720)
-[20:06:25.507] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:25.507] [Render Thread/DEBUG]: (Console.java:36): 730 : 720
-[20:06:25.513] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (747, 720)
-[20:06:25.513] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:25.513] [Render Thread/DEBUG]: (Console.java:36): 747 : 720
-[20:06:25.518] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (770, 720)
-[20:06:25.518] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:25.518] [Render Thread/DEBUG]: (Console.java:36): 770 : 720
-[20:06:25.523] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (805, 720)
-[20:06:25.523] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:25.523] [Render Thread/DEBUG]: (Console.java:36): 805 : 720
-[20:06:25.529] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (840, 720)
-[20:06:25.529] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:25.529] [Render Thread/DEBUG]: (Console.java:36): 840 : 720
-[20:06:25.534] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (863, 720)
-[20:06:25.534] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:25.535] [Render Thread/DEBUG]: (Console.java:36): 863 : 720
-[20:06:25.540] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (884, 720)
-[20:06:25.540] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:25.540] [Render Thread/DEBUG]: (Console.java:36): 884 : 720
-[20:06:25.546] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (907, 720)
-[20:06:25.546] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:25.546] [Render Thread/DEBUG]: (Console.java:36): 907 : 720
-[20:06:25.551] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (931, 720)
-[20:06:25.551] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:25.551] [Render Thread/DEBUG]: (Console.java:36): 931 : 720
-[20:06:25.557] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (953, 720)
-[20:06:25.557] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:25.557] [Render Thread/DEBUG]: (Console.java:36): 953 : 720
-[20:06:25.563] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (969, 720)
-[20:06:25.563] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:25.563] [Render Thread/DEBUG]: (Console.java:36): 969 : 720
-[20:06:25.568] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (985, 720)
-[20:06:25.568] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:25.568] [Render Thread/DEBUG]: (Console.java:36): 985 : 720
-[20:06:25.574] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (999, 720)
-[20:06:25.574] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:25.574] [Render Thread/DEBUG]: (Console.java:36): 999 : 720
-[20:06:25.580] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (1012, 720)
-[20:06:25.580] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:25.580] [Render Thread/DEBUG]: (Console.java:36): 1012 : 720
-[20:06:25.587] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (1025, 720)
-[20:06:25.587] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:25.587] [Render Thread/DEBUG]: (Console.java:36): 1025 : 720
-[20:06:25.595] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (1033, 720)
-[20:06:25.595] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:25.595] [Render Thread/DEBUG]: (Console.java:36): 1033 : 720
-[20:06:25.601] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (1039, 720)
-[20:06:25.601] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:25.601] [Render Thread/DEBUG]: (Console.java:36): 1039 : 720
-[20:06:27.454] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (1047, 720)
-[20:06:27.454] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:27.454] [Render Thread/DEBUG]: (Console.java:36): 1047 : 720
-[20:06:27.486] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (1092, 720)
-[20:06:27.486] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:27.486] [Render Thread/DEBUG]: (Console.java:36): 1092 : 720
-[20:06:27.503] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (1169, 720)
-[20:06:27.503] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:27.503] [Render Thread/DEBUG]: (Console.java:36): 1169 : 720
-[20:06:27.536] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (1243, 720)
-[20:06:27.536] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:27.536] [Render Thread/DEBUG]: (Console.java:36): 1243 : 720
-[20:06:27.572] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (1306, 720)
-[20:06:27.572] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:27.572] [Render Thread/DEBUG]: (Console.java:36): 1306 : 720
-[20:06:27.604] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (1348, 720)
-[20:06:27.605] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:27.605] [Render Thread/DEBUG]: (Console.java:36): 1348 : 720
-[20:06:27.637] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (1366, 720)
-[20:06:27.637] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:27.637] [Render Thread/DEBUG]: (Console.java:36): 1366 : 720
-[20:06:27.671] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (1376, 720)
-[20:06:27.671] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:27.671] [Render Thread/DEBUG]: (Console.java:36): 1376 : 720
-[20:06:27.703] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (1384, 720)
-[20:06:27.703] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:27.703] [Render Thread/DEBUG]: (Console.java:36): 1384 : 720
-[20:06:28.606] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (1920, 1020)
-[20:06:28.606] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:28.606] [Render Thread/DEBUG]: (Console.java:36): 1920 : 1020
-[20:06:43.498] [Render Thread/DEBUG]: (AnnotationHandler.java:54): Running rescale events! (1384, 720)
-[20:06:43.498] [Render Thread/TRACE]: (AnnotationHandler.java:56): Running rescale on class: Console Method: rescale
-[20:06:43.498] [Render Thread/DEBUG]: (Console.java:36): 1384 : 720
-[20:06:44.603] [Phys&. Thread/INFO ]: (Threading.java:62): Physics thread exiting! 
-[20:06:44.607] [Render Thread/DEBUG]: (World.java:146): Destorying world!
-[20:06:44.608] [Render Thread/DEBUG]: (World.java:146): Destorying world!
-[20:06:44.609] [Render Thread/DEBUG]: (World.java:146): Destorying world!
-[20:06:44.690] [Render Thread/INFO ]: (Threading.java:71): Threadpool shutting down! 
-[20:06:44.693] [Render Thread/INFO ]: (Main.java:134): Goodbye!
+[15:43:14.281] [Render Thread/INFO ]: (Logging.java:20): ----------------------------------------------------------------------------------
+[15:43:14.282] [Render Thread/DEBUG]: (AnnotationHandler.java:75): Running pre-registration
+[15:43:14.282] [Render Thread/DEBUG]: (AnnotationHandler.java:83): Running registration
+[15:43:14.282] [Render Thread/TRACE]: (AnnotationHandler.java:85): Running registration on class: TestDisplay Method: register
+[15:43:14.282] [Misc&. Thread/DEBUG]: (GameRegistry.java:199): Loading texture: resources/textures/character Texture.png
+[15:43:14.283] [Misc&. Thread/DEBUG]: (GameRegistry.java:146): Loading model: resources/models/model.dae
+[15:43:14.283] [Misc&. Thread/DEBUG]: (GameRegistry.java:146): Loading model: resources/models/supercube.dae
+[15:43:14.283] [Misc&. Thread/DEBUG]: (GameRegistry.java:146): Loading model: resources/models/floor.dae
+[15:43:14.284] [Misc&. Thread/DEBUG]: (GameRegistry.java:146): Loading model: resources/models/tuber.dae
+[15:43:14.283] [Misc&. Thread/DEBUG]: (GameRegistry.java:146): Loading model: resources/models/depression.dae
+[15:43:14.284] [Render Thread/TRACE]: (AnnotationHandler.java:85): Running registration on class: SinglePlayerDisplay Method: register
+[15:43:14.284] [Misc&. Thread/DEBUG]: (GameRegistry.java:146): Loading model: resources/models/poop.dae
+[15:43:14.284] [Misc&. Thread/DEBUG]: (GameRegistry.java:146): Loading model: resources/models/test object.dae
+[15:43:14.285] [Misc&. Thread/DEBUG]: (GameRegistry.java:146): Loading model: resources/models/chess/w_king_bt.dae
+[15:43:14.285] [Misc&. Thread/DEBUG]: (GameRegistry.java:146): Loading model: resources/models/chess/w_king.dae
+[15:43:14.285] [Misc&. Thread/DEBUG]: (GameRegistry.java:146): Loading model: resources/models/chess/w_king_bt2.dae
+[15:43:14.285] [Misc&. Thread/DEBUG]: (GameRegistry.java:146): Loading model: resources/models/chess/w_queen.dae
+[15:43:14.286] [Misc&. Thread/DEBUG]: (GameRegistry.java:146): Loading model: resources/models/chess/w_bishop.dae
+[15:43:14.285] [Misc&. Thread/DEBUG]: (GameRegistry.java:146): Loading model: resources/models/chess/w_king_bt3.dae
+[15:43:14.289] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_nor_1k.png
+[15:43:14.289] [Misc&. Thread/DEBUG]: (GameRegistry.java:146): Loading model: resources/models/chess/w_knight.dae
+[15:43:14.289] [Misc&. Thread/DEBUG]: (GameRegistry.java:199): Loading texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_diff_1k.png
+[15:43:14.289] [Misc&. Thread/DEBUG]: (GameRegistry.java:199): Loading texture: resources/textures/w_king.png
+[15:43:14.289] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_disp_1k.png
+[15:43:14.289] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
+[15:43:14.289] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_AO_1k.png
+[15:43:14.290] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_spec_1k.png
+[15:43:14.290] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_nor_1k.png
+[15:43:14.290] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
+[15:43:14.290] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_disp_1k.png
+[15:43:14.290] [Misc&. Thread/DEBUG]: (GameRegistry.java:146): Loading model: resources/models/chess/w_rook.dae
+[15:43:14.290] [Misc&. Thread/DEBUG]: (GameRegistry.java:199): Loading texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_spec_1k.png
+[15:43:14.290] [Misc&. Thread/DEBUG]: (GameRegistry.java:199): Loading texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_diff_1k.png
+[15:43:14.290] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_AO_1k.png
+[15:43:14.291] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_ao_1k.png
+[15:43:14.290] [Misc&. Thread/DEBUG]: (GameRegistry.java:199): Loading texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_disp_1k.png
+[15:43:14.291] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_spec_1k.png
+[15:43:14.290] [Misc&. Thread/DEBUG]: (GameRegistry.java:199): Loading texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_nor_1k.png
+[15:43:14.290] [Misc&. Thread/DEBUG]: (GameRegistry.java:199): Loading texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_disp_1k.png
+[15:43:14.292] [Misc&. Thread/DEBUG]: (GameRegistry.java:199): Loading texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_nor_1k.png
+[15:43:14.292] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_specular_1k.png
+[15:43:14.292] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_nor_1k.png
+[15:43:14.292] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_specMap_1k.png
+[15:43:14.293] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
+[15:43:14.293] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
+[15:43:14.292] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
+[15:43:14.291] [Misc&. Thread/DEBUG]: (GameRegistry.java:199): Loading texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_ao_1k.png
+[15:43:14.293] [Misc&. Thread/DEBUG]: (GameRegistry.java:199): Loading texture: resources/textures/512.png
+[15:43:14.293] [Misc&. Thread/DEBUG]: (GameRegistry.java:199): Loading texture: resources/textures/depression.png
+[15:43:14.293] [Misc&. Thread/DEBUG]: (GameRegistry.java:199): Loading texture: resources/textures/w_queen.png
+[15:43:14.293] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
+[15:43:14.293] [Misc&. Thread/DEBUG]: (GameRegistry.java:199): Loading texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_AO_1k.png
+[15:43:14.294] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
+[15:43:14.294] [Misc&. Thread/DEBUG]: (GameRegistry.java:199): Loading texture: resources/textures/w_rook.png
+[15:43:14.296] [Misc&. Thread/DEBUG]: (GameRegistry.java:199): Loading texture: resources/textures/poop.png
+[15:43:14.298] [Misc&. Thread/DEBUG]: (GameRegistry.java:199): Loading texture: resources/textures/w_bishop.png
+[15:43:14.298] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
+[15:43:14.292] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
+[15:43:14.293] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
+[15:43:14.293] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_disp_1k.png
+[15:43:14.293] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
+[15:43:14.300] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_AO_1k.png
+[15:43:14.300] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
+[15:43:14.300] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_spec_1k.png
+[15:43:14.301] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_nor_1k.png
+[15:43:14.301] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_disp_1k.png
+[15:43:14.301] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_AO_1k.png
+[15:43:14.301] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_spec_1k.png
+[15:43:14.301] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
+[15:43:14.301] [Misc&. Thread/DEBUG]: (GameRegistry.java:199): Loading texture: resources/textures/atlas/Other SIZE_512/1540139171163.jpg
+[15:43:14.293] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_specmap_1k.png
+[15:43:14.302] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
+[15:43:14.302] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
+[15:43:14.302] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
+[15:43:14.302] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
+[15:43:14.302] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
+[15:43:14.303] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
+[15:43:14.303] [Misc&. Thread/DEBUG]: (GameRegistry.java:199): Loading texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_diff_1k.png
+[15:43:14.303] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_nor_1k.png
+[15:43:14.303] [Misc&. Thread/DEBUG]: (GameRegistry.java:199): Loading texture: resources/textures/w_knight.png
+[15:43:14.305] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_disp_1k.png
+[15:43:14.305] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_AO_1k.png
+[15:43:14.305] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_ao_1k.png
+[15:43:14.305] [Misc&. Thread/DEBUG]: (GameRegistry.java:199): Loading texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_nor_1k.png
+[15:43:14.306] [Misc&. Thread/DEBUG]: (GameRegistry.java:199): Loading texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_ao_1k.png
+[15:43:14.306] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_spec_1k.png
+[15:43:14.307] [Misc&. Thread/DEBUG]: (GameRegistry.java:199): Loading texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_spec_1k.png
+[15:43:14.307] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
+[15:43:14.305] [Misc&. Thread/DEBUG]: (GameRegistry.java:199): Loading texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_disp_1k.png
+[15:43:14.307] [Misc&. Thread/DEBUG]: (GameRegistry.java:199): Loading texture: resources/textures/atlas/Other SIZE_512/1539212443187.png
+[15:43:14.307] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
+[15:43:14.312] [Misc&. Thread/WARN ]: (ModelLoader.java:159): Failed to load extra texture maps after checking possible resource locations! :(
+[15:43:14.312] [Misc&. Thread/DEBUG]: (GameRegistry.java:199): Loading texture: resources/textures/atlas/Other SIZE_512/1540146676067.png
+[15:43:14.307] [Misc&. Thread/DEBUG]: (GameRegistry.java:199): Loading texture: resources/textures/atlas/Other SIZE_512/1531692584494.jpg
+[15:43:14.342] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/error/error3.png
+[15:43:14.343] [Render Thread/DEBUG]: (GameRegistry.java:160): Loaded model: resources/models/poop.dae
+[15:43:14.347] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/w_king.png
+[15:43:14.350] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/character Texture.png
+[15:43:14.413] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_nor_1k.png
+[15:43:14.414] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_disp_1k.png
+[15:43:14.414] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_AO_1k.png
+[15:43:14.414] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_ao_1k.png
+[15:43:14.415] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_spec_1k.png
+[15:43:14.415] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_specular_1k.png
+[15:43:14.415] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_specMap_1k.png
+[15:43:14.415] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_specmap_1k.png
+[15:43:14.415] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/brick_4_1k_png/brick_4_nor_1k.png
+[15:43:14.415] [Misc&. Thread/DEBUG]: (GameRegistry.java:199): Loading texture: resources/textures/materials/brick_4_1k_png/brick_4_diff_1k.png
+[15:43:14.416] [Misc&. Thread/DEBUG]: (GameRegistry.java:199): Loading texture: resources/textures/materials/brick_4_1k_png/brick_4_nor_1k.png
+[15:43:14.416] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/brick_4_1k_png/brick_4_disp_1k.png
+[15:43:14.416] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/brick_4_1k_png/brick_4_AO_1k.png
+[15:43:14.416] [Misc&. Thread/TRACE]: (ModelLoader.java:402): Trying to load: resources/textures/materials/brick_4_1k_png/brick_4_spec_1k.png
+[15:43:14.416] [Misc&. Thread/DEBUG]: (GameRegistry.java:199): Loading texture: resources/textures/materials/brick_4_1k_png/brick_4_spec_1k.png
+[15:43:14.417] [Misc&. Thread/DEBUG]: (GameRegistry.java:199): Loading texture: resources/textures/materials/brick_4_1k_png/brick_4_AO_1k.png
+[15:43:14.420] [Misc&. Thread/DEBUG]: (GameRegistry.java:199): Loading texture: resources/textures/materials/brick_4_1k_png/brick_4_disp_1k.png
+[15:43:14.702] [Render Thread/DEBUG]: (GameRegistry.java:160): Loaded model: resources/models/chess/w_king_bt2.dae
+[15:43:14.703] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_diff_1k.png
+[15:43:14.704] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_nor_1k.png
+[15:43:14.707] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/w_king.png
+[15:43:14.708] [Render Thread/DEBUG]: (GameRegistry.java:160): Loaded model: resources/models/depression.dae
+[15:43:14.708] [Render Thread/DEBUG]: (GameRegistry.java:160): Loaded model: resources/models/supercube.dae
+[15:43:14.708] [Render Thread/DEBUG]: (GameRegistry.java:160): Loaded model: resources/models/chess/w_king_bt.dae
+[15:43:14.709] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/w_king.png
+[15:43:14.709] [Render Thread/DEBUG]: (GameRegistry.java:160): Loaded model: resources/models/chess/w_rook.dae
+[15:43:14.709] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_AO_1k.png
+[15:43:14.710] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_disp_1k.png
+[15:43:14.711] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_spec_1k.png
+[15:43:14.714] [Render Thread/DEBUG]: (GameRegistry.java:160): Loaded model: resources/models/chess/w_queen.dae
+[15:43:14.714] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_diff_1k.png
+[15:43:14.715] [Render Thread/DEBUG]: (GameRegistry.java:160): Loaded model: resources/models/poop.dae
+[15:43:14.716] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_nor_1k.png
+[15:43:14.718] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_disp_1k.png
+[15:43:14.719] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_AO_1k.png
+[15:43:14.720] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/w_king.png
+[15:43:14.720] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_spec_1k.png
+[15:43:14.721] [Render Thread/DEBUG]: (GameRegistry.java:160): Loaded model: resources/models/chess/w_king.dae
+[15:43:14.721] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/512.png
+[15:43:14.721] [Render Thread/DEBUG]: (GameRegistry.java:160): Loaded model: resources/models/chess/w_king_bt3.dae
+[15:43:14.721] [Render Thread/DEBUG]: (GameRegistry.java:160): Loaded model: resources/models/test object.dae
+[15:43:14.722] [Render Thread/DEBUG]: (GameRegistry.java:160): Loaded model: resources/models/model.dae
+[15:43:14.722] [Render Thread/DEBUG]: (GameRegistry.java:160): Loaded model: resources/models/chess/w_bishop.dae
+[15:43:14.722] [Render Thread/DEBUG]: (GameRegistry.java:160): Loaded model: resources/models/chess/w_knight.dae
+[15:43:14.725] [Render Thread/DEBUG]: (GameRegistry.java:160): Loaded model: resources/models/tuber.dae
+[15:43:14.726] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/w_rook.png
+[15:43:14.727] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/w_bishop.png
+[15:43:14.727] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/w_queen.png
+[15:43:14.727] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/atlas/Other SIZE_512/1540146676067.png
+[15:43:14.727] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/w_knight.png
+[15:43:14.728] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/512.png
+[15:43:14.728] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/depression.png
+[15:43:14.730] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/atlas/Other SIZE_512/1531692584494.jpg
+[15:43:14.730] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_AO_1k.png
+[15:43:14.731] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_spec_1k.png
+[15:43:14.732] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/poop.png
+[15:43:14.732] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/atlas/Other SIZE_512/1539212443187.png
+[15:43:14.733] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_spec_1k.png
+[15:43:14.735] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_diff_1k.png
+[15:43:14.735] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_nor_1k.png
+[15:43:14.736] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_disp_1k.png
+[15:43:14.737] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_ao_1k.png
+[15:43:14.738] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_disp_1k.png
+[15:43:14.739] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_diff_1k.png
+[15:43:14.739] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_diff_1k.png
+[15:43:14.740] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/materials/brick_4_1k_png/brick_4_spec_1k.png
+[15:43:14.741] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/materials/brick_4_1k_png/brick_4_AO_1k.png
+[15:43:14.742] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_nor_1k.png
+[15:43:14.743] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_nor_1k.png
+[15:43:14.744] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/materials/brick_4_1k_png/brick_4_disp_1k.png
+[15:43:14.745] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_ao_1k.png
+[15:43:14.746] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_ao_1k.png
+[15:43:14.746] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_disp_1k.png
+[15:43:14.747] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/materials/brick_4_1k_png/brick_4_nor_1k.png
+[15:43:14.748] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/materials/brick_4_1k_png/brick_4_diff_1k.png
+[15:43:14.749] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_disp_1k.png
+[15:43:14.749] [Render Thread/DEBUG]: (GameRegistry.java:160): Loaded model: resources/models/floor.dae
+[15:43:14.752] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/atlas/Other SIZE_512/1540139171163.jpg
+[15:43:14.757] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_nor_1k.png
+[15:43:14.760] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/character Texture.png
+[15:43:14.762] [Render Thread/DEBUG]: (GameRegistry.java:216): Loaded texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_diff_1k.png
+[15:43:14.798] [Render Thread/INFO ]: (LoadingScreenDisplay.java:85): Loading finished!
+[15:43:14.798] [Render Thread/DEBUG]: (AnnotationHandler.java:91): Running post-registration

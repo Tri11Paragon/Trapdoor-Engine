@@ -76,9 +76,22 @@ include CMakeFiles/Trapdoor.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/Trapdoor.dir/flags.make
 
+CMakeFiles/Trapdoor.dir/src/display/DisplayManager.cpp.o: CMakeFiles/Trapdoor.dir/flags.make
+CMakeFiles/Trapdoor.dir/src/display/DisplayManager.cpp.o: ../src/display/DisplayManager.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Trapdoor.dir/src/display/DisplayManager.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Trapdoor.dir/src/display/DisplayManager.cpp.o -c "/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/src/display/DisplayManager.cpp"
+
+CMakeFiles/Trapdoor.dir/src/display/DisplayManager.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Trapdoor.dir/src/display/DisplayManager.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/src/display/DisplayManager.cpp" > CMakeFiles/Trapdoor.dir/src/display/DisplayManager.cpp.i
+
+CMakeFiles/Trapdoor.dir/src/display/DisplayManager.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Trapdoor.dir/src/display/DisplayManager.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/src/display/DisplayManager.cpp" -o CMakeFiles/Trapdoor.dir/src/display/DisplayManager.cpp.s
+
 CMakeFiles/Trapdoor.dir/src/main.cpp.o: CMakeFiles/Trapdoor.dir/flags.make
 CMakeFiles/Trapdoor.dir/src/main.cpp.o: ../src/main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Trapdoor.dir/src/main.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/Trapdoor.dir/src/main.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Trapdoor.dir/src/main.cpp.o -c "/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/src/main.cpp"
 
 CMakeFiles/Trapdoor.dir/src/main.cpp.i: cmake_force
@@ -91,7 +104,7 @@ CMakeFiles/Trapdoor.dir/src/main.cpp.s: cmake_force
 
 CMakeFiles/Trapdoor.dir/src/tools/maths.cpp.o: CMakeFiles/Trapdoor.dir/flags.make
 CMakeFiles/Trapdoor.dir/src/tools/maths.cpp.o: ../src/tools/maths.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/Trapdoor.dir/src/tools/maths.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/Trapdoor.dir/src/tools/maths.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Trapdoor.dir/src/tools/maths.cpp.o -c "/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/src/tools/maths.cpp"
 
 CMakeFiles/Trapdoor.dir/src/tools/maths.cpp.i: cmake_force
@@ -104,17 +117,19 @@ CMakeFiles/Trapdoor.dir/src/tools/maths.cpp.s: cmake_force
 
 # Object files for target Trapdoor
 Trapdoor_OBJECTS = \
+"CMakeFiles/Trapdoor.dir/src/display/DisplayManager.cpp.o" \
 "CMakeFiles/Trapdoor.dir/src/main.cpp.o" \
 "CMakeFiles/Trapdoor.dir/src/tools/maths.cpp.o"
 
 # External object files for target Trapdoor
 Trapdoor_EXTERNAL_OBJECTS =
 
+Trapdoor: CMakeFiles/Trapdoor.dir/src/display/DisplayManager.cpp.o
 Trapdoor: CMakeFiles/Trapdoor.dir/src/main.cpp.o
 Trapdoor: CMakeFiles/Trapdoor.dir/src/tools/maths.cpp.o
 Trapdoor: CMakeFiles/Trapdoor.dir/build.make
 Trapdoor: CMakeFiles/Trapdoor.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir="/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable Trapdoor"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir="/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable Trapdoor"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/Trapdoor.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

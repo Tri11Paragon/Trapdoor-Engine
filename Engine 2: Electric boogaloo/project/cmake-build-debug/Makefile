@@ -142,6 +142,33 @@ Trapdoor/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Trapdoor.dir/build.make CMakeFiles/Trapdoor.dir/build
 .PHONY : Trapdoor/fast
 
+src/display/DisplayManager.o: src/display/DisplayManager.cpp.o
+
+.PHONY : src/display/DisplayManager.o
+
+# target to build an object file
+src/display/DisplayManager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Trapdoor.dir/build.make CMakeFiles/Trapdoor.dir/src/display/DisplayManager.cpp.o
+.PHONY : src/display/DisplayManager.cpp.o
+
+src/display/DisplayManager.i: src/display/DisplayManager.cpp.i
+
+.PHONY : src/display/DisplayManager.i
+
+# target to preprocess a source file
+src/display/DisplayManager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Trapdoor.dir/build.make CMakeFiles/Trapdoor.dir/src/display/DisplayManager.cpp.i
+.PHONY : src/display/DisplayManager.cpp.i
+
+src/display/DisplayManager.s: src/display/DisplayManager.cpp.s
+
+.PHONY : src/display/DisplayManager.s
+
+# target to generate assembly for a file
+src/display/DisplayManager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Trapdoor.dir/build.make CMakeFiles/Trapdoor.dir/src/display/DisplayManager.cpp.s
+.PHONY : src/display/DisplayManager.cpp.s
+
 src/main.o: src/main.cpp.o
 
 .PHONY : src/main.o
@@ -205,6 +232,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... Trapdoor"
+	@echo "... src/display/DisplayManager.o"
+	@echo "... src/display/DisplayManager.i"
+	@echo "... src/display/DisplayManager.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

@@ -1,0 +1,109 @@
+cmake_minimum_required(VERSION 3.19)
+project(Trapdoor VERSION 0.1.0)
+
+set(CMAKE_CXX_STANDARD 20)
+
+#add_executable(Trapdoor src/main.cpp)
+set(source_dir "${PROJECT_SOURCE_DIR}/src/")
+set(include_dir "${PROJECT_SOURCE_DIR}/include/")
+
+set(imgui_dir "${PROJECT_SOURCE_DIR}/depends/imgui/")
+
+file(GLOB_RECURSE source_files "${source_dir}/*.cpp")
+file(GLOB_RECURSE header_files "${include_dir}/*.h")
+file(GLOB imgui_cpp_files "${imgui_dir}/*.cpp")
+file(GLOB imgui_header_files "${imgui_dir}/*.h")
+
+add_executable(Trapdoor ${source_files} ${header_files})
+
+#           DOWNLOAD ALL THE SUBMODULES
+find_package(Git QUIET)
+if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
+    # Update submodules as needed
+    option(GIT_SUBMODULE "Check submodules during build" ON)
+    if(GIT_SUBMODULE)
+        message(STATUS "Submodule update")
+        execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
+                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                RESULT_VARIABLE GIT_SUBMOD_RESULT)
+        if(NOT GIT_SUBMOD_RESULT EQUAL "0")
+            message(FATAL_ERROR "git submodule update --init failed with ${GIT_SUBMOD_RESULT}, please checkout submodules")
+        endif()
+    endif()
+endif()
+
+# make sure they exist
+#if(NOT EXISTS "${PROJECT_SOURCE_DIR}/depends/bx/makefile")
+#    message(FATAL_ERROR "The bx submodules was not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
+#endif()
+
+#if(NOT EXISTS "${PROJECT_SOURCE_DIR}/depends/bimg/makefile")
+#    message(FATAL_ERROR "The bimg submodules was not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
+#endif()
+
+#if(NOT EXISTS "${PROJECT_SOURCE_DIR}/depends/bgfx/makefile")
+#    message(FATAL_ERROR "The bgfx submodules was not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
+#endif()
+
+#if(NOT EXISTS "${PROJECT_SOURCE_DIR}/depends/bnet/makefile")
+#    message(FATAL_ERROR "The bnet submodules was not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
+#endif()
+
+if(NOT EXISTS "${PROJECT_SOURCE_DIR}/depends/glfw/CMakeLists.txt")
+    message(FATAL_ERROR "The glfw submodules was not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
+endif()
+
+if(UNIX)
+    #include dirs
+    #target_include_directories(Trapdoor
+    #        PRIVATE
+    #        depends/bgfx/include
+    #        depends/bx/include
+    #        depends/bimg/include
+    #        )
+
+    #target_include_directories(Trapdoor
+    #        PRIVATE
+    #        depends/bgfx/3rdparty/
+    #        depends/bx/3rdparty/
+    #        depends/bgfx/examples/common
+    #        )
+
+    #LINK LIBS
+    target_link_libraries(Trapdoor GL X11 ${CMAKE_DL_LIBS} pthread)
+
+    #BGFX LINKS LOGIC
+    #target_link_directories(Trapdoor PRIVATE ./depends/bgfx/.build/linux64_gcc/bin/)
+
+    if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+        if(NOT EXISTS "${PROJECT_SOURCE_DIR}/depends/bgfx/.build/linux64_gcc/bin/libbgfxDebug.a")
+            message(FATAL_ERROR "The bgfx submodule was not built as debug! Go to bgfx folder and run: make linux-debug64")
+        endif()
+        target_compile_definitions(Trapdoor PUBLIC "BX_CONFIG_DEBUG=1" )
+        target_link_libraries(Trapdoor
+                bgfxDebug
+                bimgDebug
+                bxDebug
+                example-glueDebug
+                example-commonDebug
+                bimg_decodeDebug
+                )
+    elseif(${CMAKE_BUILD_TYPE} STREQUAL "Release")
+        if(NOT EXISTS "${PROJECT_SOURCE_DIR}/depends/bgfx/.build/linux64_gcc/bin/libbgfxRelease.a")
+            message(FATAL_ERROR "The bgfx submodule was not built as release! Go to bgfx folder and run: make linux-release64")
+        endif()
+        target_compile_definitions(Trapdoor PUBLIC "BX_CONFIG_DEBUG=0" )
+        target_link_libraries(Trapdoor
+                example-glueRelease
+                example-commonRelease
+                bimg_decodeRelease
+                bgfxRelease
+                bimgRelease
+                bxRelease
+                )
+    endif()
+else()
+    message(FATAL_ERROR "This is for linux only right now, what's on your Hard Drive?")
+endif()
+
+file (COPY ${CMAKE_SOURCE_DIR}/depends/bgfx/examples/runtime/ DESTINATION ${CMAKE_BINARY_DIR})

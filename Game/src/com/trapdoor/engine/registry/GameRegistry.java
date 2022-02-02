@@ -19,6 +19,7 @@ import com.trapdoor.engine.datatypes.ogl.TextureData;
 import com.trapdoor.engine.datatypes.ogl.assimp.Material;
 import com.trapdoor.engine.datatypes.ogl.assimp.Model;
 import com.trapdoor.engine.display.LoadingScreenDisplay;
+import com.trapdoor.engine.registry.helpers.DualExecution;
 import com.trapdoor.engine.tools.Logging;
 import com.trapdoor.engine.tools.ScreenShot;
 import com.trapdoor.engine.tools.input.InputMaster;
