@@ -2,6 +2,7 @@ package com.trapdoor.engine.display;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.game.displays.MainMenuDisplay;
 import com.spinyowl.legui.component.Label;
 import com.spinyowl.legui.component.Layer;
 import com.spinyowl.legui.component.ProgressBar;
@@ -19,7 +20,6 @@ import com.trapdoor.engine.registry.Threading;
 import com.trapdoor.engine.registry.annotations.AnnotationHandler;
 import com.trapdoor.engine.renderer.ui.UIMaster;
 import com.trapdoor.engine.tools.Logging;
-import com.trapdoor.game.displays.MainMenuDisplay;
 
 /**
  * @author brett

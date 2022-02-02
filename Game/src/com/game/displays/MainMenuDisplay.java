@@ -1,4 +1,4 @@
-package com.trapdoor.game.displays;
+package com.game.displays;
 
 import org.joml.Vector4f;
 

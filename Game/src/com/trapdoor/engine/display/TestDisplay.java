@@ -1,5 +1,6 @@
 package com.trapdoor.engine.display;
 
+import com.game.entities.EntityPoop;
 import com.trapdoor.engine.camera.CreativeFirstPerson;
 import com.trapdoor.engine.datatypes.lighting.Light;
 import com.trapdoor.engine.datatypes.ogl.assimp.Model;
@@ -8,7 +9,6 @@ import com.trapdoor.engine.registry.annotations.RegistrationEventSubscriber;
 import com.trapdoor.engine.world.World;
 import com.trapdoor.engine.world.entities.Entity;
 import com.trapdoor.engine.world.entities.EntityCamera;
-import com.trapdoor.game.entities.EntityPoop;
 
 /**
  * @author brett

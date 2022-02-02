@@ -1,4 +1,4 @@
-package com.trapdoor.game.entities;
+package com.game.entities;
 
 import com.bulletphysics.collision.shapes.SphereShape;
 import com.bulletphysics.dynamics.RigidBody;

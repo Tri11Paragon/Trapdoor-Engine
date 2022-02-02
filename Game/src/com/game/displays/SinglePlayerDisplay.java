@@ -1,4 +1,4 @@
-package com.trapdoor.game.displays;
+package com.game.displays;
 
 import com.trapdoor.engine.camera.CreativeFirstPerson;
 import com.trapdoor.engine.display.IDisplay;
