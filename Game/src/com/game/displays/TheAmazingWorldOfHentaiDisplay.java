@@ -8,6 +8,7 @@ import com.trapdoor.engine.display.IDisplay;
 import com.trapdoor.engine.registry.GameRegistry;
 import com.trapdoor.engine.registry.annotations.RegistrationEventSubscriber;
 import com.trapdoor.engine.tools.Logging;
+import com.trapdoor.engine.tools.input.Keyboard;
 import com.trapdoor.engine.world.World;
 import com.trapdoor.engine.world.entities.Entity;
 import com.trapdoor.engine.world.entities.EntityCamera;
@@ -23,6 +24,7 @@ public class TheAmazingWorldOfHentaiDisplay extends IDisplay{
 		
 		GameRegistry.registerModel("resources/models/poop.dae");
 		GameRegistry.registerModel("resources/models/piss.dae");
+		GameRegistry.registerModel("resources/models/cum.dae");
 	}
 	
 	@Override
@@ -39,6 +41,9 @@ public class TheAmazingWorldOfHentaiDisplay extends IDisplay{
 		this.world.addEntityToWorld(new EntityPiss().setModel(
 				GameRegistry.getModel("resources/models/piss.dae")).setPosition(20, 0, -10)
 				.addLight(new Light(Light.lightings[6], 3.0f, 0.5f, 0.5f, 0, 5, 0)));
+		
+		this.world.addEntityToWorld(new Entity().setModel(
+				GameRegistry.getModel("resources/models/cum.dae")).setPosition(30, 0, -10));
 		
 		this.setSkyColor(0, 0, 0);
 	}
@@ -58,6 +63,15 @@ public class TheAmazingWorldOfHentaiDisplay extends IDisplay{
 	@Override
 	public void update() {
 		this.world.update();
+		if (Keyboard.isKeyDown(Keyboard.C) && Keyboard.state()) {
+			this.world.addEntityToWorld(new Entity(1).setModel(
+					GameRegistry.getModel("resources/models/cum.dae"))
+					.setPosition(
+							(float) camera.getPosition().x + 10, 
+							(float) camera.getPosition().y, 
+							(float) camera.getPosition().z)
+					.applyCentralForce(0, 200, 0));
+		}
 	}
 
 	@Override
