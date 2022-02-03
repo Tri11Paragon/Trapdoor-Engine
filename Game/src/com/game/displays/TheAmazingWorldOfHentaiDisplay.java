@@ -1,5 +1,6 @@
 package com.game.displays;
 
+import com.game.entities.EntityKent;
 import com.game.entities.EntityPiss;
 import com.game.entities.EntityPoop;
 import com.trapdoor.engine.camera.CreativeFirstPerson;
@@ -25,6 +26,8 @@ public class TheAmazingWorldOfHentaiDisplay extends IDisplay{
 		GameRegistry.registerModel("resources/models/poop.dae");
 		GameRegistry.registerModel("resources/models/piss.dae");
 		GameRegistry.registerModel("resources/models/cum.dae");
+		GameRegistry.registerModel("resources/models/kent.dae");
+		GameRegistry.registerModel("resources/models/zucc.dae");
 	}
 	
 	@Override
@@ -32,18 +35,24 @@ public class TheAmazingWorldOfHentaiDisplay extends IDisplay{
 		this.camera = new CreativeFirstPerson();
 		this.world = new World(camera);
 		
-		this.world.addEntityToWorld(new EntityCamera(this.camera));
+		Light thefunny = new Light(Light.lightings[6], 1.0f, 1.0f, 1.0f, 0, 0, 0);
 		
-		this.world.addEntityToWorld(new EntityPoop().setModel(
-				GameRegistry.getModel("resources/models/poop.dae")).setPosition(0, 0, -15)
-				.addLight(new Light(Light.lightings[6], 5.0f, 0.0f, 0.0f, 0, 5, 0)));
+		this.world.addEntityToWorld(new EntityCamera(this.camera).setModel(GameRegistry.getModel("resources/models/poop.dae")).addLight(thefunny));
+		
+		this.world.addEntityToWorld(new Entity().setModel(
+				GameRegistry.getModel("resources/models/poop.dae")).setPosition(-30, 0, -15));
 		
 		this.world.addEntityToWorld(new EntityPiss().setModel(
-				GameRegistry.getModel("resources/models/piss.dae")).setPosition(20, 0, -10)
-				.addLight(new Light(Light.lightings[6], 3.0f, 0.5f, 0.5f, 0, 5, 0)));
+				GameRegistry.getModel("resources/models/piss.dae")).setPosition(20, 0, -10));
 		
 		this.world.addEntityToWorld(new Entity().setModel(
 				GameRegistry.getModel("resources/models/cum.dae")).setPosition(30, 0, -10));
+		
+		this.world.addEntityToWorld(new EntityKent().setModel(
+				GameRegistry.getModel("resources/models/kent.dae")).setPosition(-20, 0, -10));
+		
+		this.world.addEntityToWorld(new EntityKent().setModel(
+				GameRegistry.getModel("resources/models/zucc.dae")).setPosition(0, 0, -10));
 		
 		this.setSkyColor(0, 0, 0);
 	}
