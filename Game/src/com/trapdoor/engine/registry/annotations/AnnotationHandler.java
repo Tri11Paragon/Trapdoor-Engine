@@ -29,7 +29,7 @@ public class AnnotationHandler {
 	public static void init() {
 		Logging.logger.debug("Loading event subscribers");
 		
-		ourClasses = new Reflections("com.trapdoor");
+		ourClasses = new Reflections("com");
 
 		Set<Class<? extends AnnotatedClass>> classes = ourClasses.getSubTypesOf(AnnotatedClass.class);
 		

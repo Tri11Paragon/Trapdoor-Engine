@@ -8,9 +8,9 @@ import com.trapdoor.engine.registry.Threading;
 import com.trapdoor.engine.tools.input.Keyboard;
 import com.trapdoor.engine.world.entities.Entity;
 
-public class EntityPoop extends Entity{
+public class EntityPiss extends Entity{
 	
-	public EntityPoop() {
+	public EntityPiss() {
 		super();
 		RigidBody a = new RigidBody(10, new DefaultMotionState(new Transform()), new SphereShape(10));
 		this.setRigidbody(a);
@@ -19,9 +19,9 @@ public class EntityPoop extends Entity{
 	@Override
 	public void update() {
 		super.update(); // need this for overriding functions
-		if (Keyboard.isKeyDown(Keyboard.Q))
+		if (Keyboard.isKeyDown(Keyboard.P))
 			this.applyCentralForce(100, 0, 0);
-		if (Keyboard.isKeyDown(Keyboard.E))
+		if (Keyboard.isKeyDown(Keyboard.I))
 			this.setSz((float) (this.getSz() + 0.1f * Threading.getFrameTimeSeconds()));
 	}
 	

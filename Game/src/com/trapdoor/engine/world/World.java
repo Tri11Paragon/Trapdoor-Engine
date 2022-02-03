@@ -138,6 +138,11 @@ public class World {
 		this.physWorld.addRigidBody(e.getRigidbody());
 	}
 	
+	public void removeEntityFromWorld(Entity e) {
+		this.entityStorage.removeEntity(e);
+		this.removeEntityPhysics(e);
+	}
+	
 	public Camera getCamera() {
 		return c;
 	}

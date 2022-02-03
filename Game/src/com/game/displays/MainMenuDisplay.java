@@ -46,7 +46,8 @@ public class MainMenuDisplay extends IDisplay {
 		title.setPosition(25, 25);
 		layer.add(title);
 
-		IDisplay display = new SinglePlayerDisplay();
+		//IDisplay display = new SinglePlayerDisplay();
+		IDisplay display = new TheAmazingWorldOfHentaiDisplay();
 		DisplayManager.createDisplay(display);
 
 		Button sp = new Button();
