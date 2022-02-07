@@ -13,6 +13,7 @@ import org.joml.Vector3f;
 
 import com.trapdoor.engine.camera.ICamera;
 import com.trapdoor.engine.display.DisplayManager;
+import com.trapdoor.engine.world.entities.components.Transform;
 
 /**
  * @author Brett
@@ -185,6 +186,18 @@ public class Maths {
 		matrix.scale(sx, sy, 1f);
 		matrix.rotate(rotx, rx);
 		matrix.rotate(roty, ry);
+		return matrix;
+	}
+	
+	public static Matrix4f createTransformationMatrix(Transform t) {
+		matrix.identity();
+		matrix.translate(t.getX(), t.getY(), t.getZ());
+		float sx = t.getScaleX();
+		float sy = t.getScaleY();
+		float sz = t.getScaleZ();
+		if (sx != 1 || sy != 1 || sz != 1)
+			matrix.scale(sx, sy, sz);
+		matrix.mul(t.getRotationMatrix());
 		return matrix;
 	}
 	

@@ -14,6 +14,7 @@ import com.trapdoor.engine.datatypes.ogl.obj.VAO;
 import com.trapdoor.engine.shaders.DeferredFirstPassShader;
 import com.trapdoor.engine.tools.math.Maths;
 import com.trapdoor.engine.world.entities.Entity;
+import com.trapdoor.engine.world.entities.components.Transform;
 
 /**
  * @author laptop
@@ -58,16 +59,14 @@ public class EntityRenderer {
 			
 			for (int j = 0; j < lis.size(); j++) {
 				Entity entity = lis.get(j);
-				shader.loadTranslationMatrix(Maths.createTransformationMatrix(
-						entity.getX(), entity.getY(), entity.getZ(), 
-						entity.getRotationMatrix(), 
-						entity.getSx(), entity.getSy(), entity.getSz()));
+				shader.loadTranslationMatrix(Maths.createTransformationMatrix((Transform)entity.getComponent(Transform.class)));
 				
 				ArrayList<Light> lights = entity.getLights();
 				if (first && lights.size() > 0)
 					renderer.addLightingArray(lights, entity);
 				
 				GL11.glDrawElements(GL11.GL_TRIANGLES, mod.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+				entity.render();
 			}
 			
 			first = false;

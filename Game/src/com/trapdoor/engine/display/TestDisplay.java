@@ -37,6 +37,7 @@ public class TestDisplay extends IDisplay {
 		GameRegistry.registerModel("resources/models/poop.dae");
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate() {
 		this.camera = new CreativeFirstPerson();
@@ -53,7 +54,6 @@ public class TestDisplay extends IDisplay {
 				new Entity(0, true, null)
 					.setModel(GameRegistry.getModel("resources/models/tuber.dae"))
 					.setPosition(0, -19.7f, -58)
-					.setScale(1)
 					.addLight(new Light(Light.lightings[5], 1.0f, 1.0f, 1.0f, 0, 5, -5))
 					.addLight(new Light(Light.lightings[5], 1.0f, 1.0f, 1.0f, 0, 5, 0))
 					.addLight(new Light(Light.lightings[5], 1.0f, 1.0f, 1.0f, 0, 5, 5))
@@ -80,7 +80,7 @@ public class TestDisplay extends IDisplay {
 					.setModel(
 							GameRegistry.getModel("resources/models/lll3.obj"))
 					// change position
-					.setPosition(15, 5, 25).setScale(1.5f)); 
+					.setPosition(15, 5, 25)); 
 		//add poop
 		this.world.addEntityToWorld(
 				new EntityPoop()
@@ -88,7 +88,7 @@ public class TestDisplay extends IDisplay {
 					.setModel(
 							GameRegistry.getModel("resources/models/poop.dae"))
 					// change position
-					.setPosition(-15, -4, -15).setYaw((float) (Math.PI/2)).setScale(0.1f));
+					.setPosition(-15, -4, -15));
 	}
 
 	@Override

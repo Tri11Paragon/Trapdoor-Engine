@@ -14,6 +14,7 @@ import com.trapdoor.engine.renderer.DeferredRenderer;
 import com.trapdoor.engine.renderer.EntityRenderer;
 import com.trapdoor.engine.tools.SettingsLoader;
 import com.trapdoor.engine.world.entities.Entity;
+import com.trapdoor.engine.world.entities.components.Transform;
 
 /**
  * @author brett
@@ -44,9 +45,10 @@ public class WorldEntityStorage {
 	
 	public void changeModel(Entity e, Model old, Model n) {
 		if (e.isStatic()) {
-			int x = (int)e.getX();
-			int y = (int)e.getY();
-			int z = (int)e.getZ();
+			Transform t = (Transform)e.getComponent(Transform.class);
+			int x = (int)t.getX();
+			int y = (int)t.getY();
+			int z = (int)t.getZ();
 			
 			int cx = x >> 5;
 			int cy = y >> 5;
@@ -117,11 +119,12 @@ public class WorldEntityStorage {
 	
 	public void addEntity(Entity e) {
 		if (e.isStatic()) {
-			staticEntities.set((int) e.getX(), (int) e.getY(), (int) e.getZ(), e);
+			Transform t = (Transform)e.getComponent(Transform.class);
+			staticEntities.set((int) t.getX(), (int) t.getY(), (int) t.getZ(), e);
 			
-			int x = (int)e.getX();
-			int y = (int)e.getY();
-			int z = (int)e.getZ();
+			int x = (int)t.getX();
+			int y = (int)t.getY();
+			int z = (int)t.getZ();
 			
 			int cx = x >> 5;
 			int cy = y >> 5;
@@ -149,11 +152,12 @@ public class WorldEntityStorage {
 	
 	public void removeEntity(Entity e) {
 		if (e.isStatic()) {
-			staticEntities.remove((int) e.getX(), (int) e.getY(), (int) e.getZ());
+			Transform t = (Transform)e.getComponent(Transform.class);
+			staticEntities.remove((int) t.getX(), (int) t.getY(), (int) t.getZ());
 			
-			int x = (int)e.getX();
-			int y = (int)e.getY();
-			int z = (int)e.getZ();
+			int x = (int)t.getX();
+			int y = (int)t.getY();
+			int z = (int)t.getZ();
 			
 			int cx = x >> 5;
 			int cy = y >> 5;

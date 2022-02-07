@@ -1,11 +1,12 @@
 package com.trapdoor.engine.world.entities.components;
 
-import javax.vecmath.Matrix3f;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import javax.vecmath.Vector3f;
 
+import org.joml.Matrix4f;
+
 import com.bulletphysics.dynamics.RigidBody;
-import com.trapdoor.engine.registry.Threading;
-import com.trapdoor.engine.tools.Logging;
 import com.trapdoor.engine.world.entities.Entity;
 
 /**
@@ -15,58 +16,62 @@ import com.trapdoor.engine.world.entities.Entity;
  */
 public class Transform extends IComponent {
 
+	
+	// TODO: compress this to bit logic
+	//private volatile boolean awaitingPositionChange = false;
+	private volatile AtomicBoolean awaitingPositionChange = new AtomicBoolean(false);
+	private volatile boolean awaitingRotationChange = false;
+	private volatile boolean awaitingScaleChange = false;
+	
 	// phys
-	private volatile boolean transformReady = false;
-	private volatile boolean scaleReady = false;
 	private volatile com.bulletphysics.linearmath.Transform pysTransformOut;
+	private volatile boolean transformReady = false;
 	private Vector3f scaleStore;
+	private Vector3f positionStore;
 	
 	
 	// render
-	private volatile Matrix3f mainRotation;
+	private volatile float yaw,pitch,roll;
+	private volatile float setYaw,setPitch,setRoll;
+	private volatile Matrix4f mainRotation;
+	
 	private volatile float x,y,z;
 	private volatile float setX,setY,setZ;
-	private volatile Vector3f positionStore;
+	private Vector3f positionOut;
 	
-	private volatile float scaleX, scaleY, scaleZ;
-	private volatile float setScaleX, setScaleY, setScaleZ;
+	private volatile float scaleX=1, scaleY=1, scaleZ=1;
+	private volatile float setScaleX=1, setScaleY=1, setScaleZ=1;
 	
 	public Transform() {
 		super();
-		pysTransformOut = new com.bulletphysics.linearmath.Transform();
-		mainRotation = new Matrix3f();
-		positionStore = new Vector3f();
-		scaleStore = new Vector3f();
+		this.pysTransformOut = new com.bulletphysics.linearmath.Transform();
+		this.mainRotation = new Matrix4f();
+		this.positionOut = new Vector3f();
+		this.scaleStore = new Vector3f();
+		this.positionStore = new Vector3f();
 	}
 	
 	@Override
 	public void render() {
 		if (transformReady) {
-			this.mainRotation.m00 = this.pysTransformOut.basis.m00;
-			this.mainRotation.m01 = this.pysTransformOut.basis.m01;
-			this.mainRotation.m02 = this.pysTransformOut.basis.m02;
-			this.mainRotation.m10 = this.pysTransformOut.basis.m10;
-			this.mainRotation.m11 = this.pysTransformOut.basis.m11;
-			this.mainRotation.m12 = this.pysTransformOut.basis.m12;
-			this.mainRotation.m20 = this.pysTransformOut.basis.m20;
-			this.mainRotation.m21 = this.pysTransformOut.basis.m21;
-			this.mainRotation.m22 = this.pysTransformOut.basis.m22;
-			
 			this.x = this.pysTransformOut.origin.x;
 			this.y = this.pysTransformOut.origin.y;
 			this.z = this.pysTransformOut.origin.z;
-			
-			this.positionStore.x = this.setX;
-			this.positionStore.y = this.setY;
-			this.positionStore.z = this.setZ;
-			
-			if (this.scaleReady) {
-				this.scaleX = setScaleX;
-				this.scaleY = setScaleY;
-				this.scaleZ = setScaleZ;
-				
-				this.scaleReady = false;
-			}
+	
+			this.positionOut.x = x;
+			this.positionOut.y = y;
+			this.positionOut.z = z;
+	
+			this.mainRotation.identity();
+			this.mainRotation.m00(this.pysTransformOut.basis.m00);
+			this.mainRotation.m01(this.pysTransformOut.basis.m01);
+			this.mainRotation.m02(this.pysTransformOut.basis.m02);
+			this.mainRotation.m10(this.pysTransformOut.basis.m10);
+			this.mainRotation.m11(this.pysTransformOut.basis.m11);
+			this.mainRotation.m12(this.pysTransformOut.basis.m12);
+			this.mainRotation.m20(this.pysTransformOut.basis.m20);
+			this.mainRotation.m21(this.pysTransformOut.basis.m21);
+			this.mainRotation.m22(this.pysTransformOut.basis.m22);
 			
 			this.transformReady = false;
 		}
@@ -83,58 +88,81 @@ public class Transform extends IComponent {
 	}
 	
 	public void commit(RigidBody b) {
-		while (this.transformReady)
-			sleep(1000);
-		
-		b.getWorldTransform(pysTransformOut);
-		pysTransformOut.origin.set(positionStore);
-		
-		if (!this.scaleReady) {
-			if (this.scaleX != this.setScaleX || this.scaleY != this.setScaleY || this.scaleZ != this.setScaleZ) {
+		if (this.awaitingPositionChange.get())
+			System.out.println("EEE " + this.transformReady);
+		if (!this.transformReady) {
+			if (this.awaitingPositionChange.get()) {
+				this.positionStore.x = this.setX;
+				this.positionStore.y = this.setY;
+				this.positionStore.z = this.setZ;
+				
+				b.translate(positionStore);
+				
+				System.out.println("Applying translation! " + this.setX + " " + this.setY + " " + this.setZ);
+				
+				this.awaitingPositionChange.set(false);
+			}
+			
+			if (this.awaitingRotationChange) {
+				// TODO: get yaw, pitch and roll from the matrix
+				this.yaw = this.setYaw;
+				this.pitch = this.setPitch;
+				this.roll = this.setRoll;
+				
+				this.pysTransformOut.basis.rotX(pitch);
+				this.pysTransformOut.basis.rotY(yaw);
+				this.pysTransformOut.basis.rotZ(roll);
+				
+				this.awaitingRotationChange = false;
+			}
+			
+			if (this.awaitingScaleChange) {
 				this.scaleStore.x = this.setScaleX;
 				this.scaleStore.y = this.setScaleY;
 				this.scaleStore.z = this.setScaleZ;
-				
+					
 				b.getCollisionShape().setLocalScaling(this.scaleStore);
-				this.scaleReady = true;
+					
+				this.scaleX = setScaleX;
+				this.scaleY = setScaleY;
+				this.scaleZ = setScaleZ;
+				
+				this.awaitingScaleChange = false;
 			}
+			
+			b.getWorldTransform(pysTransformOut);
+			
+			this.transformReady = true;
 		}
-		
-		this.transformReady = true;
 	}
 	
 	public Transform setPosition(float x, float y, float z) {
-		if (Threading.isThreadLocal()) {
-			this.pysTransformOut.origin.x = x;
-			this.pysTransformOut.origin.y = y;
-			this.pysTransformOut.origin.z = z;
-		} else {
-			this.setX = x;
-			this.setY = y;
-			this.setZ = z;
-		}
+		this.setX = x;
+		this.setY = y;
+		this.setZ = z;
+		this.awaitingPositionChange.set(true);
 		return this;
 	}
 	
 	public Transform setX(float x) {
-		if (Threading.isThreadLocal())
-			this.pysTransformOut.origin.x = x;
-		else
-			this.setX = x;
+		this.setX = x;
+		this.setY = this.y;
+		this.setZ = this.z;
+		this.awaitingPositionChange.set(true);
 		return this;
 	}
 	public Transform setY(float y) {
-		if (Threading.isThreadLocal())
-			this.pysTransformOut.origin.y = y;
-		else
-			this.setY = y;
+		this.setX = this.x;
+		this.setY = y;
+		this.setZ = this.z;
+		this.awaitingPositionChange.set(true);
 		return this;
 	}
 	public Transform setZ(float z) {
-		if (Threading.isThreadLocal())
-			this.pysTransformOut.origin.z = z;
-		else
-			this.setZ = z;
+		this.setX = this.x;
+		this.setY = this.y;
+		this.setZ = z;
+		this.awaitingPositionChange.set(true);
 		return this;
 	}
 	
@@ -142,51 +170,87 @@ public class Transform extends IComponent {
 		this.setScaleX = x;
 		this.setScaleY = y;
 		this.setScaleZ = z;
+		this.awaitingScaleChange = true;
 		return this;
 	}
-	public Transform setScaleX(float x) {
+	/*public Transform setScaleX(float x) {
 		this.setScaleX = x;
+		this.awaitingScaleChange = true;
 		return this;
 	}
 	public Transform setScaleY(float y) {
 		this.setScaleY = y;
+		this.awaitingScaleChange = true;
 		return this;
 	}
 	public Transform setScaleZ(float z) {
 		this.setScaleZ = z;
+		this.awaitingScaleChange = true;
+		return this;
+	}*/
+	public Transform setRotation(float yaw, float pitch, float roll) {
+		this.setYaw = yaw;
+		this.setPitch = pitch;
+		this.setRoll = roll;
+		this.awaitingRotationChange = true;
 		return this;
 	}
+	/*public Transform setYaw(float y) {
+		this.setYaw = y;
+		this.awaitingRotationChange = true;
+		return this;
+	}
+	public Transform setPitch(float p) {
+		this.setPitch = p;
+		this.awaitingRotationChange = true;
+		return this;
+	}
+	public Transform setRoll(float r) {
+		this.setRoll = r;
+		this.awaitingRotationChange = true;
+		return this;
+	}*/
+	
+	
 	
 	public float getX() {
-		return x;
+		return this.x;
 	}
 	public float getY() {
-		return y;
+		return this.y;
 	}
 	public float getZ() {
-		return z;
+		return this.z;
 	}
-	
+	public Vector3f getPosition() {
+		return this.positionOut;
+	}
+	public Vector3f getPosition(Vector3f out) {
+		out.x = this.x;
+		out.y = this.y;
+		out.z = this.z;
+		return out;
+	}
 	public float getScaleX() {
-		return scaleX;
+		return this.scaleX;
 	}
 	public float getScaleY() {
-		return scaleY;
+		return this.scaleY;
 	}
 	public float getScaleZ() {
-		return scaleZ;
+		return this.scaleZ;
 	}
-	
-	public Matrix3f getRotationMatrix() {
+	public Matrix4f getRotationMatrix() {
 		return this.mainRotation;
 	}
-	
-	private static void sleep(long ns) {
-		try {
-			Thread.sleep(0, (int) ns);
-		} catch (InterruptedException e) {
-			Logging.logger.error(e.getLocalizedMessage(), e);
-		}
+	public float getYaw() {
+		return yaw;
+	}
+	public float getPitch() {
+		return pitch;
+	}
+	public float getRoll() {
+		return roll;
 	}
 	
 }

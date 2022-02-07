@@ -7,6 +7,7 @@ import com.trapdoor.engine.datatypes.Tuple;
 import com.trapdoor.engine.datatypes.util.ExtensibleArray;
 import com.trapdoor.engine.shaders.DeferredSecondPassShader;
 import com.trapdoor.engine.world.entities.Entity;
+import com.trapdoor.engine.world.entities.components.Transform;
 
 /**
  * @author brett
@@ -80,10 +81,11 @@ public class ExtensibleLightingArray {
 	
 	private void setLightData(Light l, int index, Entity e) {
 		int base = index * 4;
+		Transform t = (Transform)e.getComponent(Transform.class);
 		// TODO: apply entity rotation
-		lightArray[base] = l.getX() + e.getX();
-		lightArray[base+1] = l.getY() + e.getY();
-		lightArray[base+2] = l.getZ() + e.getZ();
+		lightArray[base] = l.getX() + t.getX();
+		lightArray[base+1] = l.getY() + t.getY();
+		lightArray[base+2] = l.getZ() + t.getZ();
 		lightArray[base+3] = l.getLinear();
 		int baseOffset = base + 512 / 4;
 		lightArray[baseOffset] = l.getQuadratic();

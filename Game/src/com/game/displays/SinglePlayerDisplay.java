@@ -31,6 +31,7 @@ public class SinglePlayerDisplay extends IDisplay{
 		GameRegistry.registerModel("resources/models/poop.dae");
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate() {
 		this.camera = new CreativeFirstPerson();

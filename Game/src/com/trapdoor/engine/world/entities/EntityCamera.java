@@ -9,11 +9,11 @@ import org.lwjgl.glfw.GLFW;
 import com.bulletphysics.collision.shapes.BoxShape;
 import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.linearmath.DefaultMotionState;
-import com.bulletphysics.linearmath.Transform;
 import com.trapdoor.engine.camera.Camera;
 import com.trapdoor.engine.renderer.ui.DebugInfo;
 import com.trapdoor.engine.tools.input.Keyboard;
 import com.trapdoor.engine.tools.input.Mouse;
+import com.trapdoor.engine.world.entities.components.Transform;
 
 /**
  * @author brett
@@ -34,12 +34,14 @@ public class EntityCamera extends Entity {
 	
 	private Camera c;
 	
+	private Transform localTransform;
+	
 	public EntityCamera(Camera c) {
-		super();
+		super(50);
 		this.c = c;
 		pos = new Vector3f();
 		this.setRigidbody(new RigidBody(50, new DefaultMotionState(
-				new Transform(
+				new com.bulletphysics.linearmath.Transform(
 						new Matrix4f(
 								// rotation
 								new Quat4f(0,0,0,1),
@@ -49,18 +51,19 @@ public class EntityCamera extends Entity {
 						)
 				), new BoxShape(new javax.vecmath.Vector3f(0.75f, 0.75f, 0.75f))) );
 		
+		this.getRigidbody().setGravity(new javax.vecmath.Vector3f(0.0f, 0.0f, 0.0f));
+		
+		this.localTransform = (Transform) this.getComponent(Transform.class);
 	}
 	
 	@Override
 	public void update() {
 		super.update();
-		this.setYaw(c.getYaw());
-		this.setPitch(c.getPitch());
-		this.setRoll(c.getRoll());
+		this.localTransform.setRotation(c.getYaw(), c.getPitch(), c.getRoll());
 		move();
-		this.pos.x = this.getX();
-		this.pos.y = this.getY();
-		this.pos.z = this.getZ();
+		this.pos.x = this.localTransform.getX();
+		this.pos.y = this.localTransform.getY();
+		this.pos.z = this.localTransform.getZ();
 		DebugInfo.x = this.pos.x;
 		DebugInfo.y = this.pos.y;
 		DebugInfo.z = this.pos.z;
@@ -107,7 +110,8 @@ public class EntityCamera extends Entity {
 		float dy = moveAtY;
 		float dz = (float) ( (((moveAtX) * Math.cos(Math.toRadians(c.getYaw()))  ) + -((moveatZ) * Math.sin(Math.toRadians(c.getYaw())) )) );
 		
-		applyWithoutBreakingVelocity(dx, dy, dz);
+		this.localTransform.setPosition(this.localTransform.getX() + dx, this.localTransform.getY() + dy, this.localTransform.getZ() + dz);
+		//applyWithoutBreakingVelocity(dx, dy, dz);
 		
 	}
 	

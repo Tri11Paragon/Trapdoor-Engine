@@ -36,6 +36,10 @@ public class ComponentStore {
 		return componentMap.get(c);
 	}
 	
+	public ArrayList<IComponent> getComponents(){
+		return components;
+	}
+	
 	public void addComponent(IComponent c) {
 		this.components.add(c);
 		this.componentMap.put(c.getClass(), c);

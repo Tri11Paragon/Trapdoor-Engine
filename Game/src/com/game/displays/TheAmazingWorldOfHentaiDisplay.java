@@ -2,13 +2,11 @@ package com.game.displays;
 
 import com.game.entities.EntityKent;
 import com.game.entities.EntityPiss;
-import com.game.entities.EntityPoop;
 import com.trapdoor.engine.camera.CreativeFirstPerson;
 import com.trapdoor.engine.datatypes.lighting.Light;
 import com.trapdoor.engine.display.IDisplay;
 import com.trapdoor.engine.registry.GameRegistry;
 import com.trapdoor.engine.registry.annotations.RegistrationEventSubscriber;
-import com.trapdoor.engine.tools.Logging;
 import com.trapdoor.engine.tools.input.Keyboard;
 import com.trapdoor.engine.world.World;
 import com.trapdoor.engine.world.entities.Entity;
@@ -21,7 +19,6 @@ public class TheAmazingWorldOfHentaiDisplay extends IDisplay{
 	
 	@RegistrationEventSubscriber
 	public static void register() {
-		Logging.logger.fatal("HEY YOU SUCK");
 		
 		GameRegistry.registerModel("resources/models/poop.dae");
 		GameRegistry.registerModel("resources/models/piss.dae");
@@ -30,6 +27,7 @@ public class TheAmazingWorldOfHentaiDisplay extends IDisplay{
 		GameRegistry.registerModel("resources/models/zucc.dae");
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate() {
 		this.camera = new CreativeFirstPerson();
@@ -69,6 +67,7 @@ public class TheAmazingWorldOfHentaiDisplay extends IDisplay{
 		this.world.render();
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public void update() {
 		this.world.update();
