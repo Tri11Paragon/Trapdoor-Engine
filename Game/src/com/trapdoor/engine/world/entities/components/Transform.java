@@ -88,8 +88,8 @@ public class Transform extends IComponent {
 	}
 	
 	public void commit(RigidBody b) {
-		if (this.awaitingPositionChange.get())
-			System.out.println("EEE " + this.transformReady);
+		//if (this.awaitingPositionChange.get())
+		//	System.out.println("Eeee" + this.transformReady);
 		if (!this.transformReady) {
 			if (this.awaitingPositionChange.get()) {
 				this.positionStore.x = this.setX;

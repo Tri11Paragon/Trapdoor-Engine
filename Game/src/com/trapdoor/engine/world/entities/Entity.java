@@ -92,11 +92,24 @@ public class Entity {
 		this.addComponent(new Transform());
 	}
 	
+	/**
+	 * called by the update thread
+	 */
 	public void update() {
 		((Transform) components.getCompoent(Transform.class)).commit(rigidbody);
 		components.update();
 	}
 	
+	/**
+	 * called during the render loop (usually before)
+	 */
+	public void main() {
+		//components.render();
+	}
+	
+	/**
+	 * called after rendering
+	 */
 	public void render() {
 		components.render();
 	}

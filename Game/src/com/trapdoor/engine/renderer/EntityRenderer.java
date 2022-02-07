@@ -31,6 +31,9 @@ public class EntityRenderer {
 		for (int i = 0; i < meshes.length; i++) {
 			VAO mod = meshes[i].getVAO();
 			
+			for (int j = 0; j < lis.size(); j++)
+				lis.get(j).main();
+			
 			if (mod == null)
 				continue;
 			

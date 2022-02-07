@@ -110,8 +110,8 @@ public class EntityCamera extends Entity {
 		float dy = moveAtY;
 		float dz = (float) ( (((moveAtX) * Math.cos(Math.toRadians(c.getYaw()))  ) + -((moveatZ) * Math.sin(Math.toRadians(c.getYaw())) )) );
 		
-		this.localTransform.setPosition(this.localTransform.getX() + dx, this.localTransform.getY() + dy, this.localTransform.getZ() + dz);
-		//applyWithoutBreakingVelocity(dx, dy, dz);
+		//this.localTransform.setPosition(this.localTransform.getX() + dx, this.localTransform.getY() + dy, this.localTransform.getZ() + dz);
+		applyWithoutBreakingVelocity(dx, dy, dz);
 		
 	}
 	
