@@ -101,14 +101,7 @@ public class Entity {
 	}
 	
 	/**
-	 * called during the render loop (usually before)
-	 */
-	public void main() {
-		//components.render();
-	}
-	
-	/**
-	 * called after rendering
+	 * called after rendering (ONLY if this entity has a model)
 	 */
 	public void render() {
 		components.render();
