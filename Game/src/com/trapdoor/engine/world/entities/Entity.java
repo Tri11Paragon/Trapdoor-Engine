@@ -101,7 +101,7 @@ public class Entity {
 	}
 	
 	/**
-	 * called after rendering (ONLY if this entity has a model)
+	 * called after all entities have finished rendering
 	 */
 	public void render() {
 		components.render();

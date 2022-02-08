@@ -40,6 +40,7 @@ public class EntityCamera extends Entity {
 		super(50);
 		this.c = c;
 		pos = new Vector3f();
+		
 		this.setRigidbody(new RigidBody(50, new DefaultMotionState(
 				new com.bulletphysics.linearmath.Transform(
 						new Matrix4f(

@@ -66,7 +66,6 @@ public class EntityRenderer {
 					renderer.addLightingArray(lights, entity);
 				
 				GL11.glDrawElements(GL11.GL_TRIANGLES, mod.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
-				entity.render();
 			}
 			
 			first = false;

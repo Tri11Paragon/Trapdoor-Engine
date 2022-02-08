@@ -43,7 +43,7 @@ public class TestDisplay extends IDisplay {
 		this.camera = new CreativeFirstPerson();
 		this.world = new World(camera);
 		
-		this.world.addEntityToWorld(new EntityCamera(this.camera).setModel(GameRegistry.getModel("resources/models/depression.dae")));
+		this.world.addEntityToWorld(new EntityCamera(this.camera));
 		
 		this.world.addEntityToWorld(
 				new Entity(0, true, null)

@@ -92,6 +92,11 @@ public class World {
 		this.deferredRenderer.enableMainShaders();
 		this.deferredRenderer.getShader().loadViewPos(this.c.getPosition());
 		this.entityStorage.render(this.deferredRenderer);
+		
+		ArrayList<Entity> ents = this.entityStorage.getAllEntities();
+		for (int i = 0; i < ents.size(); i++)
+			ents.get(i).render();
+		
 		this.deferredRenderer.endFirstPass();
 		
 		this.deferredRenderer.runSecondPass();
