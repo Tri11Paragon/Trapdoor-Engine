@@ -52,7 +52,6 @@ public class TheAmazingWorldOfHentaiDisplay extends IDisplay{
 		this.world.addEntityToWorld(new EntityKent().setModel(
 				GameRegistry.getModel("resources/models/zucc.dae")).setPosition(0, 0, -10));
 		
-		this.setSkyColor(0, 0, 0);
 	}
 
 	@Override

@@ -122,7 +122,11 @@ public class World {
 		
 		// calcualte the phys, stepped relative to the game speed
 		// faster it is running the smaller the steps.
-		physWorld.stepSimulation((float) Threading.getFrameTimeSeconds());
+		try {
+			physWorld.stepSimulation((float) Threading.getFrameTimeSeconds());
+		} catch (Exception e) {
+			System.exit(-1);
+		}
 	}
 	
 	public void modelChanged(Entity e, Model old, Model n) {

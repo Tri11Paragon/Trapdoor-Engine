@@ -39,7 +39,6 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joml.Vector3f;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -54,6 +53,7 @@ import com.spinyowl.legui.system.context.CallbackKeeper;
 import com.trapdoor.engine.ProjectionMatrix;
 import com.trapdoor.engine.TextureLoader;
 import com.trapdoor.engine.UBOLoader;
+import com.trapdoor.engine.VAOLoader;
 import com.trapdoor.engine.registry.GameRegistry;
 import com.trapdoor.engine.registry.Threading;
 import com.trapdoor.engine.registry.annotations.AnnotationHandler;
@@ -69,7 +69,7 @@ import com.trapdoor.engine.tools.input.InputMaster;
 public class DisplayManager {
 
 	public static final String gameVersion = "0.0A";
-	public static final String engineVersion = "0.4.0A";
+	public static final String engineVersion = "0.4.1A";
 	public static final String gameName = "Total Femboy Donamania";
 	public static final String engineName = "Trapdoor";
 	public static final String title = gameName + " - V" + gameVersion + " // " + engineName + " V" + engineVersion;
@@ -105,21 +105,13 @@ public class DisplayManager {
 	// debugger nonsense
 	private static DebugInfo debugInfoLayer;
 	
-	public static Vector3f getClearColor() {
-		if (currentDisplay != null)
-			return currentDisplay.getSkyColor();
-		else
-			return IDisplay.defaultSkyColor;
-	}
-	
 	// display updating
 	public static void updateDisplay() {
 		while(!GLFW.glfwWindowShouldClose(DisplayManager.window)) {
 			try {
 				long start = getCurrentTime();
 				GL11.glEnable(GL11.GL_DEPTH_TEST);
-				Vector3f skyColor = currentDisplay.getSkyColor();
-				GL11.glClearColor(skyColor.x, skyColor.y, skyColor.z, 1.0f);
+				GL11.glClearColor(currentDisplay.getSky1R(), currentDisplay.getSky1G(), currentDisplay.getSky1B(), 1.0f);
 				// TODO: cleanup this
 				GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
 				GL11.glEnable(GL13.GL_BLEND);
@@ -299,6 +291,7 @@ public class DisplayManager {
 		
 		UIMaster.quit();
 		ProjectionMatrix.cleanShaders();
+		VAOLoader.cleanUp();
 		
 		glfwFreeCallbacks(window);
 		glfwDestroyWindow(window);

@@ -21,7 +21,9 @@ void main(void){
 	vec4 positionRelativeToCam = projectionViewMatrix * worldPosition;
 
     fragpos = worldPosition.xyz;
-	normalo = normal * transpose(inverse(mat3(translationMatrix)));
+    // inverse?
+    // normal matrix on cpu?
+	normalo = normal * transpose((mat3(translationMatrix)));
 
     gl_Position = positionRelativeToCam;
 	textureCoords = textureCoordinates;

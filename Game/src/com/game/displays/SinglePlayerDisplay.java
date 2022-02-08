@@ -59,7 +59,6 @@ public class SinglePlayerDisplay extends IDisplay{
 		this.world.addEntityToWorld(new EntityPoop().setModel(
 				GameRegistry.getModel("resources/models/poop.dae")).setPosition(30, 0, -10));
 		
-		this.setSkyColor(0, 0, 0);
 	}
 
 	@Override

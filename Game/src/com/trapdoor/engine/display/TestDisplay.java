@@ -40,6 +40,15 @@ public class TestDisplay extends IDisplay {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate() {
+		this.setSkyTextures(
+					"resources/textures/skyboxes/basic_day/right.png", 	// right
+					"resources/textures/skyboxes/basic_day/left.png", 	// left
+					"resources/textures/skyboxes/basic_day/top.png", 	// top
+					"resources/textures/skyboxes/basic_day/bottom.png", // bottom
+					"resources/textures/skyboxes/basic_day/back.png", 	// back
+					"resources/textures/skyboxes/basic_day/front.png"	// front
+				);
+		
 		this.camera = new CreativeFirstPerson();
 		this.world = new World(camera);
 		

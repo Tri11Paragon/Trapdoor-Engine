@@ -118,6 +118,7 @@ public class TextureLoader {
 			GL11.glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL11.GL_RGBA, textures[i].getWidth(), textures[i].getHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, textures[i].getBuffer());
 		}
 		assignTextureModes(GL11.GL_LINEAR, GL11.GL_REPEAT);
+		GL33.glGenerateMipmap(GL13.GL_TEXTURE_CUBE_MAP);
 		TextureLoader.textures.add(id);
 		return t;
 	}

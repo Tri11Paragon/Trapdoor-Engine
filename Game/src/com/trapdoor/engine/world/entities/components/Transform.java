@@ -4,9 +4,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.vecmath.Vector3f;
 
+import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 import com.bulletphysics.dynamics.RigidBody;
+import com.trapdoor.engine.tools.math.Maths;
 import com.trapdoor.engine.world.entities.Entity;
 
 /**
@@ -16,6 +18,8 @@ import com.trapdoor.engine.world.entities.Entity;
  */
 public class Transform extends IComponent {
 
+	private final Matrix3f rotMatrix = new Matrix3f();
+	private final float[] rotFloatArray = new float[3 * 3];
 	
 	// TODO: compress this to bit logic
 	//private volatile boolean awaitingPositionChange = false;
@@ -62,7 +66,7 @@ public class Transform extends IComponent {
 			this.positionOut.y = y;
 			this.positionOut.z = z;
 	
-			this.mainRotation.identity();
+			//this.mainRotation.identity();
 			this.mainRotation.m00(this.pysTransformOut.basis.m00);
 			this.mainRotation.m01(this.pysTransformOut.basis.m01);
 			this.mainRotation.m02(this.pysTransformOut.basis.m02);
@@ -91,14 +95,14 @@ public class Transform extends IComponent {
 		//if (this.awaitingPositionChange.get())
 		//	System.out.println("Eeee" + this.transformReady);
 		if (!this.transformReady) {
+			b.getWorldTransform(pysTransformOut);
+			
 			if (this.awaitingPositionChange.get()) {
 				this.positionStore.x = this.setX;
 				this.positionStore.y = this.setY;
 				this.positionStore.z = this.setZ;
 				
 				b.translate(positionStore);
-				
-				System.out.println("Applying translation! " + this.setX + " " + this.setY + " " + this.setZ);
 				
 				this.awaitingPositionChange.set(false);
 			}
@@ -109,9 +113,12 @@ public class Transform extends IComponent {
 				this.pitch = this.setPitch;
 				this.roll = this.setRoll;
 				
-				this.pysTransformOut.basis.rotX(pitch);
-				this.pysTransformOut.basis.rotY(yaw);
-				this.pysTransformOut.basis.rotZ(roll);
+				// TODO: fix this gay mess by using another phyiscs engine!
+				this.rotMatrix.identity();
+				this.rotMatrix.rotate(pitch, Maths.rx);
+				this.rotMatrix.rotate(yaw, Maths.ry);
+				this.rotMatrix.rotate(roll, Maths.rz);
+				this.pysTransformOut.basis.set(this.rotMatrix.get(rotFloatArray));
 				
 				this.awaitingRotationChange = false;
 			}
@@ -129,8 +136,6 @@ public class Transform extends IComponent {
 				
 				this.awaitingScaleChange = false;
 			}
-			
-			b.getWorldTransform(pysTransformOut);
 			
 			this.transformReady = true;
 		}
@@ -195,7 +200,7 @@ public class Transform extends IComponent {
 		this.awaitingRotationChange = true;
 		return this;
 	}
-	/*public Transform setYaw(float y) {
+	public Transform setYaw(float y) {
 		this.setYaw = y;
 		this.awaitingRotationChange = true;
 		return this;
@@ -209,7 +214,7 @@ public class Transform extends IComponent {
 		this.setRoll = r;
 		this.awaitingRotationChange = true;
 		return this;
-	}*/
+	}
 	
 	
 	

@@ -193,19 +193,19 @@ public class VAOLoader {
 	 * deletes all the VAOs, VBOs and Textures from the graphics card.
 	 */
 	public static void cleanUp(){
-		System.out.println("Cleaning up VAOs");
+		Logging.logger.debug("Cleaning up VAOs");
 		for(int vao:vaos){
 			GL30.glDeleteVertexArrays(vao);
 		}
-		System.out.println("Cleaning up VBOs");
+		Logging.logger.debug("Cleaning up VBOs");
 		for(int vbo:vbos){
 			GL15.glDeleteBuffers(vbo);
 		}
-		System.out.println("Cleaning up textures");
+		Logging.logger.debug("Cleaning up textures");
 		TextureLoader.cleanup();
-		System.out.println("Cleaning up UBOs");
+		Logging.logger.debug("Cleaning up UBOs");
 		UBOLoader.cleanup();
-		System.out.println("GPU objects cleanup completed");
+		Logging.logger.info("GPU objects cleanup completed");
 	}
 	
 	/**
