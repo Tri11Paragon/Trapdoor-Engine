@@ -174,4 +174,8 @@ public class Camera extends ICamera {
 		return true;
 	}
 
+	@Override
+	public void render() {
+	}
+
 }

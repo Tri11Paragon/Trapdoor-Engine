@@ -81,7 +81,7 @@ public class World {
 	 * called by the main thread
 	 */
 	public void render() {
-		//this.c.move();
+		this.c.render();
 		
 		DisplayManager.enableCulling();
 		DisplayManager.disableTransparentcy(); 
@@ -125,6 +125,7 @@ public class World {
 		try {
 			physWorld.stepSimulation((float) Threading.getFrameTimeSeconds());
 		} catch (Exception e) {
+			Logging.logger.fatal(e.getLocalizedMessage(), e);
 			System.exit(-1);
 		}
 	}

@@ -105,7 +105,7 @@ public class Main {
 		
 		SettingsLoader.loadSettings();
 		Threading.init(processors-1);
-		
+
 		// create the display
 		DisplayManager.createDisplay(false);
 		

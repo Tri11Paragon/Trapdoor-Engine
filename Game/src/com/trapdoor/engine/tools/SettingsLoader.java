@@ -35,7 +35,8 @@ public class SettingsLoader {
 	public static int KEY_CLEAR = GLFW.GLFW_KEY_F6;
 	public static int SAMPLES = 4;
 	public static int AF = 4;
-	public static double SENSITIVITY = 0.5d;
+	public static double SENSITIVITY_X = 0.5d;
+	public static double SENSITIVITY_Y = 0.5d;
 	public static double MUSIC = 0.5d;
 	public static int VSYNC = 0;
 	public static int RENDER_DISTANCE = 8;
@@ -71,8 +72,10 @@ public class SettingsLoader {
 					KEY_CONSOLE = (int) Float.parseFloat(name[1]);
 				if (name[0].equals("key_clear"))
 					KEY_CLEAR = (int) Float.parseFloat(name[1]);
-				if (name[0].equals("sensitivity"))
-					SENSITIVITY = Double.parseDouble(name[1]);
+				if (name[0].equals("sensitivity_x"))
+					SENSITIVITY_X = Double.parseDouble(name[1]);
+				if (name[0].equals("sensitivity_y"))
+					SENSITIVITY_Y = Double.parseDouble(name[1]);
 				if (name[0].equals("samples"))
 					SAMPLES = (int) Float.parseFloat(name[1]);
 				if (name[0].equals("anisotropy"))
@@ -107,7 +110,8 @@ public class SettingsLoader {
 			writeLine(writer, "FPS: " + DisplayManager.FPS_MAX);
 			writeLine(writer, "key_console: " + KEY_CONSOLE);
 			writeLine(writer, "key_clear: " + KEY_CLEAR);
-			writeLine(writer, "sensitivity: " + SENSITIVITY);
+			writeLine(writer, "sensitivity_x: " + SENSITIVITY_X);
+			writeLine(writer, "sensitivity_y: " + SENSITIVITY_Y);
 			writeLine(writer, "samples: " + SAMPLES);
 			writeLine(writer, "anisotropy: " + AF);
 			writeLine(writer, "vsync: " + VSYNC);

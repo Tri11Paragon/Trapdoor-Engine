@@ -45,6 +45,11 @@ public class Threading {
 			}
 		});
 		physics = new Thread(() -> {
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			while (DisplayManager.displayOpen) {
 				
 				IDisplay dis = DisplayManager.getCurrentDisplay();

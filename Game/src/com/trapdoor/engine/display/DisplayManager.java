@@ -65,6 +65,7 @@ import com.trapdoor.engine.tools.Logging;
 import com.trapdoor.engine.tools.SettingsLoader;
 import com.trapdoor.engine.tools.icon.GLIcon;
 import com.trapdoor.engine.tools.input.InputMaster;
+import com.trapdoor.engine.tools.input.Mouse;
 
 public class DisplayManager {
 
@@ -95,7 +96,8 @@ public class DisplayManager {
 	
 	// mouse
 	public static double mouseX,mouseY;
-	private static double lx, ly;
+	private static double[] mouseXA = new double[1], mouseYA = new double[1];
+	private static double dx, dy, lx, ly;
 	public static boolean isMouseGrabbed = false;
 	
 	// display
@@ -107,25 +109,39 @@ public class DisplayManager {
 	
 	// display updating
 	public static void updateDisplay() {
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GL11.glEnable(GL13.GL_BLEND);
+		GL11.glEnable(GL11.GL_CULL_FACE);
+		GL11.glCullFace(GL11.GL_BACK);
+		GL13.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		while(!GLFW.glfwWindowShouldClose(DisplayManager.window)) {
 			try {
 				long start = getCurrentTime();
-				GL11.glEnable(GL11.GL_DEPTH_TEST);
 				GL11.glClearColor(currentDisplay.getSky1R(), currentDisplay.getSky1G(), currentDisplay.getSky1B(), 1.0f);
-				// TODO: cleanup this
 				GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
-				GL11.glEnable(GL13.GL_BLEND);
-				GL13.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-				GL11.glEnable(GL11.GL_CULL_FACE);
-				GL11.glCullFace(GL11.GL_BACK);
-				
+
 				UBOLoader.updateMatrixUBO();
 				
 				currentDisplay.render();
+			
 				
 				lx = mouseX;
 				ly = mouseY;
+				GLFW.glfwGetCursorPos(window, mouseXA, mouseYA);
+				mouseX = mouseXA[0];
+				mouseY = mouseYA[0];
+				
 				InputMaster.update();
+				
+				if (Mouse.isGrabbed()) {
+					dx = mouseX - WIDTH/2;
+					dy = mouseY - HEIGHT/2;
+					// TODO: read this lol
+					GLFW.glfwSetCursorPos(window, WIDTH/2, HEIGHT/2);
+				} else {
+					dx = lx - mouseX;
+					dy = ly - mouseY;
+				}
 				
 				UIMaster.render();
 				
@@ -273,10 +289,10 @@ public class DisplayManager {
 		keeper.getChainScrollCallback().add((window, x, y) -> {
 			InputMaster.scrollMoved((int)y);
 		});
-		keeper.getChainCursorPosCallback().add((window, x, y) -> {
-			DisplayManager.mouseX = x;
-			DisplayManager.mouseY = y;
-		});
+		//keeper.getChainCursorPosCallback().add((window, x, y) -> {
+			//DisplayManager.mouseX = x;
+			//DisplayManager.mouseY = y;
+		//});
 		keeper.getChainWindowCloseCallback().add((window) -> {
 			displayOpen = false;
 		});
@@ -334,11 +350,11 @@ public class DisplayManager {
 	}
 	
 	public static double getDX() {
-		return mouseX - lx;
+		return dx;
 	}
 	
 	public static double getDY() {
-		return mouseY - ly;
+		return dy;
 	}
 	
 	public static void setGrabbed(boolean gr) {

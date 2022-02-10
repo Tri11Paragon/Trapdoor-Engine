@@ -7,9 +7,11 @@ import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
 import com.bulletphysics.collision.shapes.BoxShape;
+import com.bulletphysics.collision.shapes.BvhTriangleMeshShape;
 import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.linearmath.DefaultMotionState;
 import com.trapdoor.engine.camera.Camera;
+import com.trapdoor.engine.registry.GameRegistry;
 import com.trapdoor.engine.renderer.ui.DebugInfo;
 import com.trapdoor.engine.tools.input.Keyboard;
 import com.trapdoor.engine.tools.input.Mouse;
@@ -46,11 +48,11 @@ public class EntityCamera extends Entity {
 						new Matrix4f(
 								// rotation
 								new Quat4f(0,0,0,1),
-								// position, + w
+								// position, + ww
 								new javax.vecmath.Vector3f(0,0,0), 1.0f
 								)
 						)
-				), new BoxShape(new javax.vecmath.Vector3f(0.75f, 0.75f, 0.75f))) );
+				), new BvhTriangleMeshShape(GameRegistry.getModel("resources/models/depression.dae").getMeshColliderData(), true, true)) );
 		
 		this.getRigidbody().setGravity(new javax.vecmath.Vector3f(0.0f, 0.0f, 0.0f));
 		
@@ -60,6 +62,7 @@ public class EntityCamera extends Entity {
 	@Override
 	public void update() {
 		super.update();
+		
 		this.localTransform.setRotation(c.getYaw(), c.getPitch(), c.getRoll());
 		move();
 		this.pos.x = this.localTransform.getX();

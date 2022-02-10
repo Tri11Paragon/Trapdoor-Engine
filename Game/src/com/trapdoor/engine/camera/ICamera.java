@@ -28,6 +28,8 @@ public abstract class ICamera {
 	
 	public abstract void move();
 	
+	public abstract void render();
+	
 	public void updateViewMatrix() {
 		this.viewMatrix = Maths.createViewMatrix(this);
 		

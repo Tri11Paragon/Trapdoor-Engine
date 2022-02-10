@@ -3,6 +3,7 @@ package com.trapdoor.engine.camera;
 import org.lwjgl.glfw.GLFW;
 
 import com.trapdoor.engine.display.DisplayManager;
+import com.trapdoor.engine.tools.SettingsLoader;
 import com.trapdoor.engine.tools.input.Keyboard;
 import com.trapdoor.engine.tools.input.Mouse;
 
@@ -14,7 +15,8 @@ import com.trapdoor.engine.tools.input.Mouse;
 public class CreativeFirstPerson extends Camera{
 	
 	private static float speed = 40f;
-	private static final float turnSpeed = 5.0f;
+	private static final float turnSpeedY = 5f;
+	private static final float turnSpeedX = 4.5f;
 	@SuppressWarnings("unused")
 	private static final int RECUR_AMT = 100;
 	
@@ -23,22 +25,25 @@ public class CreativeFirstPerson extends Camera{
 	private float moveatZ = 0;
 	
 	@Override
+	public void render() {
+		if (Mouse.isGrabbed()) {
+			pitch += Mouse.getDY() * (turnSpeedY * SettingsLoader.SENSITIVITY_Y)/100;
+			yaw += Mouse.getDX() * (turnSpeedX * SettingsLoader.SENSITIVITY_X)/100;
+		}
+	}
+	
+	@Override
 	public void move() {
 		final float speedd = 30f;
 		
-		if (Mouse.isGrabbed()) {
-			pitch += Mouse.getDY() * turnSpeed/100;
-			yaw += Mouse.getDX() * turnSpeed/100;
-		}
-		
 		if (Keyboard.isKeyDown(Keyboard.KEY_LEFT))
-			yaw += -speedd * turnSpeed * DisplayManager.getFrameTimeSeconds();
+			yaw += -speedd * turnSpeedX * DisplayManager.getFrameTimeSeconds();
 		if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT))
-			yaw += speedd * turnSpeed * DisplayManager.getFrameTimeSeconds();
+			yaw += speedd * turnSpeedX * DisplayManager.getFrameTimeSeconds();
 		if (Keyboard.isKeyDown(Keyboard.KEY_UP))
-			pitch += -speedd * turnSpeed * DisplayManager.getFrameTimeSeconds();
+			pitch += -speedd * turnSpeedY * DisplayManager.getFrameTimeSeconds();
 		if (Keyboard.isKeyDown(Keyboard.KEY_DOWN))
-			pitch += speedd * turnSpeed * DisplayManager.getFrameTimeSeconds();
+			pitch += speedd * turnSpeedY * DisplayManager.getFrameTimeSeconds();
 		
 		if (this.pitch > 90)
 			this.pitch = 90;
