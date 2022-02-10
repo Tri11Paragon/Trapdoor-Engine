@@ -11,7 +11,7 @@ import com.trapdoor.engine.display.IDisplay;
 
 public class SkyboxRenderer {
 
-	private static final float SIZE = 200;
+	private static final float SIZE = 250;
 
 	private SkyboxShader shader;
 	private Vao box;

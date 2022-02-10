@@ -59,7 +59,7 @@ void main(){
             vec3 diffuse = max(dot(Normal, lightDir), 0.0) * Diffuse * lightColor;
 
             vec3 specular = vec3(0.0f);
-            if (diffuse != 0.0f){
+            if (diffuse != vec3(0.0f)){
                     // specular (blinn phong)
                 vec3 halfwayDir = normalize(lightDir + viewDir);  
                 

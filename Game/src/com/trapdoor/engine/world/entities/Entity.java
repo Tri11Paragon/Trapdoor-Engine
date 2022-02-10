@@ -23,7 +23,11 @@ import com.trapdoor.engine.world.entities.components.Transform;
  * @date Nov. 21, 2021
  * 
  */
-public class Entity {
+public class Entity implements Comparable<Entity> {
+	
+	// makes the dynamic storage a little faster
+	private int id;
+	private static volatile long globalID = 0;
 	
 	private Model model;
 	
@@ -67,6 +71,12 @@ public class Entity {
 	}
 	
 	public Entity(float mass, boolean isStatic, CollisionShape collider) {
+		// house keeping nonsense eh
+		long v = ((globalID++) - Integer.MAX_VALUE);
+		if (v > Integer.MAX_VALUE-120)
+			globalID = 0;
+		this.id = (int)v;
+		
 		this.positionStore = new Vector3f();
 		byte mask = isStatic ? (byte) 1 : (byte) 0;
 		this.flags = (byte) (flags | mask);
@@ -268,6 +278,11 @@ public class Entity {
 		return this;
 	}
 	
+	@Override
+	public int hashCode() {
+	    return id;
+	}
+	
 	/**
 	 * Only use this for creating entities. It will likely be removed soon
 	 * I recommend creating a subclass and setting the transform after the super constructor finishes
@@ -277,6 +292,14 @@ public class Entity {
 	public Entity setPosition(float x, float y, float z) {
 		((Transform)this.getComponent(Transform.class)).setPosition(x, y, z);
 		return this;
+	}
+
+	/**
+	 * allows for creation of trees inside HashMaps
+	 */
+	@Override
+	public int compareTo(Entity o) {
+		return (o.id < id) ? -1 : ((o.id == id) ? 0 : 1);
 	}
 	
 }
