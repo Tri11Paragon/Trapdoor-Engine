@@ -4,6 +4,7 @@ import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
 import com.trapdoor.engine.camera.Camera;
+import com.trapdoor.engine.datatypes.sound.SoundListener;
 import com.trapdoor.engine.renderer.ui.DebugInfo;
 import com.trapdoor.engine.tools.input.Keyboard;
 import com.trapdoor.engine.tools.input.Mouse;
@@ -30,11 +31,17 @@ public class EntityCamera extends Entity {
 	
 	private Transform localTransform;
 	
+	//TODO; this as a component
+	private SoundListener listener;
+	private Vector3f at,up;
+	
 	public EntityCamera(Camera c) {
 		super(50);
 		this.c = c;
 		pos = new Vector3f();
-		
+		at = new Vector3f();
+		up = new Vector3f();
+		this.listener = new SoundListener(pos);
 		this.localTransform = (Transform) this.getComponent(Transform.class);
 	}
 	
@@ -50,7 +57,12 @@ public class EntityCamera extends Entity {
 		DebugInfo.x = this.pos.x;
 		DebugInfo.y = this.pos.y;
 		DebugInfo.z = this.pos.z;
-		c.setPosition(pos);
+		this.listener.setPosition(pos);
+		this.c.setPosition(pos);
+		
+		this.c.getViewMatrix().positiveZ(at).negate();
+		this.c.getViewMatrix().positiveY(up);
+		listener.setOrientation(at, up);
 	}
 	
 	private void move() {

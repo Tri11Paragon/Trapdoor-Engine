@@ -127,11 +127,13 @@ public class World {
 		this.entityStorage.addEntity(e);
 		e.setWorld(this);
 		this.physWorld.add(e.getRigidbody());
+		e.onAddedToWorld();
 	}
 	
 	public void removeEntityFromWorld(Entity e) {
 		this.entityStorage.removeEntity(e);
 		this.removeEntityPhysics(e);
+		e.onRemovedFromWorld();
 	}
 	
 	public Camera getCamera() {

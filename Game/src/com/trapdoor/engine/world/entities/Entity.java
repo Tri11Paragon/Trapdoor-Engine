@@ -105,6 +105,20 @@ public class Entity implements Comparable<Entity> {
 	}
 	
 	/**
+	 * called when the entity is added to the world
+	 */
+	public void onAddedToWorld() {
+		
+	}
+	
+	/**
+	 * called when the entity is removed from the world
+	 */
+	public void onRemovedFromWorld() {
+		
+	}
+	
+	/**
 	 * SETS the linear velocity on the rigid body.
 	 */
 	public synchronized Entity setLinearVelocity(float x, float y, float z) {

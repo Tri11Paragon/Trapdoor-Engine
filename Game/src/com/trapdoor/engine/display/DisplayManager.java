@@ -35,6 +35,7 @@ import static org.lwjgl.glfw.GLFW.glfwWindowHint;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +44,10 @@ import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.openal.AL;
+import org.lwjgl.openal.ALC;
+import org.lwjgl.openal.ALC11;
+import org.lwjgl.openal.ALCCapabilities;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
@@ -93,6 +98,10 @@ public class DisplayManager {
 	public static int HEIGHT = 720;
 	public static int FPS_MAX = 120;
 	public static int MAX_SHADER_TEXTURES = 16;
+	
+	// sound
+	public static long device;
+    public static long context;
 	
 	// mouse
 	public static double mouseX,mouseY;
@@ -256,6 +265,12 @@ public class DisplayManager {
 			System.exit(-1);
 		}
 		setMouseGrabbed(isMouseGrabbed);
+		try {
+			initAudio();
+		} catch (Exception e) {
+			Logging.logger.fatal(e.getMessage(), e);
+			System.exit(-1);
+		}
 		GameRegistry.init();
 		
 		//glfwWindowHint(GLFW.GLFW_DOUBLEBUFFER, GLFW_TRUE);
@@ -302,6 +317,11 @@ public class DisplayManager {
 	}
 
 	public static void closeDisplay() {
+		if (context != NULL)
+            ALC11.alcDestroyContext(context);
+        if (device != NULL)
+            ALC11.alcCloseDevice(device);
+        
 		for (int i = 0; i < allDisplays.size(); i++)
 			allDisplays.get(i).onDestory();
 		
@@ -316,6 +336,20 @@ public class DisplayManager {
 		glfwTerminate();
 		glfwSetErrorCallback(null).free();
 		Threading.cleanup();
+	}
+	
+	private static void initAudio() {
+		device = ALC11.alcOpenDevice((ByteBuffer) null);
+        if (device == NULL) {
+            throw new IllegalStateException("Failed to open the default OpenAL device.");
+        }
+        ALCCapabilities deviceCaps = ALC.createCapabilities(device);
+        context = ALC11.alcCreateContext(device, (IntBuffer) null);
+        if (context == NULL) {
+            throw new IllegalStateException("Failed to create OpenAL context.");
+        }
+        ALC11.alcMakeContextCurrent(context);
+        AL.createCapabilities(deviceCaps);
 	}
 
 	/*

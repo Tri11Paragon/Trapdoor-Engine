@@ -18,6 +18,8 @@ import com.trapdoor.engine.datatypes.ogl.Texture;
 import com.trapdoor.engine.datatypes.ogl.TextureData;
 import com.trapdoor.engine.datatypes.ogl.assimp.Material;
 import com.trapdoor.engine.datatypes.ogl.assimp.Model;
+import com.trapdoor.engine.datatypes.sound.SoundFile;
+import com.trapdoor.engine.datatypes.sound.SoundSource;
 import com.trapdoor.engine.display.LoadingScreenDisplay;
 import com.trapdoor.engine.registry.helpers.DualExecution;
 import com.trapdoor.engine.tools.Logging;
@@ -74,8 +76,19 @@ public class GameRegistry {
 	private static final Map<String, Integer> textureAtlas = Collections.synchronizedMap(new ConcurrentHashMap<String, Integer>());
 	private static final Map<String, Integer> textureInteralAtlas = Collections.synchronizedMap(new ConcurrentHashMap<String, Integer>());
 	
+	/**
+	 * sounds
+	 */
+	public static SoundSource source = new SoundSource();
+	
 	public static void init() {
 		Logging.logger.info("GameRegistry Init!");
+		try {
+			source.setSound(new SoundFile("resources/sounds/penis.ogg"));
+		} catch (Exception e) {
+			Logging.logger.fatal(e.getMessage(), e);
+			System.exit(-1);
+		}
 		
 		errorTexture = TextureLoader.loadTexture("error/error3.png");
 		defaultNormalTexture = TextureLoader.loadTexture("error/default_normal.png");
