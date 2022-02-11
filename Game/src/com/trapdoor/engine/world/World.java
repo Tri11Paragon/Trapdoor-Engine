@@ -1,9 +1,11 @@
 package com.trapdoor.engine.world;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
+import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.math.Vector3f;
 import com.karl.Engine.skybox.SkyboxRenderer;
 import com.trapdoor.engine.camera.Camera;
@@ -29,6 +31,7 @@ public class World {
 	public static final float PLANE_BUFFER = 0.1f;
 	
 	private final WorldEntityStorage entityStorage;
+	private final HashMap<PhysicsCollisionObject, Entity> entityPhyiscsMap = new HashMap<PhysicsCollisionObject, Entity>();
 	
 	// Physics container
 	private PhysicsSpace physWorld;
@@ -53,11 +56,20 @@ public class World {
 		
 		// setup physics
         this.physWorld = new PhysicsSpace(PhysicsSpace.BroadphaseType.DBVT);
-        this.physWorld.setMaxSubSteps(0);
+        //this.physWorld.setMaxSubSteps(0);
         this.physWorld.useDeterministicDispatch(false);
         this.physWorld.useScr(false);
         this.physWorld.addCollisionListener((PhysicsCollisionEvent event) -> {
-        	Logging.logger.trace(event.getObjectA() + " " + event.getObjectB());
+        	Entity e1 = entityPhyiscsMap.get(event.getObjectA());
+        	Entity e2 = entityPhyiscsMap.get(event.getObjectA());
+        	e1.onCollision(e2, event);
+        	e2.onCollision(e1, event);
+        });
+        this.physWorld.addOngoingCollisionListener((PhysicsCollisionEvent event) -> {
+        	Entity e1 = entityPhyiscsMap.get(event.getObjectA());
+        	Entity e2 = entityPhyiscsMap.get(event.getObjectA());
+        	e1.onOngoingCollision(e2, event);
+        	e2.onOngoingCollision(e1, event);
         });
 		this.physWorld.setGravity(new Vector3f(0.0f, 0.0f, 0.0f));
 		
@@ -110,6 +122,7 @@ public class World {
 		// faster it is running the smaller the steps.
 		try {
 			physWorld.update((float) Threading.getFrameTimeSeconds());
+			physWorld.distributeEvents();
 		} catch (Exception e) {
 			Logging.logger.fatal(e.getLocalizedMessage(), e);
 			System.exit(-1);
@@ -125,13 +138,16 @@ public class World {
 			this.physWorld.remove(e.getRigidbody());
 		else
 			this.physWorld.remove(e.getCollisionObject());
+		entityPhyiscsMap.remove(e.getCollisionObject());
 	}
 	
 	public void addEntityPhysics(Entity e) {
+		//TODO: i think this check can be removed
 		if (e.usingRigidBody())
 			this.physWorld.add(e.getRigidbody());
 		else
 			this.physWorld.add(e.getCollisionObject());
+		entityPhyiscsMap.put(e.getCollisionObject(), e);
 	}
 	
 	public void addEntityToWorld(Entity e) {

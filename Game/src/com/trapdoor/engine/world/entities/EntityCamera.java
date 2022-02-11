@@ -24,7 +24,6 @@ public class EntityCamera extends Entity {
 	private static final int RECUR_AMT = 100;
 	
 	private float moveAtX = 0;
-	private float moveAtY = 0;
 	private float moveatZ = 0;
 	
 	private Vector3f pos;

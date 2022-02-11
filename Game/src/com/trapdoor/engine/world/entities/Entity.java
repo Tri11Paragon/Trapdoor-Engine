@@ -2,6 +2,7 @@ package com.trapdoor.engine.world.entities;
 
 import java.util.ArrayList;
 
+import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
@@ -121,6 +122,25 @@ public class Entity implements Comparable<Entity> {
 	 * called when the entity is removed from the world
 	 */
 	public void onRemovedFromWorld() {
+		
+	}
+	
+	/**
+	 * called every update frame while two entities are colliding
+	 * @param other - the entity which we are colliding with
+	 * @param event - the event itself (contains relevant data)
+	 */
+	public void onOngoingCollision(Entity other, PhysicsCollisionEvent event) {
+		
+	}
+	
+	/**
+	 * called whenever an object collides with this entity
+	 * NOTE: this can and often will be called multiple times per event.
+	 * @param other - the entity which we are colliding with
+	 * @param event - the event itself (contains relevant data)
+	 */
+	public void onCollision(Entity other, PhysicsCollisionEvent event) {
 		
 	}
 	
