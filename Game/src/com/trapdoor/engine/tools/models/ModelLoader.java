@@ -176,13 +176,14 @@ public class ModelLoader {
 	}
 	
 	private static Mesh processMesh(AIMesh mesh, Material[] materials) {
+		ArrayList<com.jme3.math.Vector3f> faceV = new ArrayList<com.jme3.math.Vector3f>();
 		ArrayList<Float> vertices = new ArrayList<Float>();
 		ArrayList<Float> textures = new ArrayList<Float>();
 		ArrayList<Float> normals = new ArrayList<Float>();
 		ArrayList<Integer> indices = new ArrayList<Integer>();
 	    
 		
-		AxisAlignedBoundingBox aabb = processVertices(mesh, vertices);
+		AxisAlignedBoundingBox aabb = processVertices(mesh, vertices, faceV);
 	    processNormals(mesh, normals);
 	    processTextCoords(mesh, textures);
 	    processIndices(mesh, indices);
@@ -198,11 +199,11 @@ public class ModelLoader {
 		    }
 	    }
 	    
-	    com.jme3.math.Vector3f[] positions = new com.jme3.math.Vector3f[vertices.size()/3];
+	    com.jme3.math.Vector3f[] positions = new com.jme3.math.Vector3f[faceV.size()];
 	    int[] indcies = new int[indices.size()];
 	    
 	    for (int i = 0; i < positions.length; i++) {
-	    	positions[i/3] = new com.jme3.math.Vector3f(vertices.get(i), vertices.get(i + 1), vertices.get(i + 2));
+	    	positions[i] = faceV.get(i);
 	    }
 	    
 	    for (int i = 0; i < indices.size(); i++) {
@@ -214,7 +215,7 @@ public class ModelLoader {
 		return new Mesh(m, aabb, toFloatArray(vertices), toFloatArray(textures), toFloatArray(normals), toIntArray(indices), meshInfo);
 	}
 	
-	private static AxisAlignedBoundingBox processVertices(AIMesh mesh, ArrayList<Float> vertices) {
+	private static AxisAlignedBoundingBox processVertices(AIMesh mesh, ArrayList<Float> vertices, ArrayList<com.jme3.math.Vector3f> faceV) {
 		float maxX = 0, maxY = 0, maxZ = 0;
 		float minX = 0, minY = 0, minZ = 0;
 	    AIVector3D.Buffer verts = mesh.mVertices();
@@ -238,6 +239,7 @@ public class ModelLoader {
 	        vertices.add(x);
 	        vertices.add(y);
 	        vertices.add(z);
+	        faceV.add(new com.jme3.math.Vector3f(x,y,z));
 	    }
 	    return new AxisAlignedBoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
 	}

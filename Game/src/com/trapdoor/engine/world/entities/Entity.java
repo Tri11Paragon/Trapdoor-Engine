@@ -4,7 +4,9 @@ import java.util.ArrayList;
 
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.bullet.collision.shapes.GImpactCollisionShape;
+import com.jme3.bullet.collision.shapes.HullCollisionShape;
 import com.jme3.bullet.collision.shapes.MeshCollisionShape;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.math.Vector3f;
@@ -243,18 +245,18 @@ public class Entity implements Comparable<Entity> {
 		// TODO: fix this
 		
 		if (this.isStatic())
-			this.rigidbody.setCollisionShape(new MeshCollisionShape(true, this.model.getMeshColliderData()));
+			this.rigidbody.setCollisionShape(new GImpactCollisionShape(this.model.getMeshColliderData()));
 		else {
 			// TODO: dynamics
-			GImpactCollisionShape gics = new GImpactCollisionShape(this.model.getMeshColliderData());
+			//GImpactCollisionShape gics = new GImpactCollisionShape(this.model.getMeshColliderData());
 			
-			//CompoundCollisionShape ccs = new CompoundCollisionShape(this.model.getMeshes().length);
+			CompoundCollisionShape ccs = new CompoundCollisionShape(this.model.getMeshes().length);
 			
-			//for (int i = 0; i < this.model.getMeshes().length; i++) {
-			//	ccs.addChildShape(new HullCollisionShape(this.model.getMeshes()[i].getVertices()));
-			//}
+			for (int i = 0; i < this.model.getMeshes().length; i++) {
+				ccs.addChildShape(new HullCollisionShape(this.model.getMeshes()[i].getVertices()));
+			}
 			
-			this.rigidbody.setCollisionShape(gics);
+			this.rigidbody.setCollisionShape(ccs);
 		}
 		return this;
 	}

@@ -69,7 +69,7 @@ public class TestDisplay extends IDisplay {
 				);
 		
 		this.cubeModel = GameRegistry.getModel("resources/models/depression.dae");
-		this.world.addEntityToWorld(new Entity().setModel(GameRegistry.getModel("resources/models/test object.dae")).setPosition(0, -10.0f, 0));
+		this.world.addEntityToWorld(new Entity().setModel(GameRegistry.getModel("resources/models/test object.dae")).setPosition(0, -15.0f, 0));
 		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(25, 0, 0));
 		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(-25, 0, 0));
 		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(0, 0, 25));

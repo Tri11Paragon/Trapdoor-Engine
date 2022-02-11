@@ -35,7 +35,7 @@ public class TheAmazingWorldOfHentaiDisplay extends IDisplay{
 		
 		Light thefunny = new Light(Light.lightings[6], 1.0f, 1.0f, 1.0f, 0, 0, 0);
 		
-		this.world.addEntityToWorld(new EntityCamera(this.camera).setModel(GameRegistry.getModel("resources/models/poop.dae")).addLight(thefunny));
+		this.world.addEntityToWorld(new EntityCamera(this.camera).addLight(thefunny));
 		
 		this.world.addEntityToWorld(new Entity().setModel(
 				GameRegistry.getModel("resources/models/poop.dae")).setPosition(-30, 0, -15));

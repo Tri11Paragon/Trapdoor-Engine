@@ -3,6 +3,7 @@ package com.trapdoor.engine.world.entities;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
+import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.trapdoor.engine.camera.Camera;
 import com.trapdoor.engine.datatypes.sound.SoundListener;
 import com.trapdoor.engine.renderer.ui.DebugInfo;
@@ -43,6 +44,8 @@ public class EntityCamera extends Entity {
 		up = new Vector3f();
 		this.listener = new SoundListener(pos);
 		this.localTransform = (Transform) this.getComponent(Transform.class);
+		
+		this.getRigidbody().setCollisionShape(new BoxCollisionShape(0.5f));
 	}
 	
 	@Override

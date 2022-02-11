@@ -53,7 +53,7 @@ public class World {
 		// setup physics
 		PhysicsSpace.BroadphaseType bPhase = PhysicsSpace.BroadphaseType.DBVT;
         this.physWorld = new PhysicsSpace(bPhase);
-        this.physWorld.setMaxSubSteps(1);
+        this.physWorld.setMaxSubSteps(0);
 		this.physWorld.setGravity(new Vector3f(0.0f, 0.0f, 0.0f));
 		
 	}

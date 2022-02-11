@@ -110,9 +110,9 @@
 		    <version>0.4.0</version>
 		</dependency>
 		<dependency>
-		    <groupId>com.github.stephengold</groupId>
-		    <artifactId>Libbulletjme</artifactId>
-		    <version>12.7.1</version>
+		    <groupId>cz.advel.jbullet</groupId>
+		    <artifactId>jbullet</artifactId>
+		    <version>20101010-1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.liquidengine</groupId>
@@ -380,7 +380,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>com.trapdoor.Main</mainClass>
+							<mainClass>com.game.Main</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
