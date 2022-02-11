@@ -2,7 +2,7 @@ package com.trapdoor.engine.datatypes.ogl.assimp;
 
 import org.lwjgl.assimp.AIScene;
 
-import com.bulletphysics.collision.shapes.TriangleIndexVertexArray;
+import com.jme3.bullet.collision.shapes.infos.IndexedMesh;
 import com.trapdoor.engine.registry.GameRegistry;
 
 /**
@@ -16,16 +16,16 @@ public class Model {
 	private Material[] materials;
 	private AIScene scene;
 	private String path;
-	private TriangleIndexVertexArray meshColliderData;
+	private IndexedMesh[] meshColliderData;
 	
 	public Model(Mesh[] meshes, Material[] materials, AIScene scene, String path) {
 		this.meshes = meshes;
 		this.materials = materials;
 		this.scene = scene;
 		this.path = path;
-		meshColliderData = new TriangleIndexVertexArray();
+		meshColliderData = new IndexedMesh[meshes.length];
 		for (int i = 0; i < meshes.length; i++) {
-			meshColliderData.addIndexedMesh(meshes[i].getMeshColliderInfo());
+			meshColliderData[i] = (meshes[i].getMeshColliderInfo());
 		}
 	}
 	
@@ -68,7 +68,7 @@ public class Model {
 		return this.path;
 	}
 	
-	public TriangleIndexVertexArray getMeshColliderData() {
+	public IndexedMesh[] getMeshColliderData() {
 		return this.meshColliderData;
 	}
 	

@@ -1,16 +1,13 @@
 package com.trapdoor.engine.world.entities;
 
 import java.util.ArrayList;
-import javax.vecmath.Matrix4f;
-import javax.vecmath.Quat4f;
-import javax.vecmath.Vector3f;
 
-import com.bulletphysics.collision.shapes.BoxShape;
-import com.bulletphysics.collision.shapes.BvhTriangleMeshShape;
-import com.bulletphysics.collision.shapes.CollisionShape;
-import com.bulletphysics.dynamics.RigidBody;
-import com.bulletphysics.dynamics.RigidBodyConstructionInfo;
-import com.bulletphysics.linearmath.DefaultMotionState;
+import com.jme3.bullet.collision.shapes.BoxCollisionShape;
+import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.collision.shapes.GImpactCollisionShape;
+import com.jme3.bullet.collision.shapes.MeshCollisionShape;
+import com.jme3.bullet.objects.PhysicsRigidBody;
+import com.jme3.math.Vector3f;
 import com.trapdoor.engine.datatypes.lighting.Light;
 import com.trapdoor.engine.datatypes.ogl.assimp.Model;
 import com.trapdoor.engine.world.World;
@@ -32,7 +29,7 @@ public class Entity implements Comparable<Entity> {
 	private Model model;
 	
 	// physics stuff
-	private RigidBody rigidbody;
+	private PhysicsRigidBody rigidbody;
 	private boolean usingAssignedCollisonState = false;
 	private Vector3f positionStore;
 	
@@ -82,23 +79,13 @@ public class Entity implements Comparable<Entity> {
 		this.flags = (byte) (flags | mask);
 		// default no mass (ie collision object, nothing else.
 		if (collider == null)
-			collider = new BoxShape(new Vector3f());
+			collider = new BoxCollisionShape(0.5f);
 		else
 			usingAssignedCollisonState = true;
-		RigidBodyConstructionInfo cor = new RigidBodyConstructionInfo(mass, new DefaultMotionState(
-				new com.bulletphysics.linearmath.Transform(
-						new Matrix4f(
-								// rotation
-								new Quat4f(0,0,0,1),
-								// position, + w
-								new Vector3f(0,0,0), 1.0f
-								)
-						)
-				), collider);
-		cor.restitution = 0.0f;
-		cor.angularDamping = 0.95f;
-		cor.friction = 0.5f;
-		rigidbody = new RigidBody(cor);
+		rigidbody = new PhysicsRigidBody(collider, mass);
+		rigidbody.setRestitution(0.0f);
+		rigidbody.setAngularDamping(0.95f);
+		rigidbody.setFriction(0.5f);
 		this.addComponent(new Transform());
 	}
 	
@@ -240,7 +227,21 @@ public class Entity implements Comparable<Entity> {
 		if (usingAssignedCollisonState)
 			return this;
 		// TODO: fix this
-		this.rigidbody.setCollisionShape(new BvhTriangleMeshShape(this.model.getMeshColliderData(), true, true));
+		
+		if (this.isStatic())
+			this.rigidbody.setCollisionShape(new MeshCollisionShape(true, this.model.getMeshColliderData()));
+		else {
+			// TODO: dynamics
+			GImpactCollisionShape gics = new GImpactCollisionShape(this.model.getMeshColliderData());
+			
+			//CompoundCollisionShape ccs = new CompoundCollisionShape(this.model.getMeshes().length);
+			
+			//for (int i = 0; i < this.model.getMeshes().length; i++) {
+			//	ccs.addChildShape(new HullCollisionShape(this.model.getMeshes()[i].getVertices()));
+			//}
+			
+			this.rigidbody.setCollisionShape(gics);
+		}
 		return this;
 	}
 	
@@ -264,11 +265,11 @@ public class Entity implements Comparable<Entity> {
 		return (flags & 0x01) == 0x01;
 	}
 
-	public RigidBody getRigidbody() {
+	public PhysicsRigidBody getRigidbody() {
 		return rigidbody;
 	}
 
-	public Entity setRigidbody(RigidBody rigidbody) {
+	public Entity setRigidbody(PhysicsRigidBody rigidbody) {
 		// only if the world has been set (ie we've already spawned into the world)
 		if (world != null)
 			this.world.removeEntityPhysics(this);

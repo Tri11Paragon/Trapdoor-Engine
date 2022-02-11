@@ -1,6 +1,6 @@
 package com.trapdoor.engine.datatypes.ogl.assimp;
 
-import com.bulletphysics.collision.shapes.IndexedMesh;
+import com.jme3.bullet.collision.shapes.infos.IndexedMesh;
 import com.trapdoor.engine.datatypes.collision.AxisAlignedBoundingBox;
 import com.trapdoor.engine.datatypes.ogl.obj.VAO;
 

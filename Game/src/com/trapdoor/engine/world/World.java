@@ -2,20 +2,8 @@ package com.trapdoor.engine.world;
 
 import java.util.ArrayList;
 
-import javax.vecmath.Vector3f;
-
-import com.bulletphysics.collision.broadphase.BroadphaseInterface;
-import com.bulletphysics.collision.broadphase.DbvtBroadphase;
-import com.bulletphysics.collision.dispatch.CollisionConfiguration;
-import com.bulletphysics.collision.dispatch.CollisionDispatcher;
-import com.bulletphysics.collision.dispatch.DefaultCollisionConfiguration;
-import com.bulletphysics.collision.shapes.BoxShape;
-import com.bulletphysics.collision.shapes.CollisionShape;
-import com.bulletphysics.collision.shapes.SphereShape;
-import com.bulletphysics.collision.shapes.StaticPlaneShape;
-import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
-import com.bulletphysics.dynamics.constraintsolver.ConstraintSolver;
-import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
+import com.jme3.bullet.PhysicsSpace;
+import com.jme3.math.Vector3f;
 import com.karl.Engine.skybox.SkyboxRenderer;
 import com.trapdoor.engine.camera.Camera;
 import com.trapdoor.engine.datatypes.ogl.assimp.Model;
@@ -39,14 +27,10 @@ public class World {
 	 */
 	public static final float PLANE_BUFFER = 0.1f;
 	
-	public static final CollisionShape flatPlaneCollisionShape = new StaticPlaneShape(new Vector3f(0, 1, 0), PLANE_BUFFER);
-	public static final CollisionShape defaultSphereShape = new SphereShape(1.0f);
-	public static final CollisionShape defaultEntityShape = new BoxShape(new Vector3f(0.5f, 0.5f, 0.5f));
-	
 	private final WorldEntityStorage entityStorage;
 	
 	// Physics container
-	private DiscreteDynamicsWorld physWorld;
+	private PhysicsSpace physWorld;
 	
 	/*
 	 * everything else
@@ -67,12 +51,9 @@ public class World {
 		this.entityStorage = new WorldEntityStorage(c, this.renderer);
 		
 		// setup physics
-		BroadphaseInterface broadphase = new DbvtBroadphase();
-		CollisionConfiguration collisionConfig = new DefaultCollisionConfiguration();
-		CollisionDispatcher dispatcher = new CollisionDispatcher(collisionConfig);
-		ConstraintSolver solver = new SequentialImpulseConstraintSolver();
-		
-		this.physWorld = new DiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfig);
+		PhysicsSpace.BroadphaseType bPhase = PhysicsSpace.BroadphaseType.DBVT;
+        this.physWorld = new PhysicsSpace(bPhase);
+        this.physWorld.setMaxSubSteps(1);
 		this.physWorld.setGravity(new Vector3f(0.0f, 0.0f, 0.0f));
 		
 	}
@@ -123,7 +104,7 @@ public class World {
 		// calcualte the phys, stepped relative to the game speed
 		// faster it is running the smaller the steps.
 		try {
-			physWorld.stepSimulation((float) Threading.getFrameTimeSeconds());
+			physWorld.update((float) Threading.getFrameTimeSeconds());
 		} catch (Exception e) {
 			Logging.logger.fatal(e.getLocalizedMessage(), e);
 			System.exit(-1);
@@ -135,17 +116,17 @@ public class World {
 	}
 	
 	public void removeEntityPhysics(Entity e) {
-		this.physWorld.removeRigidBody(e.getRigidbody());
+		this.physWorld.remove(e.getRigidbody());
 	}
 	
 	public void addEntityPhysics(Entity e) {
-		this.physWorld.addRigidBody(e.getRigidbody());
+		this.physWorld.add(e.getRigidbody());
 	}
 	
 	public void addEntityToWorld(Entity e) {
 		this.entityStorage.addEntity(e);
 		e.setWorld(this);
-		this.physWorld.addRigidBody(e.getRigidbody());
+		this.physWorld.add(e.getRigidbody());
 	}
 	
 	public void removeEntityFromWorld(Entity e) {

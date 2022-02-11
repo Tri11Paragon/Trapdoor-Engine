@@ -1,13 +1,11 @@
 package com.trapdoor.engine.tools.models;
 
 import java.io.File;
-import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 
 import org.joml.Vector3f;
 import org.joml.Vector4f;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIColor4D;
 import org.lwjgl.assimp.AIFace;
@@ -18,7 +16,7 @@ import org.lwjgl.assimp.AIString;
 import org.lwjgl.assimp.AIVector3D;
 import org.lwjgl.assimp.Assimp;
 
-import com.bulletphysics.collision.shapes.IndexedMesh;
+import com.jme3.bullet.collision.shapes.infos.IndexedMesh;
 import com.trapdoor.engine.datatypes.collision.AxisAlignedBoundingBox;
 import com.trapdoor.engine.datatypes.ogl.assimp.Material;
 import com.trapdoor.engine.datatypes.ogl.assimp.Mesh;
@@ -200,34 +198,18 @@ public class ModelLoader {
 		    }
 	    }
 	    
-	    // now construct the mesh collider information
-	    int numberOfVertices = vertices.size();
-	    int numberofTriangles = numberOfVertices / 3;
+	    com.jme3.math.Vector3f[] positions = new com.jme3.math.Vector3f[vertices.size()/3];
+	    int[] indcies = new int[indices.size()];
 	    
-	    final int triangleIndexStride = 3 * 4;
-	    final int triangleVertexStride = 3 * 4;
-	    
-	    final ByteBuffer indexBuffer = BufferUtils.createByteBuffer(numberofTriangles * 3 * Integer.SIZE); // yes this is just number of vertices
-	    final ByteBuffer vertexBuffer = BufferUtils.createByteBuffer(numberOfVertices * Float.SIZE);
+	    for (int i = 0; i < positions.length; i++) {
+	    	positions[i/3] = new com.jme3.math.Vector3f(vertices.get(i), vertices.get(i + 1), vertices.get(i + 2));
+	    }
 	    
 	    for (int i = 0; i < indices.size(); i++) {
-	    	Integer ind = indices.get(i);
-	    	indexBuffer.putInt(ind);
+	    	indcies[i] = indices.get(i);
 	    }
 	    
-	    for (int i = 0; i < vertices.size(); i++) {
-	    	Float vert = vertices.get(i);
-	    	vertexBuffer.putFloat(vert);
-	    }
-	    
-	    IndexedMesh meshInfo = new IndexedMesh();
-	    
-	    meshInfo.numTriangles = numberofTriangles;
-	    meshInfo.triangleIndexBase = indexBuffer;
-	    meshInfo.triangleIndexStride = triangleIndexStride;
-	    meshInfo.numVertices = numberOfVertices;
-	    meshInfo.vertexBase = vertexBuffer;
-	    meshInfo.vertexStride = triangleVertexStride;
+	    IndexedMesh meshInfo = new IndexedMesh(positions, indcies);
 	    
 		return new Mesh(m, aabb, toFloatArray(vertices), toFloatArray(textures), toFloatArray(normals), toIntArray(indices), meshInfo);
 	}

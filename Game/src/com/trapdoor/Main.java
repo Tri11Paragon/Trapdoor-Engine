@@ -1,5 +1,6 @@
 package com.trapdoor;
 
+import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.OperatingSystemMXBean;
@@ -7,6 +8,7 @@ import java.lang.management.RuntimeMXBean;
 import java.lang.management.ThreadMXBean;
 import java.util.ArrayList;
 
+import com.jme3.system.NativeLibraryLoader;
 import com.trapdoor.engine.display.DisplayManager;
 import com.trapdoor.engine.display.IDisplay;
 import com.trapdoor.engine.display.LoadingScreenDisplay;
@@ -42,6 +44,29 @@ public class Main {
 	
 	public static void main(String[] args) throws InterruptedException {
 		Thread.currentThread().setName("Render Thread");
+		
+		/**
+		 * Assign system variables
+		 */
+		mx = ManagementFactory.getMemoryMXBean();
+		osx = ManagementFactory.getOperatingSystemMXBean();
+		rnx = ManagementFactory.getRuntimeMXBean();
+		thx = ManagementFactory.getThreadMXBean();
+		os = System.getProperty("os.name");
+		os_version = System.getProperty("os.version");
+		os_arch = System.getProperty("os.arch");
+		file_separator = System.getProperty("file.separator");
+		path_separator = System.getProperty("path.separator");
+		line_separator = System.getProperty("line.separator");
+		user_name = System.getProperty("user.name");
+		user_home = System.getProperty("user.home");
+		user_workingdir = System.getProperty("user.dir");
+		processors = Runtime.getRuntime().availableProcessors();
+		if (processors < 4)
+			processors = 4;
+		
+		NativeLibraryLoader.loadLibbulletjme(true, new File(user_workingdir + "/natives"), "Release", "Sp");
+		
 		// mvn clean compile assembly:single 
 		
 		//https://mkyong.com/maven/how-to-create-a-manifest-file-with-maven/
@@ -82,26 +107,6 @@ public class Main {
 		// create the logger instance
 		Logging.init();
 		AnnotationHandler.init();
-		
-		/**
-		 * Assign system variables
-		 */
-		mx = ManagementFactory.getMemoryMXBean();
-		osx = ManagementFactory.getOperatingSystemMXBean();
-		rnx = ManagementFactory.getRuntimeMXBean();
-		thx = ManagementFactory.getThreadMXBean();
-		os = System.getProperty("os.name");
-		os_version = System.getProperty("os.version");
-		os_arch = System.getProperty("os.arch");
-		file_separator = System.getProperty("file.separator");
-		path_separator = System.getProperty("path.separator");
-		line_separator = System.getProperty("line.separator");
-		user_name = System.getProperty("user.name");
-		user_home = System.getProperty("user.home");
-		user_workingdir = System.getProperty("user.dir");
-		processors = Runtime.getRuntime().availableProcessors();
-		if (processors < 4)
-			processors = 4;
 		
 		SettingsLoader.loadSettings();
 		Threading.init(processors-1);
