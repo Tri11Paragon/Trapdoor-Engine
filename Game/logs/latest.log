@@ -1,235 +1,238 @@
-[15:24:30.604] [Render Thread/DEBUG]: (Logging.java:14): Logger Init Successful
-[15:24:30.605] [Render Thread/DEBUG]: (AnnotationHandler.java:30): Loading event subscribers
-[15:24:30.899] [Render Thread/DEBUG]: (SettingsLoader.java:47): Loading settings!
-[15:24:30.916] [Render Thread/INFO ]: (Logging.java:20): ------------------------------
-[15:24:30.917] [Render Thread/INFO ]: (Logging.java:20): LWJGL Version: 3.3.0 build 21!
-[15:24:30.917] [Render Thread/INFO ]: (Logging.java:20): Game Version: 0.0A
-[15:24:30.917] [Render Thread/INFO ]: (Logging.java:20): Engine Version: 0.5.0A
-[15:24:30.918] [Render Thread/INFO ]: (Logging.java:20): ------------------------------
-[15:24:31.178] [Render Thread/INFO ]: (DisplayManager.java:259): Max allowed shader texures: 32
-[15:24:31.287] [Render Thread/INFO ]: (GameRegistry.java:87): GameRegistry Init!
-[15:24:31.346] [Render Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
-[15:24:31.346] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/error/error3.png
-[15:24:31.500] [Render Thread/INFO ]: (Logging.java:20): ----------------------------------------------------------------------------------
-[15:24:31.500] [Render Thread/INFO ]: (Logging.java:20): OS: Linux 5.10.0-9-amd64 amd64
-[15:24:31.500] [Render Thread/INFO ]: (Logging.java:20): Working Directory: /home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Game
-[15:24:31.500] [Render Thread/INFO ]: (Logging.java:20): Number of cores: 16
-[15:24:31.501] [Render Thread/INFO ]: (Logging.java:20): Current Thread: Thread[Render Thread,5,main]
+[15:49:31.588] [Render Thread/DEBUG]: (Logging.java:14): Logger Init Successful
+[15:49:31.599] [Render Thread/DEBUG]: (AnnotationHandler.java:30): Loading event subscribers
+[15:49:33.704] [Render Thread/DEBUG]: (SettingsLoader.java:47): Loading settings!
+[15:49:33.767] [Render Thread/INFO ]: (Logging.java:20): ------------------------------
+[15:49:33.767] [Render Thread/INFO ]: (Logging.java:20): LWJGL Version: 3.3.0 build 21!
+[15:49:33.768] [Render Thread/INFO ]: (Logging.java:20): Game Version: 0.0A
+[15:49:33.768] [Render Thread/INFO ]: (Logging.java:20): Engine Version: 0.5.1A
+[15:49:33.768] [Render Thread/INFO ]: (Logging.java:20): ------------------------------
+[15:49:34.669] [Render Thread/INFO ]: (DisplayManager.java:259): Max allowed shader texures: 32
+[15:49:34.817] [Render Thread/INFO ]: (GameRegistry.java:87): GameRegistry Init!
+[15:49:35.056] [Render Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
+[15:49:35.058] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/error/error3.png
+[15:49:35.576] [Render Thread/INFO ]: (Logging.java:20): -----------------------------------------------------------------------------------
+[15:49:35.577] [Render Thread/INFO ]: (Logging.java:20): OS: Linux 5.4.0-89-generic amd64
+[15:49:35.577] [Render Thread/INFO ]: (Logging.java:20): Working Directory: /home/laptop/Documents/Brock/Gamers/Java Brock 2021 Project/Game
+[15:49:35.578] [Render Thread/INFO ]: (Logging.java:20): Number of cores: 4
+[15:49:35.579] [Render Thread/INFO ]: (Logging.java:20): Current Thread: Thread[Render Thread,5,main]
 
-[15:24:31.501] [Render Thread/INFO ]: (Logging.java:20): ----------------------------------------------------------------------------------
-[15:24:31.502] [Render Thread/DEBUG]: (AnnotationHandler.java:75): Running pre-registration
-[15:24:31.502] [Render Thread/DEBUG]: (AnnotationHandler.java:83): Running registration
-[15:24:31.502] [Render Thread/TRACE]: (AnnotationHandler.java:85): Running registration on class: TheAmazingWorldOfHentaiDisplay Method: register
-[15:24:31.503] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/poop.dae
-[15:24:31.503] [Render Thread/TRACE]: (AnnotationHandler.java:85): Running registration on class: TestDisplay Method: register
-[15:24:31.503] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/piss.dae
-[15:24:31.503] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/cum.dae
-[15:24:31.503] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/kent.dae
-[15:24:31.503] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/zucc.dae
-[15:24:31.504] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/depression.dae
-[15:24:31.504] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
-[15:24:31.504] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
-[15:24:31.504] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/model.dae
-[15:24:31.505] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
-[15:24:31.505] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/kent.png
-[15:24:31.505] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
-[15:24:31.505] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/supercube.dae
-[15:24:31.505] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/depression.png
-[15:24:31.505] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/piss.png
-[15:24:31.505] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/test object.dae
-[15:24:31.506] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/512.png
-[15:24:31.506] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
-[15:24:31.504] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/character Texture.png
-[15:24:31.506] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
-[15:24:31.506] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/poop.png
-[15:24:31.506] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/cum.png
-[15:24:31.508] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_diff_1k.png
-[15:24:31.508] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_nor_1k.png
-[15:24:31.508] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_disp_1k.png
-[15:24:31.508] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_nor_1k.png
-[15:24:31.508] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_disp_1k.png
-[15:24:31.508] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_AO_1k.png
-[15:24:31.508] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_ao_1k.png
-[15:24:31.509] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_spec_1k.png
-[15:24:31.509] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_ao_1k.png
-[15:24:31.509] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_specular_1k.png
-[15:24:31.509] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_specMap_1k.png
-[15:24:31.509] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_specmap_1k.png
-[15:24:31.510] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/zucc.png
-[15:24:31.510] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
-[15:24:31.510] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/floor.dae
-[15:24:31.512] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
-[15:24:31.513] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
-[15:24:31.517] [Misc&. Thread/DEBUG]: (GameRegistry.java:257): Loading sound file resources/sounds/penis.ogg
-[15:24:31.517] [Render Thread/TRACE]: (AnnotationHandler.java:85): Running registration on class: SinglePlayerDisplay Method: register
-[15:24:31.518] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/chess/w_king_bt2.dae
-[15:24:31.518] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/chess/w_king.dae
-[15:24:31.518] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/chess/w_king_bt.dae
-[15:24:31.519] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/chess/w_king_bt3.dae
-[15:24:31.517] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/tuber.dae
-[15:24:31.521] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/chess/w_queen.dae
-[15:24:31.524] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
-[15:24:31.524] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/w_king.png
-[15:24:31.527] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
-[15:24:31.529] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_nor_1k.png
-[15:24:31.529] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/chess/w_bishop.dae
-[15:24:31.530] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
-[15:24:31.532] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_diff_1k.png
-[15:24:31.532] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/w_bishop.png
-[15:24:31.532] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
-[15:24:31.536] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
-[15:24:31.541] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_disp_1k.png
-[15:24:31.541] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
-[15:24:31.541] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_nor_1k.png
-[15:24:31.541] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/w_queen.png
-[15:24:31.542] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_AO_1k.png
-[15:24:31.542] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_disp_1k.png
-[15:24:31.542] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_spec_1k.png
-[15:24:31.542] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_AO_1k.png
-[15:24:31.542] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_nor_1k.png
-[15:24:31.542] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_disp_1k.png
-[15:24:31.543] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_AO_1k.png
-[15:24:31.543] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_spec_1k.png
-[15:24:31.543] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_spec_1k.png
-[15:24:31.543] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_nor_1k.png
-[15:24:31.544] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_disp_1k.png
-[15:24:31.544] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_AO_1k.png
-[15:24:31.545] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_spec_1k.png
-[15:24:31.545] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/atlas/Other SIZE_512/1540139171163.jpg
-[15:24:31.545] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
-[15:24:31.545] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
-[15:24:31.545] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
-[15:24:31.545] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
-[15:24:31.546] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
-[15:24:31.546] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
-[15:24:31.546] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_nor_1k.png
-[15:24:31.546] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_disp_1k.png
-[15:24:31.546] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_diff_1k.png
-[15:24:31.546] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_disp_1k.png
-[15:24:31.547] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_nor_1k.png
-[15:24:31.548] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_AO_1k.png
-[15:24:31.549] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_ao_1k.png
-[15:24:31.549] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_spec_1k.png
-[15:24:31.549] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_spec_1k.png
-[15:24:31.549] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/atlas/Other SIZE_512/1531692584494.jpg
-[15:24:31.550] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
-[15:24:31.550] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/chess/w_rook.dae
-[15:24:31.550] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_ao_1k.png
-[15:24:31.551] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/chess/w_knight.dae
-[15:24:31.553] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
-[15:24:31.554] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/atlas/Other SIZE_512/1540146676067.png
-[15:24:31.555] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
-[15:24:31.556] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/atlas/Other SIZE_512/1539212443187.png
-[15:24:31.570] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/w_rook.png
-[15:24:31.570] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
-[15:24:31.605] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
-[15:24:31.614] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/w_knight.png
-[15:24:31.619] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/error/error3.png
-[15:24:31.620] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/kent.dae
-[15:24:31.620] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/piss.dae
-[15:24:31.621] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/depression.dae
-[15:24:31.622] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/poop.dae
-[15:24:31.623] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/piss.png
-[15:24:31.623] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/supercube.dae
-[15:24:31.624] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/cum.dae
-[15:24:31.625] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/cum.png
-[15:24:31.645] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/512.png
-[15:24:31.676] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/character Texture.png
-[15:24:31.751] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_nor_1k.png
-[15:24:31.751] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_disp_1k.png
-[15:24:31.751] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_AO_1k.png
-[15:24:31.752] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_ao_1k.png
-[15:24:31.752] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_spec_1k.png
-[15:24:31.752] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_specular_1k.png
-[15:24:31.752] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_specMap_1k.png
-[15:24:31.752] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_specmap_1k.png
-[15:24:31.752] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/brick_4_1k_png/brick_4_nor_1k.png
-[15:24:31.752] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/brick_4_1k_png/brick_4_diff_1k.png
-[15:24:31.752] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/brick_4_1k_png/brick_4_nor_1k.png
-[15:24:31.752] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/brick_4_1k_png/brick_4_disp_1k.png
-[15:24:31.753] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/brick_4_1k_png/brick_4_disp_1k.png
-[15:24:31.753] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/brick_4_1k_png/brick_4_AO_1k.png
-[15:24:31.753] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/brick_4_1k_png/brick_4_spec_1k.png
-[15:24:31.753] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/brick_4_1k_png/brick_4_spec_1k.png
-[15:24:31.753] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/brick_4_1k_png/brick_4_AO_1k.png
-[15:24:31.887] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/test object.dae
-[15:24:31.888] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/poop.dae
-[15:24:31.889] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/poop.dae
-[15:24:31.889] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/chess/w_king_bt.dae
-[15:24:31.889] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/w_king.png
-[15:24:31.890] [Render Thread/DEBUG]: (GameRegistry.java:269): Loading sound file buffer resources/sounds/penis.ogg
-[15:24:31.891] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/chess/w_king_bt2.dae
-[15:24:31.891] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/w_king.png
-[15:24:31.891] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/512.png
-[15:24:31.892] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/w_king.png
-[15:24:31.892] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/zucc.dae
-[15:24:31.892] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/chess/w_king.dae
-[15:24:31.893] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/depression.png
-[15:24:31.893] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/w_king.png
-[15:24:31.893] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/chess/w_bishop.dae
-[15:24:31.893] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/chess/w_king_bt3.dae
-[15:24:31.894] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_nor_1k.png
-[15:24:31.898] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_disp_1k.png
-[15:24:31.899] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_AO_1k.png
-[15:24:31.901] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_diff_1k.png
-[15:24:31.903] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_nor_1k.png
-[15:24:31.903] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_disp_1k.png
-[15:24:31.904] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_diff_1k.png
-[15:24:31.905] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_AO_1k.png
-[15:24:31.906] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/w_bishop.png
-[15:24:31.907] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/chess/w_queen.dae
-[15:24:31.908] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_spec_1k.png
-[15:24:31.909] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_spec_1k.png
-[15:24:31.909] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/model.dae
-[15:24:31.910] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/tuber.dae
-[15:24:31.912] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/poop.dae
-[15:24:31.912] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/atlas/Other SIZE_512/1540146676067.png
-[15:24:31.912] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/poop.png
-[15:24:31.914] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/chess/w_rook.dae
-[15:24:31.915] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/atlas/Other SIZE_512/1531692584494.jpg
-[15:24:31.915] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/w_rook.png
-[15:24:31.916] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/kent.png
-[15:24:31.917] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/w_queen.png
-[15:24:31.918] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/chess/w_knight.dae
-[15:24:31.918] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_AO_1k.png
-[15:24:31.920] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/w_knight.png
-[15:24:31.920] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_spec_1k.png
-[15:24:31.921] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/atlas/Other SIZE_512/1539212443187.png
-[15:24:31.922] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/zucc.png
-[15:24:31.923] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_ao_1k.png
-[15:24:31.924] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_ao_1k.png
-[15:24:31.925] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_disp_1k.png
-[15:24:31.926] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_spec_1k.png
-[15:24:31.927] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_disp_1k.png
-[15:24:31.929] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_diff_1k.png
-[15:24:31.930] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_nor_1k.png
-[15:24:31.931] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_disp_1k.png
-[15:24:31.932] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_diff_1k.png
-[15:24:31.933] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_nor_1k.png
-[15:24:31.934] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_disp_1k.png
-[15:24:31.939] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_ao_1k.png
-[15:24:31.940] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_diff_1k.png
-[15:24:31.941] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_nor_1k.png
-[15:24:31.942] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/brick_4_1k_png/brick_4_disp_1k.png
-[15:24:31.943] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/brick_4_1k_png/brick_4_spec_1k.png
-[15:24:31.944] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/brick_4_1k_png/brick_4_AO_1k.png
-[15:24:31.945] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/floor.dae
-[15:24:31.947] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_nor_1k.png
-[15:24:31.949] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/brick_4_1k_png/brick_4_nor_1k.png
-[15:24:31.950] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/brick_4_1k_png/brick_4_diff_1k.png
-[15:24:31.951] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/character Texture.png
-[15:24:31.953] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_diff_1k.png
-[15:24:31.954] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/atlas/Other SIZE_512/1540139171163.jpg
-[15:24:32.016] [Render Thread/INFO ]: (LoadingScreenDisplay.java:85): Loading finished!
-[15:24:32.016] [Render Thread/DEBUG]: (AnnotationHandler.java:91): Running post-registration
-[15:25:13.283] [Phys&. Thread/INFO ]: (Threading.java:69): Physics thread exiting! 
-[15:25:13.287] [Render Thread/DEBUG]: (World.java:171): Destorying world!
-[15:25:13.288] [Render Thread/DEBUG]: (World.java:171): Destorying world!
-[15:25:13.289] [Render Thread/DEBUG]: (World.java:171): Destorying world!
-[15:25:13.290] [Render Thread/DEBUG]: (VAOLoader.java:196): Cleaning up VAOs
-[15:25:13.290] [Render Thread/DEBUG]: (VAOLoader.java:200): Cleaning up VBOs
-[15:25:13.290] [Render Thread/DEBUG]: (VAOLoader.java:204): Cleaning up textures
-[15:25:13.291] [Render Thread/DEBUG]: (VAOLoader.java:206): Cleaning up UBOs
-[15:25:13.291] [Render Thread/INFO ]: (VAOLoader.java:208): GPU objects cleanup completed
-[15:25:13.303] [Render Thread/INFO ]: (Threading.java:78): Threadpool shutting down! 
-[15:25:13.312] [Render Thread/INFO ]: (Main.java:139): Goodbye!
+[15:49:35.579] [Render Thread/INFO ]: (Logging.java:20): -----------------------------------------------------------------------------------
+[15:49:35.583] [Render Thread/DEBUG]: (AnnotationHandler.java:75): Running pre-registration
+[15:49:35.584] [Render Thread/DEBUG]: (AnnotationHandler.java:83): Running registration
+[15:49:35.584] [Render Thread/TRACE]: (AnnotationHandler.java:85): Running registration on class: TheAmazingWorldOfHentaiDisplay Method: register
+[15:49:35.586] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/poop.dae
+[15:49:35.596] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
+[15:49:35.598] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/kent.dae
+[15:49:35.600] [Render Thread/TRACE]: (AnnotationHandler.java:85): Running registration on class: TestDisplay Method: register
+[15:49:35.600] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/piss.dae
+[15:49:35.601] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/poop.png
+[15:49:35.601] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/character Texture.png
+[15:49:35.621] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/depression.dae
+[15:49:35.623] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/model.dae
+[15:49:35.635] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/test object.dae
+[15:49:35.641] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/supercube.dae
+[15:49:35.647] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/floor.dae
+[15:49:35.644] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/tuber.dae
+[15:49:35.652] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/cum.dae
+[15:49:35.655] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
+[15:49:35.657] [Render Thread/TRACE]: (AnnotationHandler.java:85): Running registration on class: SinglePlayerDisplay Method: register
+[15:49:35.657] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/cum.png
+[15:49:35.658] [Misc&. Thread/DEBUG]: (GameRegistry.java:257): Loading sound file resources/sounds/penis.ogg
+[15:49:35.670] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
+[15:49:35.668] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/chess/w_king_bt.dae
+[15:49:35.672] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_diff_1k.png
+[15:49:35.675] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/512.png
+[15:49:35.677] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
+[15:49:35.679] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/w_king.png
+[15:49:35.681] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_diff_1k.png
+[15:49:35.683] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_nor_1k.png
+[15:49:35.690] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
+[15:49:35.694] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
+[15:49:35.697] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
+[15:49:35.721] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/chess/w_king_bt2.dae
+[15:49:35.724] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
+[15:49:35.725] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/zucc.dae
+[15:49:35.729] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/chess/w_king.dae
+[15:49:35.729] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_nor_1k.png
+[15:49:35.730] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_disp_1k.png
+[15:49:35.699] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/piss.png
+[15:49:35.691] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/depression.png
+[15:49:35.730] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_disp_1k.png
+[15:49:35.681] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_nor_1k.png
+[15:49:35.699] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/kent.png
+[15:49:35.731] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_disp_1k.png
+[15:49:35.731] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_nor_1k.png
+[15:49:35.731] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_disp_1k.png
+[15:49:35.668] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
+[15:49:35.732] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_AO_1k.png
+[15:49:35.732] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_spec_1k.png
+[15:49:35.732] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_AO_1k.png
+[15:49:35.733] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_spec_1k.png
+[15:49:35.731] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_AO_1k.png
+[15:49:35.733] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_ao_1k.png
+[15:49:35.745] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/chess/w_queen.dae
+[15:49:35.745] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/chess/w_bishop.dae
+[15:49:35.749] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
+[15:49:35.751] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/chess/w_rook.dae
+[15:49:35.753] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/w_bishop.png
+[15:49:35.757] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_spec_1k.png
+[15:49:35.757] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
+[15:49:35.757] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_specular_1k.png
+[15:49:35.757] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_specMap_1k.png
+[15:49:35.757] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_specmap_1k.png
+[15:49:35.763] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
+[15:49:35.766] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_nor_1k.png
+[15:49:35.766] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_disp_1k.png
+[15:49:35.767] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_AO_1k.png
+[15:49:35.767] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_spec_1k.png
+[15:49:35.767] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/chess/w_king_bt3.dae
+[15:49:35.768] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_nor_1k.png
+[15:49:35.769] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_disp_1k.png
+[15:49:35.769] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_AO_1k.png
+[15:49:35.770] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_spec_1k.png
+[15:49:35.770] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/atlas/Other SIZE_512/1540139171163.jpg
+[15:49:35.775] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
+[15:49:35.781] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
+[15:49:35.783] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
+[15:49:35.785] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
+[15:49:35.786] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_ao_1k.png
+[15:49:35.790] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
+[15:49:35.790] [Misc&. Thread/DEBUG]: (GameRegistry.java:155): Loading model: resources/models/chess/w_knight.dae
+[15:49:35.792] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
+[15:49:35.792] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_nor_1k.png
+[15:49:35.792] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_diff_1k.png
+[15:49:35.793] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_disp_1k.png
+[15:49:35.794] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_disp_1k.png
+[15:49:35.794] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_AO_1k.png
+[15:49:35.795] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
+[15:49:35.797] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_ao_1k.png
+[15:49:35.797] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/w_queen.png
+[15:49:35.801] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_nor_1k.png
+[15:49:35.809] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_spec_1k.png
+[15:49:35.811] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_spec_1k.png
+[15:49:35.829] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/atlas/Other SIZE_512/1531692584494.jpg
+[15:49:35.833] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
+[15:49:35.834] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/atlas/Other SIZE_512/1539212443187.png
+[15:49:35.836] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
+[15:49:35.839] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_ao_1k.png
+[15:49:35.842] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
+[15:49:35.870] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
+[15:49:35.872] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
+[15:49:35.874] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
+[15:49:35.937] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/atlas/Other SIZE_512/1540146676067.png
+[15:49:35.943] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/w_rook.png
+[15:49:35.968] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/w_knight.png
+[15:49:35.973] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/zucc.png
+[15:49:36.041] [Misc&. Thread/WARN ]: (ModelLoader.java:157): Failed to load extra texture maps after checking possible resource locations! :(
+[15:49:36.224] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/error/error3.png
+[15:49:36.231] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/poop.dae
+[15:49:36.286] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/poop.dae
+[15:49:36.317] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/cum.dae
+[15:49:36.356] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/poop.dae
+[15:49:36.380] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/cum.png
+[15:49:36.382] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/supercube.dae
+[15:49:36.432] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/character Texture.png
+[15:49:36.766] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_nor_1k.png
+[15:49:36.766] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_disp_1k.png
+[15:49:36.767] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_AO_1k.png
+[15:49:36.767] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_ao_1k.png
+[15:49:36.779] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_spec_1k.png
+[15:49:36.779] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_specular_1k.png
+[15:49:36.780] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_specMap_1k.png
+[15:49:36.785] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_specmap_1k.png
+[15:49:36.785] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/brick_4_1k_png/brick_4_nor_1k.png
+[15:49:36.785] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/brick_4_1k_png/brick_4_diff_1k.png
+[15:49:36.785] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/brick_4_1k_png/brick_4_nor_1k.png
+[15:49:36.798] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/brick_4_1k_png/brick_4_disp_1k.png
+[15:49:36.799] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/brick_4_1k_png/brick_4_disp_1k.png
+[15:49:36.812] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/brick_4_1k_png/brick_4_AO_1k.png
+[15:49:36.813] [Misc&. Thread/TRACE]: (ModelLoader.java:386): Trying to load: resources/textures/materials/brick_4_1k_png/brick_4_spec_1k.png
+[15:49:36.813] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/brick_4_1k_png/brick_4_AO_1k.png
+[15:49:36.814] [Misc&. Thread/DEBUG]: (GameRegistry.java:208): Loading texture: resources/textures/materials/brick_4_1k_png/brick_4_spec_1k.png
+[15:49:37.448] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/w_king.png
+[15:49:37.450] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/depression.dae
+[15:49:37.451] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/kent.dae
+[15:49:37.455] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/piss.dae
+[15:49:37.462] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/w_king.png
+[15:49:37.462] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/chess/w_king_bt.dae
+[15:49:37.463] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/chess/w_king_bt2.dae
+[15:49:37.464] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/512.png
+[15:49:37.465] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/model.dae
+[15:49:37.468] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/piss.png
+[15:49:37.469] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/w_king.png
+[15:49:37.476] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/chess/w_king.dae
+[15:49:37.478] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/poop.dae
+[15:49:37.478] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/512.png
+[15:49:37.479] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/chess/w_bishop.dae
+[15:49:37.479] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/test object.dae
+[15:49:37.480] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_nor_1k.png
+[15:49:37.483] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_disp_1k.png
+[15:49:37.484] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_AO_1k.png
+[15:49:37.503] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_spec_1k.png
+[15:49:37.507] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_diff_1k.png
+[15:49:37.508] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_nor_1k.png
+[15:49:37.511] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_disp_1k.png
+[15:49:37.513] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_AO_1k.png
+[15:49:37.515] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_spec_1k.png
+[15:49:37.517] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_diff_1k.png
+[15:49:37.519] [Render Thread/DEBUG]: (GameRegistry.java:269): Loading sound file buffer resources/sounds/penis.ogg
+[15:49:37.520] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/chess/w_queen.dae
+[15:49:37.528] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/poop.png
+[15:49:37.530] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/tuber.dae
+[15:49:37.533] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/chess/w_knight.dae
+[15:49:37.533] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/w_queen.png
+[15:49:37.534] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/chess/w_rook.dae
+[15:49:37.535] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/zucc.dae
+[15:49:37.536] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/w_bishop.png
+[15:49:37.540] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/atlas/Other SIZE_512/1540146676067.png
+[15:49:37.541] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/w_king.png
+[15:49:37.541] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/chess/w_king_bt3.dae
+[15:49:37.542] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/atlas/Other SIZE_512/1531692584494.jpg
+[15:49:37.542] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/w_rook.png
+[15:49:37.543] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_spec_1k.png
+[15:49:37.546] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/depression.png
+[15:49:37.547] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/w_knight.png
+[15:49:37.548] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_AO_1k.png
+[15:49:37.554] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_spec_1k.png
+[15:49:37.556] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/atlas/Other SIZE_512/1539212443187.png
+[15:49:37.562] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_nor_1k.png
+[15:49:37.566] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_diff_1k.png
+[15:49:37.568] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_nor_1k.png
+[15:49:37.570] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_ao_1k.png
+[15:49:37.573] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_disp_1k.png
+[15:49:37.576] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_diff_1k.png
+[15:49:37.579] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/kent.png
+[15:49:37.580] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_ao_1k.png
+[15:49:37.583] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_nor_1k.png
+[15:49:37.587] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/zucc.png
+[15:49:37.589] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_disp_1k.png
+[15:49:37.591] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/floor_tiles_06_1k_png/floor_tiles_06_diff_1k.png
+[15:49:37.593] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/sandstone_blocks_05_1k_png/sandstone_blocks_05_disp_1k.png
+[15:49:37.594] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/brick_4_1k_png/brick_4_spec_1k.png
+[15:49:37.597] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/brick_4_1k_png/brick_4_disp_1k.png
+[15:49:37.599] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_ao_1k.png
+[15:49:37.601] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/brick_4_1k_png/brick_4_AO_1k.png
+[15:49:37.602] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_disp_1k.png
+[15:49:37.605] [Render Thread/DEBUG]: (GameRegistry.java:169): Loaded model: resources/models/floor.dae
+[15:49:37.612] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/brick_4_1k_png/brick_4_diff_1k.png
+[15:49:37.615] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/brick_4_1k_png/brick_4_nor_1k.png
+[15:49:37.616] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/character Texture.png
+[15:49:37.623] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_diff_1k.png
+[15:49:37.626] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/materials/cobblestone_floor_04_1k_png/cobblestone_floor_04_nor_1k.png
+[15:49:37.638] [Render Thread/INFO ]: (LoadingScreenDisplay.java:85): Loading finished!
+[15:49:37.638] [Render Thread/DEBUG]: (AnnotationHandler.java:91): Running post-registration
+[15:49:38.415] [Render Thread/DEBUG]: (GameRegistry.java:225): Loaded texture: resources/textures/atlas/Other SIZE_512/1540139171163.jpg
+[15:49:51.983] [Render Thread/DEBUG]: (AnnotationHandler.java:60): Clearing the screen
+[15:50:29.027] [Render Thread/DEBUG]: (AnnotationHandler.java:60): Clearing the screen
+[15:50:29.435] [Render Thread/DEBUG]: (AnnotationHandler.java:60): Clearing the screen
+[15:51:59.738] [Render Thread/DEBUG]: (World.java:171): Destorying world!
+[15:51:59.740] [Phys&. Thread/INFO ]: (Threading.java:69): Physics thread exiting! 
+[15:51:59.760] [Render Thread/DEBUG]: (World.java:171): Destorying world!
+[15:51:59.761] [Render Thread/DEBUG]: (World.java:171): Destorying world!
+[15:51:59.762] [Render Thread/DEBUG]: (VAOLoader.java:196): Cleaning up VAOs
+[15:51:59.762] [Render Thread/DEBUG]: (VAOLoader.java:200): Cleaning up VBOs
+[15:51:59.765] [Render Thread/DEBUG]: (VAOLoader.java:204): Cleaning up textures
+[15:51:59.785] [Render Thread/DEBUG]: (VAOLoader.java:206): Cleaning up UBOs
+[15:51:59.786] [Render Thread/INFO ]: (VAOLoader.java:208): GPU objects cleanup completed
+[15:51:59.885] [Render Thread/INFO ]: (Threading.java:78): Threadpool shutting down! 
+[15:51:59.893] [Render Thread/INFO ]: (Main.java:139): Goodbye!
