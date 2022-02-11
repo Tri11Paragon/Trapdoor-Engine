@@ -12,9 +12,11 @@ import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.math.Vector3f;
 import com.trapdoor.engine.datatypes.lighting.Light;
 import com.trapdoor.engine.datatypes.ogl.assimp.Model;
+import com.trapdoor.engine.registry.GameRegistry;
 import com.trapdoor.engine.world.World;
 import com.trapdoor.engine.world.entities.components.ComponentStore;
 import com.trapdoor.engine.world.entities.components.IComponent;
+import com.trapdoor.engine.world.entities.components.SoundSource;
 import com.trapdoor.engine.world.entities.components.Transform;
 
 /**
@@ -71,6 +73,8 @@ public class Entity implements Comparable<Entity> {
 		this(0, true, shape);
 	}
 	
+	private SoundSource src;
+	
 	public Entity(float mass, boolean isStatic, CollisionShape collider) {
 		// house keeping nonsense eh
 		long v = ((globalID++) - Integer.MAX_VALUE);
@@ -94,6 +98,7 @@ public class Entity implements Comparable<Entity> {
 		usingRigidBody = true;
 		
 		this.addComponent(new Transform());
+		this.addComponent((src = new SoundSource()));
 	}
 	
 	/**
@@ -141,7 +146,10 @@ public class Entity implements Comparable<Entity> {
 	 * @param event - the event itself (contains relevant data)
 	 */
 	public void onCollision(Entity other, PhysicsCollisionEvent event) {
-		
+		if (src.isPlaying())
+			return;
+		src.setSound(GameRegistry.getSound("resources/sounds/penis.ogg"));
+		src.play();
 	}
 	
 	/**

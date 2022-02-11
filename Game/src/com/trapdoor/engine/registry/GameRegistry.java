@@ -14,16 +14,19 @@ import org.lwjgl.opengl.GL11;
 import com.spinyowl.legui.style.font.FontRegistry;
 import com.trapdoor.engine.TextureLoader;
 import com.trapdoor.engine.VAOLoader;
+import com.trapdoor.engine.datatypes.DynamicArray;
 import com.trapdoor.engine.datatypes.ogl.Texture;
 import com.trapdoor.engine.datatypes.ogl.TextureData;
 import com.trapdoor.engine.datatypes.ogl.assimp.Material;
 import com.trapdoor.engine.datatypes.ogl.assimp.Model;
+import com.trapdoor.engine.datatypes.sound.SoundFile;
 import com.trapdoor.engine.display.LoadingScreenDisplay;
 import com.trapdoor.engine.registry.helpers.DualExecution;
 import com.trapdoor.engine.tools.Logging;
 import com.trapdoor.engine.tools.ScreenShot;
 import com.trapdoor.engine.tools.input.InputMaster;
 import com.trapdoor.engine.tools.models.ModelLoader;
+import com.trapdoor.engine.world.entities.components.SoundSource;
 
 /**
  * @author brett
@@ -77,7 +80,8 @@ public class GameRegistry {
 	/**
 	 * sounds
 	 */
-
+	private static final Map<String, SoundFile> sounds = Collections.synchronizedMap(new ConcurrentHashMap<String, SoundFile>()); 
+	private static final DynamicArray<SoundSource> sources = new DynamicArray<SoundSource>();
 	
 	public static void init() {
 		Logging.logger.info("GameRegistry Init!");
@@ -238,6 +242,42 @@ public class GameRegistry {
 		}));
 	}
 	
+	public static void registerSound(String path) {
+		if (!path.contains("."))
+			return;
+		if (!new File(path).exists()) {
+			Logging.logger.error("File: " + path + " does not exist!");
+			return;
+		}
+		LoadingScreenDisplay.max();
+		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+		
+		Threading.execute(new DualExecution(() -> {
+			try {
+				Logging.logger.debug("Loading sound file " + path);
+				sounds.put(path, new SoundFile(path));
+			} catch (Exception e) {
+				Logging.logger.fatal(e.getMessage(), e);
+				Logging.logger.fatal("Tried to load sound " + path + ", didn't work!");
+				printFatalMethodCallers(stackTraceElements);
+				System.exit(-1);
+			}
+		}, () -> {
+			try {
+				while (GameRegistry.sounds.get(path) == null)
+					Thread.sleep(0, 500); // sleeps for 500ns
+				Logging.logger.debug("Loading sound file buffer " + path);
+				sounds.get(path).loadAudioBuffer();
+			} catch (Exception e) {
+				Logging.logger.fatal(e.getMessage(), e);
+				Logging.logger.fatal("Tried to load sound " + path + " to buffer, didn't work!");
+				printFatalMethodCallers(stackTraceElements);
+				System.exit(-1);
+			}
+		}));
+		
+	}
+	
 	/**
 	 * @param file path to the texture
 	 * @return a singular texture which was loaded into memory
@@ -312,8 +352,30 @@ public class GameRegistry {
 		return meshes.entrySet();
 	}
 	
+	// TODO: error sound
+	public static SoundFile getSound(String path) {
+		return sounds.get(path);
+	}
+	
 	public static Model getErrorModel() {
 		return errorModel;
+	}
+	
+	public static void registerSoundSource(SoundSource source) {
+		sources.add(source);
+	}
+	
+	public static void removeSoundSource(SoundSource source) {
+		sources.remove(source);
+	}
+	
+	public static void cleanup() {
+		Logging.logger.debug("Cleaning up SoundSources");
+		for (SoundSource source : sources) {
+			Logging.logger.trace(source);
+			source.cleanup();
+		}
+		Logging.logger.info("Gameregistry cleanup complete!");
 	}
 	
 	/**

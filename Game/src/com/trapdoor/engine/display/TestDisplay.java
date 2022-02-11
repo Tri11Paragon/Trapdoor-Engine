@@ -35,6 +35,8 @@ public class TestDisplay extends IDisplay {
 		GameRegistry.registerModel("resources/models/tuber.dae");
 		
 		GameRegistry.registerModel("resources/models/poop.dae");
+		
+		GameRegistry.registerSound("resources/sounds/penis.ogg");
 	}
 	
 	@SuppressWarnings("deprecation")

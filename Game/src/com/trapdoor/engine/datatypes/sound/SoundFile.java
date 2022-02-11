@@ -32,16 +32,20 @@ public class SoundFile {
 	private ShortBuffer pcm = null;
 
 	private ByteBuffer vorbis = null;
+	private STBVorbisInfo info;
 
 	public SoundFile(String file) throws Exception {
 		this.bufferId = AL11.alGenBuffers();
 		try (STBVorbisInfo info = STBVorbisInfo.malloc()) {
-			ShortBuffer pcm = readVorbis(file, 32 * 1024, info);
-
+			readVorbis(file, 32 * 1024, info);
+			this.info = info;
 			// Copy to buffer
-			AL11.alBufferData(bufferId, info.channels() == 1 ? AL11.AL_FORMAT_MONO16 : AL11.AL_FORMAT_STEREO16, pcm,
-					info.sample_rate());
+			
 		}
+	}
+	
+	public void loadAudioBuffer() {
+		AL11.alBufferData(bufferId, info.channels() == 1 ? AL11.AL_FORMAT_MONO16 : AL11.AL_FORMAT_STEREO16, pcm, info.sample_rate());
 	}
 
 	public int getBufferId() {

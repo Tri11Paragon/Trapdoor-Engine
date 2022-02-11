@@ -1,6 +1,8 @@
 package com.trapdoor.engine.datatypes;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 /**
  * @author brett
@@ -8,7 +10,7 @@ import java.util.HashMap;
  * Specialized advanced data structure for use in high addition / <b>removal</b> situations (mostly removal)
  * It can and does work as a general purpose List however it tends to be out performed in addition when compared to ArrayLists
  */
-public class DynamicArray<T> {
+public class DynamicArray<T> implements Iterable<T> {
 
 	private int size;
 	private int lastIndex = 0;
@@ -100,6 +102,24 @@ public class DynamicArray<T> {
 			n[i] = this.entities[i];
 		this.size = n.length;
 		this.entities = n;
+	}
+
+	@Override
+	public Iterator<T> iterator() {
+		return new Iterator<T>() {
+			
+			Iterator<Entry<T, Integer>> iter = indexes.entrySet().iterator();
+			
+			@Override
+			public boolean hasNext() {
+				return iter.hasNext();
+			}
+
+			@Override
+			public T next() {
+				return iter.next().getKey();
+			}
+		};
 	}
 	
 }

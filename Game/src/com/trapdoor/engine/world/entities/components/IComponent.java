@@ -10,6 +10,7 @@ import com.trapdoor.engine.world.entities.Entity;
 public abstract class IComponent {
 	
 	private final int id;
+	protected Entity e;
 	
 	public IComponent() {
 		id = ComponentManager.leaseID();
@@ -21,7 +22,13 @@ public abstract class IComponent {
 	// called by physics
 	public abstract void update();
 	
-	public abstract void setAssociatedEntity(Entity e);
+	public void setAssociatedEntity(Entity e) {;
+		this.e = e;
+	}
+	
+	public Entity associatedEntity() {
+		return this.e;
+	}
 	
 	// component id
 	public int getID() {

@@ -65,9 +65,9 @@ public class Transform extends IComponent {
 			this.y = pysTransformOut.getTranslation().y;
 			this.z = pysTransformOut.getTranslation().z;
 	
-			this.positionOut.x = x;
-			this.positionOut.y = y;
-			this.positionOut.z = z;
+			this.positionOut.x = this.x;
+			this.positionOut.y = this.y;
+			this.positionOut.z = this.z;
 	
 			//this.mainRotation.identity();
 			

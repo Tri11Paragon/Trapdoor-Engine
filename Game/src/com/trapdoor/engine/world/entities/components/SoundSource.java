@@ -1,16 +1,20 @@
-package com.trapdoor.engine.datatypes.sound;
+package com.trapdoor.engine.world.entities.components;
 
 import org.joml.Vector3f;
 import org.lwjgl.openal.AL10;
 
+import com.trapdoor.engine.datatypes.sound.SoundFile;
+import com.trapdoor.engine.world.entities.Entity;
+
 /**
- * @author laptop
+ * @author brett
  * @date Feb. 11, 2022
  * 
  */
-public class SoundSource {
+public class SoundSource extends IComponent {
 
-    private final int sourceId;
+	private Transform entityTransform;
+	private final int sourceId;
 
     public SoundSource() {
     	this(false, true);
@@ -81,4 +85,21 @@ public class SoundSource {
         stop();
         AL10.alDeleteSources(sourceId);
     }
+	
+	@Override
+	public void render() {
+	}
+
+	@Override
+	public void update() {
+		if (this.entityTransform != null)
+			this.setPosition(this.entityTransform.getX(), this.entityTransform.getY(), this.entityTransform.getZ());
+	}
+	
+	@Override
+	public void setAssociatedEntity(Entity e) {
+		super.setAssociatedEntity(e);
+		this.entityTransform = (Transform) e.getComponent(Transform.class);
+	}
+
 }

@@ -6,10 +6,10 @@ import org.lwjgl.glfw.GLFW;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.objects.PhysicsCharacter;
 import com.trapdoor.engine.camera.Camera;
-import com.trapdoor.engine.datatypes.sound.SoundListener;
 import com.trapdoor.engine.renderer.ui.DebugInfo;
 import com.trapdoor.engine.tools.input.Keyboard;
 import com.trapdoor.engine.tools.input.Mouse;
+import com.trapdoor.engine.world.entities.components.SoundListener;
 import com.trapdoor.engine.world.entities.components.Transform;
 
 /**
@@ -32,12 +32,11 @@ public class EntityCamera extends Entity {
 	
 	private Transform localTransform;
 	
-	//TODO; this as a component
-	private SoundListener listener;
 	private Vector3f at,up;
 	
 	private PhysicsCharacter ch;
 	private final com.jme3.math.Vector3f store = new com.jme3.math.Vector3f();
+	private SoundListener sl;
 	
 	public EntityCamera(Camera c) {
 		super(50);
@@ -45,12 +44,13 @@ public class EntityCamera extends Entity {
 		pos = new Vector3f();
 		at = new Vector3f();
 		up = new Vector3f();
-		this.listener = new SoundListener(pos);
 		this.localTransform = (Transform) this.getComponent(Transform.class);
 		
 		ch = new PhysicsCharacter(new CapsuleCollisionShape(0.5f, 2.0f), 0.5f);
 		ch.setJumpSpeed(25.0f);
 		this.setCollisionObject(ch);
+		this.sl = new SoundListener();
+		this.addComponent(sl);
 	}
 	
 	@Override
@@ -66,12 +66,11 @@ public class EntityCamera extends Entity {
 		DebugInfo.x = this.pos.x;
 		DebugInfo.y = this.pos.y;
 		DebugInfo.z = this.pos.z;
-		this.listener.setPosition(pos);
 		this.c.setPosition(pos);
 		
 		this.c.getViewMatrix().positiveZ(at).negate();
 		this.c.getViewMatrix().positiveY(up);
-		listener.setOrientation(at, up);
+		sl.setOrientation(at, up);
 	}
 	
 	private void move() {
@@ -101,20 +100,10 @@ public class EntityCamera extends Entity {
 			moveatZ = (-speed * timeConstant);
 		else 
 			moveatZ = 0;
-
-		//if (Keyboard.isKeyDown(Keyboard.KEY_SPACE))
-		//	moveAtY = (speed * timeConstant);
-		//else
-		//	moveAtY = 0;
-			
-		//if (Keyboard.isKeyDown(Keyboard.LEFT_SHIFT))
-		//	moveAtY = (-speed * timeConstant);
 		
 		float dx = (float) ((((-((moveAtX) * Math.sin(Math.toRadians(c.getYaw()))  )) + -((moveatZ) * Math.cos(Math.toRadians(c.getYaw())) ))) );
-		//float dy = moveAtY;
 		float dz = (float) ( (((moveAtX) * Math.cos(Math.toRadians(c.getYaw()))  ) + -((moveatZ) * Math.sin(Math.toRadians(c.getYaw())) )) );
 		
-		//this.localTransform.setPosition(this.localTransform.getX() + dx, this.localTransform.getY() + dy, this.localTransform.getZ() + dz);
 		store.x = dx / 100;
 		store.y = 0;
 		store.z = dz / 100;

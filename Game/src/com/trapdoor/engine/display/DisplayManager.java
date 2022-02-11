@@ -75,7 +75,7 @@ import com.trapdoor.engine.tools.input.Mouse;
 public class DisplayManager {
 
 	public static final String gameVersion = "0.0A";
-	public static final String engineVersion = "0.5.0A";
+	public static final String engineVersion = "0.5.1A";
 	public static final String gameName = "Total Femboy Donamania";
 	public static final String engineName = "Trapdoor";
 	public static final String title = gameName + " - V" + gameVersion + " // " + engineName + " V" + engineVersion;
