@@ -2,11 +2,10 @@ package com.trapdoor.engine.world.entities;
 
 import java.util.ArrayList;
 
+import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
-import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.bullet.collision.shapes.GImpactCollisionShape;
-import com.jme3.bullet.collision.shapes.HullCollisionShape;
 import com.jme3.bullet.collision.shapes.MeshCollisionShape;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.math.Vector3f;
@@ -31,7 +30,9 @@ public class Entity implements Comparable<Entity> {
 	private Model model;
 	
 	// physics stuff
-	private PhysicsRigidBody rigidbody;
+	private PhysicsCollisionObject collisionObject;
+	private PhysicsRigidBody rigidBody;
+	private boolean usingRigidBody = false;
 	private boolean usingAssignedCollisonState = false;
 	private Vector3f positionStore;
 	
@@ -84,10 +85,13 @@ public class Entity implements Comparable<Entity> {
 			collider = new BoxCollisionShape(0.5f);
 		else
 			usingAssignedCollisonState = true;
-		rigidbody = new PhysicsRigidBody(collider, mass);
-		rigidbody.setRestitution(0.0f);
-		rigidbody.setAngularDamping(0.95f);
-		rigidbody.setFriction(0.5f);
+		rigidBody = new PhysicsRigidBody(collider, mass);
+		collisionObject = rigidBody;
+		rigidBody.setRestitution(0.0f);
+		rigidBody.setAngularDamping(0.95f);
+		rigidBody.setFriction(0.5f);
+		usingRigidBody = true;
+		
 		this.addComponent(new Transform());
 	}
 	
@@ -95,7 +99,7 @@ public class Entity implements Comparable<Entity> {
 	 * called by the update thread
 	 */
 	public void update() {
-		((Transform) components.getCompoent(Transform.class)).commit(rigidbody);
+		((Transform) components.getCompoent(Transform.class)).commit(collisionObject);
 		components.update();
 	}
 	
@@ -124,11 +128,13 @@ public class Entity implements Comparable<Entity> {
 	 * SETS the linear velocity on the rigid body.
 	 */
 	public synchronized Entity setLinearVelocity(float x, float y, float z) {
+		if (!usingRigidBody)
+			return this;
 		positionStore.x = x;
 		positionStore.y = y;
 		positionStore.z = z;
-		this.rigidbody.setLinearVelocity(positionStore);
-		this.rigidbody.activate();
+		this.rigidBody.setLinearVelocity(positionStore);
+		this.rigidBody.activate();
 		return this;
 	}
 	
@@ -136,11 +142,13 @@ public class Entity implements Comparable<Entity> {
 	 * Applies a force from the center of the entity
 	 */
 	public synchronized Entity applyCentralForce(float x, float y, float z) {
+		if (!usingRigidBody)
+			return this;
 		positionStore.x = x;
 		positionStore.y = y;
 		positionStore.z = z;
-		this.rigidbody.applyCentralForce(positionStore);
-		this.rigidbody.activate();
+		this.rigidBody.applyCentralForce(positionStore);
+		this.rigidBody.activate();
 		return this;
 	}
 	
@@ -149,16 +157,20 @@ public class Entity implements Comparable<Entity> {
 	 * Note: this ignores already existing forces, but not mass (it directly modifies the velocity)
 	 */
 	public synchronized Entity applyCentralImpulse(float x, float y, float z) {
+		if (!usingRigidBody)
+			return this;
 		positionStore.x = x;
 		positionStore.y = y;
 		positionStore.z = z;
-		this.rigidbody.applyCentralImpulse(positionStore);
-		this.rigidbody.activate();
+		this.rigidBody.applyCentralImpulse(positionStore);
+		this.rigidBody.activate();
 		return this;
 	}
 	
 	public synchronized Vector3f getLinearVelocity() {
-		this.rigidbody.getLinearVelocity(positionStore);
+		if (!usingRigidBody)
+			return null;
+		this.rigidBody.getLinearVelocity(positionStore);
 		return positionStore;
 	}
 	
@@ -168,7 +180,9 @@ public class Entity implements Comparable<Entity> {
 	 * The restitution may range from 0.0 (not bouncy) to 1.0 (extremely bouncy).
 	 */
 	public Entity setRestitution(float r) {
-		this.rigidbody.setRestitution(r);
+		if (!usingRigidBody)
+			return this;
+		this.rigidBody.setRestitution(r);
 		return this;
 	}
 	
@@ -177,7 +191,9 @@ public class Entity implements Comparable<Entity> {
 	 * 
 	 */
 	public Entity setFriction(float f) {
-		this.rigidbody.setFriction(f);
+		if (!usingRigidBody)
+			return this;
+		this.rigidBody.setFriction(f);
 		return this;
 	}
 	
@@ -186,7 +202,9 @@ public class Entity implements Comparable<Entity> {
 	 * 
 	 */
 	public Entity setAngularDamping(float a) {
-		this.rigidbody.setDamping(this.rigidbody.getLinearDamping(), a);
+		if (!usingRigidBody)
+			return this;
+		this.rigidBody.setDamping(this.rigidBody.getLinearDamping(), a);
 		return this;
 	}
 	
@@ -245,18 +263,18 @@ public class Entity implements Comparable<Entity> {
 		// TODO: fix this
 		
 		if (this.isStatic())
-			this.rigidbody.setCollisionShape(new GImpactCollisionShape(this.model.getMeshColliderData()));
+			this.collisionObject.setCollisionShape(new MeshCollisionShape(true, this.model.getMeshColliderData()));
 		else {
 			// TODO: dynamics
-			//GImpactCollisionShape gics = new GImpactCollisionShape(this.model.getMeshColliderData());
+			GImpactCollisionShape gics = new GImpactCollisionShape(this.model.getMeshColliderData());
 			
-			CompoundCollisionShape ccs = new CompoundCollisionShape(this.model.getMeshes().length);
+			//CompoundCollisionShape ccs = new CompoundCollisionShape(this.model.getMeshes().length);
 			
-			for (int i = 0; i < this.model.getMeshes().length; i++) {
-				ccs.addChildShape(new HullCollisionShape(this.model.getMeshes()[i].getVertices()));
-			}
+			//for (int i = 0; i < this.model.getMeshes().length; i++) {
+			//	ccs.addChildShape(new HullCollisionShape(this.model.getMeshes()[i].getVertices()));
+			//}
 			
-			this.rigidbody.setCollisionShape(ccs);
+			this.collisionObject.setCollisionShape(gics);
 		}
 		return this;
 	}
@@ -282,17 +300,38 @@ public class Entity implements Comparable<Entity> {
 	}
 
 	public PhysicsRigidBody getRigidbody() {
-		return rigidbody;
+		return rigidBody;
+	}
+	
+	public PhysicsCollisionObject getCollisionObject() {
+		return collisionObject;
 	}
 
 	public Entity setRigidbody(PhysicsRigidBody rigidbody) {
 		// only if the world has been set (ie we've already spawned into the world)
 		if (world != null)
 			this.world.removeEntityPhysics(this);
-		this.rigidbody = rigidbody;
+		this.rigidBody = rigidbody;
+		this.collisionObject = rigidbody;
+		this.usingRigidBody = true;
 		if (world != null)
 			this.world.addEntityPhysics(this);
 		return this;
+	}
+	
+	public Entity setCollisionObject(PhysicsCollisionObject obj) {
+		// only if the world has been set (ie we've already spawned into the world)
+		if (world != null)
+			this.world.removeEntityPhysics(this);
+		this.collisionObject = obj;
+		if (world != null)
+			this.world.addEntityPhysics(this);
+		this.usingRigidBody = false;
+		return this;
+	}
+	
+	public boolean usingRigidBody() {
+		return usingRigidBody;
 	}
 	
 	@Override

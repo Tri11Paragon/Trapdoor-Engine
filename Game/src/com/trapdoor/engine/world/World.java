@@ -3,6 +3,7 @@ package com.trapdoor.engine.world;
 import java.util.ArrayList;
 
 import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.math.Vector3f;
 import com.karl.Engine.skybox.SkyboxRenderer;
 import com.trapdoor.engine.camera.Camera;
@@ -51,9 +52,13 @@ public class World {
 		this.entityStorage = new WorldEntityStorage(c, this.renderer);
 		
 		// setup physics
-		PhysicsSpace.BroadphaseType bPhase = PhysicsSpace.BroadphaseType.DBVT;
-        this.physWorld = new PhysicsSpace(bPhase);
+        this.physWorld = new PhysicsSpace(PhysicsSpace.BroadphaseType.DBVT);
         this.physWorld.setMaxSubSteps(0);
+        this.physWorld.useDeterministicDispatch(false);
+        this.physWorld.useScr(false);
+        this.physWorld.addCollisionListener((PhysicsCollisionEvent event) -> {
+        	Logging.logger.trace(event.getObjectA() + " " + event.getObjectB());
+        });
 		this.physWorld.setGravity(new Vector3f(0.0f, 0.0f, 0.0f));
 		
 	}
@@ -116,17 +121,23 @@ public class World {
 	}
 	
 	public void removeEntityPhysics(Entity e) {
-		this.physWorld.remove(e.getRigidbody());
+		if (e.usingRigidBody())
+			this.physWorld.remove(e.getRigidbody());
+		else
+			this.physWorld.remove(e.getCollisionObject());
 	}
 	
 	public void addEntityPhysics(Entity e) {
-		this.physWorld.add(e.getRigidbody());
+		if (e.usingRigidBody())
+			this.physWorld.add(e.getRigidbody());
+		else
+			this.physWorld.add(e.getCollisionObject());
 	}
 	
 	public void addEntityToWorld(Entity e) {
 		this.entityStorage.addEntity(e);
 		e.setWorld(this);
-		this.physWorld.add(e.getRigidbody());
+		this.addEntityPhysics(e);
 		e.onAddedToWorld();
 	}
 	

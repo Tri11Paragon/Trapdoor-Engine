@@ -3,7 +3,8 @@ package com.trapdoor.engine.world.entities;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
-import com.jme3.bullet.collision.shapes.BoxCollisionShape;
+import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
+import com.jme3.bullet.objects.PhysicsCharacter;
 import com.trapdoor.engine.camera.Camera;
 import com.trapdoor.engine.datatypes.sound.SoundListener;
 import com.trapdoor.engine.renderer.ui.DebugInfo;
@@ -18,7 +19,7 @@ import com.trapdoor.engine.world.entities.components.Transform;
  */
 public class EntityCamera extends Entity {
 	
-	private static float speed = 40f;
+	private static float speed = 0.001f;
 	@SuppressWarnings("unused")
 	private static final int RECUR_AMT = 100;
 	
@@ -36,6 +37,9 @@ public class EntityCamera extends Entity {
 	private SoundListener listener;
 	private Vector3f at,up;
 	
+	private PhysicsCharacter ch;
+	private final com.jme3.math.Vector3f store = new com.jme3.math.Vector3f();
+	
 	public EntityCamera(Camera c) {
 		super(50);
 		this.c = c;
@@ -45,7 +49,9 @@ public class EntityCamera extends Entity {
 		this.listener = new SoundListener(pos);
 		this.localTransform = (Transform) this.getComponent(Transform.class);
 		
-		this.getRigidbody().setCollisionShape(new BoxCollisionShape(0.5f));
+		ch = new PhysicsCharacter(new CapsuleCollisionShape(0.5f, 2.0f), 0.5f);
+		ch.setJumpSpeed(25.0f);
+		this.setCollisionObject(ch);
 	}
 	
 	@Override
@@ -55,7 +61,8 @@ public class EntityCamera extends Entity {
 		this.localTransform.setRotation(c.getYaw(), c.getPitch(), c.getRoll());
 		move();
 		this.pos.x = this.localTransform.getX();
-		this.pos.y = this.localTransform.getY();
+		// TODO
+		this.pos.y = this.localTransform.getY() + 1.5f;
 		this.pos.z = this.localTransform.getZ();
 		DebugInfo.x = this.pos.x;
 		DebugInfo.y = this.pos.y;
@@ -96,41 +103,27 @@ public class EntityCamera extends Entity {
 		else 
 			moveatZ = 0;
 
-		if (Keyboard.isKeyDown(Keyboard.KEY_SPACE))
-			moveAtY = (speed * timeConstant);
-		else
-			moveAtY = 0;
+		//if (Keyboard.isKeyDown(Keyboard.KEY_SPACE))
+		//	moveAtY = (speed * timeConstant);
+		//else
+		//	moveAtY = 0;
 			
-		if (Keyboard.isKeyDown(Keyboard.LEFT_SHIFT))
-			moveAtY = (-speed * timeConstant);
+		//if (Keyboard.isKeyDown(Keyboard.LEFT_SHIFT))
+		//	moveAtY = (-speed * timeConstant);
 		
 		float dx = (float) ((((-((moveAtX) * Math.sin(Math.toRadians(c.getYaw()))  )) + -((moveatZ) * Math.cos(Math.toRadians(c.getYaw())) ))) );
-		float dy = moveAtY;
+		//float dy = moveAtY;
 		float dz = (float) ( (((moveAtX) * Math.cos(Math.toRadians(c.getYaw()))  ) + -((moveatZ) * Math.sin(Math.toRadians(c.getYaw())) )) );
 		
 		//this.localTransform.setPosition(this.localTransform.getX() + dx, this.localTransform.getY() + dy, this.localTransform.getZ() + dz);
-		applyWithoutBreakingVelocity(dx, dy, dz);
+		store.x = dx / 100;
+		store.y = 0;
+		store.z = dz / 100;
+		ch.setWalkDirection(store);
 		
-	}
-	
-	//private final javax.vecmath.Vector3f vel = new javax.vecmath.Vector3f();
-	public void applyWithoutBreakingVelocity(float x, float y, float z) {
-		// TODO: this;
-		/*vel.x = 0;
-		vel.y = 0;
-		vel.z = 0;
-		this.getRigidbody().getLinearVelocity(vel);
-		float vx = vel.x + x, vy = vel.y + y, vz = vel.z + z;
-		
-		if (vx >= x)
-			vel.x = x;
-		if (vy >= y)
-			vel.y = y;
-		if (vz >= z)
-			vel.z = z;
-		
-		this.getRigidbody().setLinearVelocity(vel);*/
-		this.setLinearVelocity(x, y, z);
+		if (Keyboard.isKeyDown(Keyboard.KEY_SPACE) && ch.onGround()) {
+			ch.jump();
+		}
 	}
 	
 }

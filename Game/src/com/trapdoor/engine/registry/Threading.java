@@ -56,7 +56,8 @@ public class Threading {
 				if (dis != null)
 					dis.update();
 				
-				SyncSave.syncPhy(DisplayManager.FPS_MAX);
+				// always 60!
+				SyncSave.syncPhy(60);
 				
 				long currentFrameTime = System.nanoTime();
 				delta = currentFrameTime - lastFrameTime;

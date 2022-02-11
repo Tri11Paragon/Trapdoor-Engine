@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
+import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.math.Vector3f;
 import com.trapdoor.engine.tools.math.Maths;
@@ -94,24 +95,27 @@ public class Transform extends IComponent {
 		
 	}
 	
-	public void commit(PhysicsRigidBody b) {
+	public void commit(PhysicsCollisionObject b) {
 		//if (this.awaitingPositionChange.get())
 		//	System.out.println("Eeee" + this.transformReady);
 		if (!this.transformReady) {
+			PhysicsRigidBody body = null;
+			if (b instanceof PhysicsRigidBody)
+				body = (PhysicsRigidBody) b;
 			b.getTransform(pysTransformOut);
 			b.getPhysicsRotationMatrix(physMatrix);
 			
-			if (this.awaitingPositionChange.get()) {
+			if (this.awaitingPositionChange.get() && body != null) {
 				this.positionStore.x = this.setX + pysTransformOut.getTranslation().x;
 				this.positionStore.y = this.setY + pysTransformOut.getTranslation().y;
 				this.positionStore.z = this.setZ + pysTransformOut.getTranslation().z;
 				
-				b.setPhysicsLocation(positionStore);
+				body.setPhysicsLocation(positionStore);
 				
 				this.awaitingPositionChange.set(false);
 			}
 			
-			if (this.awaitingRotationChange) {
+			if (this.awaitingRotationChange && body != null) {
 				// TODO: get yaw, pitch and roll from the matrix
 				this.yaw = this.setYaw;
 				this.pitch = this.setPitch;
@@ -132,7 +136,7 @@ public class Transform extends IComponent {
 				this.physMatrixStore.set(2, 0, this.rotMatrix.m20);
 				this.physMatrixStore.set(2, 1, this.rotMatrix.m21);
 				this.physMatrixStore.set(2, 2, this.rotMatrix.m22);
-				b.setPhysicsRotation(physMatrixStore);
+				body.setPhysicsRotation(physMatrixStore);
 				
 				this.awaitingRotationChange = false;
 			}
