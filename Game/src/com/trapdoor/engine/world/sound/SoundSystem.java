@@ -43,7 +43,7 @@ public class SoundSystem {
 					}
 				});
 			}
-			//lastPlayed = System.currentTimeMillis();
+			lastPlayed = System.currentTimeMillis();
 		}
 	}
 	

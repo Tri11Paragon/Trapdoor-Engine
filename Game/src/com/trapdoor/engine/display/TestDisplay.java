@@ -67,12 +67,12 @@ public class TestDisplay extends IDisplay {
 	@Override
 	public void onCreate() {
 		this.setSkyTextures(
-					"resources/textures/skyboxes/lolzplus2/right.png", 	// right
-					"resources/textures/skyboxes/lolzplus2/left.png", 	// left
-					"resources/textures/skyboxes/lolzplus2/top.png", 	// top
-					"resources/textures/skyboxes/lolzplus2/bottom.png", // bottom
-					"resources/textures/skyboxes/lolzplus2/front.png", 	// front
-					"resources/textures/skyboxes/lolzplus2/back.png"	// back
+					"resources/textures/skyboxes/day/right.jpg", 	// right
+					"resources/textures/skyboxes/day/left.jpg", 	// left
+					"resources/textures/skyboxes/day/top.jpg", 	// top
+					"resources/textures/skyboxes/day/bottom.jpg", // bottom
+					"resources/textures/skyboxes/day/front.jpg", 	// front
+					"resources/textures/skyboxes/day/back.jpg"	// back
 				);
 		
 		this.camera = new CreativeFirstPerson();

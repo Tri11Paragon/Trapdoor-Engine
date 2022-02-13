@@ -80,13 +80,13 @@ public abstract class IDisplay implements AnnotatedClass {
 		return glTexture;
 	}
 	
-	public void setSkyTextures(String right, String left, String top, String bottom, String back, String front) {
+	public void setSkyTextures(String right, String left, String top, String bottom, String front, String back) {
 		this.skyTexture[0] = right;
 		this.skyTexture[1] = left;
 		this.skyTexture[2] = top;
 		this.skyTexture[3] = bottom;
-		this.skyTexture[4] = back;
-		this.skyTexture[5] = front;
+		this.skyTexture[4] = front;
+		this.skyTexture[5] = back;
 		loadSkyTexture();
 	}
 	

@@ -16,6 +16,7 @@ import com.spinyowl.legui.style.Background;
 import com.spinyowl.legui.style.Style.DisplayType;
 import com.spinyowl.legui.style.shadow.Shadow;
 import com.trapdoor.Main;
+import com.trapdoor.engine.datatypes.ui.XButton;
 import com.trapdoor.engine.display.DisplayManager;
 import com.trapdoor.engine.display.IDisplay;
 import com.trapdoor.engine.display.ModelEditorDisplay;
@@ -50,15 +51,13 @@ public class MainMenuDisplay extends IDisplay {
 		IDisplay display = new TheAmazingWorldOfHentaiDisplay();
 		DisplayManager.createDisplay(display);
 
-		Button sp = new Button();
-		sp.getTextState().setText("Start Game");
+		Button sp = new XButton("Start Game", false, false, 1.1f, 0, 0, 456, 48);
 		//sp.getStyle().setBorder(new SimpleLineBorder(ColorConstants.red(), 5));
 		sp.getListenerMap().addListener(MouseClickEvent.class, (MouseClickEventListener) event -> {
 			if (event.getAction() != MouseClickEvent.MouseClickAction.RELEASE)
 				return;
 			DisplayManager.changeDisplay(display);
 		});
-		sp.setSize(456, 48);
 		setButtonPosition(sp, 69, 210, 48, 10, 0);
 		layer.add(sp);
 		
