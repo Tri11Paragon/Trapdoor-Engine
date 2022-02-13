@@ -85,8 +85,6 @@ public class World {
 		DisplayManager.disableTransparentcy(); 
 		
 		this.deferredRenderer.startFirstPass();
-		this.skyboxRenderer.render(c);
-		
 		this.deferredRenderer.enableMainShaders();
 		this.deferredRenderer.getShader().loadViewPos(this.c.getPosition());
 		this.entityStorage.render(this.deferredRenderer);
@@ -95,6 +93,7 @@ public class World {
 		for (int i = 0; i < ents.size(); i++)
 			ents.get(i).render();
 		
+		this.skyboxRenderer.render(c);
 		this.deferredRenderer.endFirstPass();
 		
 		this.deferredRenderer.runSecondPass();

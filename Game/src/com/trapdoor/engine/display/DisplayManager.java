@@ -71,11 +71,12 @@ import com.trapdoor.engine.tools.SettingsLoader;
 import com.trapdoor.engine.tools.icon.GLIcon;
 import com.trapdoor.engine.tools.input.InputMaster;
 import com.trapdoor.engine.tools.input.Mouse;
+import com.trapdoor.engine.world.sound.SoundSystem;
 
 public class DisplayManager {
 
 	public static final String gameVersion = "0.0A";
-	public static final String engineVersion = "0.5.1A";
+	public static final String engineVersion = "0.5.2A";
 	public static final String gameName = "Total Femboy Donamania";
 	public static final String engineName = "Trapdoor";
 	public static final String title = gameName + " - V" + gameVersion + " // " + engineName + " V" + engineVersion;
@@ -121,6 +122,7 @@ public class DisplayManager {
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glEnable(GL13.GL_BLEND);
 		GL11.glEnable(GL11.GL_CULL_FACE);
+		GL11.glDepthFunc(GL11.GL_LEQUAL);
 		GL11.glCullFace(GL11.GL_BACK);
 		GL13.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		while(!GLFW.glfwWindowShouldClose(DisplayManager.window)) {
@@ -272,6 +274,7 @@ public class DisplayManager {
 			System.exit(-1);
 		}
 		GameRegistry.init();
+		SoundSystem.init();
 		
 		//glfwWindowHint(GLFW.GLFW_DOUBLEBUFFER, GLFW_TRUE);
 		

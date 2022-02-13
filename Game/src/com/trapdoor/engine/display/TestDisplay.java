@@ -5,10 +5,13 @@ import com.trapdoor.engine.camera.CreativeFirstPerson;
 import com.trapdoor.engine.datatypes.lighting.Light;
 import com.trapdoor.engine.datatypes.ogl.assimp.Model;
 import com.trapdoor.engine.registry.GameRegistry;
+import com.trapdoor.engine.registry.annotations.PostRegistrationEventSubscriber;
 import com.trapdoor.engine.registry.annotations.RegistrationEventSubscriber;
 import com.trapdoor.engine.world.World;
 import com.trapdoor.engine.world.entities.Entity;
 import com.trapdoor.engine.world.entities.EntityCamera;
+import com.trapdoor.engine.world.sound.SoundSystem;
+import com.trapdoor.engine.world.sound.SoundSystemType;
 
 /**
  * @author brett
@@ -37,6 +40,27 @@ public class TestDisplay extends IDisplay {
 		GameRegistry.registerModel("resources/models/poop.dae");
 		
 		GameRegistry.registerSound("resources/sounds/penis.ogg");
+		
+		GameRegistry.registerSound("resources/sounds/music/how about some piano.ogg");
+		GameRegistry.registerSound("resources/sounds/music/i don't really know eh 9.ogg");
+		GameRegistry.registerSound("resources/sounds/music/im sorry.ogg");
+		GameRegistry.registerSound("resources/sounds/music/omniworks.ogg");
+		GameRegistry.registerSound("resources/sounds/music/rpd.ogg");
+		GameRegistry.registerSound("resources/sounds/music/weapons of mass distraction remasted.ogg");
+		GameRegistry.registerSound("resources/sounds/music/weapons of mass distraction.ogg");
+		
+	}
+	
+	@PostRegistrationEventSubscriber
+	public static void postRegister() {
+		SoundSystem.registerSoundSystem("basic_music", SoundSystemType.BACKGROUND,
+				GameRegistry.getSound("resources/sounds/music/how about some piano.ogg"),
+				GameRegistry.getSound("resources/sounds/music/i don't really know eh 9.ogg"),
+				GameRegistry.getSound("resources/sounds/music/im sorry.ogg"),
+				GameRegistry.getSound("resources/sounds/music/omniworks.ogg"),
+				GameRegistry.getSound("resources/sounds/music/rpd.ogg"),
+				GameRegistry.getSound("resources/sounds/music/weapons of mass distraction remasted.ogg"),
+				GameRegistry.getSound("resources/sounds/music/weapons of mass distraction.ogg"));
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -110,6 +134,7 @@ public class TestDisplay extends IDisplay {
 	@Override
 	public void render() {
 		this.world.render();
+		SoundSystem.update();
 	}
 	
 	@Override

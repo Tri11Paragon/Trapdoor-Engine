@@ -13,8 +13,8 @@ layout (std140) uniform Matricies {
 
 void main(void){
 	fragpos = in_position;
-
-	gl_Position = projectionMatrix * mat4(mat3(viewMatrix)) * vec4(in_position, 1.0);
+    vec4 pos = projectionMatrix * mat4(mat3(viewMatrix)) * vec4(in_position, 1.0);
+	gl_Position = pos.xyww;
 	pass_height = in_position.y;
 	
 }

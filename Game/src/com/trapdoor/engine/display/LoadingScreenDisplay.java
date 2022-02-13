@@ -82,6 +82,7 @@ public class LoadingScreenDisplay extends IDisplay {
 		if ((Threading.isEmpty() && System.currentTimeMillis() - time > TIME)) {
 		// make sure we have loaded all assets and the splash screen has existed for some time.
 			if (bar.getValue() >= 98) {
+				try {Thread.sleep(50);} catch (InterruptedException e) {e.printStackTrace();}
 				Logging.logger.info("Loading finished!");
 				
 				AnnotationHandler.runPostRegistration();

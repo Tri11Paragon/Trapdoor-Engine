@@ -33,9 +33,11 @@ public class SoundFile {
 
 	private ByteBuffer vorbis = null;
 	private STBVorbisInfo info;
+	private String file;
 
 	public SoundFile(String file) throws Exception {
 		this.bufferId = AL11.alGenBuffers();
+		this.file = file;
 		try (STBVorbisInfo info = STBVorbisInfo.malloc()) {
 			readVorbis(file, 32 * 1024, info);
 			this.info = info;
@@ -116,5 +118,9 @@ public class SoundFile {
 		buffer.flip();
 		newBuffer.put(buffer);
 		return newBuffer;
+	}
+	
+	public String toString() {
+		return this.file;
 	}
 }
