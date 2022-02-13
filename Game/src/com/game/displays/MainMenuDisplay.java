@@ -20,6 +20,7 @@ import com.trapdoor.engine.datatypes.ui.XButton;
 import com.trapdoor.engine.display.DisplayManager;
 import com.trapdoor.engine.display.IDisplay;
 import com.trapdoor.engine.display.ModelEditorDisplay;
+import com.trapdoor.engine.display.OptionsDisplay;
 import com.trapdoor.engine.display.TestDisplay;
 import com.trapdoor.engine.renderer.ui.UIMaster;
 
@@ -51,7 +52,7 @@ public class MainMenuDisplay extends IDisplay {
 		IDisplay display = new TheAmazingWorldOfHentaiDisplay();
 		DisplayManager.createDisplay(display);
 
-		Button sp = new XButton("Start Game", false, false, 1.1f, 0, 0, 456, 48);
+		Button sp = new XButton("Start Game", false, false, 1.02f, 69, 210, 456, 48);
 		//sp.getStyle().setBorder(new SimpleLineBorder(ColorConstants.red(), 5));
 		sp.getListenerMap().addListener(MouseClickEvent.class, (MouseClickEventListener) event -> {
 			if (event.getAction() != MouseClickEvent.MouseClickAction.RELEASE)
@@ -61,10 +62,16 @@ public class MainMenuDisplay extends IDisplay {
 		setButtonPosition(sp, 69, 210, 48, 10, 0);
 		layer.add(sp);
 		
-		Button options = new Button();
-		options.getTextState().setText("Options");
-		options.setSize(456, 48);
+		IDisplay optionsDis = new OptionsDisplay(this);
+		DisplayManager.createDisplay(optionsDis);
+		
+		Button options = new XButton("Options", false, false, 1.02f, 69, 210 + 48 + 10, 456, 48);
 		setButtonPosition(options, 69, 210, 48, 10, 1);
+		options.getListenerMap().addListener(MouseClickEvent.class, (MouseClickEventListener) event -> {
+			if (event.getAction() != MouseClickEvent.MouseClickAction.RELEASE)
+				return;
+			DisplayManager.changeDisplay(optionsDis);
+		});
 		layer.add(options);
 		
 		if (Main.devMode) {

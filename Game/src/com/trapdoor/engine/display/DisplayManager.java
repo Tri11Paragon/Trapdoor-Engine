@@ -63,6 +63,7 @@ import com.trapdoor.engine.registry.GameRegistry;
 import com.trapdoor.engine.registry.Threading;
 import com.trapdoor.engine.registry.annotations.AnnotationHandler;
 import com.trapdoor.engine.renderer.SyncSave;
+import com.trapdoor.engine.renderer.ui.CommandBox;
 import com.trapdoor.engine.renderer.ui.Console;
 import com.trapdoor.engine.renderer.ui.DebugInfo;
 import com.trapdoor.engine.renderer.ui.UIMaster;
@@ -315,8 +316,10 @@ public class DisplayManager {
 			displayOpen = false;
 		});
 		debugInfoLayer = new DebugInfo();
+		CommandBox.init();
 		InputMaster.registerKeyListener(new Console());
 		InputMaster.registerKeyListener(debugInfoLayer);
+		InputMaster.registerKeyListener(CommandBox.getInstance());
 	}
 
 	public static void closeDisplay() {

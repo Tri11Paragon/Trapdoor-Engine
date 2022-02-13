@@ -114,4 +114,9 @@ public class EntityCamera extends Entity {
 		}
 	}
 	
+	@Override
+	public Entity updateCollisionStateFromModel() {
+		return this;
+	}
+	
 }

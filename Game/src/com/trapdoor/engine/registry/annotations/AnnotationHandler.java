@@ -63,8 +63,13 @@ public class AnnotationHandler {
 		}
 	}
 	
+	private static long timeSinceLast = 0;
+	
 	public static void runRescaleEvent(int width, int height) {
-		Logging.logger.debug("Running rescale events! (" + width + ", " + height + ")");
+		if (System.currentTimeMillis() - timeSinceLast > 250) {
+			Logging.logger.debug("Running rescale events! (" + width + ", " + height + ")");
+			timeSinceLast = System.currentTimeMillis();
+		}
 		for (Method m : rescaleEventSubscribers) {
 			Logging.logger.trace("Running rescale on class: " + m.getDeclaringClass().getSimpleName() + " Method: " + m.getName());
 			invokeMethod(m, DisplayManager.WIDTH, DisplayManager.HEIGHT);
