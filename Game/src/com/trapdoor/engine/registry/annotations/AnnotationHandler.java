@@ -57,7 +57,6 @@ public class AnnotationHandler {
 	 * Use this to close all open layers which may be intrusive (ie Console, DebugScreen)
 	 */
 	public static void cleanScreen() {
-		Logging.logger.debug("Clearing the screen");
 		for (Method m : preRegistrationEventSubscribers) {
 			invokeMethod(m);
 		}

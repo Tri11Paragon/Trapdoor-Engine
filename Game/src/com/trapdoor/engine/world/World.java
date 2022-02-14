@@ -2,10 +2,14 @@ package com.trapdoor.engine.world;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
+import org.joml.Vector3d;
 
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
+import com.jme3.bullet.collision.PhysicsRayTestResult;
 import com.jme3.math.Vector3f;
 import com.karl.Engine.skybox.SkyboxRenderer;
 import com.trapdoor.engine.camera.Camera;
@@ -128,6 +132,21 @@ public class World {
 		}
 	}
 	
+	private final Vector3f v1 = new Vector3f();
+	private final Vector3f v2 = new Vector3f();
+	public List<PhysicsRayTestResult> raycast(org.joml.Vector3f ray, float distance) {
+		Vector3d pos = c.getPosition();
+		v1.x = (float) pos.x;
+		v1.y = (float) pos.y;
+		v1.z = (float) pos.z;
+		
+		v2.x = v1.x + ray.x * distance;
+		v2.y = v1.y + ray.y * distance;
+		v2.z = v1.z + ray.z * distance;
+		
+		return physWorld.rayTestRaw(v1, v2);
+	}
+	
 	public void modelChanged(Entity e, Model old, Model n) {
 		this.entityStorage.changeModel(e, old, n);
 	}
@@ -160,6 +179,10 @@ public class World {
 		this.entityStorage.removeEntity(e);
 		this.removeEntityPhysics(e);
 		e.onRemovedFromWorld();
+	}
+	
+	public Entity getEntity(PhysicsCollisionObject obj) {
+		return entityPhyiscsMap.get(obj);
 	}
 	
 	public Camera getCamera() {

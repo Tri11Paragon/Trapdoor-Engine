@@ -107,6 +107,7 @@ public class DisplayManager {
 	
 	// mouse
 	public static double mouseX,mouseY;
+	private static int mx, my;
 	private static double[] mouseXA = new double[1], mouseYA = new double[1];
 	private static double dx, dy, lx, ly;
 	public static boolean isMouseGrabbed = false;
@@ -308,10 +309,10 @@ public class DisplayManager {
 		keeper.getChainScrollCallback().add((window, x, y) -> {
 			InputMaster.scrollMoved((int)y);
 		});
-		//keeper.getChainCursorPosCallback().add((window, x, y) -> {
-			//DisplayManager.mouseX = x;
-			//DisplayManager.mouseY = y;
-		//});
+		keeper.getChainCursorPosCallback().add((window, x, y) -> {
+			DisplayManager.mx = (int) x;
+			DisplayManager.my = (int) y;
+		});
 		keeper.getChainWindowCloseCallback().add((window) -> {
 			displayOpen = false;
 		});
@@ -389,12 +390,21 @@ public class DisplayManager {
 		glfwSetInputMode(window, GLFW_CURSOR, grabbed ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
 	}
 	
+	// TODO: move to input related class
 	public static double getDX() {
 		return dx;
 	}
 	
 	public static double getDY() {
 		return dy;
+	}
+	
+	public static double getMouseX() {
+		return mx;
+	}
+	
+	public static double getMouseY() {
+		return my;
 	}
 	
 	public static void setGrabbed(boolean gr) {

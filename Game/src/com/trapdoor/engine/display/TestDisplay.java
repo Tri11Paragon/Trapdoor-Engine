@@ -7,6 +7,7 @@ import com.trapdoor.engine.datatypes.ogl.assimp.Model;
 import com.trapdoor.engine.registry.GameRegistry;
 import com.trapdoor.engine.registry.annotations.PostRegistrationEventSubscriber;
 import com.trapdoor.engine.registry.annotations.RegistrationEventSubscriber;
+import com.trapdoor.engine.tools.RayCasting;
 import com.trapdoor.engine.world.World;
 import com.trapdoor.engine.world.entities.Entity;
 import com.trapdoor.engine.world.entities.EntityCamera;
@@ -23,6 +24,7 @@ public class TestDisplay extends IDisplay {
 	
 	//private ArrayList<Entity> e = new ArrayList<Entity>();
 	private CreativeFirstPerson camera;
+	private RayCasting rayCasting;
 	private World world;
 	private Model cubeModel;
 	
@@ -77,6 +79,7 @@ public class TestDisplay extends IDisplay {
 		
 		this.camera = new CreativeFirstPerson();
 		this.world = new World(camera);
+		this.rayCasting = new RayCasting(camera, world);
 		
 		this.world.addEntityToWorld(new EntityCamera(this.camera));
 		
@@ -140,6 +143,7 @@ public class TestDisplay extends IDisplay {
 	@Override
 	public void update() {
 		this.world.update();
+		this.rayCasting.update();
 	}
 
 	@Override

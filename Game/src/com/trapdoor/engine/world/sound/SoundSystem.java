@@ -20,7 +20,7 @@ public class SoundSystem {
 	private static HashMap<SoundSystemType, HashMap<String, SoundInfo>> sounds = new HashMap<SoundSystemType, HashMap<String, SoundInfo>>();
 	private static SoundSource musicPlayer;
 	private static Random randomness;
-	private static long lastPlayed = 0;
+	private static long lastPlayed = System.currentTimeMillis();
 	
 	public static void init() {
 		sounds.put(SoundSystemType.AMBIENT, new HashMap<String, SoundInfo>());
