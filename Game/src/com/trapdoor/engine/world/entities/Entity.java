@@ -233,8 +233,9 @@ public class Entity implements Comparable<Entity> {
 		return this;
 	}
 	
-	public IComponent getComponent(Class<? extends IComponent> c) {
-		return components.getCompoent(c);
+	@SuppressWarnings("unchecked")
+	public <T extends IComponent> T getComponent(Class<T> c) {
+		return (T) components.getCompoent(c);
 	}
 	
 	public ComponentStore getComponentStore() {

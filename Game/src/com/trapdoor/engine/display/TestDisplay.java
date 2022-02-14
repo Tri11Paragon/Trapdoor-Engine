@@ -2,11 +2,14 @@ package com.trapdoor.engine.display;
 
 import com.game.entities.EntityPoop;
 import com.trapdoor.engine.camera.CreativeFirstPerson;
+import com.trapdoor.engine.datatypes.commands.RayCastCommand;
+import com.trapdoor.engine.datatypes.commands.TeleportCommand;
 import com.trapdoor.engine.datatypes.lighting.Light;
 import com.trapdoor.engine.datatypes.ogl.assimp.Model;
 import com.trapdoor.engine.registry.GameRegistry;
 import com.trapdoor.engine.registry.annotations.PostRegistrationEventSubscriber;
 import com.trapdoor.engine.registry.annotations.RegistrationEventSubscriber;
+import com.trapdoor.engine.renderer.ui.CommandBox;
 import com.trapdoor.engine.tools.RayCasting;
 import com.trapdoor.engine.world.World;
 import com.trapdoor.engine.world.entities.Entity;
@@ -24,6 +27,7 @@ public class TestDisplay extends IDisplay {
 	
 	//private ArrayList<Entity> e = new ArrayList<Entity>();
 	private CreativeFirstPerson camera;
+	private EntityCamera cameraEnt;
 	private RayCasting rayCasting;
 	private World world;
 	private Model cubeModel;
@@ -81,7 +85,7 @@ public class TestDisplay extends IDisplay {
 		this.world = new World(camera);
 		this.rayCasting = new RayCasting(camera, world);
 		
-		this.world.addEntityToWorld(new EntityCamera(this.camera));
+		this.world.addEntityToWorld((cameraEnt = new EntityCamera(this.camera)));
 		
 		this.world.addEntityToWorld(
 				new Entity(0, true, null)
@@ -131,7 +135,11 @@ public class TestDisplay extends IDisplay {
 
 	@Override
 	public void onSwitch() {
-		
+		// can be added to any screen, will just overwrite on load
+		CommandBox.registerCommand("raycast", new RayCastCommand(rayCasting));
+		TeleportCommand tp = new TeleportCommand(cameraEnt, camera);
+		CommandBox.registerCommand("teleport", tp);
+		CommandBox.registerCommand("tp", tp);
 	}
 	
 	@Override

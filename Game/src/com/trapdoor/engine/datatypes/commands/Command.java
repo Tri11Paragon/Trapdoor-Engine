@@ -17,7 +17,7 @@ public abstract class Command {
 		
 	}
 	
-	public abstract Object run(CommandLine line);
+	public abstract Object run(CommandLine line, Object lastObject);
 	
 	public Options getOptions() {
 		return options;

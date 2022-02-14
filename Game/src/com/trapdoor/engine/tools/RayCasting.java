@@ -41,6 +41,14 @@ public class RayCasting {
 	public Entity getEntityCurrentlyLookingAt() {
 		return entityLookingAt;
 	}
+	
+	public List<PhysicsRayTestResult> raycast(float distance){
+		return world.raycast(currentRay, distance);
+	}
+	
+	public List<PhysicsRayTestResult> raycastSorted(float distance){
+		return world.raycastSorted(currentRay, distance);
+	}
 
 	public void update() {
 		currentRay = calculateScreenRay();

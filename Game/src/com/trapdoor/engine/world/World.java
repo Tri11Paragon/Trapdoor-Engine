@@ -134,6 +134,7 @@ public class World {
 	
 	private final Vector3f v1 = new Vector3f();
 	private final Vector3f v2 = new Vector3f();
+	private final List<PhysicsRayTestResult> otherResults = new ArrayList<PhysicsRayTestResult>();
 	public List<PhysicsRayTestResult> raycast(org.joml.Vector3f ray, float distance) {
 		Vector3d pos = c.getPosition();
 		v1.x = (float) pos.x;
@@ -144,7 +145,23 @@ public class World {
 		v2.y = v1.y + ray.y * distance;
 		v2.z = v1.z + ray.z * distance;
 		
-		return physWorld.rayTestRaw(v1, v2);
+		return physWorld.rayTestRaw(v1, v2, otherResults);
+	}
+	
+	private final Vector3f s1 = new Vector3f();
+	private final Vector3f s2 = new Vector3f();
+	private final List<PhysicsRayTestResult> results = new ArrayList<PhysicsRayTestResult>();
+	public List<PhysicsRayTestResult> raycastSorted(org.joml.Vector3f ray, float distance) {
+		Vector3d pos = c.getPosition();
+		s1.x = (float) pos.x;
+		s1.y = (float) pos.y;
+		s1.z = (float) pos.z;
+		
+		s2.x = s1.x + ray.x * distance;
+		s2.y = s1.y + ray.y * distance;
+		s2.z = s1.z + ray.z * distance;
+		
+		return physWorld.rayTest(s1, s2, results);
 	}
 	
 	public void modelChanged(Entity e, Model old, Model n) {

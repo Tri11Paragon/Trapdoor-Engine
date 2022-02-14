@@ -13,7 +13,6 @@ import com.spinyowl.legui.component.TextInput;
 import com.spinyowl.legui.style.Style.DisplayType;
 import com.trapdoor.engine.datatypes.commands.Command;
 import com.trapdoor.engine.datatypes.commands.HelloWorldCommand;
-import com.trapdoor.engine.datatypes.commands.RayCastCommand;
 import com.trapdoor.engine.display.DisplayManager;
 import com.trapdoor.engine.registry.annotations.AnnotatedClass;
 import com.trapdoor.engine.registry.annotations.AnnotationHandler;
@@ -106,7 +105,7 @@ public class CommandBox implements IKeyState, AnnotatedClass {
 		Command c = commands.get(indv[0].toLowerCase());
 		if (c != null) {
 			try {
-				lastObject = c.run(parser.parse(c.getOptions(), indv));
+				lastObject = c.run(parser.parse(c.getOptions(), indv), lastObject);
 				commandOutputBuffer = lastObject.toString();
 			} catch (ParseException e) {
 				commandOutputBuffer = "Unable to run command. Please refer to the help.\nHere is what I know: \n" + e.getMessage();
@@ -139,7 +138,6 @@ public class CommandBox implements IKeyState, AnnotatedClass {
 	public static void init() {
 		box = new CommandBox();
 		registerCommand("hello", new HelloWorldCommand());
-		registerCommand("raycast", new RayCastCommand());
 	}
 	
 	public static CommandBox getInstance() {

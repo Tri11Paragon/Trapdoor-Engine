@@ -15,7 +15,7 @@ public class HelloWorldCommand extends Command {
 	}
 	
 	@Override
-	public String run(CommandLine line) {
+	public String run(CommandLine line, Object last) {
 		String ret = "Hello";
 		if (line.hasOption("w")) {
 			ret += " World!";

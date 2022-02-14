@@ -16,7 +16,6 @@ import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
 import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
 import static org.lwjgl.glfw.GLFW.glfwDefaultWindowHints;
 import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
-import static org.lwjgl.glfw.GLFW.glfwGetInputMode;
 import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
 import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
 import static org.lwjgl.glfw.GLFW.glfwGetWindowSize;
@@ -278,14 +277,13 @@ public class DisplayManager {
 		GameRegistry.init();
 		SoundSystem.init();
 		
-		//glfwWindowHint(GLFW.GLFW_DOUBLEBUFFER, GLFW_TRUE);
+		glfwWindowHint(GLFW.GLFW_DOUBLEBUFFER, GLFW_TRUE);
 		
 		UIMaster.init(window);
 		CallbackKeeper keeper = UIMaster.getInitl().getCallbackKeeper();
 		keeper.getChainKeyCallback().add((window, key, scancode, action, mods) -> {
 			if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE ) {
-				glfwSetInputMode(window, GLFW_CURSOR, glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
-				isMouseGrabbed = glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED ? true : false;
+				setMouseGrabbed(!isMouseGrabbed);
 			}
 			if ( action == GLFW_PRESS )
 				InputMaster.keyPressed(key);
@@ -387,6 +385,7 @@ public class DisplayManager {
 	 */
 	
 	public static void setMouseGrabbed(boolean grabbed) {
+		isMouseGrabbed = grabbed;
 		glfwSetInputMode(window, GLFW_CURSOR, grabbed ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
 	}
 	
