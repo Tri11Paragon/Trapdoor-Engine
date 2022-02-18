@@ -5,58 +5,58 @@
 		<Option title="glm"/>
 		<Option makefile_is_custom="1"/>
 		<Option compiler="gcc"/>
-		<Option virtualFolders="CMake Files\;CMake Files\depends\;CMake Files\depends\glad\;CMake Files\depends\glm\;CMake Files\depends\glm\cmake\;CMake Files\depends\glm\glm\;CMake Files\src\;CMake Files\src\config\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\..\..\usr\;CMake Files\..\..\..\..\..\..\..\..\usr\lib\;CMake Files\..\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\;CMake Files\..\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\;CMake Files\..\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\glfw3\;"/>
+		<Option virtualFolders="CMake Files\;CMake Files\depends\;CMake Files\depends\glad\;CMake Files\depends\glm\;CMake Files\depends\glm\cmake\;CMake Files\depends\glm\glm\;CMake Files\src\;CMake Files\src\config\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\..\..\usr\;CMake Files\..\..\..\..\..\..\..\..\usr\local\;CMake Files\..\..\..\..\..\..\..\..\usr\local\lib\;CMake Files\..\..\..\..\..\..\..\..\usr\local\lib\cmake\;CMake Files\..\..\..\..\..\..\..\..\usr\local\lib\cmake\glfw3\;"/>
 		<Build>
 			<Target title="all">
-				<Option working_dir="/home/laptop/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/cmake-build-release/depends/glm"/>
+				<Option working_dir="/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/cmake-build-release/depends/glm"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/laptop/Documents/Brock/Gamers/Java\ Brock\ 2021\ Project/Engine\ 2:\ Electric\ boogaloo/project/cmake-build-release/depends/glm/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/laptop/Documents/Brock/Gamers/Java\ Brock\ 2021\ Project/Engine\ 2:\ Electric\ boogaloo/project/cmake-build-release/depends/glm/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/laptop/Documents/Brock/Gamers/Java\ Brock\ 2021\ Project/Engine\ 2:\ Electric\ boogaloo/project/cmake-build-release/depends/glm/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/laptop/Documents/Brock/Gamers/Java\ Brock\ 2021\ Project/Engine\ 2:\ Electric\ boogaloo/project/cmake-build-release/depends/glm/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/gmake -j16 -f &quot;/home/brett/Documents/Brock/Gamers/Java\ Brock\ 2021\ Project/Engine\ 2:\ Electric\ boogaloo/project/cmake-build-release/depends/glm/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/gmake -j16 -f &quot;/home/brett/Documents/Brock/Gamers/Java\ Brock\ 2021\ Project/Engine\ 2:\ Electric\ boogaloo/project/cmake-build-release/depends/glm/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j16 -f &quot;/home/brett/Documents/Brock/Gamers/Java\ Brock\ 2021\ Project/Engine\ 2:\ Electric\ boogaloo/project/cmake-build-release/depends/glm/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j16 -f &quot;/home/brett/Documents/Brock/Gamers/Java\ Brock\ 2021\ Project/Engine\ 2:\ Electric\ boogaloo/project/cmake-build-release/depends/glm/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="uninstall">
-				<Option working_dir="/home/laptop/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/cmake-build-release/depends/glm"/>
+				<Option working_dir="/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/cmake-build-release/depends/glm"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/laptop/Documents/Brock/Gamers/Java\ Brock\ 2021\ Project/Engine\ 2:\ Electric\ boogaloo/project/cmake-build-release/depends/glm/Makefile&quot;  VERBOSE=1 uninstall"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/laptop/Documents/Brock/Gamers/Java\ Brock\ 2021\ Project/Engine\ 2:\ Electric\ boogaloo/project/cmake-build-release/depends/glm/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/laptop/Documents/Brock/Gamers/Java\ Brock\ 2021\ Project/Engine\ 2:\ Electric\ boogaloo/project/cmake-build-release/depends/glm/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/laptop/Documents/Brock/Gamers/Java\ Brock\ 2021\ Project/Engine\ 2:\ Electric\ boogaloo/project/cmake-build-release/depends/glm/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/gmake -j16 -f &quot;/home/brett/Documents/Brock/Gamers/Java\ Brock\ 2021\ Project/Engine\ 2:\ Electric\ boogaloo/project/cmake-build-release/depends/glm/Makefile&quot;  VERBOSE=1 uninstall"/>
+					<CompileFile command="/usr/bin/gmake -j16 -f &quot;/home/brett/Documents/Brock/Gamers/Java\ Brock\ 2021\ Project/Engine\ 2:\ Electric\ boogaloo/project/cmake-build-release/depends/glm/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j16 -f &quot;/home/brett/Documents/Brock/Gamers/Java\ Brock\ 2021\ Project/Engine\ 2:\ Electric\ boogaloo/project/cmake-build-release/depends/glm/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j16 -f &quot;/home/brett/Documents/Brock/Gamers/Java\ Brock\ 2021\ Project/Engine\ 2:\ Electric\ boogaloo/project/cmake-build-release/depends/glm/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/home/laptop/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/CMakeLists.txt">
+		<Unit filename="/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
-		<Unit filename="/home/laptop/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/depends/glad/CMakeLists.txt">
+		<Unit filename="/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/depends/glad/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\depends\glad\"/>
 		</Unit>
-		<Unit filename="/home/laptop/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/depends/glm/CMakeLists.txt">
+		<Unit filename="/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/depends/glm/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\depends\glm\"/>
 		</Unit>
-		<Unit filename="/home/laptop/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/depends/glm/cmake/cmake_uninstall.cmake.in">
+		<Unit filename="/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/depends/glm/cmake/cmake_uninstall.cmake.in">
 			<Option virtualFolder="CMake Files\depends\glm\cmake\"/>
 		</Unit>
-		<Unit filename="/home/laptop/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/depends/glm/glm/CMakeLists.txt">
+		<Unit filename="/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/depends/glm/glm/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\depends\glm\glm\"/>
 		</Unit>
-		<Unit filename="/home/laptop/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/src/config/config.h.in">
+		<Unit filename="/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/src/config/config.h.in">
 			<Option virtualFolder="CMake Files\src\config\"/>
 		</Unit>
-		<Unit filename="/home/laptop/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/../../../../../../../../usr/lib/x86_64-linux-gnu/cmake/glfw3/glfw3Config.cmake">
-			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\glfw3\"/>
+		<Unit filename="/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/../../../../../../../../usr/local/lib/cmake/glfw3/glfw3Config.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\..\usr\local\lib\cmake\glfw3\"/>
 		</Unit>
-		<Unit filename="/home/laptop/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/../../../../../../../../usr/lib/x86_64-linux-gnu/cmake/glfw3/glfw3ConfigVersion.cmake">
-			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\glfw3\"/>
+		<Unit filename="/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/../../../../../../../../usr/local/lib/cmake/glfw3/glfw3ConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\..\usr\local\lib\cmake\glfw3\"/>
 		</Unit>
-		<Unit filename="/home/laptop/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/../../../../../../../../usr/lib/x86_64-linux-gnu/cmake/glfw3/glfw3Targets-none.cmake">
-			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\glfw3\"/>
+		<Unit filename="/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/../../../../../../../../usr/local/lib/cmake/glfw3/glfw3Targets-noconfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\..\usr\local\lib\cmake\glfw3\"/>
 		</Unit>
-		<Unit filename="/home/laptop/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/../../../../../../../../usr/lib/x86_64-linux-gnu/cmake/glfw3/glfw3Targets.cmake">
-			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\glfw3\"/>
+		<Unit filename="/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/../../../../../../../../usr/local/lib/cmake/glfw3/glfw3Targets.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\..\usr\local\lib\cmake\glfw3\"/>
 		</Unit>
 	</Project>
 </CodeBlocks_project_file>
