@@ -1,6 +1,7 @@
 package com.trapdoor.engine.datatypes.commands;
 
 import org.apache.commons.cli.CommandLine;
+import org.joml.Vector3d;
 
 import com.trapdoor.engine.camera.Camera;
 import com.trapdoor.engine.world.entities.EntityCamera;
@@ -33,11 +34,19 @@ public class TeleportCommand extends Command {
 		double y = 0;
 		double z = 0;
 		if (argX.startsWith("~")) {
-			
+			x = cam.getPosition().x + Double.parseDouble(argX.substring(1));
 		}
-		
-		
-		return null;
+		if (argY.startsWith("~")) {
+			y = cam.getPosition().y + Double.parseDouble(argY.substring(1));
+		}
+		if (argZ.startsWith("~")) {
+			z = cam.getPosition().z + Double.parseDouble(argZ.substring(1));
+		}
+		Vector3d postion = new Vector3d(x,y,z);
+		cam.setPosition(postion);
+		cameraEnt.setPosition((float)x, (float)y, (float)z);
+		cam.setPosition(postion);
+		return postion;
 	}
 	
 }

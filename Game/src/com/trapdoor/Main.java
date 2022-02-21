@@ -65,6 +65,7 @@ public class Main {
 		if (processors < 4)
 			processors = 4;
 		
+		
 		NativeLibraryLoader.loadLibbulletjme(true, new File(user_workingdir + "/natives"), "Release", "Sp");
 		
 		// mvn clean compile assembly:single 
@@ -137,6 +138,7 @@ public class Main {
 		while (DisplayManager.exited < DisplayManager.createdThreads) 
 			Thread.sleep(16);
 		Logging.logger.info("Goodbye!");
+		
 		System.exit(0);
 	}
 	

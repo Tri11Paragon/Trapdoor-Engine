@@ -1,5 +1,6 @@
 package com.trapdoor.engine.display;
 
+import com.game.entities.EntityKent;
 import com.game.entities.EntityPoop;
 import com.trapdoor.engine.camera.CreativeFirstPerson;
 import com.trapdoor.engine.datatypes.commands.RayCastCommand;
@@ -69,7 +70,6 @@ public class TestDisplay extends IDisplay {
 				GameRegistry.getSound("resources/sounds/music/weapons of mass distraction.ogg"));
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate() {
 		this.setSkyTextures(
@@ -115,6 +115,7 @@ public class TestDisplay extends IDisplay {
 							new Light(Light.lightings[6], 2.5f, 2.5f, 1.5f, -5, -5, -5)
 							 )
 					);
+		this.world.addEntityToWorld(new EntityKent().setModel(GameRegistry.getModel("resources/models/kent.dae")).setPosition(00, 10, -50));
 		// add entity
 		this.world.addEntityToWorld(
 				new Entity()

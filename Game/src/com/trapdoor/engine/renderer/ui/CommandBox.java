@@ -79,16 +79,21 @@ public class CommandBox implements IKeyState, AnnotatedClass {
 				DisplayManager.setGrabbed(false);
 			else
 				DisplayManager.setGrabbed(true);
-			layer.setEnabled(enabled);
-			layer.getStyle().setDisplay(enabled == true ? DisplayType.MANUAL : DisplayType.NONE);
+			toggle();
 		}
 		if (keys == GLFW.GLFW_KEY_ESCAPE) {
 			if (enabled)
 				DisplayManager.setGrabbed(false);
 			enabled = false;
-			layer.setEnabled(enabled);
-			layer.getStyle().setDisplay(enabled == true ? DisplayType.MANUAL : DisplayType.NONE);
+			toggle();
 		}
+	}
+	
+	private void toggle() {
+		layer.setEnabled(enabled);
+		in.setEnabled(enabled);
+		in.setEditable(enabled);
+		layer.getStyle().setDisplay(enabled == true ? DisplayType.MANUAL : DisplayType.NONE);
 	}
 	
 	private void pushCommand() {
