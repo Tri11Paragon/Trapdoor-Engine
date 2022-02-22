@@ -6,6 +6,7 @@ import org.lwjgl.glfw.GLFW;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.objects.PhysicsCharacter;
 import com.trapdoor.engine.camera.Camera;
+import com.trapdoor.engine.camera.CreativeFirstPerson;
 import com.trapdoor.engine.renderer.ui.DebugInfo;
 import com.trapdoor.engine.tools.input.Keyboard;
 import com.trapdoor.engine.tools.input.Mouse;
@@ -56,6 +57,14 @@ public class EntityCamera extends Entity {
 	@Override
 	public void update() {
 		super.update();
+		
+		if (c instanceof CreativeFirstPerson) {
+			CreativeFirstPerson cr = ((CreativeFirstPerson) c);
+			if (cr.allowFreeMovement) {
+				cr.move2();
+				return;	
+			}
+		}
 		
 		this.localTransform.setRotation(c.getYaw(), c.getPitch(), c.getRoll());
 		move();
@@ -112,6 +121,10 @@ public class EntityCamera extends Entity {
 		if (Keyboard.isKeyDown(Keyboard.KEY_SPACE) && ch.onGround()) {
 			ch.jump();
 		}
+	}
+	
+	public PhysicsCharacter getCharacter() {
+		return ch;
 	}
 	
 	@Override

@@ -37,11 +37,11 @@ public class SettingsLoader {
 	public static int AF = 4;
 	public static double SENSITIVITY_X = 0.5d;
 	public static double SENSITIVITY_Y = 0.5d;
-	public static double MUSIC = 0.5d;
 	public static int VSYNC = 0;
 	public static int RENDER_DISTANCE = 8;
 	public static float GAMMA = 2.2f;
 	public static float MUSIC_GAIN = 0.5f;
+	public static int GRAPHICS_LEVEL = 0;
 	
 	private static int readLines = 1;
 	public static void loadSettings() {
@@ -81,8 +81,6 @@ public class SettingsLoader {
 					SAMPLES = (int) Float.parseFloat(name[1]);
 				if (name[0].equals("anisotropy"))
 					AF = (int) Float.parseFloat(name[1]);
-				if (name[0].equals("music"))
-					MUSIC = Float.parseFloat(name[1]);
 				if (name[0].equals("vsync"))
 					VSYNC = (int)Float.parseFloat(name[1]);
 				if (name[0].equals("lod"))
@@ -93,6 +91,8 @@ public class SettingsLoader {
 					GAMMA = Float.parseFloat(name[1]);
 				if (name[0].equals("music_gain"))
 					MUSIC_GAIN = Float.parseFloat(name[1]);
+				if (name[0].equals("graphics"))
+					GRAPHICS_LEVEL = (int)Float.parseFloat(name[1]);
 			}
 			reader.close();
 		} catch (FileNotFoundException e) {
@@ -118,11 +118,11 @@ public class SettingsLoader {
 			writeLine(writer, "samples: " + SAMPLES);
 			writeLine(writer, "anisotropy: " + AF);
 			writeLine(writer, "vsync: " + VSYNC);
-			writeLine(writer, "music: " + MUSIC);
 			writeLine(writer, "lod: " + TextureLoader.TEXTURE_LOD);
 			writeLine(writer, "tscale: " + TextureLoader.TEXTURE_SCALE);
 			writeLine(writer, "gamma: " + GAMMA);
 			writeLine(writer, "music_gain: " + MUSIC_GAIN);
+			writeLine(writer, "graphics: " + GRAPHICS_LEVEL);
 			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();

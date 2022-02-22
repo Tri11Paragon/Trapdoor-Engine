@@ -77,7 +77,7 @@ public class DisplayManager {
 
 	public static final String gameVersion = "0.0A";
 	public static final String engineVersion = "0.5.2A";
-	public static final String gameName = "Total Femboy Donamania";
+	public static final String gameName = "Rixie";
 	public static final String engineName = "Trapdoor";
 	public static final String title = gameName + " - V" + gameVersion + " // " + engineName + " V" + engineVersion;
 	

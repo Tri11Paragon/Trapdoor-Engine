@@ -27,7 +27,6 @@ public class TheAmazingWorldOfHentaiDisplay extends IDisplay{
 		GameRegistry.registerModel("resources/models/zucc.dae");
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate() {
 		this.camera = new CreativeFirstPerson();
@@ -66,7 +65,6 @@ public class TheAmazingWorldOfHentaiDisplay extends IDisplay{
 		this.world.render();
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public void update() {
 		this.world.update();

@@ -364,8 +364,10 @@ public class Entity implements Comparable<Entity> {
 	 * Only use this for creating entities. It will likely be removed soon
 	 * I recommend creating a subclass and setting the transform after the super constructor finishes
 	 * see Entity camera for details.
+	 * 
+	 * Update:
+	 * 	ONLY USE THIS FOR CREATING ENTITIES.
 	 */
-	@Deprecated
 	public Entity setPosition(float x, float y, float z) {
 		((Transform)this.getComponent(Transform.class)).setPosition(x, y, z);
 		return this;

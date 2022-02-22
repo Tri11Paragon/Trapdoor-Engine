@@ -1,5 +1,6 @@
 package com.game.displays;
 
+import org.joml.Vector2f;
 import org.joml.Vector4f;
 
 import com.spinyowl.legui.component.Button;
@@ -8,12 +9,18 @@ import com.spinyowl.legui.component.Label;
 import com.spinyowl.legui.component.Layer;
 import com.spinyowl.legui.component.Slider;
 import com.spinyowl.legui.component.Widget;
+import com.spinyowl.legui.component.event.component.ChangeSizeEvent;
 import com.spinyowl.legui.component.optional.align.HorizontalAlign;
 import com.spinyowl.legui.component.optional.align.VerticalAlign;
 import com.spinyowl.legui.event.MouseClickEvent;
+import com.spinyowl.legui.event.WindowSizeEvent;
+import com.spinyowl.legui.icon.Icon;
+import com.spinyowl.legui.icon.ImageIcon;
+import com.spinyowl.legui.image.loader.ImageLoader;
 import com.spinyowl.legui.listener.MouseClickEventListener;
 import com.spinyowl.legui.style.Background;
 import com.spinyowl.legui.style.Style.DisplayType;
+import com.spinyowl.legui.style.border.SimpleLineBorder;
 import com.spinyowl.legui.style.shadow.Shadow;
 import com.trapdoor.Main;
 import com.trapdoor.engine.datatypes.ui.XButton;
@@ -26,47 +33,82 @@ import com.trapdoor.engine.renderer.ui.UIMaster;
 
 public class MainMenuDisplay extends IDisplay {
 
-	private Layer layer;
+	private Layer layers;
+	public static Icon rixie;
+	public static Background rixieBackground;
 
 	@Override
 	public void onCreate() {
 
-		layer = new Layer();
-		layer.setSize(DisplayManager.WIDTH, DisplayManager.HEIGHT);
-
+		Layer layer = new Layer();
+		layer.setPosition(69/2, 69/2);
+		if (Main.devMode)
+			layer.setSize(456 + 69, 575);
+		else
+			layer.setSize(456 + 69, 345);
+		// evil hack (doesn't work)
+		layer.getListenerMap().addListener(ChangeSizeEvent.class, (e) -> {
+			if (Main.devMode)
+				layer.setSize(456 + 69, 575);
+			else
+				layer.setSize(456 + 69, 345);
+		});
+		
+		SimpleLineBorder border = new SimpleLineBorder();
+		border.setColor(new Vector4f(0 / 255f, 0 / 255f, 0 / 255f, 200 / 255f));
+		border.setThickness(2);
+		layer.getStyle().setBorder(border);
+		layer.getStyle().setBorderRadius(25);
+		
+		layers = new Layer();
+		layers.setSize(DisplayManager.WIDTH, DisplayManager.HEIGHT);
+		layers.add(layer);
+		
+		int left = 69/2;
+		
 		Background bg = new Background();
 		bg.setColor(new Vector4f(125 / 255f, 125 / 255f, 125 / 255f, 1));
-		layer.getStyle().setBackground(bg);
+		rixie = new ImageIcon(ImageLoader.loadImage("resources/textures/icon/rixie.jpg"));
+		layer.getListenerMap().addListener(WindowSizeEvent.class, (e) -> {
+			rixie.setSize(new Vector2f(e.getWidth(), e.getHeight()));
+		});
+		bg.setIcon(rixie);
+		rixieBackground = bg;
+		layers.getStyle().setBackground(bg);
+		
+		Background bg2 = new Background();
+		bg2.setColor(new Vector4f(50 / 255f, 50 / 255f, 50 / 255f, 0.75f));
+		layer.getStyle().setBackground(bg2);
 		
 		Label title = new Label();
 		title.getTextState().setText(DisplayManager.gameName);
 		title.getStyle().setFont("bettergrade");
-		title.getStyle().setFontSize(144f);
-		title.getStyle().setTextColor(37 / 255f, 37 / 255f, 37 / 255f, 1);
+		title.getStyle().setFontSize(184f);
+		title.getStyle().setTextColor(240 / 255f, 240 / 255f, 240 / 255f, 1);
 		title.getStyle().setVerticalAlign(VerticalAlign.TOP);
 		title.getStyle().setHorizontalAlign(HorizontalAlign.LEFT);
-		title.setPosition(25, 25);
+		title.setPosition(left, 25);
 		layer.add(title);
 
 		//IDisplay display = new SinglePlayerDisplay();
 		IDisplay display = new TheAmazingWorldOfHentaiDisplay();
 		DisplayManager.createDisplay(display);
 
-		Button sp = new XButton("Start Game", false, false, 1.02f, 69, 210, 456, 48);
+		Button sp = new XButton("Start Game", false, false, 1.02f, left, 210, 456, 48);
 		//sp.getStyle().setBorder(new SimpleLineBorder(ColorConstants.red(), 5));
 		sp.getListenerMap().addListener(MouseClickEvent.class, (MouseClickEventListener) event -> {
 			if (event.getAction() != MouseClickEvent.MouseClickAction.RELEASE)
 				return;
 			DisplayManager.changeDisplay(display);
 		});
-		setButtonPosition(sp, 69, 210, 48, 10, 0);
+		setButtonPosition(sp, left, 210, 48, 10, 0);
 		layer.add(sp);
 		
 		IDisplay optionsDis = new OptionsDisplay(this);
 		DisplayManager.createDisplay(optionsDis);
 		
-		Button options = new XButton("Options", false, false, 1.02f, 69, 210 + 48 + 10, 456, 48);
-		setButtonPosition(options, 69, 210, 48, 10, 1);
+		Button options = new XButton("Options", false, false, 1.02f, left, 210 + 48 + 10, 456, 48);
+		setButtonPosition(options, left, 210, 48, 10, 1);
 		options.getListenerMap().addListener(MouseClickEvent.class, (MouseClickEventListener) event -> {
 			if (event.getAction() != MouseClickEvent.MouseClickAction.RELEASE)
 				return;
@@ -77,7 +119,7 @@ public class MainMenuDisplay extends IDisplay {
 		if (Main.devMode) {
 			Label lb = new Label("Dev Zone");
 			lb.getStyle().setFontSize(52f);
-			setButtonPosition(lb, 69, 210, 48, 15, 2);
+			setButtonPosition(lb, left, 210, 48, 15, 2);
 			layer.add(lb);
 			
 			IDisplay display2 = new TestDisplay();
@@ -92,7 +134,7 @@ public class MainMenuDisplay extends IDisplay {
 				DisplayManager.changeDisplay(display2);
 			});
 			tester.setSize(456, 48);
-			setButtonPosition(tester, 69, 210, 48, 10, 1);
+			setButtonPosition(tester, left, 210, 48, 10, 1);
 			layer.add(tester);
 			
 			IDisplay display3 = new ModelEditorDisplay();
@@ -107,7 +149,7 @@ public class MainMenuDisplay extends IDisplay {
 				DisplayManager.changeDisplay(display3);
 			});
 			materials.setSize(456, 48);
-			setButtonPosition(materials, 69, 210, 48, 10, 1);
+			setButtonPosition(materials, left, 210, 48, 10, 1);
 			layer.add(materials);
 		}
 		
@@ -119,9 +161,9 @@ public class MainMenuDisplay extends IDisplay {
 		//layer.add(shadowWidget);
 
 		// make sure the layer is disabled until this screen is switched it
-		layer.setEnabled(false);
-		layer.getStyle().setDisplay(layer.isEnabled() == true ? DisplayType.MANUAL : DisplayType.NONE);
-		UIMaster.getMasterFrame().addLayer(layer);
+		layers.setEnabled(false);
+		layers.getStyle().setDisplay(layer.isEnabled() == true ? DisplayType.MANUAL : DisplayType.NONE);
+		UIMaster.getMasterFrame().addLayer(layers);
 	}
 	
 	
@@ -134,8 +176,8 @@ public class MainMenuDisplay extends IDisplay {
 	@Override
 	public void onSwitch() {
 		
-		layer.setEnabled(true);
-		layer.getStyle().setDisplay(layer.isEnabled() == true ? DisplayType.MANUAL : DisplayType.NONE);
+		layers.setEnabled(true);
+		layers.getStyle().setDisplay(layers.isEnabled() == true ? DisplayType.MANUAL : DisplayType.NONE);
 
 	}
 
@@ -152,8 +194,8 @@ public class MainMenuDisplay extends IDisplay {
 
 	@Override
 	public void onLeave() {
-		layer.setEnabled(false);
-		layer.getStyle().setDisplay(layer.isEnabled() == true ? DisplayType.MANUAL : DisplayType.NONE);
+		layers.setEnabled(false);
+		layers.getStyle().setDisplay(layers.isEnabled() == true ? DisplayType.MANUAL : DisplayType.NONE);
 	}
 
 	@Override

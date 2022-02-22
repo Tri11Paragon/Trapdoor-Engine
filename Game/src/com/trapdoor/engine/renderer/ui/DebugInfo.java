@@ -7,6 +7,7 @@ import org.lwjgl.glfw.GLFW;
 import com.spinyowl.legui.component.Label;
 import com.spinyowl.legui.component.Layer;
 import com.spinyowl.legui.style.Style.DisplayType;
+import com.trapdoor.Main;
 import com.trapdoor.engine.TextureLoader;
 import com.trapdoor.engine.VAOLoader;
 import com.trapdoor.engine.display.DisplayManager;
@@ -38,6 +39,9 @@ public class DebugInfo implements IKeyState {
 	
 	private Label playerPosition;
 	
+	private Label javaMemory;
+	private Label javaMemoryNon;
+	
 	private boolean enabled = false;
 	private StringBuilder builder;
 	
@@ -58,6 +62,21 @@ public class DebugInfo implements IKeyState {
 		physicsThreadFPS = new Label("UPS " + Threading.getFPS() + " Updatetime (ms): " + Threading.getFrameTimeMilis());
 		
 		playerPosition = new Label("X: 0 | Y: 0 | Z: 0");
+		
+		
+		javaMemory = new Label("Heap: " + Main.mx.getHeapMemoryUsage().getUsed()  / 1024 / 1024
+									+ "mb / " 
+										+ Main.mx.getHeapMemoryUsage().getCommitted()  / 1024 / 1024 
+									+ "mb [" 
+										+ Main.mx.getHeapMemoryUsage().getMax() / 1024 / 1024
+									+ "mb]");
+		javaMemoryNon = new Label("Non-Heap: " 
+					+ Main.mx.getNonHeapMemoryUsage().getUsed()  / 1024 / 1024
+				+ "mb / " 
+					+ Main.mx.getNonHeapMemoryUsage().getCommitted()  / 1024 / 1024
+				+ "mb");
+		
+		
 		
 		final float size = 16;
 		final float padding = 5;
@@ -94,6 +113,14 @@ public class DebugInfo implements IKeyState {
 		playerPosition.getStyle().setFontSize(size);
 		playerPosition.getStyle().setFont("mono");
 		
+		calcPosY(size, padding, offsetY);
+		javaMemory.setPosition(0, calcPosY(size, padding, offsetY));
+		javaMemory.getStyle().setFontSize(size);
+		javaMemory.getStyle().setFont("mono");
+		javaMemoryNon.setPosition(0, calcPosY(size, padding, offsetY));
+		javaMemoryNon.getStyle().setFontSize(size);
+		javaMemoryNon.getStyle().setFont("mono");
+		
 		layer.add(gameVersion);
 		layer.add(mainRenderings);
 		layer.add(mainThreadFPS);
@@ -102,6 +129,8 @@ public class DebugInfo implements IKeyState {
 		layer.add(physics);
 		layer.add(physicsThreadFPS);
 		layer.add(playerPosition);
+		layer.add(javaMemory);
+		layer.add(javaMemoryNon);
 		
 		UIMaster.getMasterFrame().addLayer(layer);
 		
@@ -162,6 +191,27 @@ public class DebugInfo implements IKeyState {
 		builder.append("  Updatetime (ms):  ");
 		builder.append(round(Threading.getFrameTimeMilis()));
 		physicsThreadFPS.getTextState().setText(builder.toString());
+		
+		builder = new StringBuilder();
+		builder.append("Heap: ");
+		builder.append(Main.mx.getHeapMemoryUsage().getUsed() / 1024 / 1024);
+		builder.append("mb / ");
+		builder.append(Main.mx.getHeapMemoryUsage().getCommitted() / 1024 / 1024);
+		builder.append("mb [");
+		builder.append(Main.mx.getHeapMemoryUsage().getMax() / 1024 / 1024);
+		builder.append("mb]");
+		javaMemory.getTextState().setText(builder.toString());
+		
+		builder = new StringBuilder();
+		builder.append("Non-Heap: ");
+		builder.append(Main.mx.getNonHeapMemoryUsage().getUsed() / 1024 / 1024); 
+		builder.append("mb / ");
+		builder.append(Main.mx.getNonHeapMemoryUsage().getCommitted() / 1024 / 1024);
+		builder.append("mb [");
+		builder.append(Main.mx.getNonHeapMemoryUsage().getMax() / 1024 / 1024);
+		builder.append("mb]");
+		javaMemoryNon.getTextState().setText(builder.toString());
+		
 	}
 	
 	/**

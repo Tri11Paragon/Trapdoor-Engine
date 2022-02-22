@@ -24,6 +24,8 @@ public class CreativeFirstPerson extends Camera{
 	private float moveAtY = 0;
 	private float moveatZ = 0;
 	
+	public boolean allowFreeMovement = false;
+	
 	@Override
 	public void render() {
 		if (Mouse.isGrabbed()) {
@@ -34,6 +36,8 @@ public class CreativeFirstPerson extends Camera{
 	
 	@Override
 	public void move() {
+		if (!Mouse.isGrabbed())
+			return;
 		final float speedd = 30f;
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_LEFT))
@@ -53,11 +57,10 @@ public class CreativeFirstPerson extends Camera{
 			this.yaw = 0;
 		if (this.yaw > 360)
 			this.yaw = 0;
-		
-		
-		boolean b = true;
-		if (b)
-			return;
+
+	}
+	
+	public void move2() {
 		if (!Mouse.isGrabbed())
 			return;
 		if (Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_ALT))

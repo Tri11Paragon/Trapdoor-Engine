@@ -1,7 +1,10 @@
 package com.trapdoor.engine.display;
 
+import com.game.entities.EntityKent;
 import com.game.entities.EntityPoop;
 import com.trapdoor.engine.camera.CreativeFirstPerson;
+import com.trapdoor.engine.datatypes.commands.FreeMoveCommand;
+import com.trapdoor.engine.datatypes.commands.GravityCommand;
 import com.trapdoor.engine.datatypes.commands.RayCastCommand;
 import com.trapdoor.engine.datatypes.commands.TeleportCommand;
 import com.trapdoor.engine.datatypes.lighting.Light;
@@ -42,6 +45,7 @@ public class TestDisplay extends IDisplay {
 		GameRegistry.registerModel("resources/models/supercube.dae");
 		GameRegistry.registerModel("resources/models/floor.dae");
 		GameRegistry.registerModel("resources/models/tuber.dae");
+		GameRegistry.registerModel("resources/models/zucc.dae");
 		
 		GameRegistry.registerModel("resources/models/poop.dae");
 		
@@ -69,7 +73,6 @@ public class TestDisplay extends IDisplay {
 				GameRegistry.getSound("resources/sounds/music/weapons of mass distraction.ogg"));
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate() {
 		this.setSkyTextures(
@@ -107,6 +110,11 @@ public class TestDisplay extends IDisplay {
 		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(-25, 0, 0));
 		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(0, 0, 25));
 		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(0, 0, -25));
+		this.world.addEntityToWorld(new EntityKent()
+											.setModel(GameRegistry.getModel("resources/models/kent.dae"))
+											.setPosition(25, -15, -40)
+											.addLight(new Light(Light.lightings[5], 0, 1, 0)));
+		this.world.addEntityToWorld(new EntityKent().setModel(GameRegistry.getModel("resources/models/zucc.dae")).setPosition(30, -15, -45));
 		this.world.addEntityToWorld(
 				new Entity()
 					.setModel(GameRegistry.getModel("resources/models/hellolosers.obj"))
@@ -140,6 +148,8 @@ public class TestDisplay extends IDisplay {
 		TeleportCommand tp = new TeleportCommand(cameraEnt, camera);
 		CommandBox.registerCommand("teleport", tp);
 		CommandBox.registerCommand("tp", tp);
+		CommandBox.registerCommand("gravity", new GravityCommand(cameraEnt));
+		CommandBox.registerCommand("move", new FreeMoveCommand(camera));
 	}
 	
 	@Override

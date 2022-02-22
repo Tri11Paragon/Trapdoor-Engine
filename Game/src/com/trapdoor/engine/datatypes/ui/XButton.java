@@ -1,8 +1,11 @@
 package com.trapdoor.engine.datatypes.ui;
 
+import org.joml.Vector4f;
+
 import com.spinyowl.legui.component.Button;
 import com.spinyowl.legui.event.CursorEnterEvent;
 import com.spinyowl.legui.event.WindowSizeEvent;
+import com.spinyowl.legui.style.border.SimpleLineBorder;
 import com.trapdoor.engine.display.DisplayManager;
 
 /**
@@ -34,6 +37,10 @@ public class XButton extends Button {
 
 		center((int) DisplayManager.WIDTH, (int) DisplayManager.HEIGHT);
 
+		SimpleLineBorder borderWhite = new SimpleLineBorder();
+		borderWhite.setColor(new Vector4f(0.9f));
+		borderWhite.setThickness(1.0f);
+		
 		super.getListenerMap().addListener(WindowSizeEvent.class, (e) -> {
 			int lw = e.getWidth(), lh = e.getHeight();
 			center(lw, lh);
@@ -48,6 +55,8 @@ public class XButton extends Button {
 				centerExit((int) this.getParent().getSize().x, (int) this.getParent().getSize().y);
 			}
 		});
+		
+		super.getStyle().setBorder(borderWhite);
 	}
 
 	private void center(int sw, int sh) {
