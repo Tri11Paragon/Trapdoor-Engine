@@ -2,13 +2,13 @@ package com.trapdoor.engine.world.entities.components;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.joml.Matrix3f;
 import org.joml.Matrix4f;
+import org.joml.Quaterniond;
 
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.objects.PhysicsRigidBody;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.trapdoor.engine.tools.math.Maths;
 import com.trapdoor.engine.world.entities.Entity;
 
 /**
@@ -17,22 +17,22 @@ import com.trapdoor.engine.world.entities.Entity;
  * 
  */
 public class Transform extends IComponent {
-
-	private final Matrix3f rotMatrix = new Matrix3f();
 	
 	// TODO: compress this to bit logic
 	//private volatile boolean awaitingPositionChange = false;
 	private volatile AtomicBoolean awaitingPositionChange = new AtomicBoolean(false);
 	private volatile boolean awaitingRotationChange = false;
 	private volatile boolean awaitingScaleChange = false;
+	private volatile boolean isStatic = false;
 	
 	// phys
 	private volatile com.jme3.math.Transform pysTransformOut;
 	private volatile boolean transformReady = false;
 	private Vector3f scaleStore;
 	private Vector3f positionStore;
-	private com.jme3.math.Matrix3f physMatrix;
-	private com.jme3.math.Matrix3f physMatrixStore;
+	private Quaternion physQuat;
+	private Quaternion physQuatStore;
+	private final Quaterniond localStore = new Quaterniond();
 	
 	
 	// render
@@ -54,12 +54,14 @@ public class Transform extends IComponent {
 		this.positionOut = new Vector3f();
 		this.scaleStore = new Vector3f();
 		this.positionStore = new Vector3f();
-		this.physMatrix = new com.jme3.math.Matrix3f();
-		this.physMatrixStore = new com.jme3.math.Matrix3f();
+		this.physQuat = new Quaternion();
+		this.physQuatStore = new Quaternion();
 	}
 	
 	@Override
 	public void render() {
+		if (isStatic)
+			return;
 		if (transformReady) {
 			this.x = pysTransformOut.getTranslation().x;
 			this.y = pysTransformOut.getTranslation().y;
@@ -68,18 +70,9 @@ public class Transform extends IComponent {
 			this.positionOut.x = this.x;
 			this.positionOut.y = this.y;
 			this.positionOut.z = this.z;
-	
-			//this.mainRotation.identity();
 			
-			this.mainRotation.m00(this.physMatrix.get(0, 0));
-			this.mainRotation.m01(this.physMatrix.get(0, 1));
-			this.mainRotation.m02(this.physMatrix.get(0, 2));
-			this.mainRotation.m10(this.physMatrix.get(1, 0));
-			this.mainRotation.m11(this.physMatrix.get(1, 1));
-			this.mainRotation.m12(this.physMatrix.get(1, 2));
-			this.mainRotation.m20(this.physMatrix.get(2, 0));
-			this.mainRotation.m21(this.physMatrix.get(2, 1));
-			this.mainRotation.m22(this.physMatrix.get(2, 2));
+			localStore.set(this.physQuat.getX(), this.physQuat.getY(), this.physQuat.getZ(), this.physQuat.getW());
+			this.mainRotation.set(localStore);
 			
 			this.transformReady = false;
 		}
@@ -92,18 +85,18 @@ public class Transform extends IComponent {
 
 	@Override
 	public void setAssociatedEntity(Entity e) {
-		
+		isStatic = e.isStatic();
 	}
 	
 	public void commit(PhysicsCollisionObject b) {
-		//if (this.awaitingPositionChange.get())
-		//	System.out.println("Eeee" + this.transformReady);
+		if (isStatic)
+			return;
 		if (!this.transformReady) {
 			PhysicsRigidBody body = null;
 			if (b instanceof PhysicsRigidBody)
 				body = (PhysicsRigidBody) b;
 			b.getTransform(pysTransformOut);
-			b.getPhysicsRotationMatrix(physMatrix);
+			b.getPhysicsRotation(physQuat);
 			
 			if (this.awaitingPositionChange.get() && body != null) {
 				this.positionStore.x = this.setX + pysTransformOut.getTranslation().x;
@@ -120,23 +113,9 @@ public class Transform extends IComponent {
 				this.yaw = this.setYaw;
 				this.pitch = this.setPitch;
 				this.roll = this.setRoll;
-				
-				// TODO: fix this gay mess by using another phyiscs engine!
-				this.rotMatrix.identity();
-				this.rotMatrix.rotate(pitch, Maths.rx);
-				this.rotMatrix.rotate(yaw, Maths.ry);
-				this.rotMatrix.rotate(roll, Maths.rz);
-				
-				this.physMatrixStore.set(0, 0, this.rotMatrix.m00);
-				this.physMatrixStore.set(0, 1, this.rotMatrix.m01);
-				this.physMatrixStore.set(0, 2, this.rotMatrix.m02);
-				this.physMatrixStore.set(1, 0, this.rotMatrix.m10);
-				this.physMatrixStore.set(1, 1, this.rotMatrix.m11);
-				this.physMatrixStore.set(1, 2, this.rotMatrix.m12);
-				this.physMatrixStore.set(2, 0, this.rotMatrix.m20);
-				this.physMatrixStore.set(2, 1, this.rotMatrix.m21);
-				this.physMatrixStore.set(2, 2, this.rotMatrix.m22);
-				body.setPhysicsRotation(physMatrixStore);
+
+				this.physQuatStore.fromAngles(yaw, roll, pitch);
+				body.setPhysicsRotation(physQuatStore);
 				
 				this.awaitingRotationChange = false;
 			}

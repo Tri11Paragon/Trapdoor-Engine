@@ -50,7 +50,6 @@ public class ModelEditorDisplay extends IDisplay {
 	private ArrayList<RadioButton> buttons = new ArrayList<RadioButton>();
 	private Entity e;
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate() {
 		this.camera = new RotatingCamera();

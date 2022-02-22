@@ -367,6 +367,8 @@ public class Entity implements Comparable<Entity> {
 	 * 
 	 * Update:
 	 * 	ONLY USE THIS FOR CREATING ENTITIES.
+	 * 	This is only to be used at entity creation! NEVER should it be used for anything else.
+	 * 
 	 */
 	public Entity setPosition(float x, float y, float z) {
 		((Transform)this.getComponent(Transform.class)).setPosition(x, y, z);
