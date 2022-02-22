@@ -90,8 +90,8 @@ public class MainMenuDisplay extends IDisplay {
 		title.setPosition(left, 25);
 		layer.add(title);
 
-		//IDisplay display = new SinglePlayerDisplay();
-		IDisplay display = new TheAmazingWorldOfHentaiDisplay();
+		IDisplay display = new SinglePlayerDisplay();
+//		IDisplay display = new TheAmazingWorldOfHentaiDisplay();
 		DisplayManager.createDisplay(display);
 
 		Button sp = new XButton("Start Game", false, false, 1.02f, left, 210, 456, 48);
