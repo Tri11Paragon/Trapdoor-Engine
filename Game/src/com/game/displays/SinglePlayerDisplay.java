@@ -1,6 +1,7 @@
 package com.game.displays;
 
 import com.game.entities.EntityPoop;
+import com.jme3.math.Vector3f;
 import com.trapdoor.engine.camera.CreativeFirstPerson;
 import com.trapdoor.engine.datatypes.lighting.Light;
 import com.trapdoor.engine.display.IDisplay;
@@ -9,6 +10,7 @@ import com.trapdoor.engine.registry.annotations.RegistrationEventSubscriber;
 import com.trapdoor.engine.world.World;
 import com.trapdoor.engine.world.entities.Entity;
 import com.trapdoor.engine.world.entities.EntityCamera;
+import com.trapdoor.engine.world.entities.components.Transform;
 
 public class SinglePlayerDisplay extends IDisplay{
 	
@@ -17,18 +19,9 @@ public class SinglePlayerDisplay extends IDisplay{
 	
 	@RegistrationEventSubscriber
 	public static void register() {
-		GameRegistry.registerModel("resources/models/poop.dae");
-		GameRegistry.registerModel("resources/models/chess/w_king.dae");
-
-		GameRegistry.registerModel("resources/models/chess/w_king_bt.dae");
-		GameRegistry.registerModel("resources/models/chess/w_king_bt2.dae");
-		GameRegistry.registerModel("resources/models/chess/w_king_bt3.dae");
-
-		GameRegistry.registerModel("resources/models/chess/w_queen.dae");
-		GameRegistry.registerModel("resources/models/chess/w_bishop.dae");
-		GameRegistry.registerModel("resources/models/chess/w_knight.dae");
-		GameRegistry.registerModel("resources/models/chess/w_rook.dae");
-		GameRegistry.registerModel("resources/models/poop.dae");
+		
+		GameRegistry.registerModel("resources/models/supercube.dae");
+		
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -39,25 +32,15 @@ public class SinglePlayerDisplay extends IDisplay{
 		
 		this.world.addEntityToWorld(new EntityCamera(this.camera));
 		
-		this.world.addEntityToWorld(new Entity().setModel(
-				GameRegistry.getModel("resources/models/chess/w_king.dae")).setPosition(1, 0, -10)
-				.addLight(new Light(Light.lightings[6], 0, 5, 0)));
-		this.world.addEntityToWorld(new Entity().setModel(
-				GameRegistry.getModel("resources/models/chess/w_queen.dae")).setPosition(-1, 0, -10));
-		this.world.addEntityToWorld(new Entity().setModel(
-				GameRegistry.getModel("resources/models/chess/w_bishop.dae")).setPosition(3, 0, -10));
-		this.world.addEntityToWorld(new Entity().setModel(
-				GameRegistry.getModel("resources/models/chess/w_bishop.dae")).setPosition(-3, 0, -10));
-		this.world.addEntityToWorld(new Entity().setModel(
-				GameRegistry.getModel("resources/models/chess/w_knight.dae")).setPosition(5, 0, -10));
-		this.world.addEntityToWorld(new Entity().setModel(
-				GameRegistry.getModel("resources/models/chess/w_knight.dae")).setPosition(-5, 0, -10));
-		this.world.addEntityToWorld(new Entity().setModel(
-				GameRegistry.getModel("resources/models/chess/w_rook.dae")).setPosition(8, 0, -10));
-		this.world.addEntityToWorld(new Entity().setModel(
-				GameRegistry.getModel("resources/models/chess/w_rook.dae")).setPosition(-7, 0, -10));
-		this.world.addEntityToWorld(new EntityPoop().setModel(
-				GameRegistry.getModel("resources/models/poop.dae")).setPosition(30, 0, -10));
+		Entity a = new Entity();
+		a.setModel(GameRegistry.getModel("resources/models/supercube.dae"));
+		a.setPosition(0, 0, -10);
+		
+		Transform t = a.getComponent(Transform.class);
+		
+		// How to apply t to a ??
+		
+		this.world.addEntityToWorld(a);
 		
 	}
 
