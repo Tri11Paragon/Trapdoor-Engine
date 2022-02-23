@@ -20,23 +20,23 @@ import com.trapdoor.engine.world.entities.components.Transform;
  */
 public class EntityCamera extends Entity {
 	
-	private static float speed = 0.001f;
+	protected static float speed = 0.001f;
 	@SuppressWarnings("unused")
 	private static final int RECUR_AMT = 100;
 	
-	private float moveAtX = 0;
-	private float moveatZ = 0;
+	protected float moveAtX = 0;
+	protected float moveAtZ = 0;
 	
 	private Vector3f pos;
 	
-	private Camera c;
+	protected Camera c;
 	
 	private Transform localTransform;
 	
 	private Vector3f at,up;
 	
-	private PhysicsCharacter ch;
-	private final com.jme3.math.Vector3f store = new com.jme3.math.Vector3f();
+	protected PhysicsCharacter ch;
+	protected final com.jme3.math.Vector3f store = new com.jme3.math.Vector3f();
 	private SoundListener sl;
 	
 	public EntityCamera(Camera c) {
@@ -104,15 +104,15 @@ public class EntityCamera extends Entity {
 			moveAtX = 0;
 			
 		if (Keyboard.isKeyDown(Keyboard.KEY_A))
-			moveatZ = (speed * timeConstant);
+			moveAtZ = (speed * timeConstant);
 		else
 		if (Keyboard.isKeyDown(Keyboard.KEY_D))
-			moveatZ = (-speed * timeConstant);
+			moveAtZ = (-speed * timeConstant);
 		else 
-			moveatZ = 0;
+			moveAtZ = 0;
 		
-		float dx = (float) ((((-((moveAtX) * Math.sin(Math.toRadians(c.getYaw()))  )) + -((moveatZ) * Math.cos(Math.toRadians(c.getYaw())) ))) );
-		float dz = (float) ( (((moveAtX) * Math.cos(Math.toRadians(c.getYaw()))  ) + -((moveatZ) * Math.sin(Math.toRadians(c.getYaw())) )) );
+		float dx = (float) ((((-((moveAtX) * Math.sin(Math.toRadians(c.getYaw()))  )) + -((moveAtZ) * Math.cos(Math.toRadians(c.getYaw())) ))) );
+		float dz = (float) ( (((moveAtX) * Math.cos(Math.toRadians(c.getYaw()))  ) + -((moveAtZ) * Math.sin(Math.toRadians(c.getYaw())) )) );
 		
 		store.x = dx / 100;
 		store.y = 0;
