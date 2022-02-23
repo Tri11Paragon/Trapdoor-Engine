@@ -1,7 +1,6 @@
 package com.game.displays;
 
-import com.game.entities.EntityPoop;
-import com.jme3.math.Vector3f;
+import com.game.entities.SmoothEntityCamera;
 import com.trapdoor.engine.camera.CreativeFirstPerson;
 import com.trapdoor.engine.datatypes.lighting.Light;
 import com.trapdoor.engine.display.IDisplay;
@@ -29,13 +28,17 @@ public class SinglePlayerDisplay extends IDisplay{
 		this.camera = new CreativeFirstPerson();
 		this.world = new World(camera);
 		
-		this.world.addEntityToWorld(new EntityCamera(this.camera));
+		this.world.addEntityToWorld(new SmoothEntityCamera(this.camera));
 		
 		Entity a = new Entity();
 		a.setModel(GameRegistry.getModel("resources/models/supercube.dae"));
-		a.setPosition(0, 0, -10);
+		a.setPosition(0, -5, 0);
+		
+		Light thefunny = new Light(Light.lightings[6], 1.0f, 1.0f, 1.0f, 0, 10, 0);
+		a.addLight(thefunny);
 		
 		Transform t = a.getComponent(Transform.class);
+		t.setScale(100f, 1, 100f);
 		
 		// How to apply t to a ??
 		
