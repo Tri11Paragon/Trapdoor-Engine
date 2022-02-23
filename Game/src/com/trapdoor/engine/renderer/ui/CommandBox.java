@@ -44,14 +44,18 @@ public class CommandBox implements IKeyState, AnnotatedClass {
 		this.parser = new DefaultParser();
 		
 		layer.setSize(DisplayManager.WIDTH, DisplayManager.HEIGHT);
+		layer.getStyle().getBackground().getColor().w = 0.0f;
 	
 		label = new TextArea(30, 30, DisplayManager.WIDTH - 60, DisplayManager.HEIGHT - 120);
+		label.getStyle().getBackground().getColor().w = 0.6f;
 		label.setFocusable(false);
 		label.setHorizontalScrollBarVisible(false);
 		label.setEditable(false);
 		layer.add(label);
 		
 		in = new TextInput("", 30, DisplayManager.HEIGHT - 80, DisplayManager.WIDTH - 60, 40);
+		in.getStyle().getBackground().getColor().w = 0.6f;
+		in.getFocusedStyle().getBackground().getColor().w = 0.8f;
 		layer.add(in);
 		
 		layer.setEnabled(enabled);

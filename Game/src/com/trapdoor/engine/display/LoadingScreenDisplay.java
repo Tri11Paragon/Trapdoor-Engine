@@ -6,6 +6,7 @@ import com.game.displays.MainMenuDisplay;
 import com.spinyowl.legui.component.Label;
 import com.spinyowl.legui.component.Layer;
 import com.spinyowl.legui.component.ProgressBar;
+import com.spinyowl.legui.component.event.component.ChangeSizeEvent;
 import com.spinyowl.legui.component.event.label.LabelContentChangeEvent;
 import com.spinyowl.legui.component.event.label.LabelContentChangeEventListener;
 import com.spinyowl.legui.component.event.label.LabelWidthChangeEvent;
@@ -13,6 +14,9 @@ import com.spinyowl.legui.component.event.label.LabelWidthChangeEventListener;
 import com.spinyowl.legui.component.optional.align.HorizontalAlign;
 import com.spinyowl.legui.component.optional.align.VerticalAlign;
 import com.spinyowl.legui.event.WindowSizeEvent;
+import com.spinyowl.legui.icon.Icon;
+import com.spinyowl.legui.icon.ImageIcon;
+import com.spinyowl.legui.image.loader.ImageLoader;
 import com.spinyowl.legui.listener.WindowSizeEventListener;
 import com.spinyowl.legui.style.Style.DisplayType;
 import com.trapdoor.engine.registry.GameRegistry;
@@ -47,6 +51,7 @@ public class LoadingScreenDisplay extends IDisplay {
 	public Layer layer;
 	public static ProgressBar bar;
 	public static Label info;
+	private Layer trapdoor;
 	
 	public static void updateBar() {
 		bar.setValue((PROGRESS.get()/MAX.get()) * 100);
@@ -78,6 +83,7 @@ public class LoadingScreenDisplay extends IDisplay {
 		// TODO: splash screen / logo
 		//bar.setValue((PROGRESS/MAX) * 100);
 		updateBar();
+		animate();
 		
 		if ((Threading.isEmpty() && System.currentTimeMillis() - time > TIME)) {
 		// make sure we have loaded all assets and the splash screen has existed for some time.
@@ -114,6 +120,12 @@ public class LoadingScreenDisplay extends IDisplay {
 		
 	}
 	
+	private void animate() {
+		//trapdoor.getSize().mul((float) (2.0f * DisplayManager.getFrameTimeSeconds()));
+		//if (trapdoor.getSize().x > 720 || trapdoor.getSize().y > 720)
+		//	trapdoor.setSize(720, 720);
+	}
+	
 	public void createUI() {
 		layer = new Layer();
 		layer.setSize(DisplayManager.WIDTH, DisplayManager.HEIGHT);
@@ -124,6 +136,19 @@ public class LoadingScreenDisplay extends IDisplay {
 		bar.setFocusable(false);
 		
 		layer.add(bar);
+		
+		Icon trap = new ImageIcon(ImageLoader.loadImage("resources/textures/icon/trapdoor.png"));
+		trapdoor = new Layer();
+		trapdoor.setSize(360, 360);
+		trapdoor.setPosition(DisplayManager.WIDTH / 2 - 360/2, DisplayManager.HEIGHT/2 - 360/2);
+		trapdoor.getListenerMap().addListener(WindowSizeEvent.class, (event) ->{
+			trapdoor.setPosition(event.getWidth()/ 2 - trapdoor.getSize().x/2, event.getHeight()/ 2 - trapdoor.getSize().y/2);
+		});
+		trapdoor.getListenerMap().addListener(ChangeSizeEvent.class, (event) -> {
+			trapdoor.setPosition(DisplayManager.WIDTH/ 2 - event.getNewSize().x()/2, DisplayManager.HEIGHT/ 2 - event.getNewSize().y()/2);
+		});
+		trapdoor.getStyle().getBackground().setIcon(trap);
+		layer.add(trapdoor);
 		
 		info = new Label();
 		info.getStyle().setDisplay(DisplayType.NONE);
