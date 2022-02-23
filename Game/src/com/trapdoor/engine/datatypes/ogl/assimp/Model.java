@@ -72,4 +72,11 @@ public class Model {
 		return this.meshColliderData;
 	}
 	
+	public Model clone() {
+		Material[] materials = new Material[this.materials.length];
+		for (int i = 0; i < this.materials.length; i++)
+			materials[i] = this.materials[i].clone();
+		return new Model(meshes, materials, scene, path);
+	}
+	
 }

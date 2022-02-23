@@ -12,6 +12,7 @@ import com.trapdoor.engine.datatypes.ogl.assimp.Model;
 import com.trapdoor.engine.datatypes.util.NdHashMap;
 import com.trapdoor.engine.renderer.DeferredRenderer;
 import com.trapdoor.engine.renderer.EntityRenderer;
+import com.trapdoor.engine.renderer.shadows.ShadowRenderer;
 import com.trapdoor.engine.tools.SettingsLoader;
 import com.trapdoor.engine.world.entities.Entity;
 import com.trapdoor.engine.world.entities.components.Transform;
@@ -114,6 +115,52 @@ public class WorldEntityStorage {
 				continue;
 			
 			this.renderer.renderChunk(renderer, m, lis);
+		}
+	}
+	
+	public void renderShadow(ShadowRenderer renderer) {
+		final int f = SettingsLoader.RENDER_DISTANCE;
+		Vector3d pos = camera.getPosition();
+		for (int i = -f; i < f; i++) {
+			for (int j = -f; j < f; j++) {
+				for (int k = -f; k < f; k++) {
+					int x = (int)pos.x;
+					int y = (int)pos.y;
+					int z = (int)pos.z;
+					
+					int cx = (x >> 5) + i;
+					int cy = (y >> 5) + j;
+					int cz = (z >> 5) + k;
+					
+					//int ccx = cx * 32;
+					//int ccy = cy * 32;
+					//int ccz = cz * 32;
+					
+					//final float padding = 16;
+					
+					// TODO:
+					//if (!camera.cubeInFrustum(ccx - padding, ccy - padding, ccz - padding, ccx+32 + padding, ccy+32 + padding, ccz+32 + padding))
+						//continue;
+					
+					WorldChunk c = this.chunks.get(cx, cy, cz);
+					
+					if (c != null)
+						c.renderShadow(renderer, i, j, k);
+				}
+			}
+		}
+		
+		Iterator<Entry<Model, ArrayList<Entity>>> iter = mappedEntities.entrySet().iterator();
+		
+		while (iter.hasNext()) {
+			Entry<Model, ArrayList<Entity>> entry = iter.next();
+			ArrayList<Entity> lis = entry.getValue();
+			Model m = entry.getKey();
+			
+			if (m == null)
+				continue;
+			
+			this.renderer.renderShadow(renderer, m, lis);
 		}
 	}
 	

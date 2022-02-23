@@ -11,7 +11,8 @@ import com.trapdoor.engine.datatypes.ogl.assimp.Material;
 import com.trapdoor.engine.datatypes.ogl.assimp.Mesh;
 import com.trapdoor.engine.datatypes.ogl.assimp.Model;
 import com.trapdoor.engine.datatypes.ogl.obj.VAO;
-import com.trapdoor.engine.shaders.DeferredFirstPassShader;
+import com.trapdoor.engine.renderer.shadows.ShadowRenderer;
+import com.trapdoor.engine.renderer.shadows.ShadowShader;
 import com.trapdoor.engine.tools.math.Maths;
 import com.trapdoor.engine.world.entities.Entity;
 import com.trapdoor.engine.world.entities.components.Transform;
@@ -69,6 +70,39 @@ public class EntityRenderer {
 			}
 			
 			first = false;
+			GL20.glDisableVertexAttribArray(0);
+			GL20.glDisableVertexAttribArray(1);
+			GL20.glDisableVertexAttribArray(2);
+			GL30.glBindVertexArray(0);
+		}
+	}
+	
+	public void renderShadow(ShadowRenderer renderer, Model m, ArrayList<Entity> lis) {
+		ShadowShader shader = renderer.getShader();
+		Mesh[] meshes = m.getMeshes();
+		for (int i = 0; i < meshes.length; i++) {
+			VAO mod = meshes[i].getVAO();
+			
+			if (mod == null)
+				continue;
+			
+			Material mat = meshes[i].getMaterial();
+			
+			if (mat.getDiffuseTexture() == null)
+				continue;
+			
+			GL30.glBindVertexArray(mod.getVaoID());
+			GL20.glEnableVertexAttribArray(0);
+			GL20.glEnableVertexAttribArray(1);
+			GL20.glEnableVertexAttribArray(2);
+			
+			for (int j = 0; j < lis.size(); j++) {
+				Entity entity = lis.get(j);
+				shader.loadTranslationMatrix(Maths.createTransformationMatrix(entity.getComponent(Transform.class)));
+				
+				GL11.glDrawElements(GL11.GL_TRIANGLES, mod.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+			}
+			
 			GL20.glDisableVertexAttribArray(0);
 			GL20.glDisableVertexAttribArray(1);
 			GL20.glDisableVertexAttribArray(2);

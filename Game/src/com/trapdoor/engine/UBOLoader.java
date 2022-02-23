@@ -3,7 +3,7 @@ package com.trapdoor.engine;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL33;
 
-import com.trapdoor.engine.shaders.DeferredSecondPassShader;
+import com.trapdoor.engine.renderer.DeferredSecondPassShader;
 
 /**
  * @author brett
@@ -17,8 +17,10 @@ public class UBOLoader {
 	private static int lightingUBO = -1;
 	private static int matrixUBO = -1;
 	
-	private static final int MATRIX_COUNT = 3;
+	private static final int MATRIX_COUNT = 5;
 	private static float[] projectMatrixBuffer = new float[16];
+	private static float[] orthoMatrixBuffer = new float[16];
+	private static float[] shadowMatrixBuffer = new float[16];
 	private static float[] viewMatrixBuffer = new float[16];
 	private static float[] matrixData = new float[MATRIX_COUNT * 16];
 	
@@ -85,6 +87,20 @@ public class UBOLoader {
 		
 		for (int i = 0; i < viewMatrixBuffer.length; i++)
 			matrixData[i + 32] = viewMatrixBuffer[i];
+	}
+	
+	public static synchronized void updateOrthoMatrix(Matrix4f matrix) {
+		matrix.get(orthoMatrixBuffer);
+		
+		for (int i = 0; i < orthoMatrixBuffer.length; i++)
+			matrixData[i + 48] = orthoMatrixBuffer[i];
+	}
+	
+	public static synchronized void updateShadowMatrix(Matrix4f matrix) {
+		matrix.get(shadowMatrixBuffer);
+		
+		for (int i = 0; i < shadowMatrixBuffer.length; i++)
+			matrixData[i + 64] = shadowMatrixBuffer[i];
 	}
 	
 	

@@ -1,6 +1,6 @@
 package com.trapdoor.engine.datatypes.util;
 
-import com.trapdoor.engine.shaders.DeferredSecondPassShader;
+import com.trapdoor.engine.renderer.DeferredSecondPassShader;
 
 /**
  * @author brett

@@ -82,6 +82,19 @@ public class VAOLoader {
 		return new VAO(vao, vbos, indicies.length);
 	}
 	
+	public static VAO loadToVAO(float[] positions, int dimensions) {
+		// create the VAO
+		int vaoID = createVAO();
+		int[] vbos = new int[1];
+		// store data in its first position
+		vbos[0] = storeDataInAttributeList(0, 2, positions);
+		// unbind the vao
+		unbindVAO();
+		// return this as a ModelVAO object.
+		return new VAO(vaoID, vbos, positions.length/2);
+		
+	}
+	
 	public static VAO loadToVAO(float[] data) {
 		int vao = createVAO();
 		

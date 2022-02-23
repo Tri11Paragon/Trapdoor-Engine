@@ -3,7 +3,7 @@ package com.karl.Engine.skybox;
 import org.joml.Vector4f;
 
 import com.karl.Engine.utils.MyFile;
-import com.trapdoor.engine.shaders.WorldShader;
+import com.trapdoor.engine.renderer.WorldShader;
 
 public class SkyboxShader extends WorldShader {
 

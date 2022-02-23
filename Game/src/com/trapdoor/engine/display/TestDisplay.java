@@ -12,6 +12,7 @@ import com.trapdoor.engine.datatypes.ogl.assimp.Model;
 import com.trapdoor.engine.registry.GameRegistry;
 import com.trapdoor.engine.registry.annotations.PostRegistrationEventSubscriber;
 import com.trapdoor.engine.registry.annotations.RegistrationEventSubscriber;
+import com.trapdoor.engine.renderer.debug.TextureRenderer;
 import com.trapdoor.engine.renderer.ui.CommandBox;
 import com.trapdoor.engine.tools.RayCasting;
 import com.trapdoor.engine.world.World;
@@ -34,6 +35,7 @@ public class TestDisplay extends IDisplay {
 	private RayCasting rayCasting;
 	private World world;
 	private Model cubeModel;
+	private Model cube2;
 	
 	@RegistrationEventSubscriber
 	public static void register() {
@@ -48,6 +50,7 @@ public class TestDisplay extends IDisplay {
 		GameRegistry.registerModel("resources/models/zucc.dae");
 		
 		GameRegistry.registerModel("resources/models/poop.dae");
+		GameRegistry.registerModel("resources/models/Mackenzie_Hallway_brt.dae");
 		
 		GameRegistry.registerSound("resources/sounds/penis.ogg");
 		
@@ -76,12 +79,12 @@ public class TestDisplay extends IDisplay {
 	@Override
 	public void onCreate() {
 		this.setSkyTextures(
-					"resources/textures/skyboxes/day/right.jpg", 	// right
-					"resources/textures/skyboxes/day/left.jpg", 	// left
-					"resources/textures/skyboxes/day/top.jpg", 	// top
-					"resources/textures/skyboxes/day/bottom.jpg", // bottom
-					"resources/textures/skyboxes/day/front.jpg", 	// front
-					"resources/textures/skyboxes/day/back.jpg"	// back
+					"resources/textures/skyboxes/lolzplus2/right.png.jpg", 	// right
+					"resources/textures/skyboxes/lolzplus2/left.png.jpg", 	// left
+					"resources/textures/skyboxes/lolzplus2/top.png.jpg", 	// top
+					"resources/textures/skyboxes/lolzplus2/bottom.png.jpg", // bottom
+					"resources/textures/skyboxes/lolzplus2/front.png.jpg", 	// front
+					"resources/textures/skyboxes/lolzplus2/back.png.jpg"	// back
 				);
 		
 		this.camera = new CreativeFirstPerson();
@@ -103,6 +106,10 @@ public class TestDisplay extends IDisplay {
 					.addLight(new Light(Light.lightings[5], 1.0f, 1.0f, 1.0f, 0, 5, 0))
 					.addLight(new Light(Light.lightings[5], 1.0f, 1.0f, 1.0f, 0, 5, 5))
 				);
+		this.world.addEntityToWorld(new Entity()
+				.setModel(GameRegistry.getModel("resources/models/Mackenzie_Hallway_brt.dae"))
+				.setPosition(-59, -19.6f, 0)
+				.addLight(new Light(Light.lightings[7], 0, 2, 0)));
 		
 		this.cubeModel = GameRegistry.getModel("resources/models/depression.dae");
 		this.world.addEntityToWorld(new Entity().setModel(GameRegistry.getModel("resources/models/test object.dae")).setPosition(0, -15.0f, 0));
@@ -110,6 +117,8 @@ public class TestDisplay extends IDisplay {
 		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(-25, 0, 0));
 		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(0, 0, 25));
 		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(0, 0, -25));
+		cube2 = cubeModel.clone();
+		this.world.addEntityToWorld(new Entity().setModel(cube2).setPosition(20, -15, 20));
 		this.world.addEntityToWorld(new EntityKent()
 											.setModel(GameRegistry.getModel("resources/models/kent.dae"))
 											.setPosition(25, -15, -40)
@@ -140,6 +149,7 @@ public class TestDisplay extends IDisplay {
 							GameRegistry.getModel("resources/models/poop.dae"))
 					// change position
 					.setPosition(-15, -4, -15));
+		
 	}
 
 	@Override
@@ -157,6 +167,7 @@ public class TestDisplay extends IDisplay {
 	public void render() {
 		this.world.render();
 		SoundSystem.update();
+		TextureRenderer.renderTexture(this.world.getShadowMap().getDepthMapTexture(), DisplayManager.WIDTH-512, 0, 512, 512);
 	}
 	
 	@Override

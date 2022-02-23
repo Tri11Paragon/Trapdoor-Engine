@@ -82,9 +82,10 @@ public class EntityCamera extends Entity {
 		sl.setOrientation(at, up);
 	}
 	
-	private void move() {
+	protected void move() {
 		if (!Mouse.isGrabbed())
 			return;
+		
 		if (Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_ALT))
 			speed = 5f;
 		else if (Keyboard.isKeyDown(Keyboard.L_CONTROL))

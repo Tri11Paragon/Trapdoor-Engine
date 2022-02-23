@@ -114,7 +114,7 @@ public class Transform extends IComponent {
 				this.pitch = this.setPitch;
 				this.roll = this.setRoll;
 
-				this.physQuatStore.fromAngles(yaw, roll, pitch);
+				this.physQuatStore.fromAngles(pitch, yaw, roll);
 				body.setPhysicsRotation(physQuatStore);
 				
 				this.awaitingRotationChange = false;

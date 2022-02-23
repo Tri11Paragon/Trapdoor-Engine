@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import com.trapdoor.engine.datatypes.ogl.assimp.Model;
 import com.trapdoor.engine.renderer.DeferredRenderer;
 import com.trapdoor.engine.renderer.EntityRenderer;
+import com.trapdoor.engine.renderer.shadows.ShadowRenderer;
 import com.trapdoor.engine.world.entities.Entity;
 
 /**
@@ -58,6 +59,22 @@ public class WorldChunk {
 				continue;
 			
 			renderer.renderChunk(render, m, lis);
+		}
+	}
+	
+	public void renderShadow(ShadowRenderer render, int i, int j, int k) {
+		
+		Iterator<Entry<Model, ArrayList<Entity>>> iter = entityMap.entrySet().iterator();
+		
+		while (iter.hasNext()) {
+			Entry<Model, ArrayList<Entity>> entry = iter.next();
+			ArrayList<Entity> lis = entry.getValue();
+			Model m = entry.getKey();
+			
+			if (m == null)
+				continue;
+			
+			renderer.renderShadow(render, m, lis);
 		}
 	}
 	
