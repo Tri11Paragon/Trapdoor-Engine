@@ -34,19 +34,15 @@ public class ShadowRenderer {
 		
 		GL33.glClear(GL33.GL_DEPTH_BUFFER_BIT);
 		
-		box.update();
+		//box.update();
 		
 		// create the orthographic matrix
 		shader.start();
 		
 		//updateOrthoProjectionMatrix(box.getWidth(), box.getHeight(), box.getLength());
-		updateOrthoProjectionMatrix(200, 200, 200);
-		//orthoProjection.identity();
-		//orthoProjection.ortho(-50, 50, -50, 50, 100, 100);
+		updateOrthoProjectionMatrix(100, 100, 100);
 		updateLightViewMatrix(DisplayManager.lightDirection, box.getCenter());
 		shadowView.translate((float) -camera.getPosition().x, (float) -camera.getPosition().y, (float) -camera.getPosition().z);
-		//shadowView.identity();
-		//shadowView.translate(box.getCenter());
 		
 		
 		temp = orthoProjection.mul(shadowView);

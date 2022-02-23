@@ -5,6 +5,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL33;
 
 import com.trapdoor.engine.datatypes.lighting.Light;
 import com.trapdoor.engine.datatypes.ogl.assimp.Material;
@@ -95,6 +96,9 @@ public class EntityRenderer {
 			GL20.glEnableVertexAttribArray(0);
 			GL20.glEnableVertexAttribArray(1);
 			GL20.glEnableVertexAttribArray(2);
+			
+			GL33.glActiveTexture(GL33.GL_TEXTURE0);
+			GL33.glBindTexture(GL33.GL_TEXTURE_2D, mat.getDiffuseTexture().getID());
 			
 			for (int j = 0; j < lis.size(); j++) {
 				Entity entity = lis.get(j);

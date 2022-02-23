@@ -19,10 +19,18 @@ layout (std140) uniform Matricies {
 
 uniform mat4 translationMatrix;
 
+const float shadowDistance = 200;
+const float transitionDistance = 10;
+
 void main(void){
 	vec4 worldPosition = translationMatrix * vec4(position,1.0);
 	vec4 positionRelativeToCam = projectionViewMatrix * worldPosition;
 	shadowCoords = shadowMatrix * worldPosition;
+
+	float distance = length(positionRelativeToCam);
+	distance = distance - (shadowDistance - transitionDistance);
+	distance = distance / transitionDistance;
+	shadowCoords.w = clamp(1.0-distance, 0.0f, 1.0f);
 
     fragpos = worldPosition.xyz;
 	normalo = normal * transpose(mat3(translationMatrix));

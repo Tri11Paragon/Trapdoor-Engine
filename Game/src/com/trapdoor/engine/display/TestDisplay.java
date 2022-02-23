@@ -48,6 +48,7 @@ public class TestDisplay extends IDisplay {
 		GameRegistry.registerModel("resources/models/floor.dae");
 		GameRegistry.registerModel("resources/models/tuber.dae");
 		GameRegistry.registerModel("resources/models/zucc.dae");
+		GameRegistry.registerModel("resources/models/playerblend.dae");
 		
 		GameRegistry.registerModel("resources/models/poop.dae");
 		GameRegistry.registerModel("resources/models/Mackenzie_Hallway_brt.dae");
@@ -91,7 +92,7 @@ public class TestDisplay extends IDisplay {
 		this.world = new World(camera);
 		this.rayCasting = new RayCasting(camera, world);
 		
-		this.world.addEntityToWorld((cameraEnt = new EntityCamera(this.camera)));
+		this.world.addEntityToWorld((cameraEnt = new EntityCamera(this.camera)).setModel(GameRegistry.getModel("resources/models/playerblend.dae")));
 		
 		this.world.addEntityToWorld(
 				new Entity(0, true, null)

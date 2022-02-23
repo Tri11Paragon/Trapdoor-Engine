@@ -22,13 +22,25 @@ uniform vec3 viewPos;
 
 uniform float specAmount;
 
+const int pcfCount = 2;
+const float totalTexels = (pcfCount * 2.0 + 1.0) * (pcfCount * 2.0 + 1.0);
+const float shadowMapSize = 1024;
+const float texelSize = 1.0/shadowMapSize;
+const float bias = 0.05f;
+
 void main(){
-	float obectNearestLight = texture(shadowMap, shadowCoords.xy).r;
-	float lightFactor = 1.0;
-	const float bias = 0.05f;
-	if (shadowCoords.z - bias > obectNearestLight){
-		lightFactor = 0.4f;
+	
+	float total = 0.0;
+	for (int x=-pcfCount; x<=pcfCount; x++){
+		for (int y=-pcfCount; y<=pcfCount; y++) {
+			float objectNearestLength = texture(shadowMap, shadowCoords.xy + vec2(x,y) * texelSize).r;
+			if (shadowCoords.z - bias > objectNearestLength){
+				total++;
+			}
+		}
 	}
+	total /= totalTexels;
+	float lightFactor = 1.0 - (0.6 *(total * shadowCoords.w));
 
     vec3 normali = normalize(normalo);
 

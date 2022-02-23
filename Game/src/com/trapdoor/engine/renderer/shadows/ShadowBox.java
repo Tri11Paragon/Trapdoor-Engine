@@ -11,7 +11,7 @@ import com.trapdoor.engine.tools.math.Maths;
 
 public class ShadowBox {
 	
-	private static final float OFFSET = 0;
+	private static final float OFFSET = 15;
 	private static final Vector4f UP = new Vector4f(0, 1, 0, 0);
 	private static final Vector4f FORWARD = new Vector4f(0, 0, -1, 0);
 	private static final float SHADOW_DISTANCE = 100;
@@ -186,7 +186,7 @@ public class ShadowBox {
 	private Vector4f calculateLightSpaceFrustumCorner(Vector3f startPoint, Vector3f direction, float width) {
 		Vector3f point = new Vector3f(startPoint).add(new Vector3f(direction.x * width, direction.y * width, direction.z * width));
 		Vector4f point4f = new Vector4f(point.x, point.y, point.z, 1f);
-		lightViewMatrix.transform(point4f);
+		new Matrix4f(lightViewMatrix).transform(point4f);
 		return point4f;
 	}
 
