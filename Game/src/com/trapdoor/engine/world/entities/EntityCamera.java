@@ -85,6 +85,7 @@ public class EntityCamera extends Entity {
 	protected void move() {
 		if (!Mouse.isGrabbed())
 			return;
+		
 		if (Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_ALT))
 			speed = 5f;
 		else if (Keyboard.isKeyDown(Keyboard.L_CONTROL))

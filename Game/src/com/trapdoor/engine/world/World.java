@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.joml.Vector3d;
+import org.lwjgl.opengl.GL33;
 
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
@@ -18,7 +19,10 @@ import com.trapdoor.engine.display.DisplayManager;
 import com.trapdoor.engine.registry.Threading;
 import com.trapdoor.engine.renderer.DeferredRenderer;
 import com.trapdoor.engine.renderer.EntityRenderer;
+import com.trapdoor.engine.renderer.shadows.ShadowMap;
+import com.trapdoor.engine.renderer.shadows.ShadowRenderer;
 import com.trapdoor.engine.tools.Logging;
+import com.trapdoor.engine.tools.SettingsLoader;
 import com.trapdoor.engine.world.entities.Entity;
 
 /**
@@ -49,6 +53,7 @@ public class World {
 	private EntityRenderer renderer;
 	private SkyboxRenderer skyboxRenderer;
 	private DeferredRenderer deferredRenderer;
+	private ShadowRenderer shadowRenderer;
 
 	public World(Camera c) {
 		// entitiesinworld is shared memory between the renderer and the world object.
@@ -57,6 +62,7 @@ public class World {
 		this.skyboxRenderer = new SkyboxRenderer();
 		this.c = c;
 		this.entityStorage = new WorldEntityStorage(c, this.renderer);
+		this.shadowRenderer = new ShadowRenderer(c);
 		
 		// setup physics
         this.physWorld = new PhysicsSpace(PhysicsSpace.BroadphaseType.DBVT);
@@ -88,7 +94,13 @@ public class World {
 		DisplayManager.enableCulling();
 		DisplayManager.disableTransparentcy(); 
 		
-		this.deferredRenderer.startFirstPass();
+		if (SettingsLoader.GRAPHICS_LEVEL <  2) {
+			this.shadowRenderer.renderDepthMap(c, entityStorage);
+			
+			GL33.glViewport(0, 0, DisplayManager.WIDTH, DisplayManager.HEIGHT);
+		}
+		
+		this.deferredRenderer.startFirstPass(this);
 		this.deferredRenderer.enableMainShaders();
 		this.deferredRenderer.getShader().loadViewPos(this.c.getPosition());
 		this.entityStorage.render(this.deferredRenderer);
@@ -103,6 +115,10 @@ public class World {
 		this.deferredRenderer.runSecondPass();
 		
 		DisplayManager.disableCulling();
+	}
+	
+	public ShadowMap getShadowMap() {
+		return shadowRenderer.getShadowMap();
 	}
 	
 	/**
@@ -209,6 +225,7 @@ public class World {
 	public void cleanup() {
 		Logging.logger.debug("Destorying world!");
 		this.deferredRenderer.cleanup();
+		this.shadowRenderer.cleanup();
 	}
 	
 }

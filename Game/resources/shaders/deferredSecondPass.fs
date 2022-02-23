@@ -31,7 +31,7 @@ const float gamma = 2.2;
 void main(){
     vec4 renderState = texture(gRenderState, textureCoords);
 
-    vec3 directlightDir = normalize(-directLight);
+    vec3 directlightDir = normalize(directLight);
     vec3 FragPos = texture(gPosition, textureCoords).rgb;
     vec3 Normal = texture(gNormal, textureCoords).rgb;
     vec4 albedoSpec = texture(gAlbedoSpec, textureCoords);
@@ -40,6 +40,7 @@ void main(){
     float specularMapAmount = albedoSpec.w;
     
     if (renderState.x != 0.0f){
+    	Diffuse = Diffuse * renderState.b;
         // then calculate lighting as usual
         vec3 lighting = Diffuse * 0.005f; // hard-coded ambient component
 

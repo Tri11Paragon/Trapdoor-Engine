@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import com.trapdoor.engine.UBOLoader;
 import com.trapdoor.engine.datatypes.Tuple;
 import com.trapdoor.engine.datatypes.util.ExtensibleArray;
-import com.trapdoor.engine.shaders.DeferredSecondPassShader;
+import com.trapdoor.engine.renderer.DeferredSecondPassShader;
 import com.trapdoor.engine.world.entities.Entity;
 import com.trapdoor.engine.world.entities.components.Transform;
 

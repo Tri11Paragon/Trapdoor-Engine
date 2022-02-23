@@ -4,7 +4,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 import com.karl.Engine.utils.MyFile;
-import com.trapdoor.engine.shaders.WorldShader;
+import com.trapdoor.engine.renderer.WorldShader;
 
 public class AnimatedModelShader extends WorldShader {
 

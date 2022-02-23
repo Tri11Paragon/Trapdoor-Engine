@@ -39,6 +39,7 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.joml.Vector3f;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -54,6 +55,7 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryStack;
 
 import com.spinyowl.legui.system.context.CallbackKeeper;
+import com.trapdoor.Main;
 import com.trapdoor.engine.ProjectionMatrix;
 import com.trapdoor.engine.TextureLoader;
 import com.trapdoor.engine.UBOLoader;
@@ -62,6 +64,7 @@ import com.trapdoor.engine.registry.GameRegistry;
 import com.trapdoor.engine.registry.Threading;
 import com.trapdoor.engine.registry.annotations.AnnotationHandler;
 import com.trapdoor.engine.renderer.SyncSave;
+import com.trapdoor.engine.renderer.debug.TextureRenderer;
 import com.trapdoor.engine.renderer.ui.CommandBox;
 import com.trapdoor.engine.renderer.ui.Console;
 import com.trapdoor.engine.renderer.ui.DebugInfo;
@@ -80,6 +83,10 @@ public class DisplayManager {
 	public static final String gameName = "Rixie";
 	public static final String engineName = "Trapdoor";
 	public static final String title = gameName + " - V" + gameVersion + " // " + engineName + " V" + engineVersion;
+	
+	// TODO: make this per display
+	public static Vector3f lightDirection = new Vector3f(150, 150, 0).normalize();
+	public static Vector3f lightColor = new Vector3f(1.0f);
 	
 	// window
 	public static long window;
@@ -319,6 +326,9 @@ public class DisplayManager {
 		InputMaster.registerKeyListener(new Console());
 		InputMaster.registerKeyListener(debugInfoLayer);
 		InputMaster.registerKeyListener(CommandBox.getInstance());
+		
+		if (Main.devMode)
+			TextureRenderer.init();
 	}
 
 	public static void closeDisplay() {
@@ -329,6 +339,9 @@ public class DisplayManager {
         
 		for (int i = 0; i < allDisplays.size(); i++)
 			allDisplays.get(i).onDestory();
+		
+		if (Main.devMode)
+			TextureRenderer.cleanup();
 		
 		UIMaster.quit();
 		ProjectionMatrix.cleanShaders();

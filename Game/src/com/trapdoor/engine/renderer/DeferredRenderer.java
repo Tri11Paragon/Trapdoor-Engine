@@ -10,9 +10,8 @@ import com.trapdoor.engine.camera.Camera;
 import com.trapdoor.engine.datatypes.lighting.ExtensibleLightingArray;
 import com.trapdoor.engine.datatypes.lighting.Light;
 import com.trapdoor.engine.display.DisplayManager;
-import com.trapdoor.engine.shaders.DeferredFirstPassShader;
-import com.trapdoor.engine.shaders.DeferredSecondPassShader;
 import com.trapdoor.engine.tools.SettingsLoader;
+import com.trapdoor.engine.world.World;
 import com.trapdoor.engine.world.entities.Entity;
 
 /**
@@ -185,7 +184,7 @@ public class DeferredRenderer implements Runnable {
 		createFrameBuffers();
 	}
 	
-	public void startFirstPass() {
+	public void startFirstPass(World world) {
 		GL33.glBindFramebuffer(GL33.GL_FRAMEBUFFER, gBuffer);
 		//GL33.glPolygonMode(GL33.GL_FRONT_AND_BACK, PolygonCommand.POLYMODE);
 		//Vector3f skyColor = DisplayManager.getClearColor();
@@ -193,11 +192,13 @@ public class DeferredRenderer implements Runnable {
 		GL33.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		GL33.glClear(GL33.GL_COLOR_BUFFER_BIT | GL33.GL_DEPTH_BUFFER_BIT);
 		
+		GL33.glActiveTexture(GL33.GL_TEXTURE5);
+		GL33.glBindTexture(GL33.GL_TEXTURE_2D, world.getShadowMap().getDepthMapTexture());
+		
 	}
 	
 	public void enableMainShaders() {
 		firstPassShader.start();
-		firstPassShader.loadProjectViewMatrix(camera.getProjectViewMatrix());
 	}
 	
 	public void endFirstPass() {

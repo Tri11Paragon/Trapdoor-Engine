@@ -40,7 +40,7 @@ public class LoadingScreenDisplay extends IDisplay {
 		MAX.incrementAndGet();
 	}
 	
-	public IDisplay singlePlayer;
+	public IDisplay mainMenu;
 	
 	private long time;
 	
@@ -56,7 +56,7 @@ public class LoadingScreenDisplay extends IDisplay {
 	public void onCreate() {
 		createUI();
 		
-		singlePlayer = new MainMenuDisplay();
+		mainMenu = new MainMenuDisplay();
 		time = System.currentTimeMillis();
 		
 		AnnotationHandler.runPreRegistration();
@@ -87,8 +87,8 @@ public class LoadingScreenDisplay extends IDisplay {
 				
 				AnnotationHandler.runPostRegistration();
 				
-				DisplayManager.createDisplay(singlePlayer);
-				DisplayManager.changeDisplay(singlePlayer);
+				DisplayManager.createDisplay(mainMenu);
+				DisplayManager.changeDisplay(mainMenu);
 			} else {
 				//LoadingScreenDisplay.progress();
 			}

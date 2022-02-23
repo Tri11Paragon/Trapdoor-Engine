@@ -9,6 +9,8 @@ layout (std140) uniform Matricies {
     mat4 projectionMatrix;
     mat4 viewMatrix;
     mat4 projectionViewMatrix;
+    mat4 othroMatrix;
+    mat4 shadowMatrix;
 };
 
 void main(void){

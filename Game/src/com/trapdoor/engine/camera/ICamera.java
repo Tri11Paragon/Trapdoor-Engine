@@ -23,8 +23,10 @@ public abstract class ICamera {
 	protected float yaw;
 	protected float roll;
 	protected Matrix4f viewMatrix = Maths.createViewMatrix(this);
-	private Matrix4f temp = new Matrix4f();
+	private final Matrix4f temp = new Matrix4f();
+	private final Matrix4f temp2 = new Matrix4f();
 	protected Matrix4f projectViewMatrix = ProjectionMatrix.projectionMatrix;
+	protected Matrix4f orthoViewMatrix = ProjectionMatrix.projectionMatrixOrtho;
 	
 	public abstract void move();
 	
@@ -37,8 +39,13 @@ public abstract class ICamera {
 		temp.set(ProjectionMatrix.projectionMatrix);
 		this.projectViewMatrix = temp.mul(viewMatrix);
 		
+		temp2.identity();
+		temp2.set(ProjectionMatrix.projectionMatrixOrtho);
+		this.orthoViewMatrix = temp2.mul(viewMatrix);
+		
 		UBOLoader.updateViewMatrix(viewMatrix);
 		UBOLoader.updateProjectViewMatrix(projectViewMatrix);
+		//UBOLoader.updateOrthoMatrix(orthoViewMatrix);
 	}
 	
 	/**

@@ -4,6 +4,7 @@ in vec2 textureCoords;
 
 in vec3 normalo;
 in vec3 fragpos;
+in vec4 shadowCoords;
 
 layout (location = 0) out vec4 gPosition;
 layout (location = 1) out vec4 gNormal;
@@ -15,12 +16,20 @@ uniform sampler2D normalMap;
 uniform sampler2D displacementMap;
 uniform sampler2D aoMap;
 uniform sampler2D specMap;
+uniform sampler2D shadowMap;
 
 uniform vec3 viewPos;
 
 uniform float specAmount;
 
 void main(){
+	float obectNearestLight = texture(shadowMap, shadowCoords.xy).r;
+	float lightFactor = 1.0;
+	const float bias = 0.05f;
+	if (shadowCoords.z - bias > obectNearestLight){
+		lightFactor = 0.4f;
+	}
+
     vec3 normali = normalize(normalo);
 
     vec3 viewDir  = normalize(viewPos - fragpos);
@@ -45,5 +54,5 @@ void main(){
     if (displacementMapTexture.a > 0)
         displacement = displacementMapTexture.r;
 
-    gRenderState = vec4(1.0f, displacement, 0.0f, 0.0f);
+    gRenderState = vec4(1.0f, displacement, lightFactor, 0.0f);
 }

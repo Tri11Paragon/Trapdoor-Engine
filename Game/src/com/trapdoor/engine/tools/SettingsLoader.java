@@ -14,6 +14,7 @@ import org.lwjgl.glfw.GLFW;
 import com.trapdoor.engine.ProjectionMatrix;
 import com.trapdoor.engine.TextureLoader;
 import com.trapdoor.engine.display.DisplayManager;
+import com.trapdoor.engine.renderer.shadows.ShadowMap;
 
 /**
 *
@@ -93,6 +94,8 @@ public class SettingsLoader {
 					MUSIC_GAIN = Float.parseFloat(name[1]);
 				if (name[0].equals("graphics"))
 					GRAPHICS_LEVEL = (int)Float.parseFloat(name[1]);
+				if (name[0].equals("shadowmap"))
+					ShadowMap.SHADOW_MAP_HEIGHT = ShadowMap.SHADOW_MAP_WIDTH = (int)Float.parseFloat(name[1]);
 			}
 			reader.close();
 		} catch (FileNotFoundException e) {
@@ -123,6 +126,7 @@ public class SettingsLoader {
 			writeLine(writer, "gamma: " + GAMMA);
 			writeLine(writer, "music_gain: " + MUSIC_GAIN);
 			writeLine(writer, "graphics: " + GRAPHICS_LEVEL);
+			writeLine(writer, "shadowmap: " + ShadowMap.SHADOW_MAP_WIDTH);
 			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();

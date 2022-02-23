@@ -55,6 +55,12 @@ public class Material {
 			this.specularTexture = GameRegistry.getTexture(this.specularTexturePath);
 		}
 	}
+	
+	public Material clone() {
+		Material m = new Material(diffuseTexturePath, diffuseTexturePath, displacementTexturePath, ambientOcclusionTexturePath, specularTexturePath, colorInformation);
+		//GameRegistry.registerMaterial2(m);
+		return m;
+	}
 
 	public String getDiffuseTexturePath() {
 		return diffuseTexturePath;

@@ -8,7 +8,8 @@ import java.util.Map.Entry;
 import org.joml.Matrix4f;
 
 import com.trapdoor.engine.display.DisplayManager;
-import com.trapdoor.engine.shaders.WorldShader;
+import com.trapdoor.engine.renderer.WorldShader;
+import com.trapdoor.engine.renderer.shadows.ShadowBox;
 import com.trapdoor.engine.tools.math.Maths;
 
 /**
@@ -58,6 +59,8 @@ public class ProjectionMatrix {
 			projectionChanges.get(i).run();
 		
 		UBOLoader.updateProjectionMatrix(projectionMatrix);
+		UBOLoader.updateOrthoMatrix(projectionMatrixOrtho);
+		ShadowBox.calculateWidthsAndHeights();
 		
 		//GUIShader guishader = VoxelScreenManager.ui.getRenderer().getShader();
 		//guishader.start();1
