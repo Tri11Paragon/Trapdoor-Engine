@@ -1,6 +1,9 @@
 package com.game.displays;
 
+import org.joml.Vector3d;
+
 import com.game.entities.SmoothEntityCamera;
+import com.jme3.math.Vector3f;
 import com.trapdoor.engine.camera.CreativeFirstPerson;
 import com.trapdoor.engine.datatypes.lighting.Light;
 import com.trapdoor.engine.display.IDisplay;
@@ -18,29 +21,74 @@ public class SinglePlayerDisplay extends IDisplay{
 	
 	@RegistrationEventSubscriber
 	public static void register() {
-		
 		GameRegistry.registerModel("resources/models/supercube.dae");
-		
+		GameRegistry.registerModel("resources/models/Mackenzie_Hallway_brt.dae");
 	}
 	
 	@Override
 	public void onCreate() {
-		this.camera = new CreativeFirstPerson();
+		this.camera = new CreativeFirstPerson();;
 		this.world = new World(camera);
 		
-		this.world.addEntityToWorld(new SmoothEntityCamera(this.camera));
+		SmoothEntityCamera s = new SmoothEntityCamera(this.camera);
+		Transform t3 = (Transform) s.getComponent(Transform.class);
+		t3.setPosition(0, 20, 0);
+		this.world.addEntityToWorld(s);
 		
-		Entity a = new Entity();
-		a.setModel(GameRegistry.getModel("resources/models/supercube.dae"));
+		//The hallways
+		int dist = 12;
+		Entity h;
+		
+		h = new Entity().setModel(GameRegistry.getModel("resources/models/Mackenzie_Hallway_brt.dae"));
+		h.setPosition(0 - dist, 0, 10);
+		this.world.addEntityToWorld(h);
+		
+		h = new Entity().setModel(GameRegistry.getModel("resources/models/Mackenzie_Hallway_brt.dae"));
+		h.setPosition(0 + dist, 0, 10);
+		this.world.addEntityToWorld(h);
+		
+		Transform t2;
+		
+		h = new Entity().setModel(GameRegistry.getModel("resources/models/Mackenzie_Hallway_brt.dae"));
+		h.setPosition(0, 0, 10 - dist);
+		t2 = (Transform) h.getComponent(Transform.class);
+		t2.setRotation((float) Math.PI/2, 0, 0);
+		this.world.addEntityToWorld(h);
+		
+		h = new Entity().setModel(GameRegistry.getModel("resources/models/Mackenzie_Hallway_brt.dae"));
+		h.setPosition(0, 0, 10 + dist);
+		t2 = (Transform) h.getComponent(Transform.class);
+		t2.setRotation((float) Math.PI/2, 0, 0);
+		this.world.addEntityToWorld(h);
+		
+		
+		//The small floors
+		Entity a = new Entity().setModel(GameRegistry.getModel("resources/models/supercube.dae"));
+		a.setPosition(0, -1, 10);
+		
+		Transform t = a.getComponent(Transform.class);
+		t.setScale(3, 1, 3);
+		
+		this.world.addEntityToWorld(a);
+		
+		a = new Entity().setModel(GameRegistry.getModel("resources/models/supercube.dae"));
+		a.setPosition(0, 7, 10);
+		
+		t = a.getComponent(Transform.class);
+		t.setScale(3, 1, 3);
+		
+		this.world.addEntityToWorld(a);
+		
+		
+		//The big floor		
+		a = new Entity().setModel(GameRegistry.getModel("resources/models/supercube.dae"));
 		a.setPosition(0, -5, 0);
 		
 		Light thefunny = new Light(Light.lightings[6], 1.0f, 1.0f, 1.0f, 0, 10, 0);
 		a.addLight(thefunny);
 		
-		Transform t = a.getComponent(Transform.class);
+		t = a.getComponent(Transform.class);
 		t.setScale(100f, 1, 100f);
-		
-		// How to apply t to a ??
 		
 		this.world.addEntityToWorld(a);
 		

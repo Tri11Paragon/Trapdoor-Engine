@@ -17,6 +17,7 @@ public class SmoothEntityCamera extends EntityCamera{
 	public SmoothEntityCamera(Camera c) {
 		super(c);
 		this.t = (Transform) this.getComponent(Transform.class);
+		ch.setJumpSpeed(15.0f);
 	}
 	
 	@Override
