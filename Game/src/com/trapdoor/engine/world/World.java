@@ -19,6 +19,7 @@ import com.trapdoor.engine.display.DisplayManager;
 import com.trapdoor.engine.registry.Threading;
 import com.trapdoor.engine.renderer.DeferredRenderer;
 import com.trapdoor.engine.renderer.EntityRenderer;
+import com.trapdoor.engine.renderer.ao.SSAORenderer;
 import com.trapdoor.engine.renderer.shadows.ShadowMap;
 import com.trapdoor.engine.renderer.shadows.ShadowRenderer;
 import com.trapdoor.engine.tools.Logging;
@@ -54,6 +55,7 @@ public class World {
 	private SkyboxRenderer skyboxRenderer;
 	private DeferredRenderer deferredRenderer;
 	private ShadowRenderer shadowRenderer;
+	private SSAORenderer ssaoRenderer;
 
 	public World(Camera c) {
 		// entitiesinworld is shared memory between the renderer and the world object.
@@ -63,6 +65,7 @@ public class World {
 		this.c = c;
 		this.entityStorage = new WorldEntityStorage(c, this.renderer);
 		this.shadowRenderer = new ShadowRenderer(c);
+		this.ssaoRenderer = new SSAORenderer();
 		
 		// setup physics
         this.physWorld = new PhysicsSpace(PhysicsSpace.BroadphaseType.DBVT);
@@ -94,7 +97,7 @@ public class World {
 		DisplayManager.enableCulling();
 		DisplayManager.disableTransparentcy(); 
 		
-		if (SettingsLoader.GRAPHICS_LEVEL <  2) {
+		if (SettingsLoader.GRAPHICS_LEVEL <  2 || (DisplayManager.lightColor.x != 0 && DisplayManager.lightColor.y != 0 && DisplayManager.lightColor.z != 0)) {
 			this.shadowRenderer.renderDepthMap(c, entityStorage);
 			
 			GL33.glViewport(0, 0, DisplayManager.WIDTH, DisplayManager.HEIGHT);
@@ -112,13 +115,13 @@ public class World {
 		this.skyboxRenderer.render(c);
 		this.deferredRenderer.endFirstPass();
 		
-		this.deferredRenderer.runSecondPass();
+		if (SettingsLoader.GRAPHICS_LEVEL < 2) {
+			ssaoRenderer.render(this.deferredRenderer);
+		}
+		
+		this.deferredRenderer.runSecondPass(this.ssaoRenderer);
 		
 		DisplayManager.disableCulling();
-	}
-	
-	public ShadowMap getShadowMap() {
-		return shadowRenderer.getShadowMap();
 	}
 	
 	/**
@@ -222,10 +225,19 @@ public class World {
 		return c;
 	}
 	
+	public ShadowMap getShadowMap() {
+		return shadowRenderer.getShadowMap();
+	}
+	
+	public SSAORenderer getSSAOMap() {
+		return ssaoRenderer;
+	}
+	
 	public void cleanup() {
 		Logging.logger.debug("Destorying world!");
 		this.deferredRenderer.cleanup();
 		this.shadowRenderer.cleanup();
+		this.ssaoRenderer.cleanup();
 	}
 	
 }

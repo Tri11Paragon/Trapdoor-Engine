@@ -24,12 +24,11 @@ uniform float specAmount;
 
 const int pcfCount = 2;
 const float totalTexels = (pcfCount * 2.0 + 1.0) * (pcfCount * 2.0 + 1.0);
-const float shadowMapSize = 1024;
-const float texelSize = 1.0/shadowMapSize;
 const float bias = 0.05f;
 
 void main(){
 	
+	float texelSize = 1.0 / textureSize(shadowMap, 0).x;
 	float total = 0.0;
 	for (int x=-pcfCount; x<=pcfCount; x++){
 		for (int y=-pcfCount; y<=pcfCount; y++) {

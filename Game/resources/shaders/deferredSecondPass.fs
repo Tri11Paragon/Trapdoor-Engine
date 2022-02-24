@@ -8,6 +8,7 @@ uniform sampler2D gPosition;
 uniform sampler2D gNormal;
 uniform sampler2D gAlbedoSpec;
 uniform sampler2D gRenderState;
+uniform sampler2D ssaoColor;
 
 const int NR_LIGHTS = 32;
 
@@ -40,9 +41,10 @@ void main(){
     float specularMapAmount = albedoSpec.w;
     
     if (renderState.x != 0.0f){
+    	float AmbientOcclusion = texture(ssaoColor, textureCoords).r;
     	Diffuse = Diffuse * renderState.b;
         // then calculate lighting as usual
-        vec3 lighting = Diffuse * 0.005f; // hard-coded ambient component
+        vec3 lighting = Diffuse * 0.3f * AmbientOcclusion; // hard-coded ambient component
 
         // add directional lighting
         lighting += Diffuse * (max(dot(Normal, directlightDir), 0.0) * directLightColor);

@@ -19,7 +19,7 @@ public class ShadowMap {
 		GL33.glTexImage2D(
 				GL33.GL_TEXTURE_2D, 
 				0, 
-				GL33.GL_DEPTH_COMPONENT, 
+				GL33.GL_DEPTH_COMPONENT32, 
 				SHADOW_MAP_WIDTH, 
 				SHADOW_MAP_HEIGHT, 
 				0, 
@@ -28,8 +28,10 @@ public class ShadowMap {
 				(ByteBuffer) null);
 		GL33.glTexParameteri(GL33.GL_TEXTURE_2D, GL33.GL_TEXTURE_MIN_FILTER, GL33.GL_NEAREST);
 		GL33.glTexParameteri(GL33.GL_TEXTURE_2D, GL33.GL_TEXTURE_MAG_FILTER, GL33.GL_NEAREST);
-		GL33.glTexParameteri(GL33.GL_TEXTURE_2D, GL33.GL_TEXTURE_WRAP_S, GL33.GL_CLAMP_TO_EDGE);
-		GL33.glTexParameteri(GL33.GL_TEXTURE_2D, GL33.GL_TEXTURE_WRAP_T, GL33.GL_CLAMP_TO_EDGE);
+		GL33.glTexParameteri(GL33.GL_TEXTURE_2D, GL33.GL_TEXTURE_WRAP_S, GL33.GL_CLAMP_TO_BORDER);
+		GL33.glTexParameteri(GL33.GL_TEXTURE_2D, GL33.GL_TEXTURE_WRAP_T, GL33.GL_CLAMP_TO_BORDER);
+		float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+		GL33.glTexParameterfv(GL33.GL_TEXTURE_2D, GL33.GL_TEXTURE_BORDER_COLOR, borderColor);  
 		
 		// create the frame buffer for the shadow map
 		depthMapFBO = GL33.glGenFramebuffers();

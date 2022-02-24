@@ -27,7 +27,7 @@ public class ProjectionMatrix {
 	public static final Matrix4f projectionMatrixOrtho = new Matrix4f();
 	
 	public static HashMap<Integer, WorldShader> shaders = new HashMap<Integer, WorldShader>();
-	public static ArrayList<Runnable> projectionChanges = new ArrayList<Runnable>();
+	private static ArrayList<Runnable> projectionChanges = new ArrayList<Runnable>();
 	private static int lastIndex = 0;
 	
 	public static void updateProjectionMatrix(){

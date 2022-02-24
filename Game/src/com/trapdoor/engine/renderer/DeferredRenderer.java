@@ -10,6 +10,7 @@ import com.trapdoor.engine.camera.Camera;
 import com.trapdoor.engine.datatypes.lighting.ExtensibleLightingArray;
 import com.trapdoor.engine.datatypes.lighting.Light;
 import com.trapdoor.engine.display.DisplayManager;
+import com.trapdoor.engine.renderer.ao.SSAORenderer;
 import com.trapdoor.engine.tools.SettingsLoader;
 import com.trapdoor.engine.world.World;
 import com.trapdoor.engine.world.entities.Entity;
@@ -87,6 +88,8 @@ public class DeferredRenderer implements Runnable {
 		GL33.glTexImage2DMultisample(GL33.GL_TEXTURE_2D_MULTISAMPLE, SettingsLoader.SAMPLES, GL33.GL_RGBA16F, DisplayManager.WIDTH, DisplayManager.HEIGHT, true);
 		GL33.glTexParameteri(GL33.GL_TEXTURE_2D_MULTISAMPLE, GL33.GL_TEXTURE_MIN_FILTER, GL33.GL_NEAREST);
 		GL33.glTexParameteri(GL33.GL_TEXTURE_2D_MULTISAMPLE, GL33.GL_TEXTURE_MAG_FILTER, GL33.GL_NEAREST);
+		GL33.glTexParameteri(GL33.GL_TEXTURE_2D_MULTISAMPLE, GL33.GL_TEXTURE_WRAP_S, GL33.GL_CLAMP_TO_EDGE);
+		GL33.glTexParameteri(GL33.GL_TEXTURE_2D_MULTISAMPLE, GL33.GL_TEXTURE_WRAP_T, GL33.GL_CLAMP_TO_EDGE);
 		GL33.glFramebufferTexture2D(GL33.GL_FRAMEBUFFER, GL33.GL_COLOR_ATTACHMENT0, GL33.GL_TEXTURE_2D_MULTISAMPLE, gPosition, 0);
 		
 		// create and bind the normals texture
@@ -95,6 +98,8 @@ public class DeferredRenderer implements Runnable {
 		GL33.glTexImage2DMultisample(GL33.GL_TEXTURE_2D_MULTISAMPLE, SettingsLoader.SAMPLES, GL33.GL_RGBA16F, DisplayManager.WIDTH, DisplayManager.HEIGHT, true);
 		GL33.glTexParameteri(GL33.GL_TEXTURE_2D_MULTISAMPLE, GL33.GL_TEXTURE_MIN_FILTER, GL33.GL_NEAREST);
 		GL33.glTexParameteri(GL33.GL_TEXTURE_2D_MULTISAMPLE, GL33.GL_TEXTURE_MAG_FILTER, GL33.GL_NEAREST);
+		GL33.glTexParameteri(GL33.GL_TEXTURE_2D_MULTISAMPLE, GL33.GL_TEXTURE_WRAP_S, GL33.GL_CLAMP_TO_EDGE);
+		GL33.glTexParameteri(GL33.GL_TEXTURE_2D_MULTISAMPLE, GL33.GL_TEXTURE_WRAP_T, GL33.GL_CLAMP_TO_EDGE);
 		GL33.glFramebufferTexture2D(GL33.GL_FRAMEBUFFER, GL33.GL_COLOR_ATTACHMENT1, GL33.GL_TEXTURE_2D_MULTISAMPLE, gNormal, 0);
 		
 		// create and bind the color buffer (with specular component in the alpha channel)
@@ -103,6 +108,8 @@ public class DeferredRenderer implements Runnable {
 		GL33.glTexImage2DMultisample(GL33.GL_TEXTURE_2D_MULTISAMPLE, SettingsLoader.SAMPLES, GL33.GL_RGBA16F, DisplayManager.WIDTH, DisplayManager.HEIGHT, true);
 		GL33.glTexParameteri(GL33.GL_TEXTURE_2D_MULTISAMPLE, GL33.GL_TEXTURE_MIN_FILTER, GL33.GL_NEAREST);
 		GL33.glTexParameteri(GL33.GL_TEXTURE_2D_MULTISAMPLE, GL33.GL_TEXTURE_MAG_FILTER, GL33.GL_NEAREST);
+		GL33.glTexParameteri(GL33.GL_TEXTURE_2D_MULTISAMPLE, GL33.GL_TEXTURE_WRAP_S, GL33.GL_CLAMP_TO_EDGE);
+		GL33.glTexParameteri(GL33.GL_TEXTURE_2D_MULTISAMPLE, GL33.GL_TEXTURE_WRAP_T, GL33.GL_CLAMP_TO_EDGE);
 		GL33.glFramebufferTexture2D(GL33.GL_FRAMEBUFFER, GL33.GL_COLOR_ATTACHMENT2, GL33.GL_TEXTURE_2D_MULTISAMPLE, gColorSpec, 0);
 		
 		gRenderState = GL33.glGenTextures();
@@ -110,6 +117,8 @@ public class DeferredRenderer implements Runnable {
 		GL33.glTexImage2DMultisample(GL33.GL_TEXTURE_2D_MULTISAMPLE, SettingsLoader.SAMPLES, GL33.GL_RGBA, DisplayManager.WIDTH, DisplayManager.HEIGHT, true);		
 		GL33.glTexParameteri(GL33.GL_TEXTURE_2D_MULTISAMPLE, GL33.GL_TEXTURE_MIN_FILTER, GL33.GL_NEAREST);
 		GL33.glTexParameteri(GL33.GL_TEXTURE_2D_MULTISAMPLE, GL33.GL_TEXTURE_MAG_FILTER, GL33.GL_NEAREST);
+		GL33.glTexParameteri(GL33.GL_TEXTURE_2D_MULTISAMPLE, GL33.GL_TEXTURE_WRAP_S, GL33.GL_CLAMP_TO_EDGE);
+		GL33.glTexParameteri(GL33.GL_TEXTURE_2D_MULTISAMPLE, GL33.GL_TEXTURE_WRAP_T, GL33.GL_CLAMP_TO_EDGE);
 		GL33.glFramebufferTexture2D(GL33.GL_FRAMEBUFFER, GL33.GL_COLOR_ATTACHMENT3, GL33.GL_TEXTURE_2D_MULTISAMPLE, gRenderState, 0);
 		
 		GL33.glDrawBuffers(new int[] {GL33.GL_COLOR_ATTACHMENT0, GL33.GL_COLOR_ATTACHMENT1, GL33.GL_COLOR_ATTACHMENT2, GL33.GL_COLOR_ATTACHMENT3});
@@ -231,14 +240,7 @@ public class DeferredRenderer implements Runnable {
 		GL33.glClear(GL33.GL_COLOR_BUFFER_BIT | GL33.GL_DEPTH_BUFFER_BIT);
 	}
 	
-	public void runSecondPass() {
-		secondPassShader.start();
-		secondPassShader.loadViewMatrix(camera.getViewMatrix());
-		secondPassShader.loadViewPos(camera.getPosition());
-
-		lights.updateUBO();
-		lights.clear();
-		
+	public void bindBuffersTextures() {
 		GL33.glActiveTexture(GL33.GL_TEXTURE0);
 		GL33.glBindTexture(GL33.GL_TEXTURE_2D, multiGPosition);
 		GL33.glActiveTexture(GL33.GL_TEXTURE1);
@@ -247,10 +249,27 @@ public class DeferredRenderer implements Runnable {
 		GL33.glBindTexture(GL33.GL_TEXTURE_2D, multiColorSpec);
 		GL33.glActiveTexture(GL33.GL_TEXTURE3);
 		GL33.glBindTexture(GL33.GL_TEXTURE_2D, multiGRenderState);
-		
+	}
+	
+	public void bindAndRenderQuad() {
 		GL33.glBindVertexArray(quadVAO);
 		GL33.glDrawArrays(GL33.GL_TRIANGLE_STRIP, 0, 4);
 		GL33.glBindVertexArray(0);
+	}
+	
+	public void runSecondPass(SSAORenderer renderer) {
+		secondPassShader.start();
+		secondPassShader.loadViewMatrix(camera.getViewMatrix());
+		secondPassShader.loadViewPos(camera.getPosition());
+
+		lights.updateUBO();
+		lights.clear();
+		
+		bindBuffersTextures();
+		GL33.glActiveTexture(GL33.GL_TEXTURE4);
+		GL33.glBindTexture(GL33.GL_TEXTURE_2D, renderer.getSSAOBluredTexture());
+		
+		bindAndRenderQuad();
 	    
 	    secondPassShader.stop();
 	}

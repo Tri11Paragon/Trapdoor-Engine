@@ -85,8 +85,10 @@ public class DisplayManager {
 	public static final String title = gameName + " - V" + gameVersion + " // " + engineName + " V" + engineVersion;
 	
 	// TODO: make this per display
-	public static Vector3f lightDirection = new Vector3f(150, 150, 0).normalize();
-	public static Vector3f lightColor = new Vector3f(1.0f);
+	//public static Vector3f lightDirection = new Vector3f(150, 150, 0).normalize();
+	//public static Vector3f lightColor = new Vector3f(1.0f);
+	public static Vector3f lightDirection = new Vector3f(0, 0, 0).normalize();
+	public static Vector3f lightColor = new Vector3f(0.0f);
 	
 	// window
 	public static long window;
@@ -142,7 +144,6 @@ public class DisplayManager {
 				UBOLoader.updateMatrixUBO();
 				
 				currentDisplay.render();
-			
 				
 				lx = mouseX;
 				ly = mouseY;
@@ -386,7 +387,7 @@ public class DisplayManager {
 	public static void createDisplay(IDisplay display) {
 		allDisplays.add(display);
 		display.onCreate();
-		ProjectionMatrix.updateProjectionMatrix();
+		//ProjectionMatrix.updateProjectionMatrix();
 	}
 	
 	public static IDisplay getCurrentDisplay() {

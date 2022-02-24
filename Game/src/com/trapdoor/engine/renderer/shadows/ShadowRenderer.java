@@ -41,6 +41,10 @@ public class ShadowRenderer {
 		
 		//updateOrthoProjectionMatrix(box.getWidth(), box.getHeight(), box.getLength());
 		updateOrthoProjectionMatrix(100, 100, 100);
+		//shadowView.identity();
+		//orthoProjection.ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 100f);
+		//shadowView.identity();
+		//shadowView.lookAt(DisplayManager.lightDirection, new Vector3f(), new Vector3f(0.0f, 1.0f, 0.0f));
 		updateLightViewMatrix(DisplayManager.lightDirection, box.getCenter());
 		shadowView.translate((float) -camera.getPosition().x, (float) -camera.getPosition().y, (float) -camera.getPosition().z);
 		
@@ -51,8 +55,10 @@ public class ShadowRenderer {
 		UBOLoader.updateShadowMatrix(getToShadowMapSpaceMatrix());
 		
 		GL33.glDisable(GL33.GL_CULL_FACE);
+		//GL33.glDepthFunc(GL33.GL_LESS);
 		// render out the shadows
 		storage.renderShadow(this);
+		//GL33.glDepthFunc(GL33.GL_LEQUAL);
 		GL33.glEnable(GL33.GL_CULL_FACE);
 		
 		shader.stop();
