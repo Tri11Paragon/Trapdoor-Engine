@@ -1,8 +1,16 @@
 file(REMOVE_RECURSE
   "CMakeFiles/Trapdoor.dir/src/display/Camera.cpp.o"
+  "CMakeFiles/Trapdoor.dir/src/display/Camera.cpp.o.d"
   "CMakeFiles/Trapdoor.dir/src/display/DisplayManager.cpp.o"
+  "CMakeFiles/Trapdoor.dir/src/display/DisplayManager.cpp.o.d"
+  "CMakeFiles/Trapdoor.dir/src/display/Scene.cpp.o"
+  "CMakeFiles/Trapdoor.dir/src/display/Scene.cpp.o.d"
   "CMakeFiles/Trapdoor.dir/src/main.cpp.o"
+  "CMakeFiles/Trapdoor.dir/src/main.cpp.o.d"
+  "CMakeFiles/Trapdoor.dir/src/tools/data/ArrayList.cpp.o"
+  "CMakeFiles/Trapdoor.dir/src/tools/data/ArrayList.cpp.o.d"
   "CMakeFiles/Trapdoor.dir/src/tools/maths.cpp.o"
+  "CMakeFiles/Trapdoor.dir/src/tools/maths.cpp.o.d"
   "Trapdoor"
   "Trapdoor.pdb"
 )

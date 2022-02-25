@@ -2,18 +2,22 @@
 #include <iostream>
 #include "config/version.h"
 #include "display/DisplayManager.h"
+#include "tools/data/ArrayList.h"
 
 int main(){
 
     std::cout << "Loading " << TRAPDOOR_NAME << " Engine v";
     printClean();
 
-    createDisplay();
+    ArrayList<int> arrayList;
+    arrayList.add(340);
 
-    while (!isCloseRequested()){
-        updateDisplay();
-    }
+    //createDisplay();
 
-    closeDisplay();
+    //while (!isCloseRequested()){
+        //updateDisplay();
+    //}
+
+    //closeDisplay();
 
 }

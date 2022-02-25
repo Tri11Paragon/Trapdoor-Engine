@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.19)
-project(Trapdoor VERSION "0.1.0")
+project(Trapdoor VERSION "0.1.1")
 
 set(CMAKE_CXX_STANDARD 20)
 
