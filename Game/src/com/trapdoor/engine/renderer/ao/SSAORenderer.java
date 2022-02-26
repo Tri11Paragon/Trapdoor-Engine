@@ -27,8 +27,8 @@ public class SSAORenderer implements Runnable {
 		this.ssao.bindSSAOBuffer();
 		this.ssaoShader.start();
 		GL33.glClear(GL33.GL_COLOR_BUFFER_BIT);
-		renderer.bindBuffersTextures();
-		GL33.glActiveTexture(GL33.GL_TEXTURE4);
+		renderer.bindDataTextures();
+		GL33.glActiveTexture(GL33.GL_TEXTURE2);
 		GL33.glBindTexture(GL33.GL_TEXTURE_2D, this.ssao.getNoiseTexture());
 		renderer.bindAndRenderQuad();
 		

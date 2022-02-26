@@ -122,6 +122,7 @@ public class World {
 		this.deferredRenderer.runSecondPass(this.ssaoRenderer);
 		
 		DisplayManager.disableCulling();
+		this.deferredRenderer.renderGBuffer();
 	}
 	
 	/**

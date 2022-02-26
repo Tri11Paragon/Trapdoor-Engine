@@ -92,7 +92,8 @@ public class TestDisplay extends IDisplay {
 		this.world = new World(camera);
 		this.rayCasting = new RayCasting(camera, world);
 		
-		this.world.addEntityToWorld((cameraEnt = new EntityCamera(this.camera)).setModel(GameRegistry.getModel("resources/models/playerblend.dae")));
+		// .setModel(GameRegistry.getModel("resources/models/playerblend.dae"))
+		this.world.addEntityToWorld((cameraEnt = new EntityCamera(this.camera)));
 		
 		this.world.addEntityToWorld(
 				new Entity(0, true, null)

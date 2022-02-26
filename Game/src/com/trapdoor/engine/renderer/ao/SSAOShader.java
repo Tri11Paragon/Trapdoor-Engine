@@ -16,8 +16,6 @@ public class SSAOShader extends ShaderProgram {
 
 	private int location_gposition;
 	private int location_gnormal;
-	private int location_gcolor;
-	private int location_gRenderState;
 	private int location_noiseTexture;
 	private int location_noiseScale;
 	private int location_samples[];
@@ -32,8 +30,6 @@ public class SSAOShader extends ShaderProgram {
 	protected void getAllUniformLocations() {
 		location_gposition = getUniformLocation("gPosition");
 		location_gnormal = getUniformLocation("gNormal");
-		location_gcolor = getUniformLocation("gAlbedoSpec");
-		location_gRenderState = getUniformLocation("gRenderState");
 		location_noiseTexture = getUniformLocation("texNoise");
 		location_noiseScale = getUniformLocation("noiseScale");
 		
@@ -55,9 +51,7 @@ public class SSAOShader extends ShaderProgram {
 	public void connectTextureUnits() {
 		super.loadInt(location_gposition, 0);
 		super.loadInt(location_gnormal, 1);
-		super.loadInt(location_gcolor, 2);
-		super.loadInt(location_gRenderState, 3);
-		super.loadInt(location_noiseTexture, 4);
+		super.loadInt(location_noiseTexture, 2);
 	}
 	
 }
