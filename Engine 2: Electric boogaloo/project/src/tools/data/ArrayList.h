@@ -72,6 +72,15 @@ public:
             newArr.add(other.get(i));
         return newArr;
     }
+    T* toArrayCopy(){
+        T ret[size()];
+        for (int i = 0; i < size(); i++)
+            ret[i] = get(i);
+        return ret;
+    }
+    T* toArray(){
+        return array;
+    }
     ~ArrayList(){
         delete[](array);
     }

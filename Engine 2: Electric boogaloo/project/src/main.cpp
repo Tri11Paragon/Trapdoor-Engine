@@ -3,6 +3,7 @@
 #include "config/version.h"
 #include "display/DisplayManager.h"
 #include "tools/data/ArrayList.h"
+#include "tools/data/BinaryTree.h"
 
 int main(){
 
@@ -19,9 +20,17 @@ int main(){
     ArrayList<int> arrayList3 = arrayList1 + arrayList2;
 
     for (int i = 0; i < arrayList3.size(); i++){
-        std::cout << i << "L " << arrayList3.get(i) << std::endl;
+        std::cout << i << "L " << arrayList3[i] << std::endl;
     }
 
+    BinaryTree<float> treer;
+    for (int i = 0; i < arrayList3.size(); i++){
+        treer.insert(arrayList3[i], i - arrayList3.size()/2);
+    }
+
+    treer.inOrderTraverse([](BinaryTree<float>::Node* n) -> void {
+        std::cout << n->data << std::endl;
+    });
 
     //createDisplay();
 
