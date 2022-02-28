@@ -12,7 +12,6 @@ import com.trapdoor.engine.datatypes.ogl.assimp.Model;
 import com.trapdoor.engine.registry.GameRegistry;
 import com.trapdoor.engine.registry.annotations.PostRegistrationEventSubscriber;
 import com.trapdoor.engine.registry.annotations.RegistrationEventSubscriber;
-import com.trapdoor.engine.renderer.debug.TextureRenderer;
 import com.trapdoor.engine.renderer.ui.CommandBox;
 import com.trapdoor.engine.tools.RayCasting;
 import com.trapdoor.engine.world.World;

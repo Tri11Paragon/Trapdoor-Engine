@@ -60,6 +60,9 @@ public:
     int size(){
         return currentIndex;
     }
+    T& operator[](int i){
+        return get(i);
+    }
     ArrayList<T> operator+(ArrayList<T>& other){
         ArrayList<T> newArr(other.size() + size());
         for (int i = 0; i < size(); i++){

@@ -2,7 +2,8 @@
 
 in vec2 textureCoords;
 
-out vec4 out_Color;
+layout (location = 0) out vec4 out_Color;
+layout (location = 1) out vec4 bright_Color;
 
 uniform sampler2D gPosition;
 uniform sampler2D gNormal;

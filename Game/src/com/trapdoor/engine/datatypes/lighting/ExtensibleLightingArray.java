@@ -89,11 +89,9 @@ public class ExtensibleLightingArray {
 		int base = index * 4;
 		Transform t = (Transform)e.getComponent(Transform.class);
 		// TODO: apply entity rotation
-		store.set(0);
 		store.x = l.getX() + t.getX();
 		store.y = l.getY() + t.getY();
 		store.z = l.getZ() + t.getZ();
-		store.w = 1.0f;
 		Vector4f transedV = viewMatrix.transform(store);
 		
 		lightArray[base] = transedV.x;
