@@ -25,7 +25,7 @@ uniform vec2 noiseScale;
 
 const float bias = 0.025f;
 const int kernelSize = 16;
-const float radius = 0.5f;
+const float radius = 2.5f;
 
 void main() {
     vec3 fragPos   = texture(gPosition, textureCoords).xyz;

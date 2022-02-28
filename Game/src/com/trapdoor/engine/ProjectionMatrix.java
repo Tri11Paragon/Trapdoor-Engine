@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 
 import org.joml.Matrix4f;
 
+import com.karl.Engine.skybox.SkyboxRenderer;
 import com.trapdoor.engine.display.DisplayManager;
 import com.trapdoor.engine.renderer.WorldShader;
 import com.trapdoor.engine.renderer.shadows.ShadowBox;
@@ -20,8 +21,8 @@ import com.trapdoor.engine.tools.math.Maths;
 public class ProjectionMatrix {
 	
 	public static float FOV = 70;
-	public static final float NEAR_PLANE = 0.1f;
-	public static final float FAR_PLANE = 1000;
+	public static final float NEAR_PLANE = 0.20f;
+	public static final float FAR_PLANE = SkyboxRenderer.SIZE + 25;
 	
 	public static final Matrix4f projectionMatrix = new Matrix4f();
 	public static final Matrix4f projectionMatrixOrtho = new Matrix4f();

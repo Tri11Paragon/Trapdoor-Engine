@@ -44,12 +44,12 @@ void main(){
     	float AmbientOcclusion = texture(ssaoColor, textureCoords).r;
     	Diffuse = Diffuse * renderState.b;
         // then calculate lighting as usual
-        vec3 lighting = Diffuse * 0.3f * AmbientOcclusion; // hard-coded ambient component
+        vec3 lighting = Diffuse * 0.03f * (AmbientOcclusion); // hard-coded ambient component
 
         // add directional lighting
         lighting += Diffuse * (max(dot(Normal, directlightDir), 0.0) * directLightColor);
 
-        vec3 viewDir  = normalize(viewPos - FragPos);
+        vec3 viewDir  = normalize(-FragPos);
 
         // Normal Lighting
         for(int i = 0; i < NR_LIGHTS; ++i) {
@@ -75,7 +75,7 @@ void main(){
             diffuse *= attenuation;
             specular *= attenuation;
 
-            lighting += (diffuse + specular);
+            lighting += (diffuse * AmbientOcclusion + specular);
         }    
         
         out_Color = vec4(lighting, 1.0);

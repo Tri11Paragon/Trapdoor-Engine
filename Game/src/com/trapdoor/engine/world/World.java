@@ -97,7 +97,7 @@ public class World {
 		DisplayManager.enableCulling();
 		DisplayManager.disableTransparentcy(); 
 		
-		if (SettingsLoader.GRAPHICS_LEVEL <  2 || (DisplayManager.lightColor.x != 0 && DisplayManager.lightColor.y != 0 && DisplayManager.lightColor.z != 0)) {
+		if (SettingsLoader.GRAPHICS_LEVEL <  2 && DisplayManager.enableShadows) {
 			this.shadowRenderer.renderDepthMap(c, entityStorage);
 			
 			GL33.glViewport(0, 0, DisplayManager.WIDTH, DisplayManager.HEIGHT);
@@ -122,7 +122,6 @@ public class World {
 		this.deferredRenderer.runSecondPass(this.ssaoRenderer);
 		
 		DisplayManager.disableCulling();
-		this.deferredRenderer.renderGBuffer();
 	}
 	
 	/**

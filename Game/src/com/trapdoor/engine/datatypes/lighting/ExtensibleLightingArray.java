@@ -2,6 +2,9 @@ package com.trapdoor.engine.datatypes.lighting;
 
 import java.util.ArrayList;
 
+import org.joml.Matrix4f;
+import org.joml.Vector4f;
+
 import com.trapdoor.engine.UBOLoader;
 import com.trapdoor.engine.datatypes.Tuple;
 import com.trapdoor.engine.datatypes.util.ExtensibleArray;
@@ -44,8 +47,9 @@ public class ExtensibleLightingArray {
 		this.lights.add(new Tuple<ArrayList<Light>, Entity>(lightList, e));
 	}
 	
-	public void updateUBO() {
-		setLightingDataArray();
+	public void updateUBO(Matrix4f viewMatrix) {
+		lightArray = new float[DeferredSecondPassShader.MAX_LIGHTS * DeferredSecondPassShader.STRIDE_SIZE];
+		setLightingDataArray(viewMatrix);
 		UBOLoader.updateLightingUBO(lightArray);
 	}
 	
@@ -54,7 +58,7 @@ public class ExtensibleLightingArray {
 		this.lights.clear();
 	}
 	
-	private void setLightingDataArray() {
+	private void setLightingDataArray(Matrix4f viewMatrix) {
 		int cur = 0;
 		l1: for (int i = 0; i < lights.size(); i++) {
 			ArrayList<Light> lightsArr = lights.get(i).getX();
@@ -70,7 +74,7 @@ public class ExtensibleLightingArray {
 				if (l.isDirectional())
 					continue;
 				
-				setLightData(l, cur, e);
+				setLightData(viewMatrix, l, cur, e);
 				
 				cur++;
 				if (cur >= DeferredSecondPassShader.MAX_LIGHTS)
@@ -79,13 +83,22 @@ public class ExtensibleLightingArray {
 		}
 	}
 	
-	private void setLightData(Light l, int index, Entity e) {
+	private final Vector4f store = new Vector4f(0,0,0, 1.0f);
+	
+	private void setLightData(Matrix4f viewMatrix, Light l, int index, Entity e) {
 		int base = index * 4;
 		Transform t = (Transform)e.getComponent(Transform.class);
 		// TODO: apply entity rotation
-		lightArray[base] = l.getX() + t.getX();
-		lightArray[base+1] = l.getY() + t.getY();
-		lightArray[base+2] = l.getZ() + t.getZ();
+		store.set(0);
+		store.x = l.getX() + t.getX();
+		store.y = l.getY() + t.getY();
+		store.z = l.getZ() + t.getZ();
+		store.w = 1.0f;
+		Vector4f transedV = viewMatrix.transform(store);
+		
+		lightArray[base] = transedV.x;
+		lightArray[base+1] = transedV.y;
+		lightArray[base+2] = transedV.z;
 		lightArray[base+3] = l.getLinear();
 		int baseOffset = base + 512 / 4;
 		lightArray[baseOffset] = l.getQuadratic();

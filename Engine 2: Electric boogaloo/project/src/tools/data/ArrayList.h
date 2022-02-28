@@ -8,23 +8,67 @@
 template<typename T>
 class ArrayList {
 private:
-    const int m_INITSIZE = 64;
     T* array = nullptr;
     int currentSize = 0;
     int currentIndex = 0;
+    void expand(){
+        T* newArray = new T[currentSize*2];
+        for (int i = 0; i < currentSize; i++)
+            newArray[i] = array[i];
+        delete[](array);
+        array = newArray;
+        currentSize = currentSize * 2;
+    }
+    void shuffle(int start){
+        for (int i = start; i < size(); i++){
+            array[i-1] = array[i];
+        }
+    }
 public:
-    ArrayList(): ArrayList(m_INITSIZE){}
+    // default arrays are 64 in length
+    ArrayList(): ArrayList(64) {}
+    // or create an array of starting length
     ArrayList(int initSize){
         array = new T[initSize];
         currentSize = initSize;
     }
-    int add(T& t);
-    int add(T t);
-    T& get(int index);
-    void remove(int index);
-    void remove(T& t);
-    int size();
-    T& operator+(T& other);
+    int add(const T& t){
+        if (currentIndex > currentSize)
+            expand();
+        array[currentIndex] = t;
+        return currentIndex++;
+    }
+    T& get(int index){
+        return array[index];
+    }
+    void remove(int index){
+        if (index + 1 >= size())
+            return;
+        shuffle(index + 1);
+    }
+    // removes the first reference to t
+    void remove(T& t){
+        for (int i = 0; i < size(); i++){
+            if (array[i] == t){
+                if (i+1 >= size())
+                    return;
+                shuffle(i+1);
+                return;
+            }
+        }
+    }
+    int size(){
+        return currentIndex;
+    }
+    ArrayList<T> operator+(ArrayList<T>& other){
+        ArrayList<T> newArr(other.size() + size());
+        for (int i = 0; i < size(); i++){
+            newArr.add(get(i));
+        }
+        for (int i = 0; i < other.size(); i++)
+            newArr.add(other.get(i));
+        return newArr;
+    }
     ~ArrayList(){
         delete[](array);
     }

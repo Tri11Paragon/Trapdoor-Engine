@@ -12,7 +12,6 @@ import com.trapdoor.engine.datatypes.lighting.Light;
 import com.trapdoor.engine.display.DisplayManager;
 import com.trapdoor.engine.renderer.ao.SSAORenderer;
 import com.trapdoor.engine.renderer.debug.TextureRenderer;
-import com.trapdoor.engine.tools.SettingsLoader;
 import com.trapdoor.engine.world.World;
 import com.trapdoor.engine.world.entities.Entity;
 
@@ -25,13 +24,13 @@ public class DeferredRenderer implements Runnable {
 	
 	
 	// geometry buffer
-	private int gBuffer;
+	/*private int gBuffer;
 	// world information textures/
 	private int gPosition;
 	private int gNormal;
 	private int gColorSpec;
 	private int gRenderState;
-	private int rboDepth;
+	private int rboDepth;*/
 	private int quadVAO = 0;
 	private int quadVBO;
 	
@@ -42,6 +41,7 @@ public class DeferredRenderer implements Runnable {
 	private int multiColorSpec;
 	private int multiGRenderState;
 	private int multiRboDepth;
+	private int depthMap;
 	
 	private DeferredFirstPassShader firstPassShader;
 	private DeferredSecondPassShader secondPassShader;
@@ -78,65 +78,6 @@ public class DeferredRenderer implements Runnable {
 	}
 	
 	private void createFrameBuffers() {
-		// generate the frame buffer
-		gBuffer = GL33.glGenFramebuffers();
-		GL33.glBindFramebuffer(GL33.GL_FRAMEBUFFER, gBuffer);
-		
-		// create and bind the positions texture
-		gPosition = GL33.glGenTextures();
-		GL33.glBindTexture(GL33.GL_TEXTURE_2D_MULTISAMPLE, gPosition);
-		// TODO: use 32F?
-		GL33.glTexImage2DMultisample(GL33.GL_TEXTURE_2D_MULTISAMPLE, SettingsLoader.SAMPLES, GL33.GL_RGBA16F, DisplayManager.WIDTH, DisplayManager.HEIGHT, true);
-		GL33.glTexParameteri(GL33.GL_TEXTURE_2D_MULTISAMPLE, GL33.GL_TEXTURE_MIN_FILTER, GL33.GL_NEAREST);
-		GL33.glTexParameteri(GL33.GL_TEXTURE_2D_MULTISAMPLE, GL33.GL_TEXTURE_MAG_FILTER, GL33.GL_NEAREST);
-		GL33.glTexParameteri(GL33.GL_TEXTURE_2D_MULTISAMPLE, GL33.GL_TEXTURE_WRAP_S, GL33.GL_CLAMP_TO_EDGE);
-		GL33.glTexParameteri(GL33.GL_TEXTURE_2D_MULTISAMPLE, GL33.GL_TEXTURE_WRAP_T, GL33.GL_CLAMP_TO_EDGE);
-		GL33.glFramebufferTexture2D(GL33.GL_FRAMEBUFFER, GL33.GL_COLOR_ATTACHMENT0, GL33.GL_TEXTURE_2D_MULTISAMPLE, gPosition, 0);
-		
-		// create and bind the normals texture
-		gNormal = GL33.glGenTextures();
-		GL33.glBindTexture(GL33.GL_TEXTURE_2D_MULTISAMPLE, gNormal);
-		GL33.glTexImage2DMultisample(GL33.GL_TEXTURE_2D_MULTISAMPLE, SettingsLoader.SAMPLES, GL33.GL_RGBA16F, DisplayManager.WIDTH, DisplayManager.HEIGHT, true);
-		GL33.glTexParameteri(GL33.GL_TEXTURE_2D_MULTISAMPLE, GL33.GL_TEXTURE_MIN_FILTER, GL33.GL_NEAREST);
-		GL33.glTexParameteri(GL33.GL_TEXTURE_2D_MULTISAMPLE, GL33.GL_TEXTURE_MAG_FILTER, GL33.GL_NEAREST);
-		GL33.glTexParameteri(GL33.GL_TEXTURE_2D_MULTISAMPLE, GL33.GL_TEXTURE_WRAP_S, GL33.GL_CLAMP_TO_EDGE);
-		GL33.glTexParameteri(GL33.GL_TEXTURE_2D_MULTISAMPLE, GL33.GL_TEXTURE_WRAP_T, GL33.GL_CLAMP_TO_EDGE);
-		GL33.glFramebufferTexture2D(GL33.GL_FRAMEBUFFER, GL33.GL_COLOR_ATTACHMENT1, GL33.GL_TEXTURE_2D_MULTISAMPLE, gNormal, 0);
-		
-		// create and bind the color buffer (with specular component in the alpha channel)
-		gColorSpec = GL33.glGenTextures();
-		GL33.glBindTexture(GL33.GL_TEXTURE_2D_MULTISAMPLE, gColorSpec);
-		GL33.glTexImage2DMultisample(GL33.GL_TEXTURE_2D_MULTISAMPLE, SettingsLoader.SAMPLES, GL33.GL_RGBA, DisplayManager.WIDTH, DisplayManager.HEIGHT, true);
-		GL33.glTexParameteri(GL33.GL_TEXTURE_2D_MULTISAMPLE, GL33.GL_TEXTURE_MIN_FILTER, GL33.GL_NEAREST);
-		GL33.glTexParameteri(GL33.GL_TEXTURE_2D_MULTISAMPLE, GL33.GL_TEXTURE_MAG_FILTER, GL33.GL_NEAREST);
-		GL33.glTexParameteri(GL33.GL_TEXTURE_2D_MULTISAMPLE, GL33.GL_TEXTURE_WRAP_S, GL33.GL_CLAMP_TO_EDGE);
-		GL33.glTexParameteri(GL33.GL_TEXTURE_2D_MULTISAMPLE, GL33.GL_TEXTURE_WRAP_T, GL33.GL_CLAMP_TO_EDGE);
-		GL33.glFramebufferTexture2D(GL33.GL_FRAMEBUFFER, GL33.GL_COLOR_ATTACHMENT2, GL33.GL_TEXTURE_2D_MULTISAMPLE, gColorSpec, 0);
-		
-		gRenderState = GL33.glGenTextures();
-		GL33.glBindTexture(GL33.GL_TEXTURE_2D_MULTISAMPLE, gRenderState);
-		GL33.glTexImage2DMultisample(GL33.GL_TEXTURE_2D_MULTISAMPLE, SettingsLoader.SAMPLES, GL33.GL_RGBA, DisplayManager.WIDTH, DisplayManager.HEIGHT, true);		
-		GL33.glTexParameteri(GL33.GL_TEXTURE_2D_MULTISAMPLE, GL33.GL_TEXTURE_MIN_FILTER, GL33.GL_NEAREST);
-		GL33.glTexParameteri(GL33.GL_TEXTURE_2D_MULTISAMPLE, GL33.GL_TEXTURE_MAG_FILTER, GL33.GL_NEAREST);
-		GL33.glTexParameteri(GL33.GL_TEXTURE_2D_MULTISAMPLE, GL33.GL_TEXTURE_WRAP_S, GL33.GL_CLAMP_TO_EDGE);
-		GL33.glTexParameteri(GL33.GL_TEXTURE_2D_MULTISAMPLE, GL33.GL_TEXTURE_WRAP_T, GL33.GL_CLAMP_TO_EDGE);
-		GL33.glFramebufferTexture2D(GL33.GL_FRAMEBUFFER, GL33.GL_COLOR_ATTACHMENT3, GL33.GL_TEXTURE_2D_MULTISAMPLE, gRenderState, 0);
-		
-		GL33.glDrawBuffers(new int[] {GL33.GL_COLOR_ATTACHMENT0, GL33.GL_COLOR_ATTACHMENT1, GL33.GL_COLOR_ATTACHMENT2, GL33.GL_COLOR_ATTACHMENT3});
-		
-		rboDepth = GL33.glGenRenderbuffers();
-		GL33.glBindRenderbuffer(GL33.GL_RENDERBUFFER, rboDepth);
-		GL33.glRenderbufferStorageMultisample(GL33.GL_RENDERBUFFER, SettingsLoader.SAMPLES, GL33.GL_DEPTH_COMPONENT32, DisplayManager.WIDTH, DisplayManager.HEIGHT);
-		GL33.glFramebufferRenderbuffer(GL33.GL_FRAMEBUFFER, GL33.GL_DEPTH_ATTACHMENT, GL33.GL_RENDERBUFFER, rboDepth);
-		
-		if (GL33.glCheckFramebufferStatus(GL33.GL_FRAMEBUFFER) != GL33.GL_FRAMEBUFFER_COMPLETE) {
-			System.err.println("Error creating framebuffer!");
-			System.err.println(GL33.glGetError());
-		}
-		GL33.glBindFramebuffer(GL33.GL_FRAMEBUFFER, 0);
-		
-		// create the rendered out multi sampled buffer
-		
 		multiGBuffer = GL33.glGenFramebuffers();
 		GL33.glBindFramebuffer(GL33.GL_FRAMEBUFFER, multiGBuffer);
 		
@@ -183,6 +124,27 @@ public class DeferredRenderer implements Runnable {
 		GL33.glBindRenderbuffer(GL33.GL_RENDERBUFFER, multiRboDepth);
 		GL33.glRenderbufferStorage(GL33.GL_RENDERBUFFER, GL33.GL_DEPTH_COMPONENT32, DisplayManager.WIDTH, DisplayManager.HEIGHT);
 		GL33.glFramebufferRenderbuffer(GL33.GL_FRAMEBUFFER, GL33.GL_DEPTH_ATTACHMENT, GL33.GL_RENDERBUFFER, multiRboDepth);
+		
+		depthMap = GL33.glGenTextures();
+		GL33.glBindTexture(GL33.GL_TEXTURE_2D, depthMap);
+		GL33.glTexImage2D(
+				GL33.GL_TEXTURE_2D, 
+				0, 
+				GL33.GL_DEPTH_COMPONENT32, 
+				DisplayManager.WIDTH, 
+				DisplayManager.HEIGHT, 
+				0, 
+				GL33.GL_DEPTH_COMPONENT, 
+				GL33.GL_FLOAT, 
+				(ByteBuffer) null);
+		GL33.glTexParameteri(GL33.GL_TEXTURE_2D, GL33.GL_TEXTURE_MIN_FILTER, GL33.GL_NEAREST);
+		GL33.glTexParameteri(GL33.GL_TEXTURE_2D, GL33.GL_TEXTURE_MAG_FILTER, GL33.GL_NEAREST);
+		GL33.glTexParameteri(GL33.GL_TEXTURE_2D, GL33.GL_TEXTURE_WRAP_S, GL33.GL_CLAMP_TO_BORDER);
+		GL33.glTexParameteri(GL33.GL_TEXTURE_2D, GL33.GL_TEXTURE_WRAP_T, GL33.GL_CLAMP_TO_BORDER);
+		float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+		GL33.glTexParameterfv(GL33.GL_TEXTURE_2D, GL33.GL_TEXTURE_BORDER_COLOR, borderColor);  
+		
+		GL33.glFramebufferTexture2D(GL33.GL_FRAMEBUFFER, GL33.GL_DEPTH_ATTACHMENT, GL33.GL_TEXTURE_2D, depthMap, 0);
 
 		if (GL33.glCheckFramebufferStatus(GL33.GL_FRAMEBUFFER) != GL33.GL_FRAMEBUFFER_COMPLETE) {
 			System.err.println("Error creating framebuffer! (2)");
@@ -198,7 +160,7 @@ public class DeferredRenderer implements Runnable {
 	}
 	
 	public void startFirstPass(World world) {
-		GL33.glBindFramebuffer(GL33.GL_FRAMEBUFFER, gBuffer);
+		GL33.glBindFramebuffer(GL33.GL_FRAMEBUFFER, multiGBuffer);
 		//GL33.glPolygonMode(GL33.GL_FRONT_AND_BACK, PolygonCommand.POLYMODE);
 		//Vector3f skyColor = DisplayManager.getClearColor();
 		//GL33.glClearColor(skyColor.x, skyColor.y, skyColor.z, 1.0f);
@@ -215,44 +177,15 @@ public class DeferredRenderer implements Runnable {
 	}
 	
 	public void endFirstPass() {
-		// blit positions
-		GL33.glBindFramebuffer(GL33.GL_READ_FRAMEBUFFER, gBuffer);
-		GL33.glBindFramebuffer(GL33.GL_DRAW_FRAMEBUFFER, multiGBuffer);
-		GL33.glReadBuffer(GL33.GL_COLOR_ATTACHMENT0);
-		GL33.glDrawBuffer(GL33.GL_COLOR_ATTACHMENT0);
-		GL33.glBlitFramebuffer(0, 0, DisplayManager.WIDTH, DisplayManager.HEIGHT, 0, 0, DisplayManager.WIDTH, DisplayManager.HEIGHT, GL33.GL_COLOR_BUFFER_BIT, GL33.GL_NEAREST);
-		// blit normals
-		GL33.glBindFramebuffer(GL33.GL_READ_FRAMEBUFFER, gBuffer);
-		GL33.glBindFramebuffer(GL33.GL_DRAW_FRAMEBUFFER, multiGBuffer);
-		GL33.glReadBuffer(GL33.GL_COLOR_ATTACHMENT1);
-		GL33.glDrawBuffer(GL33.GL_COLOR_ATTACHMENT1);
-		GL33.glBlitFramebuffer(0, 0, DisplayManager.WIDTH, DisplayManager.HEIGHT, 0, 0, DisplayManager.WIDTH, DisplayManager.HEIGHT, GL33.GL_COLOR_BUFFER_BIT, GL33.GL_NEAREST);
-		// blit color spec
-		GL33.glBindFramebuffer(GL33.GL_READ_FRAMEBUFFER, gBuffer);
-		GL33.glBindFramebuffer(GL33.GL_DRAW_FRAMEBUFFER, multiGBuffer);
-		GL33.glReadBuffer(GL33.GL_COLOR_ATTACHMENT2);
-		GL33.glDrawBuffer(GL33.GL_COLOR_ATTACHMENT2);
-		GL33.glBlitFramebuffer(0, 0, DisplayManager.WIDTH, DisplayManager.HEIGHT, 0, 0, DisplayManager.WIDTH, DisplayManager.HEIGHT, GL33.GL_COLOR_BUFFER_BIT, GL33.GL_NEAREST);
-		// blit render state
-		GL33.glBindFramebuffer(GL33.GL_READ_FRAMEBUFFER, gBuffer);
-		GL33.glBindFramebuffer(GL33.GL_DRAW_FRAMEBUFFER, multiGBuffer);
-		GL33.glReadBuffer(GL33.GL_COLOR_ATTACHMENT3);
-		GL33.glDrawBuffer(GL33.GL_COLOR_ATTACHMENT3);
-		GL33.glBlitFramebuffer(0, 0, DisplayManager.WIDTH, DisplayManager.HEIGHT, 0, 0, DisplayManager.WIDTH, DisplayManager.HEIGHT, GL33.GL_COLOR_BUFFER_BIT, GL33.GL_NEAREST);
-		// finally blit the depth
-		GL33.glBindFramebuffer(GL33.GL_READ_FRAMEBUFFER, gBuffer);
-		GL33.glBindFramebuffer(GL33.GL_DRAW_FRAMEBUFFER, multiGBuffer);
-		//GL33.glReadBuffer(GL33.GL_DEPTH_ATTACHMENT);
-		GL33.glBlitFramebuffer(0, 0, DisplayManager.WIDTH, DisplayManager.HEIGHT, 0, 0, DisplayManager.WIDTH, DisplayManager.HEIGHT, GL33.GL_DEPTH_BUFFER_BIT, GL33.GL_NEAREST);
-		
+		firstPassShader.stop();
 		GL33.glBindFramebuffer(GL33.GL_FRAMEBUFFER, 0);
-		GL33.glClear(GL33.GL_COLOR_BUFFER_BIT | GL33.GL_DEPTH_BUFFER_BIT);
 	}
 	
 	public void renderGBuffer() {
 		TextureRenderer.renderTexture(this.multiGPosition, 0, 0, 256, 256);
 		TextureRenderer.renderTexture(this.multiGNormal, 256, 0, 256, 256);
 		TextureRenderer.renderTexture(this.multiColorSpec, 0, 256, 256, 256);
+		TextureRenderer.renderTexture(this.depthMap, 256, 256, 256, 256);
 	}
 	
 	public void bindDataTextures() {
@@ -284,8 +217,10 @@ public class DeferredRenderer implements Runnable {
 		secondPassShader.start();
 		secondPassShader.loadViewMatrix(camera.getViewMatrix());
 		secondPassShader.loadViewPos(camera.getPosition());
+		
+		GL33.glClear(GL33.GL_COLOR_BUFFER_BIT | GL33.GL_DEPTH_BUFFER_BIT);
 
-		lights.updateUBO();
+		lights.updateUBO(this.camera.getViewMatrix());
 		lights.clear();
 		
 		bindBuffersTextures();
@@ -308,12 +243,6 @@ public class DeferredRenderer implements Runnable {
 	}
 	
 	private void destroyFrameBuffers() {
-		GL33.glDeleteFramebuffers(gBuffer);
-		GL33.glDeleteTextures(gPosition);
-		GL33.glDeleteTextures(gNormal);
-		GL33.glDeleteTextures(gColorSpec);
-		GL33.glDeleteTextures(gRenderState);
-		GL33.glDeleteRenderbuffers(rboDepth);
 		GL33.glDeleteFramebuffers(multiGBuffer);
 		GL33.glDeleteTextures(multiGPosition);
 		GL33.glDeleteTextures(multiGNormal);

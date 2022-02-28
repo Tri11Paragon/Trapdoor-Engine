@@ -1,0 +1,56 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/src/config/version.h
+iostream
+-
+config/config.h
+/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/src/config/config/config.h
+
+/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/src/display/DisplayManager.h
+filesystem
+-
+glad/glad.h
+-
+GLFW/glfw3.h
+-
+iostream
+-
+config/config.h
+/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/src/display/config/config.h
+
+/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/src/main.cpp
+iostream
+-
+config/version.h
+/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/src/config/version.h
+display/DisplayManager.h
+/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/src/display/DisplayManager.h
+tools/data/ArrayList.h
+/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/src/tools/data/ArrayList.h
+
+/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/src/tools/data/ArrayList.cpp
+ArrayList.h
+/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/src/tools/data/ArrayList.h
+
+/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/Engine 2: Electric boogaloo/project/src/tools/data/ArrayList.h
+
+config/config.h
+
+depends/glad/include/KHR/khrplatform.h
+stdint.h
+-
+inttypes.h
+-
+stdint.h
+-
+
+depends/glad/include/glad/glad.h
+KHR/khrplatform.h
+-
+

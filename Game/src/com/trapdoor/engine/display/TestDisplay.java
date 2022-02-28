@@ -169,7 +169,7 @@ public class TestDisplay extends IDisplay {
 	public void render() {
 		this.world.render();
 		SoundSystem.update();
-		TextureRenderer.renderTexture(this.world.getSSAOMap().getSSAOBluredTexture(), DisplayManager.WIDTH-512, 0, 512, 512);
+		//TextureRenderer.renderTexture(this.world.getSSAOMap().getSSAOBluredTexture(), DisplayManager.WIDTH-512, 0, 512, 512);
 	}
 	
 	@Override

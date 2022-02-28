@@ -23,6 +23,9 @@ const float shadowDistance = 200;
 const float transitionDistance = 10;
 
 void main(void){
+	mat4 viewTrans = viewMatrix * translationMatrix;
+	vec4 viewSpacePos = viewTrans * vec4(position,1.0);
+
 	vec4 worldPosition = translationMatrix * vec4(position,1.0);
 	vec4 positionRelativeToCam = projectionViewMatrix * worldPosition;
 	shadowCoords = shadowMatrix * worldPosition;
@@ -32,8 +35,8 @@ void main(void){
 	distance = distance / transitionDistance;
 	shadowCoords.w = clamp(1.0-distance, 0.0f, 1.0f);
 
-    fragpos = worldPosition.xyz;
-	normalo = normal * transpose(mat3(translationMatrix));
+    fragpos = viewSpacePos.xyz;
+	normalo = normal * transpose(mat3(viewTrans));
 
     gl_Position = positionRelativeToCam;
 	textureCoords = textureCoordinates;

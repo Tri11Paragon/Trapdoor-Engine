@@ -44,8 +44,6 @@ public class SSAORenderer implements Runnable {
 		this.ssaoBlurShader.stop();
 		
 		this.ssao.unbindBuffer();
-		GL33.glClear(GL33.GL_COLOR_BUFFER_BIT | GL33.GL_DEPTH_BUFFER_BIT);
-		
 	}
 	
 	public void cleanup() {
