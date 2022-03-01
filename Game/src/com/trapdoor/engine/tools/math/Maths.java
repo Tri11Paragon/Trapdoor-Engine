@@ -633,5 +633,9 @@ public class Maths {
 			num = 0l;
 		return num;
 	}
+	
+	public static float clamp(float val, float min, float max) {
+		return (float) Math.min(Math.max(val, min), max);
+	}
 
 }

@@ -7,6 +7,8 @@ import org.lwjgl.opengl.GL33;
 import com.trapdoor.engine.ProjectionMatrix;
 import com.trapdoor.engine.display.DisplayManager;
 import com.trapdoor.engine.renderer.DeferredRenderer;
+import com.trapdoor.engine.tools.SettingsLoader;
+import com.trapdoor.engine.tools.math.Maths;
 
 /**
  * @author brett
@@ -100,10 +102,30 @@ public class BloomRenderer implements Runnable {
 		GL33.glBindFramebuffer(GL33.GL_FRAMEBUFFER, 0); 
 	}
 	
+	private float exposure;
+	private final float exposureMultiplier = 0.25f;
+	private final float exposureRangeMin = 0.5f;
+	private final float exposureRangeMax = 2.5f;
+	
 	public void render(DeferredRenderer renderer) {
 		combineShader.start();
 		GL33.glActiveTexture(GL33.GL_TEXTURE0);
 		GL33.glBindTexture(GL33.GL_TEXTURE_2D, colorTexture1);
+		if (SettingsLoader.GRAPHICS_LEVEL < 1) {
+			// TODO: compute shader?
+			GL33.glGenerateMipmap(GL33.GL_TEXTURE_2D);
+			float[] vec3 = new float[3];
+			GL33.glGetTexImage(GL33.GL_TEXTURE_2D, 10, GL33.GL_RGB, GL33.GL_FLOAT, vec3);
+			
+			final float lum = 0.2126f * vec3[0] + 0.7152f * vec3[1] + 0.0722f * vec3[2];
+			
+			final float adjSpeed = 0.05f;
+			
+			exposure = Maths.lerp(exposure, 0.5f / lum * exposureMultiplier, adjSpeed);
+			exposure = Maths.clamp(exposure, exposureRangeMin, exposureRangeMax);
+			
+			combineShader.loadExposure(exposure);
+		}
 		GL33.glActiveTexture(GL33.GL_TEXTURE1);
 		GL33.glBindTexture(GL33.GL_TEXTURE_2D, blur2Texture);
 		
