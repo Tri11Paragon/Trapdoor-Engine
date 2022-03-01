@@ -20,6 +20,7 @@ import com.trapdoor.engine.registry.Threading;
 import com.trapdoor.engine.renderer.DeferredRenderer;
 import com.trapdoor.engine.renderer.EntityRenderer;
 import com.trapdoor.engine.renderer.ao.SSAORenderer;
+import com.trapdoor.engine.renderer.postprocessing.BloomRenderer;
 import com.trapdoor.engine.renderer.shadows.ShadowMap;
 import com.trapdoor.engine.renderer.shadows.ShadowRenderer;
 import com.trapdoor.engine.tools.Logging;
@@ -56,6 +57,7 @@ public class World {
 	private DeferredRenderer deferredRenderer;
 	private ShadowRenderer shadowRenderer;
 	private SSAORenderer ssaoRenderer;
+	private BloomRenderer bloomRenderer;
 
 	public World(Camera c) {
 		// entitiesinworld is shared memory between the renderer and the world object.
@@ -66,6 +68,7 @@ public class World {
 		this.entityStorage = new WorldEntityStorage(c, this.renderer);
 		this.shadowRenderer = new ShadowRenderer(c);
 		this.ssaoRenderer = new SSAORenderer();
+		this.bloomRenderer = new BloomRenderer();
 		
 		// setup physics
         this.physWorld = new PhysicsSpace(PhysicsSpace.BroadphaseType.DBVT);
@@ -119,7 +122,17 @@ public class World {
 			ssaoRenderer.render(this.deferredRenderer);
 		}
 		
+		// TODO: add bloomy option
+		if (SettingsLoader.GRAPHICS_LEVEL < 2) {
+			this.bloomRenderer.bindBloom();
+		}
+		
 		this.deferredRenderer.runSecondPass(this.ssaoRenderer);
+		
+		if (SettingsLoader.GRAPHICS_LEVEL < 2) {
+			this.bloomRenderer.applyBlur(this.deferredRenderer);
+			this.bloomRenderer.render(this.deferredRenderer);
+		}
 		
 		DisplayManager.disableCulling();
 	}
@@ -238,6 +251,7 @@ public class World {
 		this.deferredRenderer.cleanup();
 		this.shadowRenderer.cleanup();
 		this.ssaoRenderer.cleanup();
+		this.bloomRenderer.cleanup();
 	}
 	
 }

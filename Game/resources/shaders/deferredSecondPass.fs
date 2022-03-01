@@ -28,7 +28,7 @@ uniform mat4 translationMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 
-const float gamma = 2.2;
+//const float gamma = 2.2;
 
 void main(){
     vec4 renderState = texture(gRenderState, textureCoords);
@@ -81,9 +81,16 @@ void main(){
         
         out_Color = vec4(lighting, 1.0);
         // apply gamma correction
-        out_Color.rgb = pow(out_Color.rgb, vec3(1.0/gamma));;
+        //out_Color.rgb = pow(out_Color.rgb, vec3(1.0/gamma));
+
+        float brightness = dot(out_Color.rgb, vec3(0.2126, 0.7152, 0.0722));
+        if(brightness > 1.0)
+            bright_Color = vec4(out_Color.rgb, 1.0);
+        else
+            bright_Color = vec4(0.0, 0.0, 0.0, 1.0);
     } else {
         out_Color = vec4(Diffuse, 1.0);
+        bright_Color = vec4(0.0, 0.0, 0.0, 1.0);
     }
 
 }
