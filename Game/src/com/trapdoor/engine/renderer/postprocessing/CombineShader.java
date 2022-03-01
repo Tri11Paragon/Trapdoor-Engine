@@ -17,6 +17,7 @@ public class CombineShader extends ShaderProgram {
 		super("deferredSecondPass.vs", "postprocessing/combine.fs");
 		start();
 		connectTextureLocations();
+		loadExposure(0.5f);
 		stop();
 	}
 	

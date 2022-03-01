@@ -36,6 +36,7 @@ public class BloomRenderer implements Runnable {
 		hdrFBO = GL33.glGenFramebuffers();
 		GL33.glBindFramebuffer(GL33.GL_FRAMEBUFFER, hdrFBO);
 		colorTexture1 = GL33.glGenTextures();
+		colorTexture2 = GL33.glGenTextures();
 		colorBuffers = new int[]{colorTexture1, colorTexture2};
 		for (int i = 0; i < 2; i++)
 		{
@@ -88,6 +89,7 @@ public class BloomRenderer implements Runnable {
 		{
 			GL33.glBindFramebuffer(GL33.GL_FRAMEBUFFER, horizontal ? blur2FBO : blur1FBO); 
 		    blurShader.loadUseHorizontal(horizontal);
+		    GL33.glActiveTexture(GL33.GL_TEXTURE0);
 		    GL33.glBindTexture(GL33.GL_TEXTURE_2D, first_iteration ? colorBuffers[1] : (horizontal ? blur1Texture : blur2Texture)); 
 		    renderer.bindAndRenderQuad();
 		    horizontal = !horizontal;
@@ -102,8 +104,8 @@ public class BloomRenderer implements Runnable {
 		combineShader.start();
 		GL33.glActiveTexture(GL33.GL_TEXTURE0);
 		GL33.glBindTexture(GL33.GL_TEXTURE_2D, colorTexture1);
-		GL33.glActiveTexture(GL33.GL_TEXTURE2);
-		GL33.glBindTexture(GL33.GL_TEXTURE_2D, colorTexture2);
+		GL33.glActiveTexture(GL33.GL_TEXTURE1);
+		GL33.glBindTexture(GL33.GL_TEXTURE_2D, blur2Texture);
 		
 		renderer.bindAndRenderQuad();
 		
