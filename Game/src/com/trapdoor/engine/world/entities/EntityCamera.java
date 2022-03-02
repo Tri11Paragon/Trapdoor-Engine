@@ -7,6 +7,7 @@ import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.objects.PhysicsCharacter;
 import com.trapdoor.engine.camera.Camera;
 import com.trapdoor.engine.camera.CreativeFirstPerson;
+import com.trapdoor.engine.registry.GameRegistry;
 import com.trapdoor.engine.renderer.ui.DebugInfo;
 import com.trapdoor.engine.tools.input.Keyboard;
 import com.trapdoor.engine.tools.input.Mouse;
@@ -80,6 +81,20 @@ public class EntityCamera extends Entity {
 		this.c.getViewMatrix().positiveZ(at).negate();
 		this.c.getViewMatrix().positiveY(up);
 		sl.setOrientation(at, up);
+	}
+	
+	private float offset = 2;
+	private float force = 5000;
+	private float scale = 0.5f;
+	
+	public void shoot(Vector3f ray) {
+		SelfDeletingEntity bullet = new SelfDeletingEntity(50, 50000);
+		bullet.setModel(GameRegistry.getModel("resources/models/depression.dae"));
+		bullet.getComponent(Transform.class).setScale(scale, scale, scale);
+		bullet.setPosition(this.localTransform.getX() + ray.x * offset, this.localTransform.getY() + ray.y * offset, this.localTransform.getZ() + ray.z * offset);
+		bullet.applyCentralImpulse(ray.x * force, ray.y * force, ray.z * force);
+		bullet.getRigidbody().setFriction(5f);
+		this.world.addEntityToWorld(bullet);
 	}
 	
 	protected void move() {

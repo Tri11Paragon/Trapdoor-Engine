@@ -371,7 +371,7 @@ public class Entity implements Comparable<Entity> {
 	 * 
 	 */
 	public Entity setPosition(float x, float y, float z) {
-		((Transform)this.getComponent(Transform.class)).setPosition(x, y, z);
+		((Transform)this.getComponent(Transform.class)).setPosition(this, x, y, z);
 		return this;
 	}
 

@@ -138,6 +138,26 @@ public class Transform extends IComponent {
 		}
 	}
 	
+	/**
+	 * only use for setting position at startup!
+	 */
+	public Transform setPosition(Entity e, float x, float y, float z) {
+		this.setX = x;
+		this.setY = y;
+		this.setZ = z;
+		PhysicsRigidBody r = e.getRigidbody();
+		if (r != null) {
+			this.positionStore.x = this.setX;
+			this.positionStore.y = this.setY;
+			this.positionStore.z = this.setZ;
+			r.setPhysicsLocation(positionStore);
+		}
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		return this;
+	}
+	
 	public Transform setPosition(float x, float y, float z) {
 		this.setX = x;
 		this.setY = y;

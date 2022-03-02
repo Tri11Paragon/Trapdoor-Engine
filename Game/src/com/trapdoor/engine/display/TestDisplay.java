@@ -14,6 +14,7 @@ import com.trapdoor.engine.registry.annotations.PostRegistrationEventSubscriber;
 import com.trapdoor.engine.registry.annotations.RegistrationEventSubscriber;
 import com.trapdoor.engine.renderer.ui.CommandBox;
 import com.trapdoor.engine.tools.RayCasting;
+import com.trapdoor.engine.tools.input.Mouse;
 import com.trapdoor.engine.world.World;
 import com.trapdoor.engine.world.entities.Entity;
 import com.trapdoor.engine.world.entities.EntityCamera;
@@ -171,10 +172,17 @@ public class TestDisplay extends IDisplay {
 		//TextureRenderer.renderTexture(this.world.getSSAOMap().getSSAOBluredTexture(), DisplayManager.WIDTH-512, 0, 512, 512);
 	}
 	
+	long last = System.currentTimeMillis();
+	long max = 60;
+	
 	@Override
 	public void update() {
 		this.world.update();
 		this.rayCasting.update();
+		if (Mouse.isLeftClick() && System.currentTimeMillis() - last > max) {
+			this.cameraEnt.shoot(rayCasting.getCurrentRay());
+			last = System.currentTimeMillis();
+		}
 	}
 
 	@Override

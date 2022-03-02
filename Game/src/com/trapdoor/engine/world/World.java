@@ -66,9 +66,11 @@ public class World {
 		this.skyboxRenderer = new SkyboxRenderer();
 		this.c = c;
 		this.entityStorage = new WorldEntityStorage(c, this.renderer);
-		this.shadowRenderer = new ShadowRenderer(c);
-		this.ssaoRenderer = new SSAORenderer();
-		this.bloomRenderer = new BloomRenderer();
+		if (SettingsLoader.GRAPHICS_LEVEL < 2) {
+			this.shadowRenderer = new ShadowRenderer(c);
+			this.ssaoRenderer = new SSAORenderer();
+			this.bloomRenderer = new BloomRenderer();
+		}
 		
 		// setup physics
         this.physWorld = new PhysicsSpace(PhysicsSpace.BroadphaseType.DBVT);
@@ -87,7 +89,7 @@ public class World {
         	e1.onOngoingCollision(e2, event);
         	e2.onOngoingCollision(e1, event);
         });
-		this.physWorld.setGravity(new Vector3f(0.0f, 0.0f, 0.0f));
+		//this.physWorld.setGravity(new Vector3f(0.0f, 0.0f, 0.0f));
 		
 	}
 	
@@ -148,7 +150,7 @@ public class World {
 		// TODO: fix this
 		//c.calculateFrustum(ProjectionMatrix.projectionMatrix, c.getViewMatrix());
 		
-		for (int i = 0; i < entityCount; i++) {
+		for (int i = 0; i < allEnts.size(); i++) {
 			Entity a = allEnts.get(i);
 			a.update();
 		}
@@ -218,9 +220,11 @@ public class World {
 	}
 	
 	public void addEntityToWorld(Entity e) {
-		this.entityStorage.addEntity(e);
 		e.setWorld(this);
+		
 		this.addEntityPhysics(e);
+		
+		this.entityStorage.addEntity(e);
 		e.onAddedToWorld();
 	}
 	
