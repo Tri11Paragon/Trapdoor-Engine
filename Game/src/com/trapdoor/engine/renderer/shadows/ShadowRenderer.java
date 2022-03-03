@@ -48,8 +48,10 @@ public class ShadowRenderer {
 		UBOLoader.updateShadowUBO(getLightSpaceMatricies());
 		
 		GL33.glDisable(GL33.GL_CULL_FACE);
+		//GL33.glCullFace(GL33.GL_FRONT);
 		// render out the shadows
 		storage.renderShadow(this);
+		//GL33.glCullFace(GL33.GL_BACK);
 		GL33.glEnable(GL33.GL_CULL_FACE);
 		
 		shader.stop();
@@ -101,6 +103,7 @@ public class ShadowRenderer {
 	    }
 	    
 	    final float zMult = 10.0f;
+	    final float bias = 5.0f;
 	    
 	    if (minZ < 0) {
 	        minZ *= zMult;
@@ -114,7 +117,7 @@ public class ShadowRenderer {
 	        maxZ *= zMult;
 	    }
 
-	    Matrix4f lightProjection = new Matrix4f().ortho(minX, maxX, minY, maxY, minZ, maxZ);
+	    Matrix4f lightProjection = new Matrix4f().ortho(minX - bias, maxX + bias, minY - bias, maxY + bias, minZ, maxZ);
 	    
 	    return lightProjection.mul(shadowView);
 	}
