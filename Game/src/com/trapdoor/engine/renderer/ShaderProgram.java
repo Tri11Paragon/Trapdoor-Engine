@@ -46,7 +46,7 @@ public abstract class ShaderProgram {
 		getAllUniformLocations();
 	}
 
-	public ShaderProgram(String vertexFile, String fragmentFile, String geometryShader) {
+	public ShaderProgram(String vertexFile, String geometryShader, String fragmentFile) {
 		// load the shaders
 		vertexShaderID = loadShader(vertexFile, GL20.GL_VERTEX_SHADER);
 		geometryShaderID = loadShader(geometryShader, GL32.GL_GEOMETRY_SHADER);
@@ -214,7 +214,9 @@ public abstract class ShaderProgram {
 		// make sure there is no errors
 		if (GL20.glGetShaderi(shaderID, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
 			System.out.println(GL20.glGetShaderInfoLog(shaderID, 500));
-			System.err.println("Could not compile shader! (Shader type: " + type + ")");
+			System.err.println("Could not compile shader! (Shader type: " 
+								+ (type == GL20.GL_VERTEX_SHADER ? "vertex" : type == GL33.GL_GEOMETRY_SHADER ? "geometry" : "fragment")
+								+ ")");
 			System.exit(-1);
 		}
 		return shaderID;

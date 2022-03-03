@@ -16,7 +16,7 @@ uniform sampler2D normalMap;
 uniform sampler2D displacementMap;
 uniform sampler2D aoMap;
 uniform sampler2D specMap;
-uniform sampler2D shadowMap;
+uniform sampler2DArray shadowMap;
 
 uniform vec3 viewPos;
 
@@ -32,7 +32,7 @@ void main(){
 	float total = 0.0;
 	for (int x=-pcfCount; x<=pcfCount; x++){
 		for (int y=-pcfCount; y<=pcfCount; y++) {
-			float objectNearestLength = texture(shadowMap, shadowCoords.xy + vec2(x,y) * texelSize).r;
+			float objectNearestLength = texture(shadowMap, vec3(shadowCoords.xy + vec2(x,y) * texelSize, 0.0)).r;
 			if (shadowCoords.z - bias > objectNearestLength){
 				total++;
 			}

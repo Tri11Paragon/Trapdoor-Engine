@@ -12,6 +12,7 @@ import com.trapdoor.engine.datatypes.ogl.assimp.Model;
 import com.trapdoor.engine.registry.GameRegistry;
 import com.trapdoor.engine.registry.annotations.PostRegistrationEventSubscriber;
 import com.trapdoor.engine.registry.annotations.RegistrationEventSubscriber;
+import com.trapdoor.engine.renderer.debug.TextureRenderer;
 import com.trapdoor.engine.renderer.ui.CommandBox;
 import com.trapdoor.engine.tools.RayCasting;
 import com.trapdoor.engine.tools.input.Mouse;
@@ -170,6 +171,10 @@ public class TestDisplay extends IDisplay {
 		this.world.render();
 		SoundSystem.update();
 		//TextureRenderer.renderTexture(this.world.getSSAOMap().getSSAOBluredTexture(), DisplayManager.WIDTH-512, 0, 512, 512);
+		TextureRenderer.renderTextureArray(this.world.getShadowMap().getDepthMapTexture(), 0, 0, 0, 256, 256);
+		TextureRenderer.renderTextureArray(this.world.getShadowMap().getDepthMapTexture(), 1, 256, 0, 256, 256);
+		TextureRenderer.renderTextureArray(this.world.getShadowMap().getDepthMapTexture(), 2, 0, 256, 256, 256);
+		TextureRenderer.renderTextureArray(this.world.getShadowMap().getDepthMapTexture(), 3, 256, 256, 256, 256);
 	}
 	
 	long last = System.currentTimeMillis();

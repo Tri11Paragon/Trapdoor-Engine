@@ -1,10 +1,13 @@
 package com.trapdoor.engine.renderer.shadows;
 
+import java.util.ArrayList;
+
 import org.joml.Matrix4f;
-import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 import org.lwjgl.opengl.GL33;
 
+import com.trapdoor.engine.ProjectionMatrix;
 import com.trapdoor.engine.UBOLoader;
 import com.trapdoor.engine.camera.ICamera;
 import com.trapdoor.engine.display.DisplayManager;
@@ -13,19 +16,25 @@ import com.trapdoor.engine.world.WorldEntityStorage;
 
 public class ShadowRenderer {
 	
-	private Matrix4f temp = new Matrix4f();
-	private Matrix4f orthoProjection = new Matrix4f();
+	private static final float[] shadowCascadeLevels = {
+															ProjectionMatrix.FAR_PLANE / 50.0f, 
+															ProjectionMatrix.FAR_PLANE / 25.0f, 
+															ProjectionMatrix.FAR_PLANE / 10.0f, 
+															ProjectionMatrix.FAR_PLANE / 2.0f
+														};
+	
 	private Matrix4f shadowView = new Matrix4f();
-	private Matrix4f offset = new Matrix4f();
 	
 	private ShadowShader shader;
 	private ShadowMap map;
-	private ShadowBox box;
+	
+	private ICamera camera;
 	
 	public ShadowRenderer(ICamera camera) {
 		shader = new ShadowShader();
-		map = new ShadowMap();
-		box = new ShadowBox(shadowView, camera);
+		map = new ShadowMap(shadowCascadeLevels.length);
+		this.camera = camera;
+		UBOLoader.createShadowUBO();
 	}
 	
 	public void renderDepthMap(ICamera camera, WorldEntityStorage storage) {
@@ -34,109 +43,103 @@ public class ShadowRenderer {
 		
 		GL33.glClear(GL33.GL_DEPTH_BUFFER_BIT);
 		
-		//box.update();
-		
-		// create the orthographic matrix
 		shader.start();
 		
-		//updateOrthoProjectionMatrix(box.getWidth(), box.getHeight(), box.getLength());
-		updateOrthoProjectionMatrix(100, 100, 100);
-		//shadowView.identity();
-		//orthoProjection.ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 100f);
-		//shadowView.identity();
-		//shadowView.lookAt(DisplayManager.lightDirection, new Vector3f(), new Vector3f(0.0f, 1.0f, 0.0f));
-		updateLightViewMatrix(DisplayManager.lightDirection, box.getCenter());
-		shadowView.translate((float) -camera.getPosition().x, (float) -camera.getPosition().y, (float) -camera.getPosition().z);
-		
-		
-		temp = orthoProjection.mul(shadowView);
-		
-		shader.loadPerspectiveMatrix(temp);
-		UBOLoader.updateShadowMatrix(getToShadowMapSpaceMatrix());
+		UBOLoader.updateShadowUBO(getLightSpaceMatricies());
 		
 		GL33.glDisable(GL33.GL_CULL_FACE);
-		//GL33.glDepthFunc(GL33.GL_LESS);
 		// render out the shadows
 		storage.renderShadow(this);
-		//GL33.glDepthFunc(GL33.GL_LEQUAL);
 		GL33.glEnable(GL33.GL_CULL_FACE);
 		
 		shader.stop();
-		//GL33.glBindFramebuffer(GL33.GL_FRAMEBUFFER, 0);
+		GL33.glBindFramebuffer(GL33.GL_FRAMEBUFFER, 0);
 	}
 	
-	/**
-	 * This biased projection-view matrix is used to convert fragments into
-	 * "shadow map space" when rendering the main render pass. It converts a
-	 * world space position into a 2D coordinate on the shadow map. This is
-	 * needed for the second part of shadow mapping.
-	 * 
-	 * @return The to-shadow-map-space matrix.
-	 */
-	public Matrix4f getToShadowMapSpaceMatrix() {
-		createOffset();
-		return offset.mul(temp);
+	public ArrayList<Matrix4f> getLightSpaceMatricies() {
+		ArrayList<Matrix4f> matricies = new ArrayList<Matrix4f>();
+		
+		for (int i = 0; i < shadowCascadeLevels.length + 1; i++) {
+			if (i == 0) {
+				matricies.add(calculateLightView(ProjectionMatrix.NEAR_PLANE, shadowCascadeLevels[i]));
+			} else if (i < shadowCascadeLevels.length) {
+				matricies.add(calculateLightView(shadowCascadeLevels[i-1], shadowCascadeLevels[i]));
+			} else {
+				matricies.add(calculateLightView(shadowCascadeLevels[i-1], ProjectionMatrix.FAR_PLANE));
+			}
+		}
+		
+		return matricies;
 	}
-
 	
-	/**
-	 * Updates the "view" matrix of the light. This creates a view matrix which
-	 * will line up the direction of the "view cuboid" with the direction of the
-	 * light. The light itself has no position, so the "view" matrix is centered
-	 * at the center of the "view cuboid". The created view matrix determines
-	 * where and how the "view cuboid" is positioned in the world. The size of
-	 * the view cuboid, however, is determined by the projection matrix.
-	 * 
-	 * @param direction
-	 *            - the light direction, and therefore the direction that the
-	 *            "view cuboid" should be pointing.
-	 * @param center
-	 *            - the center of the "view cuboid" in world space.
-	 */
-	private void updateLightViewMatrix(Vector3f direction, Vector3f center) {
-		direction.normalize();
-		center.negate();
-		shadowView.identity();
-		float pitch = (float) Math.acos(new Vector2f(direction.x, direction.z).length());
-		shadowView.rotate(pitch, Maths.rx);
-		float yaw = (float) Math.toDegrees(((float) Math.atan(direction.x / direction.z)));
-		yaw = direction.z > 0 ? yaw - 180 : yaw;
-		shadowView.rotate((float) -Math.toRadians(yaw), Maths.ry);
-		//shadowView.translate(center);
-	}
+	public Matrix4f calculateLightView(float nearPlane, float farPlane) {
+		Matrix4f perspective = new Matrix4f().perspective(ProjectionMatrix.FOV, (float)DisplayManager.WIDTH/(float)DisplayManager.HEIGHT, nearPlane, farPlane);
+		ArrayList<Vector4f> corners = getFrustumCornersWorldSpace(perspective, camera.getViewMatrix());
+		Vector3f center = new Vector3f();
+		for (int i = 0; i < corners.size(); i++) {
+			center.add(new Vector3f(corners.get(i).x, corners.get(i).y, corners.get(i).z));
+		}
+		center.div(corners.size());
+		
+		shadowView = new Matrix4f().lookAt(new Vector3f(center).add(DisplayManager.lightDirection), center, Maths.ry);
+		
+		float minX = Float.MAX_VALUE;
+	    float maxX = Float.MIN_VALUE;
+	    float minY = Float.MAX_VALUE;
+	    float maxY = Float.MIN_VALUE;
+	    float minZ = Float.MAX_VALUE;
+	    float maxZ = Float.MIN_VALUE;
+	    
+	    for (Vector4f v : corners) {
+	        Vector4f trf = shadowView.transform(v);
+	        minX = Math.min(minX, trf.x);
+	        maxX = Math.max(maxX, trf.x);
+	        minY = Math.min(minY, trf.y);
+	        maxY = Math.max(maxY, trf.y);
+	        minZ = Math.min(minZ, trf.z);
+	        maxZ = Math.max(maxZ, trf.z);
+	    }
+	    
+	    final float zMult = 10.0f;
+	    
+	    if (minZ < 0) {
+	        minZ *= zMult;
+	    } else {
+	        minZ /= zMult;
+	    }
+	    
+	    if (maxZ < 0) {
+	        maxZ /= zMult;
+	    } else {
+	        maxZ *= zMult;
+	    }
 
-	/**
-	 * Creates the orthographic projection matrix. This projection matrix
-	 * basically sets the width, length and height of the "view cuboid", based
-	 * on the values that were calculated in the {@link ShadowBox} class.
-	 * 
-	 * @param width
-	 *            - shadow box width.
-	 * @param height
-	 *            - shadow box height.
-	 * @param length
-	 *            - shadow box length.
-	 */
-	private void updateOrthoProjectionMatrix(float width, float height, float length) {
-		orthoProjection.identity();
-		orthoProjection.m00(2f / width);
-		orthoProjection.m11(2f / height);
-		orthoProjection.m22(-2f / length);
-		orthoProjection.m33(1);
+	    Matrix4f lightProjection = new Matrix4f().ortho(minX, maxX, minY, maxY, minZ, maxZ);
+	    
+	    return lightProjection.mul(shadowView);
 	}
-
-	/**
-	 * Create the offset for part of the conversion to shadow map space. This
-	 * conversion is necessary to convert from one coordinate system to the
-	 * coordinate system that we can use to sample to shadow map.
-	 * 
-	 * @return The offset as a matrix (so that it's easy to apply to other matrices).
-	 */
-	private Matrix4f createOffset() {
-		offset.identity();
-		offset.translate(0.5f, 0.5f, 0.5f);
-		offset.scale(0.5f, 0.5f, 0.5f);
-		return offset;
+	
+	private ArrayList<Vector4f> getFrustumCornersWorldSpace(Matrix4f proj, Matrix4f view){
+		ArrayList<Vector4f> frustumCorners = new ArrayList<Vector4f>();
+		
+		Matrix4f inverse = new Matrix4f().set(proj).mul(view);
+		
+		for (int x = 0; x < 2; ++x) {
+			for (int y = 0; y < 2; ++y) {
+				for (int z = 0; z < 2; ++z) {
+					Vector4f pt = inverse.transform(new Vector4f(
+														2.0f * x - 1.0f,
+														2.0f * y - 1.0f,
+														2.0f * z - 1.0f,
+														1.0f
+													));
+					
+					frustumCorners.add(pt.div(pt.w));
+				}
+			}
+		}
+		
+		return frustumCorners;
 	}
 	
 	public ShadowShader getShader() {

@@ -7,7 +7,6 @@ in vec3 normal;
 out vec2 textureCoords;
 out vec3 normalo;
 out vec3 fragpos;
-out vec4 shadowCoords;
 
 layout (std140) uniform Matricies {
     mat4 projectionMatrix;
@@ -19,21 +18,12 @@ layout (std140) uniform Matricies {
 
 uniform mat4 translationMatrix;
 
-const float shadowDistance = 200;
-const float transitionDistance = 10;
-
 void main(void){
 	mat4 viewTrans = viewMatrix * translationMatrix;
 	vec4 viewSpacePos = viewTrans * vec4(position,1.0);
 
 	vec4 worldPosition = translationMatrix * vec4(position,1.0);
 	vec4 positionRelativeToCam = projectionViewMatrix * worldPosition;
-	shadowCoords = shadowMatrix * worldPosition;
-
-	float distance = length(positionRelativeToCam);
-	distance = distance - (shadowDistance - transitionDistance);
-	distance = distance / transitionDistance;
-	shadowCoords.w = clamp(1.0-distance, 0.0f, 1.0f);
 
     fragpos = viewSpacePos.xyz;
 	normalo = normal * transpose(mat3(viewTrans));

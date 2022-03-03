@@ -168,7 +168,7 @@ public class DeferredRenderer implements Runnable {
 		GL33.glClear(GL33.GL_COLOR_BUFFER_BIT | GL33.GL_DEPTH_BUFFER_BIT);
 		
 		GL33.glActiveTexture(GL33.GL_TEXTURE5);
-		GL33.glBindTexture(GL33.GL_TEXTURE_2D, world.getShadowMap().getDepthMapTexture());
+		GL33.glBindTexture(GL33.GL_TEXTURE_2D_ARRAY, world.getShadowMap().getDepthMapTexture());
 		
 	}
 	

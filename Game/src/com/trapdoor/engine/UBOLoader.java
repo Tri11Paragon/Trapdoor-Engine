@@ -1,9 +1,12 @@
 package com.trapdoor.engine;
 
+import java.util.ArrayList;
+
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL33;
 
 import com.trapdoor.engine.renderer.DeferredSecondPassShader;
+import com.trapdoor.engine.tools.Logging;
 
 /**
  * @author brett
@@ -16,6 +19,7 @@ public class UBOLoader {
 	
 	private static int lightingUBO = -1;
 	private static int matrixUBO = -1;
+	private static int shadowUBO = -1;
 	
 	private static final int MATRIX_COUNT = 5;
 	private static float[] projectMatrixBuffer = new float[16];
@@ -24,6 +28,9 @@ public class UBOLoader {
 	private static float[] viewMatrixBuffer = new float[16];
 	private static float[] matrixData = new float[MATRIX_COUNT * 16];
 	
+	// shadowing
+	private static float[] shadowBuffer = new float[16];
+	private static float[] shadowMatrixData = new float[5 * 16];
 	
 	public static void createLightingUBO() {
 		// prevent duplicate UBOs from being generated.
@@ -50,6 +57,16 @@ public class UBOLoader {
 		GL33.glBindBuffer(GL33.GL_UNIFORM_BUFFER, 0);
 	}
 	
+	public static void createShadowUBO() {
+		if (shadowUBO != -1)
+			return;
+		shadowUBO = GL33.glGenBuffers();
+		GL33.glBindBuffer(GL33.GL_UNIFORM_BUFFER, shadowUBO);
+		GL33.glBufferData(GL33.GL_UNIFORM_BUFFER, shadowMatrixData.length * 4, GL33.GL_STATIC_DRAW);
+		GL33.glBindBufferBase(GL33.GL_UNIFORM_BUFFER, 3, shadowUBO);
+		GL33.glBindBuffer(GL33.GL_UNIFORM_BUFFER, 0);
+	}
+	
 	public static void updateMatrixUBO() {
 		// sends a single update command to the GPU rather than doing the perspective and view matrices individually.
 		GL33.glBindBuffer(GL33.GL_UNIFORM_BUFFER, matrixUBO);
@@ -63,9 +80,20 @@ public class UBOLoader {
 		GL33.glBindBuffer(GL33.GL_UNIFORM_BUFFER, 0);
 	}
 	
+	public static void updateShadowUBO(ArrayList<Matrix4f> matricies) {
+		GL33.glBindBuffer(GL33.GL_UNIFORM_BUFFER, shadowUBO);
+		for (int i = 0; i < matricies.size(); i++) {
+			matricies.get(i).get(shadowBuffer);
+			GL33.glBufferSubData(GL33.GL_UNIFORM_BUFFER, i * 16 * 4, shadowBuffer);
+		}
+		GL33.glBindBuffer(GL33.GL_UNIFORM_BUFFER, 0);
+	}
+	
 	public static void cleanup() {
+		Logging.logger.info("Deleting UBOs");
 		GL33.glDeleteBuffers(lightingUBO);
 		GL33.glDeleteBuffers(matrixUBO);
+		GL33.glDeleteBuffers(shadowUBO);
 	}
 	
 	public static synchronized void updateProjectionMatrix(Matrix4f matrix) {
@@ -102,6 +130,5 @@ public class UBOLoader {
 		for (int i = 0; i < shadowMatrixBuffer.length; i++)
 			matrixData[i + 64] = shadowMatrixBuffer[i];
 	}
-	
 	
 }
