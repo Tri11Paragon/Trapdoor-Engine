@@ -7,6 +7,7 @@ in vec3 normal;
 out vec2 textureCoords;
 out vec3 normalo;
 out vec3 fragpos;
+out vec3 fragPosWorldSpace;
 
 layout (std140) uniform Matricies {
     mat4 projectionMatrix;
@@ -23,6 +24,7 @@ void main(void){
 	vec4 viewSpacePos = viewTrans * vec4(position,1.0);
 
 	vec4 worldPosition = translationMatrix * vec4(position,1.0);
+	fragPosWorldSpace = worldPosition.xyz;
 	vec4 positionRelativeToCam = projectionViewMatrix * worldPosition;
 
     fragpos = viewSpacePos.xyz;

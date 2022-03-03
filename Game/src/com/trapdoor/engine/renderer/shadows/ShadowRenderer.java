@@ -16,7 +16,7 @@ import com.trapdoor.engine.world.WorldEntityStorage;
 
 public class ShadowRenderer {
 	
-	private static final float[] shadowCascadeLevels = {
+	public static final float[] shadowCascadeLevels = {
 															ProjectionMatrix.FAR_PLANE / 50.0f, 
 															ProjectionMatrix.FAR_PLANE / 25.0f, 
 															ProjectionMatrix.FAR_PLANE / 10.0f, 
@@ -122,7 +122,7 @@ public class ShadowRenderer {
 	private ArrayList<Vector4f> getFrustumCornersWorldSpace(Matrix4f proj, Matrix4f view){
 		ArrayList<Vector4f> frustumCorners = new ArrayList<Vector4f>();
 		
-		Matrix4f inverse = new Matrix4f().set(proj).mul(view);
+		Matrix4f inverse = new Matrix4f().set(proj).mul(view).invert();
 		
 		for (int x = 0; x < 2; ++x) {
 			for (int y = 0; y < 2; ++y) {

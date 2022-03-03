@@ -3,6 +3,10 @@ package com.trapdoor.engine.renderer;
 import org.joml.Matrix4f;
 import org.joml.Vector3d;
 
+import com.trapdoor.engine.ProjectionMatrix;
+import com.trapdoor.engine.display.DisplayManager;
+import com.trapdoor.engine.renderer.shadows.ShadowRenderer;
+
 /**
  * @author brett
  * @date Jan. 10, 2022
@@ -22,6 +26,11 @@ public class DeferredFirstPassShader extends ShaderProgram {
 	
 	private int location_specAmount;
 	
+	private int location_cascadeCount;
+	private int[] location_cascadePlaneDistances;
+	private int location_lightDir;
+	private int location_farPlane;
+	
 	private int location_viewPos;
 	
 	public DeferredFirstPassShader() {
@@ -29,6 +38,12 @@ public class DeferredFirstPassShader extends ShaderProgram {
 		this.start();
 		this.connectTextureUnits();
 		setUniformBlockLocation("Matricies", 1);
+		setUniformBlockLocation("LightSpaceMatrices", 3);
+		super.loadInt(location_cascadeCount, ShadowRenderer.shadowCascadeLevels.length);
+		for (int i = 0; i < ShadowRenderer.shadowCascadeLevels.length; i++)
+			super.loadFloat(location_cascadePlaneDistances[i], ShadowRenderer.shadowCascadeLevels[i]);
+		super.loadVector(location_lightDir, DisplayManager.lightDirection);
+		super.loadFloat(location_farPlane, ProjectionMatrix.FAR_PLANE);
 		this.stop();
 	}
 
@@ -53,6 +68,15 @@ public class DeferredFirstPassShader extends ShaderProgram {
 		
 		location_specAmount = super.getUniformLocation("specAmount");
 		location_viewPos = super.getUniformLocation("viewPos");
+		
+		location_cascadeCount = super.getUniformLocation("cascadeCount");
+		location_cascadePlaneDistances = new int[ShadowRenderer.shadowCascadeLevels.length];
+		for (int i = 0; i < location_cascadePlaneDistances.length; i++) {
+			location_cascadePlaneDistances[i] = super.getUniformLocation("cascadePlaneDistances[" + i + "]");
+		}
+		
+		location_lightDir = super.getUniformLocation("lightDir");
+		location_farPlane = super.getUniformLocation("farPlane");
 	}
 	
 	public void loadViewPos(Vector3d pos) {
