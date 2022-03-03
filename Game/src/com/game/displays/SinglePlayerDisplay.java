@@ -1,9 +1,6 @@
 package com.game.displays;
 
-import org.joml.Vector3d;
-
 import com.game.entities.SmoothEntityCamera;
-import com.jme3.math.Vector3f;
 import com.trapdoor.engine.camera.CreativeFirstPerson;
 import com.trapdoor.engine.datatypes.lighting.Light;
 import com.trapdoor.engine.display.IDisplay;
@@ -11,7 +8,6 @@ import com.trapdoor.engine.registry.GameRegistry;
 import com.trapdoor.engine.registry.annotations.RegistrationEventSubscriber;
 import com.trapdoor.engine.world.World;
 import com.trapdoor.engine.world.entities.Entity;
-import com.trapdoor.engine.world.entities.EntityCamera;
 import com.trapdoor.engine.world.entities.components.Transform;
 
 public class SinglePlayerDisplay extends IDisplay{

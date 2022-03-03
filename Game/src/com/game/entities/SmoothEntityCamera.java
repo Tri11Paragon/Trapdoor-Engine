@@ -1,22 +1,14 @@
 package com.game.entities;
 
-import org.lwjgl.glfw.GLFW;
-
 import com.trapdoor.engine.camera.Camera;
-import com.trapdoor.engine.display.DisplayManager;
 import com.trapdoor.engine.tools.input.Keyboard;
 import com.trapdoor.engine.tools.input.Mouse;
-import com.trapdoor.engine.world.entities.Entity;
 import com.trapdoor.engine.world.entities.EntityCamera;
-import com.trapdoor.engine.world.entities.components.Transform;
 
 public class SmoothEntityCamera extends EntityCamera{
 	
-	private Transform t;
-	
 	public SmoothEntityCamera(Camera c) {
 		super(c);
-		this.t = (Transform) this.getComponent(Transform.class);
 		ch.setJumpSpeed(15.0f);
 	}
 	
@@ -30,7 +22,6 @@ public class SmoothEntityCamera extends EntityCamera{
 		if (!Mouse.isGrabbed())
 			return;
 				
-		final float timeConstant = (float) 1;
 		float speed = 2;
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_W)) {

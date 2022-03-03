@@ -3,7 +3,6 @@ package com.trapdoor.engine.renderer;
 import org.joml.Matrix4f;
 import org.joml.Vector3d;
 
-import com.trapdoor.engine.ProjectionMatrix;
 import com.trapdoor.engine.display.DisplayManager;
 import com.trapdoor.engine.renderer.shadows.ShadowRenderer;
 
@@ -43,7 +42,7 @@ public class DeferredFirstPassShader extends ShaderProgram {
 		for (int i = 0; i < ShadowRenderer.shadowCascadeLevels.length; i++)
 			super.loadFloat(location_cascadePlaneDistances[i], ShadowRenderer.shadowCascadeLevels[i]);
 		super.loadVector(location_lightDir, DisplayManager.lightDirection);
-		super.loadFloat(location_farPlane, ProjectionMatrix.FAR_PLANE);
+		super.loadFloat(location_farPlane, ShadowRenderer.FAR_PLANE);
 		this.stop();
 	}
 

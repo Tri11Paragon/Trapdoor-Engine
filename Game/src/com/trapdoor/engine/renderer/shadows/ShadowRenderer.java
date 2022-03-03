@@ -16,11 +16,13 @@ import com.trapdoor.engine.world.WorldEntityStorage;
 
 public class ShadowRenderer {
 	
+	public static final float FAR_PLANE = ProjectionMatrix.FAR_PLANE;
+	
 	public static final float[] shadowCascadeLevels = {
-															ProjectionMatrix.FAR_PLANE / 50.0f, 
-															ProjectionMatrix.FAR_PLANE / 25.0f, 
-															ProjectionMatrix.FAR_PLANE / 10.0f, 
-															ProjectionMatrix.FAR_PLANE / 2.0f
+															FAR_PLANE / 50.0f, 
+															FAR_PLANE / 25.0f, 
+															FAR_PLANE / 10.0f, 
+															FAR_PLANE / 2.0f
 														};
 	
 	private Matrix4f shadowView = new Matrix4f();
@@ -67,7 +69,7 @@ public class ShadowRenderer {
 			} else if (i < shadowCascadeLevels.length) {
 				matricies.add(calculateLightView(shadowCascadeLevels[i-1], shadowCascadeLevels[i]));
 			} else {
-				matricies.add(calculateLightView(shadowCascadeLevels[i-1], ProjectionMatrix.FAR_PLANE));
+				matricies.add(calculateLightView(shadowCascadeLevels[i-1], FAR_PLANE));
 			}
 		}
 		
@@ -103,7 +105,7 @@ public class ShadowRenderer {
 	    }
 	    
 	    final float zMult = 10.0f;
-	    final float bias = 5.0f;
+	    final float bias = 10.0f;
 	    
 	    if (minZ < 0) {
 	        minZ *= zMult;
