@@ -99,9 +99,9 @@ public class Transform extends IComponent {
 			b.getPhysicsRotation(physQuat);
 			
 			if (this.awaitingPositionChange.get() && body != null) {
-				this.positionStore.x = this.setX + pysTransformOut.getTranslation().x;
-				this.positionStore.y = this.setY + pysTransformOut.getTranslation().y;
-				this.positionStore.z = this.setZ + pysTransformOut.getTranslation().z;
+				this.positionStore.x = this.setX;
+				this.positionStore.y = this.setY;
+				this.positionStore.z = this.setZ;
 				
 				body.setPhysicsLocation(positionStore);
 				
