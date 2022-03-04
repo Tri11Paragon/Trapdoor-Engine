@@ -1,8 +1,8 @@
 package com.trapdoor.engine.datatypes;
 
-import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.util.Iterator;
-import org.lwjgl.BufferUtils;
+import org.lwjgl.system.MemoryUtil;
 
 /**
  * @author laptop
@@ -14,10 +14,9 @@ public class IndexingFloatArrayList implements Iterable<Float> {
 	private static final int INIT_SIZE = 64;
 	
 	private float[] arr;
-	private boolean additionsSinceArray = true;
-	private boolean additionsSinceByte = true;
+	private boolean additions = true;
 	private float[] truncArray;
-	private ByteBuffer toByte;
+	private FloatBuffer toByte;
 	private int size;
 	private int lastIndex = 0;
 	private int numOfElements = 0;
@@ -36,14 +35,14 @@ public class IndexingFloatArrayList implements Iterable<Float> {
 	}
 	
 	public void generateStructures() {
-		if (!additionsSinceArray && !additionsSinceByte)
+		if (!additions)
 			return;
 		
 		float[] newArr = new float[size()];
-		ByteBuffer allocByte = BufferUtils.createByteBuffer(size() * 4);
+		FloatBuffer allocByte = MemoryUtil.memAllocFloat(size());
 		for (int i = 0; i < size(); i++) {
 			newArr[i] = get(i);
-			allocByte.putFloat(get(i));
+			allocByte.put(get(i));
 		}
 		
 		allocByte.flip();
@@ -51,32 +50,19 @@ public class IndexingFloatArrayList implements Iterable<Float> {
 		toByte = allocByte;
 		truncArray = newArr;
 		
-		additionsSinceArray = false;
-		additionsSinceByte = false;
+		additions = false;
 	}
 	
 	public float[] getTruncatedArray() {
-		if (!additionsSinceArray)
-			return truncArray;
-		float[] newArr = new float[size()];
-		for (int i = 0; i < size(); i++)
-			newArr[i] = arr[i];
-		additionsSinceArray = false;
-		truncArray = newArr;
-		return newArr;
+		if (additions)
+			generateStructures();
+		return truncArray;
 	}
 	
-	public ByteBuffer toByteBuffer() {
-		if (!additionsSinceByte)
-			return toByte;
-		ByteBuffer alloc = null;
-			alloc = BufferUtils.createByteBuffer(size() * 4);
-			for (int i = 0; i < size(); i++)
-				alloc.putFloat(get(i));
-		additionsSinceByte = false;
-		alloc.flip();
-		toByte = alloc;
-		return alloc;
+	public FloatBuffer toFloatBuffer() {
+		if (additions)
+			generateStructures();
+		return toByte;
 	}
 	
 	/**
@@ -85,8 +71,7 @@ public class IndexingFloatArrayList implements Iterable<Float> {
 	 * @return the index of added entity
 	 */
 	public int add(float e) {
-		additionsSinceArray = true;
-		additionsSinceByte = true;
+		additions = true;
 		numOfElements++;
 		if (lastIndex >= size)
 			expand();

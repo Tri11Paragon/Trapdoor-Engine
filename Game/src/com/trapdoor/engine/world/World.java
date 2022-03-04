@@ -1,8 +1,10 @@
 package com.trapdoor.engine.world;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.joml.Vector3d;
 import org.lwjgl.opengl.GL33;
@@ -41,7 +43,7 @@ public class World {
 	public static final float PLANE_BUFFER = 0.1f;
 	
 	private final WorldEntityStorage entityStorage;
-	private final HashMap<PhysicsCollisionObject, Entity> entityPhyiscsMap = new HashMap<PhysicsCollisionObject, Entity>();
+	private final Map<PhysicsCollisionObject, Entity> entityPhyiscsMap = Collections.synchronizedMap(new ConcurrentHashMap<PhysicsCollisionObject, Entity>());
 	
 	// Physics container
 	private PhysicsSpace physWorld;
@@ -79,13 +81,13 @@ public class World {
         this.physWorld.useScr(false);
         this.physWorld.addCollisionListener((PhysicsCollisionEvent event) -> {
         	Entity e1 = entityPhyiscsMap.get(event.getObjectA());
-        	Entity e2 = entityPhyiscsMap.get(event.getObjectA());
+        	Entity e2 = entityPhyiscsMap.get(event.getObjectB());
         	e1.onCollision(e2, event);
         	e2.onCollision(e1, event);
         });
         this.physWorld.addOngoingCollisionListener((PhysicsCollisionEvent event) -> {
         	Entity e1 = entityPhyiscsMap.get(event.getObjectA());
-        	Entity e2 = entityPhyiscsMap.get(event.getObjectA());
+        	Entity e2 = entityPhyiscsMap.get(event.getObjectB());
         	e1.onOngoingCollision(e2, event);
         	e2.onOngoingCollision(e1, event);
         });
@@ -212,11 +214,13 @@ public class World {
 	
 	public void addEntityPhysics(Entity e) {
 		//TODO: i think this check can be removed
-		if (e.usingRigidBody())
+		if (e.usingRigidBody()) {
 			this.physWorld.add(e.getRigidbody());
-		else
+			entityPhyiscsMap.put(e.getRigidbody(), e);
+		} else {
 			this.physWorld.add(e.getCollisionObject());
-		entityPhyiscsMap.put(e.getCollisionObject(), e);
+			entityPhyiscsMap.put(e.getCollisionObject(), e);
+		}
 	}
 	
 	public void addEntityToWorld(Entity e) {

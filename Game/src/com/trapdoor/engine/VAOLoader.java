@@ -151,10 +151,8 @@ public class VAOLoader {
 			Mesh mesh = meshes[i];
 			// create the VAO
 			int vaoID = createVAO();
-			// get the indices
-			int[] indices = mesh.getIndices();
 			// bind the indices buffer
-			bindIndicesBuffer(indices);
+			bindIndicesBuffer(mesh.getIndices());
 			/**
 			 * I should note its not actually storing the data itself into the VAO, but a pointer to the VBO
 			 * you still need to enable the VBO when rendering.
@@ -167,7 +165,7 @@ public class VAOLoader {
 			// unbind the VAO
 			unbindVAO();
 			// return the model
-			mesh.assignVAO(new VAO(vaoID, vbos, indices.length));
+			mesh.assignVAO(new VAO(vaoID, vbos, mesh.getIndices().capacity()));
 		}
 	}
 
@@ -320,6 +318,23 @@ public class VAOLoader {
 		return vboID;
 	}
 	
+	private static int storeDataInAttributeList(int attributeNumber, int coordinateSize, FloatBuffer data){
+		// creates a VBO
+		int vboID = GL15.glGenBuffers();
+		// add for later deletion
+		vbos.add(vboID);
+		// binds the buffer as just a standard array buffer
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID);
+		// puts the data into the VBO
+		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, data, GL15.GL_STATIC_DRAW);
+		// assign this VBO to the pointer and coordinate size. We are using floats, they are not normalized and start at 0
+		GL20.glVertexAttribPointer(attributeNumber,coordinateSize,GL11.GL_FLOAT,false,0,0);
+		// unbind the VBO
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+		// return the VBO
+		return vboID;
+	}
+	
 	private static int storeDataInAttributeList(int attributeNumber, int coordinateSize, int stride, int offset, float[] data){
 		// creates a VBO
 		int vboID = GL15.glGenBuffers();
@@ -360,6 +375,17 @@ public class VAOLoader {
 		IntBuffer buffer = storeDataInIntBuffer(indices);
 		// but the int buffer into the VBO
 		GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
+	}
+	
+	private static void bindIndicesBuffer(IntBuffer indices){
+		// generate the vbo
+		int vboID = GL15.glGenBuffers();
+		// add it for later deletion
+		vbos.add(vboID);
+		// bind the buffer as the element buffer (used to defined indexes inside the arrays for drawing)
+		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboID);
+		// but the int buffer into the VBO
+		GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, indices, GL15.GL_STATIC_DRAW);
 	}
 	
 	/**

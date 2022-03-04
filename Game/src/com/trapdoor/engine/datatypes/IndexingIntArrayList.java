@@ -1,9 +1,7 @@
 package com.trapdoor.engine.datatypes;
 
-import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.Iterator;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.system.MemoryUtil;
 
 /**
@@ -16,11 +14,8 @@ public class IndexingIntArrayList implements Iterable<Integer> {
 	private static final int INIT_SIZE = 64;
 	
 	private int[] arr;
-	private boolean additionsSinceArray = true;
-	private boolean additionsSinceInt = true;
-	private boolean additionsSinceByte = true;
+	private boolean additions = true;
 	private int[] truncArray;
-	private ByteBuffer toByte;
 	private IntBuffer toInt;
 	private int size;
 	private int lastIndex = 0;
@@ -40,64 +35,34 @@ public class IndexingIntArrayList implements Iterable<Integer> {
 	}
 	
 	public void generateStructures() {
-		if (!additionsSinceArray && !additionsSinceByte && !additionsSinceInt)
+		if (!additions)
 			return;
 		
 		int[] newArr = new int[size()];
-		ByteBuffer allocByte = BufferUtils.createByteBuffer(size() * 4);
-		IntBuffer allocInt = BufferUtils.createIntBuffer(size());
+		IntBuffer allocInt = MemoryUtil.memAllocInt(size());
 		for (int i = 0; i < size(); i++) {
 			newArr[i] = get(i);
-			allocByte.putInt(get(i));
 			allocInt.put(get(i));
 		}
 		
 		allocInt.flip();
-		allocByte.flip();
 		
 		toInt = allocInt;
-		toByte = allocByte;
 		truncArray = newArr;
 		
-		additionsSinceArray = false;
-		additionsSinceByte = false;
-		additionsSinceInt = false;
+		additions = false;
 	}
 	
 	public int[] getTruncatedArray() {
-		if (!additionsSinceArray)
-			return truncArray;
-		int[] newArr = new int[size()];
-		for (int i = 0; i < size(); i++)
-			newArr[i] = arr[i];
-		additionsSinceArray = false;
-		truncArray = newArr;
-		return newArr;
+		if (additions)
+			generateStructures();
+		return truncArray;
 	}
 	
 	public IntBuffer toIntBuffer() {
-		if (!additionsSinceInt)
-			return toInt;
-		IntBuffer alloc = MemoryUtil.memAllocInt(size());
-		for (int i = 0; i < size(); i++)
-			alloc.put(get(i));
-		additionsSinceInt = false;
-		alloc.flip();
-		toInt = alloc;
-		return alloc;
-	}
-	
-	public ByteBuffer toByteBuffer() {
-		if (!additionsSinceByte)
-			return toByte;
-		ByteBuffer alloc = null;
-			alloc = BufferUtils.createByteBuffer(size() * 4);
-			for (int i = 0; i < size(); i++)
-				alloc.putInt(get(i));
-		additionsSinceByte = false;
-		alloc.flip();
-		toByte = alloc;
-		return alloc;
+		if (additions)
+			generateStructures();
+		return toInt;
 	}
 	
 	/**
@@ -106,9 +71,7 @@ public class IndexingIntArrayList implements Iterable<Integer> {
 	 * @return the index of added entity
 	 */
 	public int add(int e) {
-		additionsSinceArray = true;
-		additionsSinceByte = true;
-		additionsSinceInt = true;
+		additions = true;
 		numOfElements++;
 		if (lastIndex >= size)
 			expand();
