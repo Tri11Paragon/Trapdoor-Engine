@@ -37,6 +37,10 @@ public class Test {
                 .stride(4 * 3));
 
         IntBuffer remap = memAllocInt(mesh.npoints());
+        System.out.println(mesh.npoints());
+        System.out.println(mesh.npoints() * 3);
+        System.out.println(mesh.ntriangles());
+        System.out.println(mesh.ntriangles() / 3);
 
         int uniqueVertices = (int)meshopt_generateVertexRemapMulti(remap, indexBuffer, indexBuffer.remaining(), streams);
         remap(vertexBuffer, indexBuffer, normalBuffer, remap);

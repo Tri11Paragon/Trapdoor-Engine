@@ -22,29 +22,29 @@ public class SmoothEntityCamera extends EntityCamera{
 		if (!Mouse.isGrabbed())
 			return;
 				
-		float speed = 2;
+		float speed = 50;
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
-			moveAtX -= speed;
+			moveAtX = -speed;
 		}
 		else if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-			moveAtX += speed;
+			moveAtX = speed;
 		}
 		else {
 			if (moveAtX != 0) {
-				moveAtX += -Math.signum(moveAtX);
+				moveAtX += -Math.signum(moveAtX) * 2.0f;
 			}
 		}
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-			moveAtZ += speed;
+			moveAtZ = speed;
 		}
 		else if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-			moveAtZ -= speed;
+			moveAtZ = -speed;
 		}
 		else {
 			if (moveAtZ != 0) {
-				moveAtZ += -Math.signum(moveAtZ);
+				moveAtZ += -Math.signum(moveAtZ) * 2.0f;
 			}
 		}
 		

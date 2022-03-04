@@ -40,7 +40,6 @@ public class SinglePlayerDisplay extends IDisplay{
 			);
 		
 		SmoothEntityCamera s = new SmoothEntityCamera(this.camera);
-		Transform t3 = (Transform) s.getComponent(Transform.class);
 //		t3.setPosition(0, 0, 0);
 		this.world.addEntityToWorld(s);
 		
@@ -104,7 +103,7 @@ public class SinglePlayerDisplay extends IDisplay{
 		
 		
 		//kent
-		new Kentipede(this.world, 2, 10, t3);
+		new Kentipede(this.world, 2, 10, s);
 		
 //		for (float i = 0; i < 2*Math.PI; i+=Math.PI/15) {
 //			a = new EntityKent(i).setModel(GameRegistry.getModel("resources/models/kent.dae"));

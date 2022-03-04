@@ -1,13 +1,15 @@
 package com.trapdoor.engine.tools.models;
 
+import static org.lwjgl.system.MemoryUtil.memFree;
+
 import java.io.File;
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 
 import org.joml.Vector3f;
 import org.joml.Vector4f;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIColor4D;
 import org.lwjgl.assimp.AIFace;
@@ -17,7 +19,9 @@ import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.AIString;
 import org.lwjgl.assimp.AIVector3D;
 import org.lwjgl.assimp.Assimp;
+import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.util.meshoptimizer.MeshOptimizer;
+import org.lwjgl.util.meshoptimizer.MeshoptStream;
 
 import com.jme3.bullet.collision.shapes.infos.IndexedMesh;
 import com.trapdoor.engine.datatypes.IndexingFloatArrayList;
@@ -193,6 +197,8 @@ public class ModelLoader {
 	    processIndices(mesh, indices);
 	    
 	    indices.generateStructures();
+	    textures.generateStructures();
+	    normals.generateStructures();
 	    vertices.generateStructures();
 	    
 	    Material m = GameRegistry.getErrorMaterial();
@@ -220,38 +226,56 @@ public class ModelLoader {
 	    
 	    IndexedMesh meshInfo = new IndexedMesh(positions, indcies);
 	    
-	    int index_count = indices.size();
+	    IntBuffer indexBuffer = indices.toIntBuffer();
+	    FloatBuffer vertexBuffer = vertices.toFloatBuffer();
+	    FloatBuffer textureBuffer = textures.toFloatBuffer();
+	    FloatBuffer normalBuffer = normals.toFloatBuffer();
 	    
-	    IntBuffer dest = BufferUtils.createIntBuffer(index_count);
+	    /*final int floatSize = 4;
 	    
-	    MeshOptimizer.meshopt_generateVertexRemap(dest, indices.toIntBuffer(), index_count, vertices.toByteBuffer(), 3);x
+	    MeshoptStream.Buffer streams = MeshoptStream.create(2)
+	            .apply(0, it -> it
+	                .data(MemoryUtil.memByteBuffer(vertexBuffer))
+	                .size(floatSize * 3)
+	                .stride(floatSize * 3))
+	            .apply(1, it -> it
+	                .data(MemoryUtil.memByteBuffer(vertexBuffer))
+	                .size(floatSize * 3)
+	                .stride(floatSize * 3));
 	    
-	    IntBuffer updatedIndicies = BufferUtils.createIntBuffer(indices.toIntBuffer().capacity());
-	    ByteBuffer updatedVerticies = BufferUtils.createByteBuffer(vertices.toByteBuffer().capacity());
+	    IntBuffer remap = MemoryUtil.memAllocInt(vertices.size());
+	    System.out.println(vertices.size());
+	    System.out.println(vertices.size() * 4);
 	    
-	    MeshOptimizer.meshopt_remapIndexBuffer(updatedIndicies, indices.toIntBuffer(), dest);
-	    MeshOptimizer.meshopt_remapVertexBuffer(updatedVerticies, vertices.toByteBuffer(), 3, dest);
+	    //int uniqueVertices = (int)MeshOptimizer.meshopt_generateVertexRemapMulti(remap, indexBuffer, indexBuffer.remaining(), streams);
+	    int uniqueVertices = (int) MeshOptimizer.meshopt_generateVertexRemap(remap, indexBuffer, indexBuffer.capacity(), MemoryUtil.memByteBuffer(vertexBuffer), Float.BYTES);
+	    remap(vertexBuffer, indexBuffer, normalBuffer, textureBuffer, remap);
 	    
-	    MeshOptimizer.meshopt_optimizeVertexCache(updatedIndicies, updatedIndicies, vertices.size());
+	    if (uniqueVertices < remap.remaining()) {
+            remap.limit(uniqueVertices);
+
+            vertexBuffer.limit(uniqueVertices * 3);
+            normalBuffer.limit(uniqueVertices * 3);
+            textureBuffer.limit(uniqueVertices * 2);
+        }
 	    
+	    MeshOptimizer.meshopt_optimizeVertexCache(indexBuffer, indexBuffer, uniqueVertices);
+	    MeshOptimizer.meshopt_optimizeOverdraw(indexBuffer, indexBuffer, vertexBuffer, uniqueVertices, 3 * Float.BYTES, 1.05f);
 	    
+	    assert (int)MeshOptimizer.meshopt_optimizeVertexFetchRemap(remap, indexBuffer) == uniqueVertices;
+	    remap(vertexBuffer, indexBuffer, normalBuffer, textureBuffer, remap);
 	    
-		return new Mesh(m, aabb, processBuffers(updatedVerticies), textures.getTruncatedArray(), normals.getTruncatedArray(), processBuffers(updatedIndicies), meshInfo);
+	    memFree(remap);*/
+	    
+		return new Mesh(m, aabb, vertexBuffer, textureBuffer, normalBuffer, indexBuffer, meshInfo);
 	}
 	
-	private static int[] processBuffers(IntBuffer buff) {
-		int[] ret = new int[buff.capacity()];
-		for (int i = 0; i < ret.length; i++)
-			ret[i] = buff.get();
-		return ret;
-	}
-	
-	private static float[] processBuffers(ByteBuffer buff) {
-		float[] ret = new float[buff.capacity()/4];
-		for (int i = 0; i < ret.length; i++)
-			ret[i] = buff.getFloat();
-		return ret;
-	}
+	private static void remap(FloatBuffer vertexBuffer, IntBuffer indexBuffer, FloatBuffer normalBuffer, FloatBuffer texturebuffer, IntBuffer remap) {
+        MeshOptimizer.meshopt_remapIndexBuffer(indexBuffer, indexBuffer, remap);
+        MeshOptimizer.meshopt_remapVertexBuffer(MemoryUtil.memByteBuffer(vertexBuffer), MemoryUtil.memByteBuffer(vertexBuffer), Float.BYTES, remap);
+        MeshOptimizer.meshopt_remapVertexBuffer(MemoryUtil.memByteBuffer(normalBuffer), MemoryUtil.memByteBuffer(normalBuffer), Float.BYTES, remap);
+        //MeshOptimizer.meshopt_remapVertexBuffer(MemoryUtil.memByteBuffer(texturebuffer), MemoryUtil.memByteBuffer(texturebuffer), Float.BYTES, remap);
+    }
 	
 	private static AxisAlignedBoundingBox processVertices(AIMesh mesh, IndexingFloatArrayList vertices, ArrayList<com.jme3.math.Vector3f> faceV) {
 		float maxX = 0, maxY = 0, maxZ = 0;

@@ -1,5 +1,8 @@
 package com.trapdoor.engine.datatypes.ogl.assimp;
 
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+
 import com.jme3.bullet.collision.shapes.infos.IndexedMesh;
 import com.trapdoor.engine.datatypes.collision.AxisAlignedBoundingBox;
 import com.trapdoor.engine.datatypes.ogl.obj.VAO;
@@ -12,16 +15,16 @@ import com.trapdoor.engine.datatypes.ogl.obj.VAO;
 public class Mesh {
 
 	private Material material;
-	private float[] vertices;
-	private float[] textures;
-	private float[] normals;
-	private int[] indices;
+	private FloatBuffer vertices;
+	private FloatBuffer textures;
+	private FloatBuffer normals;
+	private IntBuffer indices;
 	private IndexedMesh meshColliderInfo;
 	
 	private VAO meshVAO;
 	private AxisAlignedBoundingBox meshBoundingBox;
 	
-	public Mesh(Material material, AxisAlignedBoundingBox boundingBox, float[] vertices, float[] textures, float[] normals, int[] indices, IndexedMesh meshColliderInfo) {
+	public Mesh(Material material, AxisAlignedBoundingBox boundingBox, FloatBuffer vertices, FloatBuffer textures, FloatBuffer normals, IntBuffer indices, IndexedMesh meshColliderInfo) {
 		super();
 		this.material = material;
 		this.vertices = vertices;
@@ -50,22 +53,22 @@ public class Mesh {
 		return this;
 	}
 	
-	public float[] getVertices() {
+	public FloatBuffer getVertices() {
 		return vertices;
 	}
-	
-	public float[] getTextures() {
+
+	public FloatBuffer getTextures() {
 		return textures;
 	}
-	
-	public float[] getNormals() {
+
+	public FloatBuffer getNormals() {
 		return normals;
 	}
-	
-	public int[] getIndices() {
+
+	public IntBuffer getIndices() {
 		return indices;
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.material.getDiffuseTexturePath();
