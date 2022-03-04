@@ -1,11 +1,13 @@
 package com.trapdoor.engine.tools.models;
 
 import java.io.File;
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIColor4D;
 import org.lwjgl.assimp.AIFace;
@@ -15,8 +17,11 @@ import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.AIString;
 import org.lwjgl.assimp.AIVector3D;
 import org.lwjgl.assimp.Assimp;
+import org.lwjgl.util.meshoptimizer.MeshOptimizer;
 
 import com.jme3.bullet.collision.shapes.infos.IndexedMesh;
+import com.trapdoor.engine.datatypes.IndexingFloatArrayList;
+import com.trapdoor.engine.datatypes.IndexingIntArrayList;
 import com.trapdoor.engine.datatypes.collision.AxisAlignedBoundingBox;
 import com.trapdoor.engine.datatypes.ogl.assimp.Material;
 import com.trapdoor.engine.datatypes.ogl.assimp.Mesh;
@@ -177,16 +182,18 @@ public class ModelLoader {
 	
 	private static Mesh processMesh(AIMesh mesh, Material[] materials) {
 		ArrayList<com.jme3.math.Vector3f> faceV = new ArrayList<com.jme3.math.Vector3f>();
-		ArrayList<Float> vertices = new ArrayList<Float>();
-		ArrayList<Float> textures = new ArrayList<Float>();
-		ArrayList<Float> normals = new ArrayList<Float>();
-		ArrayList<Integer> indices = new ArrayList<Integer>();
-	    
+		IndexingFloatArrayList vertices = new IndexingFloatArrayList();
+		IndexingFloatArrayList textures = new IndexingFloatArrayList();
+		IndexingFloatArrayList normals = new IndexingFloatArrayList();
+		IndexingIntArrayList indices = new IndexingIntArrayList();
 		
 		AxisAlignedBoundingBox aabb = processVertices(mesh, vertices, faceV);
 	    processNormals(mesh, normals);
 	    processTextCoords(mesh, textures);
 	    processIndices(mesh, indices);
+	    
+	    indices.generateStructures();
+	    vertices.generateStructures();
 	    
 	    Material m = GameRegistry.getErrorMaterial();
 	    if (materials != null) {
@@ -206,16 +213,47 @@ public class ModelLoader {
 	    	positions[i] = faceV.get(i);
 	    }
 	    
+	    // TODO: remove this?
 	    for (int i = 0; i < indices.size(); i++) {
 	    	indcies[i] = indices.get(i);
 	    }
 	    
 	    IndexedMesh meshInfo = new IndexedMesh(positions, indcies);
 	    
-		return new Mesh(m, aabb, toFloatArray(vertices), toFloatArray(textures), toFloatArray(normals), toIntArray(indices), meshInfo);
+	    int index_count = indices.size();
+	    
+	    IntBuffer dest = BufferUtils.createIntBuffer(index_count);
+	    
+	    MeshOptimizer.meshopt_generateVertexRemap(dest, indices.toIntBuffer(), index_count, vertices.toByteBuffer(), 3);x
+	    
+	    IntBuffer updatedIndicies = BufferUtils.createIntBuffer(indices.toIntBuffer().capacity());
+	    ByteBuffer updatedVerticies = BufferUtils.createByteBuffer(vertices.toByteBuffer().capacity());
+	    
+	    MeshOptimizer.meshopt_remapIndexBuffer(updatedIndicies, indices.toIntBuffer(), dest);
+	    MeshOptimizer.meshopt_remapVertexBuffer(updatedVerticies, vertices.toByteBuffer(), 3, dest);
+	    
+	    MeshOptimizer.meshopt_optimizeVertexCache(updatedIndicies, updatedIndicies, vertices.size());
+	    
+	    
+	    
+		return new Mesh(m, aabb, processBuffers(updatedVerticies), textures.getTruncatedArray(), normals.getTruncatedArray(), processBuffers(updatedIndicies), meshInfo);
 	}
 	
-	private static AxisAlignedBoundingBox processVertices(AIMesh mesh, ArrayList<Float> vertices, ArrayList<com.jme3.math.Vector3f> faceV) {
+	private static int[] processBuffers(IntBuffer buff) {
+		int[] ret = new int[buff.capacity()];
+		for (int i = 0; i < ret.length; i++)
+			ret[i] = buff.get();
+		return ret;
+	}
+	
+	private static float[] processBuffers(ByteBuffer buff) {
+		float[] ret = new float[buff.capacity()/4];
+		for (int i = 0; i < ret.length; i++)
+			ret[i] = buff.getFloat();
+		return ret;
+	}
+	
+	private static AxisAlignedBoundingBox processVertices(AIMesh mesh, IndexingFloatArrayList vertices, ArrayList<com.jme3.math.Vector3f> faceV) {
 		float maxX = 0, maxY = 0, maxZ = 0;
 		float minX = 0, minY = 0, minZ = 0;
 	    AIVector3D.Buffer verts = mesh.mVertices();
@@ -244,7 +282,7 @@ public class ModelLoader {
 	    return new AxisAlignedBoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
 	}
 	
-	private static void processNormals(AIMesh mesh, ArrayList<Float> normals) {
+	private static void processNormals(AIMesh mesh, IndexingFloatArrayList normals) {
 	    AIVector3D.Buffer norms = mesh.mNormals();
 	    while (norms.remaining() > 0) {
 	        AIVector3D aiVertex = norms.get();
@@ -254,7 +292,7 @@ public class ModelLoader {
 	    }
 	}
 	
-	private static void processTextCoords(AIMesh mesh, ArrayList<Float> textures) {
+	private static void processTextCoords(AIMesh mesh, IndexingFloatArrayList textures) {
         AIVector3D.Buffer textCoords = mesh.mTextureCoords(0);
         int numTextCoords = textCoords != null ? textCoords.remaining() : 0;
         for (int i = 0; i < numTextCoords; i++) {
@@ -264,7 +302,7 @@ public class ModelLoader {
         }
     }
 	
-	private static void processIndices(AIMesh mesh, ArrayList<Integer> indices) {
+	private static void processIndices(AIMesh mesh, IndexingIntArrayList indices) {
         int numFaces = mesh.mNumFaces();
         AIFace.Buffer aiFaces = mesh.mFaces();
         for (int i = 0; i < numFaces; i++) {
@@ -275,22 +313,6 @@ public class ModelLoader {
             }
         }
     }
-	
-	// TODO: not having to do this nonsense
-	
-	public static int[] toIntArray(ArrayList<Integer> list) {
-		int[] arr = new int[list.size()];
-		for (int i = 0; i < arr.length; i++)
-			arr[i] = list.get(i);
-		return arr;
-	}
-	
-	public static float[] toFloatArray(ArrayList<Float> list) {
-		float[] arr = new float[list.size()];
-		for (int i = 0; i < arr.length; i++)
-			arr[i] = list.get(i);
-		return arr;
-	}
 	
 	private static String findNormalMap(String diffuseTexturePath) {
 		String returnval = GameRegistry.DEFAULT_EMPTY_NORMAL_MAP;
