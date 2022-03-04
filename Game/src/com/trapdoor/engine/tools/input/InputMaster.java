@@ -18,6 +18,7 @@ public class InputMaster {
 	public static final boolean[] keyDown = new boolean[1024];
 	public static final boolean[] mouseDown = new boolean[32];
 	public static int lastScrollState = 0;
+	public static int scrollState = 0;
 	public static volatile boolean scrolledLastFrame = false;
 	
 	public static void registerKeyListener(IKeyState listener) {
@@ -72,6 +73,7 @@ public class InputMaster {
 	
 	public static void scrollMoved(int dir) {
 		lastScrollState = dir;
+		scrollState = dir;
 		for (int i = 0; i < scroll.size(); i++)
 			scroll.get(i).scroll(dir);
 		scrolledLastFrame = true;
@@ -83,6 +85,7 @@ public class InputMaster {
 		mouseStateMiddle = false;
 		mouseStateRight = false;
 		scrolledLastFrame = false;
+		scrollState = 0;
 		state = false;
 	}
 	

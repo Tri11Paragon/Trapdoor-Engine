@@ -3,6 +3,7 @@ package com.trapdoor.engine.datatypes.ogl.assimp;
 import org.lwjgl.assimp.AIScene;
 
 import com.jme3.bullet.collision.shapes.infos.IndexedMesh;
+import com.trapdoor.engine.datatypes.collision.AxisAlignedBoundingBox;
 import com.trapdoor.engine.registry.GameRegistry;
 
 /**
@@ -17,16 +18,37 @@ public class Model {
 	private AIScene scene;
 	private String path;
 	private IndexedMesh[] meshColliderData;
+	private AxisAlignedBoundingBox aabb;
 	
 	public Model(Mesh[] meshes, Material[] materials, AIScene scene, String path) {
 		this.meshes = meshes;
 		this.materials = materials;
 		this.scene = scene;
 		this.path = path;
+		double minX = Float.MAX_VALUE;
+		double maxX = Float.MIN_VALUE;
+		double minY = Float.MAX_VALUE;
+		double maxY = Float.MIN_VALUE;
+		double minZ = Float.MAX_VALUE;
+		double maxZ = Float.MIN_VALUE;
 		meshColliderData = new IndexedMesh[meshes.length];
 		for (int i = 0; i < meshes.length; i++) {
 			meshColliderData[i] = (meshes[i].getMeshColliderInfo());
+			AxisAlignedBoundingBox box = meshes[i].getBoundingBox();
+			if (box.getMinX() < minX)
+				minX = box.getMinX();
+			if (box.getMaxX() > maxX)
+				maxX = box.getMaxX();
+			if (box.getMinY() < minY)
+				minY = box.getMinY();
+			if (box.getMaxY() > maxY)
+				maxY = box.getMaxY();
+			if (box.getMinZ() < minZ)
+				minZ = box.getMinZ();
+			if (box.getMaxZ() > maxZ)
+				maxZ = box.getMaxZ();
 		}
+		aabb = new AxisAlignedBoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
 	}
 	
 	/**
@@ -66,6 +88,10 @@ public class Model {
 	
 	public String getPath() {
 		return this.path;
+	}
+	
+	public AxisAlignedBoundingBox getAABB() {
+		return aabb;
 	}
 	
 	public IndexedMesh[] getMeshColliderData() {

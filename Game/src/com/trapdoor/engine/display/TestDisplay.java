@@ -2,6 +2,7 @@ package com.trapdoor.engine.display;
 
 import com.game.entities.EntityKent;
 import com.game.entities.EntityPoop;
+import com.game.entities.Kentipede;
 import com.trapdoor.engine.camera.CreativeFirstPerson;
 import com.trapdoor.engine.datatypes.commands.FreeMoveCommand;
 import com.trapdoor.engine.datatypes.commands.GravityCommand;
@@ -16,6 +17,7 @@ import com.trapdoor.engine.renderer.ui.CommandBox;
 import com.trapdoor.engine.tools.RayCasting;
 import com.trapdoor.engine.tools.input.Mouse;
 import com.trapdoor.engine.world.World;
+import com.trapdoor.engine.world.entities.BouncingEntity;
 import com.trapdoor.engine.world.entities.Entity;
 import com.trapdoor.engine.world.entities.EntityCamera;
 import com.trapdoor.engine.world.sound.SoundSystem;
@@ -35,7 +37,6 @@ public class TestDisplay extends IDisplay {
 	private RayCasting rayCasting;
 	private World world;
 	private Model cubeModel;
-	private Model cube2;
 	
 	@RegistrationEventSubscriber
 	public static void register() {
@@ -119,8 +120,11 @@ public class TestDisplay extends IDisplay {
 		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(-25, 0, 0));
 		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(0, 0, 25));
 		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(0, 0, -25));
-		cube2 = cubeModel.clone();
-		this.world.addEntityToWorld(new Entity().setModel(cube2).setPosition(20, -15, 20));
+		BouncingEntity rixie = new BouncingEntity(120);
+		rixie.setModel(cubeModel);
+		rixie.setPosition(-60, 5, 0);
+		//rixie.getComponent(Transform.class).setScale(5, 5, 5);
+		this.world.addEntityToWorld(rixie);
 		this.world.addEntityToWorld(new EntityKent()
 											.setModel(GameRegistry.getModel("resources/models/kent.dae"))
 											.setPosition(25, -15, -40)
@@ -151,6 +155,11 @@ public class TestDisplay extends IDisplay {
 							GameRegistry.getModel("resources/models/poop.dae"))
 					// change position
 					.setPosition(-15, -4, -15));
+		
+		new Kentipede(world, 150, 10, 0, 2, 1, 10, rixie);
+		new Kentipede(world, -35, 0, -35, 2, 2, 10, rixie);
+		new Kentipede(world, 2, 3, 10, rixie);
+		new Kentipede(world, 35, 0, -35, 2, 4, 10, rixie);
 		
 	}
 
@@ -183,10 +192,11 @@ public class TestDisplay extends IDisplay {
 	public void update() {
 		this.world.update();
 		this.rayCasting.update();
-		if (Mouse.isLeftClick() && System.currentTimeMillis() - last > max) {
+		if (Mouse.isMiddleClick() && System.currentTimeMillis() - last > max) {
 			this.cameraEnt.shoot(rayCasting.getCurrentRay());
 			last = System.currentTimeMillis();
 		}
+		this.cameraEnt.grab(rayCasting.getCurrentRay());
 	}
 
 	@Override

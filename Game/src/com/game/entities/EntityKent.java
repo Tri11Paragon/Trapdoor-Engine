@@ -13,6 +13,7 @@ public class EntityKent extends Entity {
 	
 	private float yaw, pitch, roll;
 	private float x = 0f, y = 0f, z = 0f;
+	private float baseX, baseY, baseZ;
 	private float rad, offset;
 	private Transform other;
 	private Entity cameraEnt;
@@ -62,7 +63,7 @@ public class EntityKent extends Entity {
 		this.pitch += 0.02 + offset/180;
 		this.roll += 0.03 + offset/180;
 		
-		this.t.setPosition(this.x, this.y, this.z);
+		this.t.setPosition(this.baseX + this.x, this.baseY + this.y, this.baseZ + this.z);
 		
 		switch (this.type) {
 		case 0:
@@ -87,17 +88,23 @@ public class EntityKent extends Entity {
 			this.z += (other.getZ() - this.z) / ((this.offset) * distConst);
 			break;
 		case 4:
-			this.t.setPosition(this.x, this.y, this.z);
 			this.x = 8 * (float) -sin(0.6 * (this.rad + this.offset));
-			this.y = 10 * (float) -sin(2 * (this.rad + this.offset));
+			this.y = 0 * (float) -sin(2 * (this.rad + this.offset));
 			this.z = 5 * (float) cos(this.rad + this.offset);
 			this.rad += Math.PI/100;
 		}
 	}
 	
+	public EntityKent setBasePosition(float x, float y, float z) {
+		this.baseX = x;
+		this.baseY = y;
+		this.baseZ = z;
+		return this;
+	}
+	
 	@Override
 	public void onCollision(Entity other, PhysicsCollisionEvent event) {
-		super.onCollision(other, event);
+		super.onCollision(other, event);;
 		if (cameraEnt != null && (other == cameraEnt || other instanceof EntityKent)){
 			this.x = this.other.getX() + random();
 			this.y = this.other.getY() + random();

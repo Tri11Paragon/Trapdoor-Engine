@@ -254,6 +254,10 @@ public class World {
 		return ssaoRenderer;
 	}
 	
+	public Vector3f getGravity() {
+		return physWorld.getGravity(new Vector3f());
+	}
+	
 	public void cleanup() {
 		Logging.logger.debug("Destorying world!");
 		this.deferredRenderer.cleanup();
