@@ -85,6 +85,7 @@ public class Transform extends IComponent {
 
 	@Override
 	public void setAssociatedEntity(Entity e) {
+		super.setAssociatedEntity(e);
 		isStatic = e.isStatic();
 	}
 	
@@ -126,7 +127,9 @@ public class Transform extends IComponent {
 				this.scaleStore.z = this.setScaleZ;
 					
 				b.getCollisionShape().setScale(this.scaleStore);
-					
+				if (this.associatedEntity().getModel() != null)
+					this.associatedEntity().getModel().getAABB().scale(this.setScaleX, this.setScaleY, this.setScaleZ);
+				
 				this.scaleX = setScaleX;
 				this.scaleY = setScaleY;
 				this.scaleZ = setScaleZ;
@@ -273,6 +276,43 @@ public class Transform extends IComponent {
 	}
 	public float getRoll() {
 		return roll;
+	}
+	
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		Transform clone = new Transform();
+		clone.awaitingPositionChange = this.awaitingPositionChange;
+		clone.awaitingRotationChange = this.awaitingRotationChange;
+		clone.awaitingScaleChange = this.awaitingScaleChange;
+		clone.e = this.e;
+		clone.isStatic = this.isStatic;
+		clone.localStore.set(this.localStore);
+		clone.mainRotation.set(this.mainRotation);
+		clone.physQuat.set(this.physQuat);
+		clone.physQuatStore.set(this.physQuatStore);
+		clone.pitch = this.pitch;
+		clone.positionOut.set(this.positionOut);
+		clone.positionStore.set(this.positionStore);
+		clone.roll = this.roll;
+		clone.scaleStore.set(this.scaleStore);
+		clone.scaleX = this.scaleX;
+		clone.scaleY = this.scaleY;
+		clone.scaleZ = this.scaleZ;
+		clone.setPitch = this.setPitch;
+		clone.setRoll = this.setRoll;
+		clone.setScaleX = this.setScaleX;
+		clone.setScaleY = this.setScaleY;
+		clone.setScaleZ = this.setScaleZ;
+		clone.setX = this.setX;
+		clone.setY = this.setY;
+		clone.setZ = this.setZ;
+		clone.setYaw = this.setYaw;
+		clone.yaw = this.yaw;
+		clone.transformReady = this.transformReady;
+		clone.x = this.x;
+		clone.y = this.y;
+		clone.z = this.z;
+		return super.clone();
 	}
 	
 }

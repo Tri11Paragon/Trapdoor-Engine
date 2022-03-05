@@ -20,6 +20,7 @@ import com.trapdoor.engine.world.World;
 import com.trapdoor.engine.world.entities.BouncingEntity;
 import com.trapdoor.engine.world.entities.Entity;
 import com.trapdoor.engine.world.entities.EntityCamera;
+import com.trapdoor.engine.world.entities.EntitySpawner;
 import com.trapdoor.engine.world.sound.SoundSystem;
 import com.trapdoor.engine.world.sound.SoundSystemType;
 
@@ -50,6 +51,7 @@ public class TestDisplay extends IDisplay {
 		GameRegistry.registerModel("resources/models/tuber.dae");
 		GameRegistry.registerModel("resources/models/zucc.dae");
 		GameRegistry.registerModel("resources/models/playerblend.dae");
+		GameRegistry.registerModel("resources/models/spawner.dae");
 		
 		GameRegistry.registerModel("resources/models/poop.dae");
 		GameRegistry.registerModel("resources/models/Mackenzie_Hallway_brt.dae");
@@ -160,6 +162,13 @@ public class TestDisplay extends IDisplay {
 		new Kentipede(world, -35, 0, -35, 2, 2, 10, rixie);
 		new Kentipede(world, 2, 3, 10, rixie);
 		new Kentipede(world, 35, 0, -35, 2, 4, 10, rixie);
+		
+		this.world.addEntityToWorld(new EntitySpawner(
+												new EntityKent(0, cameraEnt).setModel(GameRegistry.getModel("resources/models/kent.dae")), 
+												cameraEnt,
+												12000)
+										.setModel(GameRegistry.getModel("resources/models/spawner.dae"))
+										.setPosition(75, -8, -25));
 		
 	}
 

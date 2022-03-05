@@ -85,7 +85,7 @@ public class DisplayManager {
 	public static final String title = gameName + " - V" + gameVersion + " // " + engineName + " V" + engineVersion;
 	
 	// TODO: make this per display
-	public static Vector3f lightDirection = new Vector3f(150, 150, 0).normalize();
+	public static Vector3f lightDirection = new Vector3f(150, 300, 50).normalize();
 	public static Vector3f lightColor = new Vector3f(1.0f);
 	public static boolean enableShadows = true;
 	//public static Vector3f lightDirection = new Vector3f(0, 0, 0).normalize();
@@ -254,7 +254,7 @@ public class DisplayManager {
 		if (SettingsLoader.SAMPLES > 0)
 			GL11.glEnable(GL13.GL_MULTISAMPLE);
 		
-		GLIcon gli = new GLIcon("resources/textures/icon/icon16.png", "resources/textures/icon/icon32.png");
+		GLIcon gli = new GLIcon("resources/textures/icon/icontrap16.png", "resources/textures/icon/icontrap32.png");
 		glfwSetWindowIcon(window, gli.getBuffer());
 		
 		UBOLoader.createMatrixUBO();

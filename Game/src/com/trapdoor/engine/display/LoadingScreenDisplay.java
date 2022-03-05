@@ -2,6 +2,8 @@ package com.trapdoor.engine.display;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.joml.Vector2f;
+
 import com.game.displays.MainMenuDisplay;
 import com.spinyowl.legui.component.Label;
 import com.spinyowl.legui.component.Layer;
@@ -137,10 +139,11 @@ public class LoadingScreenDisplay extends IDisplay {
 		
 		layer.add(bar);
 		
-		Icon trap = new ImageIcon(ImageLoader.loadImage("resources/textures/icon/trapdoor.png"));
+		Icon trap = new ImageIcon(ImageLoader.loadImage("resources/textures/icon/TrapDoorLogo_Update1.png"));
+		trap.setSize(new Vector2f(256 + 128, 256 + 128));
 		trapdoor = new Layer();
 		trapdoor.setSize(360, 360);
-		trapdoor.setPosition(DisplayManager.WIDTH / 2 - 360/2, DisplayManager.HEIGHT/2 - 360/2);
+		trapdoor.setPosition(DisplayManager.WIDTH / 2 - 360/2, DisplayManager.HEIGHT/2 - 360/2 - 160);
 		trapdoor.getListenerMap().addListener(WindowSizeEvent.class, (event) ->{
 			trapdoor.setPosition(event.getWidth()/ 2 - trapdoor.getSize().x/2, event.getHeight()/ 2 - trapdoor.getSize().y/2);
 		});

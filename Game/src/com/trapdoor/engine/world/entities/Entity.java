@@ -12,6 +12,7 @@ import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.math.Vector3f;
 import com.trapdoor.engine.datatypes.lighting.Light;
 import com.trapdoor.engine.datatypes.ogl.assimp.Model;
+import com.trapdoor.engine.tools.Logging;
 import com.trapdoor.engine.world.World;
 import com.trapdoor.engine.world.entities.components.ComponentStore;
 import com.trapdoor.engine.world.entities.components.IComponent;
@@ -22,7 +23,7 @@ import com.trapdoor.engine.world.entities.components.Transform;
  * @date Nov. 21, 2021
  * 
  */
-public class Entity implements Comparable<Entity> {
+public class Entity implements Comparable<Entity>,Cloneable {
 	
 	// makes the dynamic storage a little faster
 	private int id;
@@ -145,6 +146,16 @@ public class Entity implements Comparable<Entity> {
 	}
 	
 	/**
+	 * called by other entities when a specific event occurs
+	 * eg the spawn event from the spawner entity 
+	 * @param objects extra objects that might be supplied when this event is called
+	 * TODO: use something other than ENUM that allows for expandability (on the game end)
+	 */
+	public void onSpecialEvent(EntityEvent e, Object... objects) {
+		
+	}
+	
+	/**
 	 * SETS the linear velocity on the rigid body.
 	 */
 	public synchronized Entity setLinearVelocity(float x, float y, float z) {
@@ -229,6 +240,7 @@ public class Entity implements Comparable<Entity> {
 	}
 	
 	public Entity addComponent(IComponent c) {
+		c.setAssociatedEntity(this);
 		this.components.addComponent(c);
 		return this;
 	}
@@ -381,6 +393,44 @@ public class Entity implements Comparable<Entity> {
 	@Override
 	public int compareTo(Entity o) {
 		return (o.id < id) ? -1 : ((o.id == id) ? 0 : 1);
+	}
+	
+	@Override
+	@Deprecated
+	protected Object clone() throws CloneNotSupportedException {
+		Entity ent = (Entity) super.clone();
+		ArrayList<IComponent> ar = ent.getComponents();
+		for (int i = 0; i < ar.size(); i++) {
+			IComponent c = (IComponent) ar.get(i).clone();
+			c.setAssociatedEntity(ent);
+			ent.getComponentStore().removeAll(c.getClass());
+			ent.addComponent(c);
+		}
+		ent.positionStore = new Vector3f();
+		ArrayList<Light> lights = new ArrayList<Light>();
+		for (int i = 0; i < this.lights.size(); i++)
+			lights.add(this.lights.get(i));
+		ent.lights = lights;
+		if (ent.collisionObject instanceof PhysicsRigidBody) {
+			ent.rigidBody = copyRigidBody(ent.getRigidbody());
+			ent.collisionObject = ent.rigidBody;
+		} else 
+			Logging.logger.error("Unable to properly clone phyisics object! Unexpected issues may occur!");
+		return super.clone();
+	}
+	
+	private static PhysicsRigidBody copyRigidBody(PhysicsRigidBody old) {
+		PhysicsRigidBody body = new PhysicsRigidBody(old.getCollisionShape(), old.getMass());
+		body.setRestitution(old.getRestitution());
+		body.setAngularDamping(old.getAngularDamping());
+		body.setAngularFactor(old.getAngularFactor(new Vector3f()));
+		body.setFriction(old.getFriction());
+		body.setRollingFriction(old.getRollingFriction());
+		body.setSpinningFriction(old.getSpinningFriction());
+		body.setContactStiffness(old.getContactStiffness());
+		body.setContactDamping(old.getContactDamping());
+		body.setDamping(old.getLinearDamping(), old.getAngularDamping());
+		return body;
 	}
 	
 }
