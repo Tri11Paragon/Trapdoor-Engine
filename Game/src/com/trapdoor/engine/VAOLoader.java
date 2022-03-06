@@ -282,9 +282,7 @@ public class VAOLoader {
 	}
 	
 	// there are ways of making this better
-	public static void updateVBO(int vbo, float[] data, FloatBuffer buffer) {
-		buffer.clear();
-		buffer.put(data);
+	public static void updateVBO(int vbo, FloatBuffer buffer) {
 		buffer.flip();
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
 		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer.capacity(), GL15.GL_STREAM_DRAW);

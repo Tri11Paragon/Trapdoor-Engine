@@ -155,6 +155,10 @@ public class Entity implements Comparable<Entity>,Cloneable {
 		
 	}
 	
+	public void delete() {
+		this.world.removeEntityFromWorld(this);
+	}
+	
 	/**
 	 * SETS the linear velocity on the rigid body.
 	 */

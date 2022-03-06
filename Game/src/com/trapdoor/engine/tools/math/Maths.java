@@ -11,6 +11,7 @@ import org.joml.Vector3f;
 
 import com.trapdoor.engine.camera.ICamera;
 import com.trapdoor.engine.display.DisplayManager;
+import com.trapdoor.engine.renderer.particles.Particle;
 import com.trapdoor.engine.world.entities.components.Transform;
 
 /**
@@ -35,6 +36,7 @@ public class Maths {
 	public static final Vector3f rz = new Vector3f(0, 0, 1);
 
 	static Matrix4f mtx = new Matrix4f();
+	private static Vector3f scaleStore = new Vector3f();
 
 	// im not even sure how many of these I use.
 
@@ -51,6 +53,22 @@ public class Maths {
 		mtx.rotate((float) Math.toRadians(ry), Maths.ry);
 		mtx.rotate((float) Math.toRadians(rz), Maths.rz);
 		mtx.scale(new Vector3f(scale, scale, scale));
+		return mtx;
+	}
+	
+	public static Matrix4f createTransformationMatrix(Particle p) {
+		mtx.identity();
+		// these functions explain themselves and are the same for pretty much all the
+		// transformation matrix generators
+		// I have many of them because I had many ways of doing things.
+		mtx.translate(p.getPosition());
+		mtx.rotate((float) Math.toRadians(p.getRotation()), Maths.rz);
+		//mtx.rotate((float) Math.toRadians(p.getRotation()), Maths.ry);
+		//mtx.rotate((float) Math.toRadians(p.getRotation()), Maths.rz);
+		scaleStore.x = p.getScale();
+		scaleStore.y = p.getScale();
+		scaleStore.z = p.getScale();
+		mtx.scale(scaleStore);
 		return mtx;
 	}
 

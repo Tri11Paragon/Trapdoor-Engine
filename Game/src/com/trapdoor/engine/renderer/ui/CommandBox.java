@@ -114,6 +114,7 @@ public class CommandBox implements IKeyState, AnnotatedClass {
 		Command c = commands.get(indv[0].toLowerCase());
 		if (c != null) {
 			try {
+				System.out.println("uuwers");
 				lastObject = c.run(parser.parse(c.getOptions(), indv), lastObject);
 				commandOutputBuffer = lastObject.toString();
 			} catch (ParseException e) {
@@ -121,6 +122,7 @@ public class CommandBox implements IKeyState, AnnotatedClass {
 			}
 		} else
 			return;
+		System.out.println(commandOutputBuffer);
 		if (commandOutputBuffer == null || commandOutputBuffer.trim().isBlank() || commandOutputBuffer.trim().isEmpty())
 			return;
 		String existing = label.getTextState().getText();

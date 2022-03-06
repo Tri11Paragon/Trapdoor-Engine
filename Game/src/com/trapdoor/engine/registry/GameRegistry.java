@@ -3,6 +3,7 @@ package com.trapdoor.engine.registry;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -62,6 +63,7 @@ public class GameRegistry {
 	private static final Map<String, TextureData> textureDatas = Collections.synchronizedMap(new ConcurrentHashMap<String, TextureData>());
 	private static final Map<String, Integer> textureLocks = Collections.synchronizedMap(new ConcurrentHashMap<String, Integer>());
 	private static final Map<String, Integer> meshLocks = Collections.synchronizedMap(new ConcurrentHashMap<String, Integer>());
+	private static final Map<String, Integer> particleLocks = Collections.synchronizedMap(new ConcurrentHashMap<String, Integer>());
 	
 	/*
 	 * important entity related storage
@@ -76,6 +78,13 @@ public class GameRegistry {
 	 */
 	private static final Map<String, Integer> textureAtlas = Collections.synchronizedMap(new ConcurrentHashMap<String, Integer>());
 	private static final Map<String, Integer> textureInteralAtlas = Collections.synchronizedMap(new ConcurrentHashMap<String, Integer>());
+	
+	/**
+	 * particles
+	 */
+	private static final List<TextureData> particleTextureData = Collections.synchronizedList(new ArrayList<TextureData>());
+	private static final Map<String, Integer> particleTextureDataAtlas = Collections.synchronizedMap(new ConcurrentHashMap<String, Integer>());
+	private static int particleTextueAtlas;
 	
 	/**
 	 * sounds
@@ -118,6 +127,7 @@ public class GameRegistry {
 		for (Material m : registeredMaterials) {
 			m.loadTexturesFromGameRegistry();
 		}
+		particleTextueAtlas = TextureLoader.loadSpecialTextureATLAS(particleTextureData, particleTextureDataAtlas);
 	}
 	
 	public static Material registerMaterial2(Material m) {
@@ -242,6 +252,84 @@ public class GameRegistry {
 		}));
 	}
 	
+	private static final int PARTICLE_SIZE = 64;
+	
+	public static void registerParticleTexture(String texture) {
+		if (!texture.contains("."))
+			return;
+		if (!new File(texture).exists()) {
+			Logging.logger.error("File: " + texture + " does not exist!");
+			return;
+		}
+		LoadingScreenDisplay.max();
+		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+		
+		Threading.execute(() -> {
+			try {
+				// we already loaded the file
+				if (GameRegistry.particleLocks.get(texture) != null) {
+					LoadingScreenDisplay.progress();
+					return;
+				}
+				GameRegistry.particleLocks.put(texture, 1);
+				
+				String rt = "Loading texture: " + texture;
+				if (LoadingScreenDisplay.info != null)
+					LoadingScreenDisplay.info.getTextState().setText(rt);
+				Logging.logger.debug(rt);
+				
+				TextureData da = TextureLoader.decodeTextureToSize(texture, false, false, PARTICLE_SIZE, PARTICLE_SIZE);
+				particleTextureData.add(da);
+			} catch (Exception e) {
+				Logging.logger.fatal(e.getMessage(), e);
+				Logging.logger.fatal("Tried to load texture " + texture + ", didn't work!");
+				printFatalMethodCallers(stackTraceElements);
+				System.exit(-1);
+			}
+		});
+	}
+	
+	/**
+	 * loads specified particle textures to the particle texture atlas IN ORDER
+	 * This allows for particle animations to be played based on particle offset.
+	 * @param textures to load to the atlas
+	 */
+	public static void registerParticleTexture(String... textures) {
+		for (String texture : textures) {
+			if (!texture.contains("."))
+				return;
+			if (!new File(texture).exists()) {
+				Logging.logger.error("File: " + texture + " does not exist!");
+				return;
+			}
+			LoadingScreenDisplay.max();
+			StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+		
+			Threading.execute(() -> {
+				try {
+					// we already loaded the file
+					if (GameRegistry.particleLocks.get(texture) != null) {
+						LoadingScreenDisplay.progress();
+						return;
+					}
+					GameRegistry.particleLocks.put(texture, 1);
+					
+					String rt = "Loading texture: " + texture;
+					if (LoadingScreenDisplay.info != null)
+						LoadingScreenDisplay.info.getTextState().setText(rt);
+					Logging.logger.debug(rt);
+					
+					particleTextureData.add(TextureLoader.decodeTextureToSize(texture, false, true, PARTICLE_SIZE, PARTICLE_SIZE));
+				} catch (Exception e) {
+					Logging.logger.fatal(e.getMessage(), e);
+					Logging.logger.fatal("Tried to load texture " + texture + ", didn't work!");
+					printFatalMethodCallers(stackTraceElements);
+					System.exit(-1);
+				}
+			});
+		}
+	}
+	
 	public static void registerSound(String path) {
 		if (!path.contains("."))
 			return;
@@ -311,6 +399,14 @@ public class GameRegistry {
 	 */
 	public static int getTextureArray(String path) {
 		return textureAtlas.get(path);
+	}
+	
+	public static int getParticleTextureAtlas() {
+		return particleTextueAtlas;
+	}
+	
+	public static int getParticleTexture(String path) {
+		return particleTextureDataAtlas.get(path);
 	}
 	
 	/**

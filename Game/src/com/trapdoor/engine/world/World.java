@@ -16,12 +16,15 @@ import com.jme3.bullet.collision.PhysicsRayTestResult;
 import com.jme3.math.Vector3f;
 import com.karl.Engine.skybox.SkyboxRenderer;
 import com.trapdoor.engine.camera.Camera;
+import com.trapdoor.engine.datatypes.DynamicArray;
 import com.trapdoor.engine.datatypes.ogl.assimp.Model;
 import com.trapdoor.engine.display.DisplayManager;
 import com.trapdoor.engine.registry.Threading;
 import com.trapdoor.engine.renderer.DeferredRenderer;
 import com.trapdoor.engine.renderer.EntityRenderer;
 import com.trapdoor.engine.renderer.ao.SSAORenderer;
+import com.trapdoor.engine.renderer.particles.ParticleRenderer;
+import com.trapdoor.engine.renderer.particles.ParticleSystem;
 import com.trapdoor.engine.renderer.postprocessing.BloomRenderer;
 import com.trapdoor.engine.renderer.shadows.ShadowMap;
 import com.trapdoor.engine.renderer.shadows.ShadowRenderer;
@@ -44,6 +47,7 @@ public class World {
 	
 	private final WorldEntityStorage entityStorage;
 	private final Map<PhysicsCollisionObject, Entity> entityPhyiscsMap = Collections.synchronizedMap(new ConcurrentHashMap<PhysicsCollisionObject, Entity>());
+	private final DynamicArray<ParticleSystem> particleSystems = new DynamicArray<ParticleSystem>();
 	
 	// Physics container
 	private PhysicsSpace physWorld;
@@ -60,6 +64,7 @@ public class World {
 	private ShadowRenderer shadowRenderer;
 	private SSAORenderer ssaoRenderer;
 	private BloomRenderer bloomRenderer;
+	private ParticleRenderer particleRenderer;
 
 	public World(Camera c) {
 		// entitiesinworld is shared memory between the renderer and the world object.
@@ -68,6 +73,7 @@ public class World {
 		this.skyboxRenderer = new SkyboxRenderer();
 		this.c = c;
 		this.entityStorage = new WorldEntityStorage(c, this.renderer);
+		particleRenderer = new ParticleRenderer();
 		if (SettingsLoader.GRAPHICS_LEVEL < 2) {
 			this.shadowRenderer = new ShadowRenderer(c);
 			this.ssaoRenderer = new SSAORenderer();
@@ -119,6 +125,7 @@ public class World {
 		for (int i = 0; i < ents.size(); i++)
 			ents.get(i).render();
 		
+		this.particleRenderer.render(c);
 		this.skyboxRenderer.render(c);
 		this.deferredRenderer.endFirstPass();
 		
@@ -139,6 +146,8 @@ public class World {
 		}
 		
 		DisplayManager.disableCulling();
+		
+		
 	}
 	
 	/**
@@ -155,6 +164,10 @@ public class World {
 		for (int i = 0; i < allEnts.size(); i++) {
 			Entity a = allEnts.get(i);
 			a.update();
+		}
+		particleRenderer.update(this, c);
+		for (int i = 0; i < particleSystems.size(); i++) {
+			particleSystems.get(i).update();
 		}
 		
 		// calcualte the phys, stepped relative to the game speed
@@ -232,6 +245,15 @@ public class World {
 		e.onAddedToWorld();
 	}
 	
+	public void addParticleSystemToWorld(ParticleSystem s) {
+		s.create(this.particleRenderer, this);
+		particleSystems.add(s);
+	}
+	
+	public void removeParticleSystemFromWorld(ParticleSystem s) {
+		particleSystems.remove(s);
+	}
+	
 	public void removeEntityFromWorld(Entity e) {
 		this.entityStorage.removeEntity(e);
 		this.removeEntityPhysics(e);
@@ -244,6 +266,10 @@ public class World {
 	
 	public Camera getCamera() {
 		return c;
+	}
+	
+	public int getParticleCount() {
+		return particleRenderer.getStorage().size();
 	}
 	
 	public ShadowMap getShadowMap() {
@@ -264,6 +290,7 @@ public class World {
 		this.shadowRenderer.cleanup();
 		this.ssaoRenderer.cleanup();
 		this.bloomRenderer.cleanup();
+		this.particleRenderer.cleanUp();
 	}
 	
 }

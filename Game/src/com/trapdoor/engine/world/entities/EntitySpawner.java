@@ -122,9 +122,9 @@ public class EntitySpawner extends Entity {
 	}
 	
 	private Vector3f nextSpawnPoint() {
-		float x = random.nextFloat(spawnRadius*2) - spawnRadius;
-		float y = random.nextFloat(spawnRadius*2) - spawnRadius;
-		float z = random.nextFloat(spawnRadius*2) - spawnRadius;
+		float x = (float) (random.nextDouble() * spawnRadius * 2 - spawnRadius);
+		float y = (float) (random.nextDouble() * spawnRadius * 2 - spawnRadius);
+		float z = (float) (random.nextDouble() * spawnRadius * 2 - spawnRadius);
 		return new Vector3f(x, y, z);
 	}
 	

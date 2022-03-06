@@ -167,8 +167,9 @@ public class TextureLoader {
 		}
 	}
 	
-	public static int loadSpecialTextureATLAS(List<TextureData> textures) {
+	public static int loadSpecialTextureATLAS(List<TextureData> textures, Map<String, Integer> map) {
 		try {
+			TextureData texture = textures.get(0);
 			//for more detail on array textures
 			//https://www.khronos.org/opengl/wiki/Array_Texture
 			float anisf = Math.min(SettingsLoader.AF, GL11.glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
@@ -179,13 +180,9 @@ public class TextureLoader {
 			GL13.glActiveTexture(GL13.GL_TEXTURE0);
 			// bind the texture buffer, this time to texture array.
 			GL11.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, id); 
-			
-	        // WHY THE FUCK IS THIS IN GL42
-	        // i feel like this should be in gl30
-			// but it lets me define a context of GL33 without any issues with this function
-			// WHAT THE FUCK
-			// (GL30/GL33 doesn't contain glTexStorage3D)
-	        GL42.glTexStorage3D(GL30.GL_TEXTURE_2D_ARRAY, 4, GL11.GL_RGBA8, textures.get(0).getWidth(), textures.get(0).getHeight(), textures.size());
+
+			assignTextureModes(GL11.GL_NEAREST_MIPMAP_LINEAR, GL11.GL_REPEAT);
+	        GL42.glTexStorage3D(GL30.GL_TEXTURE_2D_ARRAY, 4, GL11.GL_RGBA, texture.getWidth(), texture.getHeight(), textures.size());
 	        
 	        // loop through all textures.
 	        for (int i = 0; i < textures.size(); i++) {
@@ -202,11 +199,10 @@ public class TextureLoader {
 	        			GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, 
 	        			// decode the image texture
 	        			data.getBuffer());
+	        	map.put(textures.get(i).getName(), i);
 	        	// AF
 	        	GL11.glTexParameterf(GL30.GL_TEXTURE_2D_ARRAY, EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT, anisf);
 	        }
-	        
-	        assignTextureModes(GL11.GL_NEAREST_MIPMAP_LINEAR, GL11.GL_REPEAT);
 	        
 	        GL30.glGenerateMipmap(GL30.GL_TEXTURE_2D_ARRAY);
 			// > 0 = less detail
