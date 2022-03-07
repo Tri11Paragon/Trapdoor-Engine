@@ -60,15 +60,14 @@ public class ParticleRenderer {
 		GL33.glEnableVertexAttribArray(4);
 		GL33.glEnableVertexAttribArray(5);
 		
-		//GL33.glDepthMask(false);
-		//GL33.glEnable(GL33.GL_BLEND);
-		//GL33.glBlendFunc(GL33.GL_SRC_ALPHA, GL33.GL_ONE_MINUS_SRC_ALPHA);
+		GL33.glDepthMask(false);
+		GL33.glEnable(GL33.GL_BLEND);
+		GL33.glBlendFunc(GL33.GL_SRC_ALPHA, GL33.GL_ONE_MINUS_SRC_ALPHA);
 		GL33.glActiveTexture(GL33.GL_TEXTURE0);
 		GL33.glBindTexture(GL33.GL_TEXTURE_2D_ARRAY, GameRegistry.getParticleTextureAtlas());
 		//GL33.glBlendFunc(GL33.GL_SRC_ALPHA, GL33.GL_ONE);
 		
 		dataStorage.clear();
-		
 		
 		for (int i = 0; i < storage.size(); i++) {
 			Particle p = storage.get(i);
@@ -100,7 +99,7 @@ public class ParticleRenderer {
 				
 		GL33.glDrawArraysInstanced(GL33.GL_TRIANGLE_STRIP, 0, quad.getVertexCount(), storage.size());
 		
-		//GL33.glDepthMask(true);
+		GL33.glDepthMask(true);
 		GL33.glDisable(GL33.GL_BLEND);
 		
 		GL33.glDisableVertexAttribArray(0);

@@ -17,9 +17,9 @@ layout (std140) uniform Matricies {
 };
 
 void main(void){
-	//textureCoords = position + vec2(0.5, 0.5);
-	//textureCoords.y = 1.0 - textureCoords.y;
-	textureCoords = vec2(position.x, 1.0f-position.y);
+	textureCoords = position + vec2(0.5, 0.5);
+	textureCoords.y = 1.0 - textureCoords.y;
+	//textureCoords = vec2(position.x, 1.0f-position.y);
 	textureInfo = textureData;
 	worldPos = modelMatrix * vec4(position, 0.0, 1.0);
 	gl_Position = projectionMatrix * worldPos;

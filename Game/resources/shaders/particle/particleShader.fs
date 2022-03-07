@@ -37,17 +37,17 @@ void main(void){
 	vec4 t1 = texture(tex, vec3(textureCoords, textureInfo.x));
 	vec4 t2 = texture(tex, vec3(textureCoords, textureInfo.y));
 
-	if (t1.a < 0.1f || t2.a < 0.1f)
-		discard;
+	//if (t1.a < 0.1f || t2.a < 0.1f)
+	//	discard;
 
-	gAlbedoSpec = vec4(smoothstep(
-		t1.rgb, 
-		t2.rgb, 
-		vec3(textureInfo.z)
-	), 0.0f);
+	gAlbedoSpec = mix(
+		t1, 
+		t2, 
+		textureInfo.z
+	);
 
 	gPosition = vec4(worldPos.xyz, 1.0f);
 	gNormal = vec4(0.0f);
-	gRenderState = vec4(1.0f, 0.0f, 0.0f, 0.0f);
+	gRenderState = vec4(2.0f, 0.0f, 0.0f, 0.0f);
 }
 

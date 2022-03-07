@@ -67,10 +67,14 @@ public class ParticleSystem {
 		float scale = generateValue(averageScale, scaleError);
 		float lifeLength = generateValue(averageLifeLength, lifeError);
 		renderer.getStorage().addParticle(
-					new Particle(new Vector3f(center), velocity, gravityComplient, lifeLength, generateRotation(), scale)
-					.setCurrentTexture(GameRegistry.getParticleTexture("resources/textures/particles/atlas/atlas_0.png"))
-					.setNextTexture(GameRegistry.getParticleTexture("resources/textures/particles/atlas/atlas_7.png"))
+					createParticle(new Vector3f(center), velocity, lifeLength, lifeLength, generateRotation(), scale)
 				);
+	}
+	
+	protected Particle createParticle(Vector3f center, Vector3f velocity, float gravity, float life, float rotation, float scale) {
+		return new Particle(center, velocity, gravity, life, rotation, scale)
+			.setCurrentTexture(GameRegistry.getParticleTexture("resources/textures/character Texture.png"))
+			.setNextTexture(GameRegistry.getParticleTexture("resources/textures/particles/smoke/smoke_33.png"));
 	}
 
 	private float generateValue(float average, float errorMargin) {
