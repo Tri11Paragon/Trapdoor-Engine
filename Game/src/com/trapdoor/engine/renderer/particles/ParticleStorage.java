@@ -66,6 +66,12 @@ public class ParticleStorage {
 		return particles[i];
 	}
 	
+	private void set(int i, Particle p) {
+		if (i > lastIndex)
+			throw new IndexOutOfBoundsException(i);
+		particles[i] = p;
+	}
+	
 	/**
 	 * removes an entity from this array. Now in constant time!
 	 * @param e entity to remove
@@ -121,27 +127,35 @@ public class ParticleStorage {
 	 *            - the list of particles needing sorting.
 	 */
 	public void sortHighToLow() {
-		for (int i = 1; i < size(); i++) {
-			Particle item = get(i);
-			if (item == null)
-				continue;
-			Particle item2 = get(i - 1);
-			if (item2 == null)
-				continue;
-			if (item.getDistance() > item2.getDistance()) {
-				sortUpHighToLow(i);
+		int end = 0;
+		for (int i = 0; i < size(); i++) {
+			if (particles[i] == null) {
+				for (int j = i+1; j < size(); j++) {
+					if (particles[j] != null) {
+						particles[i] = particles[j];
+						particles[j] = null;
+						break;
+					}
+				}
+			}
+			if (particles[i] != null) {
+				end = i;
 			}
 		}
-	}
-
-	private void sortUpHighToLow(int i) {
-		Particle item = get(i);
-		int attemptPos = i - 1;
-		while (attemptPos != 0 && get(attemptPos - 1).getDistance() < item.getDistance()) {
-			attemptPos--;
+		this.lastIndex = end + 1;
+		openIndices = new LinkedQueue<Integer>();
+		for (int i = 0; i < size(); i++) {
+			Particle item = get(i);
+			for (int j = i; j < size(); j++) {
+				Particle item2 = get(j);
+				if (item2 == null)
+					continue;
+				if (item2.getDistance() > item.getDistance()) {
+					set(i, item2);
+					set(j, item);
+				}
+			}
 		}
-		remove(item);
-		particles[attemptPos] = (item);
 	}
 
 	

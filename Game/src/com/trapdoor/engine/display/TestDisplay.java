@@ -16,7 +16,7 @@ import com.trapdoor.engine.registry.GameRegistry;
 import com.trapdoor.engine.registry.annotations.PostRegistrationEventSubscriber;
 import com.trapdoor.engine.registry.annotations.RegistrationEventSubscriber;
 import com.trapdoor.engine.renderer.particles.ParticleSystem;
-import com.trapdoor.engine.renderer.particles.systems.SmokeParticleSystem;
+import com.trapdoor.engine.renderer.particles.systems.AnimatedParticleSystem;
 import com.trapdoor.engine.renderer.ui.CommandBox;
 import com.trapdoor.engine.renderer.ui.DebugInfo;
 import com.trapdoor.engine.tools.RayCasting;
@@ -78,7 +78,7 @@ public class TestDisplay extends IDisplay {
 											 "resources/textures/particles/atlas/atlas_2.png",
 											 "resources/textures/particles/atlas/atlas_7.png");
 		
-		GameRegistry.registerParticleTextureFolder("resources/textures/particles/smoke/");
+		GameRegistry.registerParticleTextureFolder("resources/textures/particles/fire/");
 		
 	}
 	
@@ -190,7 +190,7 @@ public class TestDisplay extends IDisplay {
 										.setModel(GameRegistry.getModel("resources/models/spawner.dae"))
 										.setPosition(75, -8, -25));
 		
-		ps = new SmokeParticleSystem("resources/textures/particles/smoke/", 100, 20, 0.2f, 1, 1);
+		ps = new AnimatedParticleSystem("resources/textures/particles/fire/", 100, 20, 0.2f, 2, 5);
 		this.world.addParticleSystemToWorld(ps);
 		
 	}

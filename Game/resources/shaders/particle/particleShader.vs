@@ -7,6 +7,7 @@ in vec3 textureData;
 out vec2 textureCoords;
 out vec3 textureInfo;
 out vec4 worldPos;
+out vec3 normal;
 
 layout (std140) uniform Matricies {
     mat4 projectionMatrix;
@@ -16,6 +17,8 @@ layout (std140) uniform Matricies {
    	mat4 shadowMatrix;
 };
 
+uniform vec3 viewPos;
+
 void main(void){
 	textureCoords = position + vec2(0.5, 0.5);
 	textureCoords.y = 1.0 - textureCoords.y;
@@ -23,5 +26,6 @@ void main(void){
 	textureInfo = textureData;
 	worldPos = modelMatrix * vec4(position, 0.0, 1.0);
 	gl_Position = projectionMatrix * worldPos;
+	normal = vec3(0.0f, 0.0f, -1.0f);
 
 }

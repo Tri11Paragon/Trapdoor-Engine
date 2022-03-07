@@ -30,6 +30,7 @@ layout (location = 3) out vec4 gRenderState;
 in vec2 textureCoords;
 in vec3 textureInfo;
 in vec4 worldPos;
+in vec3 normal;
 
 uniform sampler2DArray tex;
 
@@ -37,17 +38,17 @@ void main(void){
 	vec4 t1 = texture(tex, vec3(textureCoords, textureInfo.x));
 	vec4 t2 = texture(tex, vec3(textureCoords, textureInfo.y));
 
-	//if (t1.a < 0.1f || t2.a < 0.1f)
-	//	discard;
-
 	gAlbedoSpec = mix(
 		t1, 
 		t2, 
 		textureInfo.z
 	);
 
+	if (gAlbedoSpec.a < 0.01f)
+		discard;
+
 	gPosition = vec4(worldPos.xyz, 1.0f);
-	gNormal = vec4(0.0f);
-	gRenderState = vec4(2.0f, 0.0f, 0.0f, 0.0f);
+	gNormal = vec4(normal, 1.0f);
+	gRenderState = vec4(0.5f, 0.0f, 0.0f, 1.0f);
 }
 

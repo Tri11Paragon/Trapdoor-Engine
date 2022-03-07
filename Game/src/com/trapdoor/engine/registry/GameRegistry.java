@@ -121,6 +121,8 @@ public class GameRegistry {
 		GameRegistry.materials.put("resources/textures/error/error3.png", errorMaterial);
 		GameRegistry.materials.put("error/error3.png", errorMaterial);
 		
+		particleTextureData.add(TextureLoader.decodeTextureToSize("resources/textures/error/error3.png", false, false, PARTICLE_SIZE, PARTICLE_SIZE));
+		
 		InputMaster.registerKeyListener(new ScreenShot());
 	}
 	

@@ -47,10 +47,10 @@ public class ParticleRenderer {
 			if (p != null && !p.update(world, camera)) 
 				storage.remove(storage.get(i));
 		}
-		//storage.sortHighToLow();
+		storage.sortHighToLow();
 	}
 	
-	public void render(Camera camera){
+	public void render(World world, Camera camera){
 		shader.start();
 		GL33.glBindVertexArray(quad.getVaoID());
 		GL33.glEnableVertexAttribArray(0);
@@ -60,7 +60,7 @@ public class ParticleRenderer {
 		GL33.glEnableVertexAttribArray(4);
 		GL33.glEnableVertexAttribArray(5);
 		
-		GL33.glDepthMask(false);
+		//GL33.glDepthMask(false);
 		GL33.glEnable(GL33.GL_BLEND);
 		GL33.glBlendFunc(GL33.GL_SRC_ALPHA, GL33.GL_ONE_MINUS_SRC_ALPHA);
 		GL33.glActiveTexture(GL33.GL_TEXTURE0);
@@ -69,10 +69,14 @@ public class ParticleRenderer {
 		
 		dataStorage.clear();
 		
+		int nulls = 0;
+		
 		for (int i = 0; i < storage.size(); i++) {
 			Particle p = storage.get(i);
-			if (p == null)
+			if (p == null) {
+				nulls++;
 				continue;
+			}
 			modelView.set(camera.getViewMatrix());
 			Matrix4f mat = updateModelViewMatrix(p);
 			dataStorage.put(mat.m00());
@@ -96,10 +100,10 @@ public class ParticleRenderer {
 			dataStorage.put(p.getBlend());
 		}
 		VAOLoader.updateVBO(vbo, dataStorage);
-				
-		GL33.glDrawArraysInstanced(GL33.GL_TRIANGLE_STRIP, 0, quad.getVertexCount(), storage.size());
 		
-		GL33.glDepthMask(true);
+		GL33.glDrawArraysInstanced(GL33.GL_TRIANGLE_STRIP, 0, quad.getVertexCount(), storage.size() - nulls);
+		
+		//GL33.glDepthMask(true);
 		GL33.glDisable(GL33.GL_BLEND);
 		
 		GL33.glDisableVertexAttribArray(0);

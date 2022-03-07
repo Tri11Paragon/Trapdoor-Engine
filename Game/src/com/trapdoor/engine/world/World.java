@@ -125,8 +125,12 @@ public class World {
 		for (int i = 0; i < ents.size(); i++)
 			ents.get(i).render();
 		
-		this.particleRenderer.render(c);
 		this.skyboxRenderer.render(c);
+		particleRenderer.update(this, c);
+		for (int i = 0; i < particleSystems.size(); i++) {
+			particleSystems.get(i).update();
+		}
+		this.particleRenderer.render(this, c);
 		this.deferredRenderer.endFirstPass();
 		
 		if (SettingsLoader.GRAPHICS_LEVEL < 2) {
@@ -164,10 +168,6 @@ public class World {
 		for (int i = 0; i < allEnts.size(); i++) {
 			Entity a = allEnts.get(i);
 			a.update();
-		}
-		particleRenderer.update(this, c);
-		for (int i = 0; i < particleSystems.size(); i++) {
-			particleSystems.get(i).update();
 		}
 		
 		// calcualte the phys, stepped relative to the game speed
