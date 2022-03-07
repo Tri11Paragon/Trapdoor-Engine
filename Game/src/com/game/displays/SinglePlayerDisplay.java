@@ -10,6 +10,7 @@ import com.trapdoor.engine.registry.GameRegistry;
 import com.trapdoor.engine.registry.annotations.RegistrationEventSubscriber;
 import com.trapdoor.engine.world.World;
 import com.trapdoor.engine.world.entities.Entity;
+import com.trapdoor.engine.world.entities.EntityCamera;
 import com.trapdoor.engine.world.entities.components.Transform;
 
 public class SinglePlayerDisplay extends IDisplay{
@@ -39,14 +40,15 @@ public class SinglePlayerDisplay extends IDisplay{
 				"resources/textures/skyboxes/lolzplus2/back.png.jpg"	// back
 			);
 		
-		SmoothEntityCamera s = new SmoothEntityCamera(this.camera);
+//		SmoothEntityCamera s = new SmoothEntityCamera(this.camera);
+		EntityCamera s = new EntityCamera(this.camera);
 //		t3.setPosition(0, 0, 0);
 		this.world.addEntityToWorld(s);
 		
 		Entity h;
 		Entity a;
 		Transform t, t2;
-		/*
+		
 		//The hallways
 		int dist = 12;
 		
@@ -87,7 +89,7 @@ public class SinglePlayerDisplay extends IDisplay{
 		t.setScale(3, 1, 3);
 		
 		this.world.addEntityToWorld(a);
-		*/
+		
 		
 		//The big floor		
 		a = new Entity().setModel(GameRegistry.getModel("resources/models/supercube.dae"));
@@ -103,7 +105,7 @@ public class SinglePlayerDisplay extends IDisplay{
 		
 		
 		//kent
-		new Kentipede(this.world, 2, 10, s);
+//		new Kentipede(this.world, 2, 10, s);
 		
 //		for (float i = 0; i < 2*Math.PI; i+=Math.PI/15) {
 //			a = new EntityKent(i).setModel(GameRegistry.getModel("resources/models/kent.dae"));
