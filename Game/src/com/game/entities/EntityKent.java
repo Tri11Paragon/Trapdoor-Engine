@@ -4,6 +4,7 @@ import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.math.Vector3f;
 import com.trapdoor.engine.world.entities.Entity;
+import com.trapdoor.engine.world.entities.EntityEvent;
 import com.trapdoor.engine.world.entities.components.Transform;
 import static java.lang.Math.*;
 
@@ -20,6 +21,14 @@ public class EntityKent extends Entity {
 	private int type = 0;
 	private Transform t;
 	private Random rand;
+	
+	public EntityKent(int type, Entity cameraEnt) {
+		super (0);
+		this.t = (Transform) this.getComponent(Transform.class);
+		rand = new Random(System.nanoTime() - System.currentTimeMillis());
+		this.cameraEnt = cameraEnt;
+		this.type = type;
+	}
 	
 	public EntityKent() {
 		super(5);
@@ -58,12 +67,14 @@ public class EntityKent extends Entity {
 	@Override
 	public void update() {
 		super.update(); // need this for overriding functions
-		this.t.setRotation(this.yaw, this.pitch, this.roll);
-		this.yaw += 0.01 + offset/180;
-		this.pitch += 0.02 + offset/180;
-		this.roll += 0.03 + offset/180;
-		
-		this.t.setPosition(this.baseX + this.x, this.baseY + this.y, this.baseZ + this.z);
+		if (this.type != 0) {
+			this.t.setRotation(this.yaw, this.pitch, this.roll);
+			this.yaw += 0.01 + offset/180;
+			this.pitch += 0.02 + offset/180;
+			this.roll += 0.03 + offset/180;
+			
+			this.t.setPosition(this.baseX + this.x, this.baseY + this.y, this.baseZ + this.z);
+		}
 		
 		switch (this.type) {
 		case 0:
@@ -105,10 +116,20 @@ public class EntityKent extends Entity {
 	@Override
 	public void onCollision(Entity other, PhysicsCollisionEvent event) {
 		super.onCollision(other, event);;
-		if (cameraEnt != null && (other == cameraEnt || other instanceof EntityKent)){
+		if (type == 3 && cameraEnt != null && (other == cameraEnt || other instanceof EntityKent)){
 			this.x = this.other.getX() + random();
 			this.y = this.other.getY() + random();
 			this.z = this.other.getZ() + random();
+		}
+	}
+	
+	@Override
+	public void onSpecialEvent(EntityEvent e, Object... objects) {
+		if (e == EntityEvent.SPAWNED) {
+			if (objects.length < 1)
+				throw new RuntimeException("Invalid event called {SPAWNED}");
+			this.cameraEnt = (Entity) objects[0];
+			this.type = 3;
 		}
 	}
 	

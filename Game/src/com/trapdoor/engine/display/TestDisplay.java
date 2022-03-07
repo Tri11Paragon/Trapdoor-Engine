@@ -1,5 +1,7 @@
 package com.trapdoor.engine.display;
 
+import org.joml.Vector3f;
+
 import com.game.entities.EntityKent;
 import com.game.entities.EntityPoop;
 import com.game.entities.Kentipede;
@@ -13,13 +15,16 @@ import com.trapdoor.engine.datatypes.ogl.assimp.Model;
 import com.trapdoor.engine.registry.GameRegistry;
 import com.trapdoor.engine.registry.annotations.PostRegistrationEventSubscriber;
 import com.trapdoor.engine.registry.annotations.RegistrationEventSubscriber;
+import com.trapdoor.engine.renderer.particles.ParticleSystem;
 import com.trapdoor.engine.renderer.ui.CommandBox;
+import com.trapdoor.engine.renderer.ui.DebugInfo;
 import com.trapdoor.engine.tools.RayCasting;
 import com.trapdoor.engine.tools.input.Mouse;
 import com.trapdoor.engine.world.World;
 import com.trapdoor.engine.world.entities.BouncingEntity;
 import com.trapdoor.engine.world.entities.Entity;
 import com.trapdoor.engine.world.entities.EntityCamera;
+import com.trapdoor.engine.world.entities.EntitySpawner;
 import com.trapdoor.engine.world.sound.SoundSystem;
 import com.trapdoor.engine.world.sound.SoundSystemType;
 
@@ -37,6 +42,7 @@ public class TestDisplay extends IDisplay {
 	private RayCasting rayCasting;
 	private World world;
 	private Model cubeModel;
+	private ParticleSystem ps;
 	
 	@RegistrationEventSubscriber
 	public static void register() {
@@ -50,6 +56,7 @@ public class TestDisplay extends IDisplay {
 		GameRegistry.registerModel("resources/models/tuber.dae");
 		GameRegistry.registerModel("resources/models/zucc.dae");
 		GameRegistry.registerModel("resources/models/playerblend.dae");
+		GameRegistry.registerModel("resources/models/spawner.dae");
 		
 		GameRegistry.registerModel("resources/models/poop.dae");
 		GameRegistry.registerModel("resources/models/Mackenzie_Hallway_brt.dae");
@@ -63,6 +70,10 @@ public class TestDisplay extends IDisplay {
 		GameRegistry.registerSound("resources/sounds/music/rpd.ogg");
 		GameRegistry.registerSound("resources/sounds/music/weapons of mass distraction remasted.ogg");
 		GameRegistry.registerSound("resources/sounds/music/weapons of mass distraction.ogg");
+		
+		GameRegistry.registerParticleTexture("resources/textures/particles/atlas/atlas_0.png");
+		GameRegistry.registerParticleTexture("resources/textures/particles/atlas/atlas_2.png");
+		GameRegistry.registerParticleTexture("resources/textures/particles/atlas/atlas_7.png");
 		
 	}
 	
@@ -161,6 +172,16 @@ public class TestDisplay extends IDisplay {
 		new Kentipede(world, 2, 3, 10, rixie);
 		new Kentipede(world, 35, 0, -35, 2, 4, 10, rixie);
 		
+		this.world.addEntityToWorld(new EntitySpawner(
+												new EntityKent(0, cameraEnt).setModel(GameRegistry.getModel("resources/models/kent.dae")), 
+												cameraEnt,
+												12000)
+										.setModel(GameRegistry.getModel("resources/models/spawner.dae"))
+										.setPosition(75, -8, -25));
+		
+		ps = new ParticleSystem(100, 20, 0.2f, 1, 1);
+		this.world.addParticleSystemToWorld(ps);
+		
 	}
 
 	@Override
@@ -171,7 +192,11 @@ public class TestDisplay extends IDisplay {
 		CommandBox.registerCommand("teleport", tp);
 		CommandBox.registerCommand("tp", tp);
 		CommandBox.registerCommand("gravity", new GravityCommand(cameraEnt));
-		CommandBox.registerCommand("move", new FreeMoveCommand(camera));
+		FreeMoveCommand move = new FreeMoveCommand(camera);
+		CommandBox.registerCommand("move", move);
+		CommandBox.registerCommand("creative", move);
+		
+		DebugInfo.assignWorld(world);
 	}
 	
 	@Override
@@ -197,6 +222,7 @@ public class TestDisplay extends IDisplay {
 			last = System.currentTimeMillis();
 		}
 		this.cameraEnt.grab(rayCasting.getCurrentRay());
+		this.ps.generateParticles(new Vector3f(0, 0, 0));
 	}
 
 	@Override

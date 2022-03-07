@@ -84,10 +84,7 @@ void main(){
         //out_Color.rgb = pow(out_Color.rgb, vec3(1.0/gamma));
 
         float brightness = dot(out_Color.rgb, vec3(0.2126, 0.7152, 0.0722));
-        if(brightness > 1.0)
-            bright_Color = vec4(out_Color.rgb, 1.0);
-        else
-            bright_Color = vec4(0.0, 0.0, 0.0, 1.0);
+        bright_Color = vec4(out_Color.rgb, 1.0) * brightness * brightness;
     } else {
         out_Color = vec4(Diffuse, 1.0);
         bright_Color = vec4(0.0, 0.0, 0.0, 1.0);

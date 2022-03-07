@@ -7,7 +7,7 @@ import com.trapdoor.engine.world.entities.Entity;
  * @date Jan. 27, 2022
  * 
  */
-public abstract class IComponent {
+public abstract class IComponent implements Cloneable {
 	
 	private final int id;
 	protected Entity e;
@@ -22,7 +22,7 @@ public abstract class IComponent {
 	// called by physics
 	public abstract void update();
 	
-	public void setAssociatedEntity(Entity e) {;
+	public void setAssociatedEntity(Entity e) {
 		this.e = e;
 	}
 	
@@ -33,6 +33,11 @@ public abstract class IComponent {
 	// component id
 	public int getID() {
 		return id;
+	}
+	
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
 	}
 	
 }

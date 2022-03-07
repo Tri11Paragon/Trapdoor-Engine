@@ -40,6 +40,15 @@ public class ComponentStore {
 		return components;
 	}
 	
+	public void removeAll(Class<? extends IComponent> c) {
+		this.componentMap.remove(c);
+		for (int i = 0; i < components.size(); i++) {
+			if (components.get(i).getClass() == c){
+				components.remove(i);
+			}
+		}
+	}
+	
 	public void addComponent(IComponent c) {
 		this.components.add(c);
 		this.componentMap.put(c.getClass(), c);

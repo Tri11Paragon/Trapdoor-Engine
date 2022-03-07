@@ -1,5 +1,6 @@
 package com.trapdoor.engine.datatypes.collision;
 
+import org.joml.Math;
 import org.joml.Vector3d;
 
 import com.trapdoor.engine.registry.GameRegistry;
@@ -122,14 +123,40 @@ public class AxisAlignedBoundingBox implements ICollider {
         return builder.toString();
     }
 
-    public boolean hasNaN()
-    {
+    public boolean hasNaN() {
         return Double.isNaN(this.minX) || Double.isNaN(this.minY) || Double.isNaN(this.minZ) || Double.isNaN(this.maxX) || Double.isNaN(this.maxY) || Double.isNaN(this.maxZ);
     }
 
-    public Vector3d getCenter()
-    {
+    public Vector3d getCenter() {
         return new Vector3d(this.minX + (this.maxX - this.minX) * 0.5D, this.minY + (this.maxY - this.minY) * 0.5D, this.minZ + (this.maxZ - this.minZ) * 0.5D);
+    }
+    
+    public float longestDistanceFromCenter() {
+    	Vector3d center = getCenter();
+    	double maxX = Math.abs(this.maxX - center.x);
+    	double minX = Math.abs(this.minX - center.x);
+    	double maxY = Math.abs(this.maxY - center.y);
+    	double minY = Math.abs(this.minY - center.y);
+    	double maxZ = Math.abs(this.maxZ - center.z);
+    	double minZ = Math.abs(this.minZ - center.z);
+    	return (float) Math.max(maxX, Math.max(minX, Math.max(maxY, Math.max(minY, Math.max(maxZ, minZ)))));
+    }
+    
+    public float avgDistanceFromCenter() {
+    	Vector3d center = getCenter();
+    	double maxX = Math.abs(this.maxX - center.x);
+    	double minX = Math.abs(this.minX - center.x);
+    	double maxY = Math.abs(this.maxY - center.y);
+    	double minY = Math.abs(this.minY - center.y);
+    	double maxZ = Math.abs(this.maxZ - center.z);
+    	double minZ = Math.abs(this.minZ - center.z);
+    	maxX *= maxX;
+    	minX *= minX;
+    	maxY *= maxY;
+    	minY *= minY;
+    	maxZ *= maxZ;
+    	minZ *= minZ;
+    	return (float) Math.sqrt(maxX + minX + maxY + minY + maxZ + minZ);
     }
     
     public Vector3d getCenterSafe() {
@@ -137,6 +164,15 @@ public class AxisAlignedBoundingBox implements ICollider {
     	centered.y = this.minY + (this.maxY - this.minY) * 0.5D;
     	centered.z = this.minZ + (this.maxZ - this.minZ) * 0.5D;
     	return centered;
+    }
+    
+    public void scale(float x, float y, float z) {
+    	this.maxX *= x;
+    	this.minX *= x;
+    	this.maxY *= y;
+    	this.minY *= y;
+    	this.maxZ *= z;
+    	this.minZ *= z;
     }
 	
 	@Override

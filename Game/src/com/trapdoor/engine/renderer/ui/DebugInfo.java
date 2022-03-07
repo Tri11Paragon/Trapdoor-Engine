@@ -24,7 +24,8 @@ import com.trapdoor.engine.world.World;
 public class DebugInfo implements IKeyState {
 	
 	public static float x,y,z;
-
+	private static DebugInfo th;
+	
 	private Layer layer;
 	
 	private Label gameVersion;
@@ -42,10 +43,14 @@ public class DebugInfo implements IKeyState {
 	private Label javaMemory;
 	private Label javaMemoryNon;
 	
+	private Label particleCount;
+	
 	private boolean enabled = false;
 	private StringBuilder builder;
+	private World world;
 	
 	public DebugInfo() {
+		th = this;
 		builder = new StringBuilder();
 		
 		layer = new Layer();
@@ -75,6 +80,8 @@ public class DebugInfo implements IKeyState {
 				+ "mb / " 
 					+ Main.mx.getNonHeapMemoryUsage().getCommitted()  / 1024 / 1024
 				+ "mb");
+		
+		particleCount = new Label("Particle Count: " + 0);
 		
 		
 		
@@ -121,6 +128,11 @@ public class DebugInfo implements IKeyState {
 		javaMemoryNon.getStyle().setFontSize(size);
 		javaMemoryNon.getStyle().setFont("mono");
 		
+		calcPosY(size, padding, offsetY);
+		particleCount.setPosition(0, calcPosY(size, padding, offsetY));
+		particleCount.getStyle().setFontSize(size);
+		particleCount.getStyle().setFont("mono");
+		
 		layer.add(gameVersion);
 		layer.add(mainRenderings);
 		layer.add(mainThreadFPS);
@@ -131,6 +143,7 @@ public class DebugInfo implements IKeyState {
 		layer.add(playerPosition);
 		layer.add(javaMemory);
 		layer.add(javaMemoryNon);
+		layer.add(particleCount);
 		
 		UIMaster.getMasterFrame().addLayer(layer);
 		
@@ -238,6 +251,11 @@ public class DebugInfo implements IKeyState {
 		builder.append(" | Z: ");
 		includeSpace(builder, round(z));
 		playerPosition.getTextState().setText(builder.toString());
+		
+		builder = new StringBuilder();
+		builder.append("Particle Count: ");
+		builder.append(world.getParticleCount()); 
+		particleCount.getTextState().setText(builder.toString());
 	}
 	
 	@Override
@@ -261,6 +279,10 @@ public class DebugInfo implements IKeyState {
 
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
+	}
+	
+	public static void assignWorld(World world) {
+		th.world = world;
 	}
 	
 }
