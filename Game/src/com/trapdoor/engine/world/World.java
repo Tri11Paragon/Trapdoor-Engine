@@ -91,12 +91,16 @@ public class World {
         this.physWorld.addCollisionListener((PhysicsCollisionEvent event) -> {
         	Entity e1 = entityPhyiscsMap.get(event.getObjectA());
         	Entity e2 = entityPhyiscsMap.get(event.getObjectB());
+        	if (e1 == null || e2 == null)
+        		return;
         	e1.onCollision(e2, event);
         	e2.onCollision(e1, event);
         });
         this.physWorld.addOngoingCollisionListener((PhysicsCollisionEvent event) -> {
         	Entity e1 = entityPhyiscsMap.get(event.getObjectA());
         	Entity e2 = entityPhyiscsMap.get(event.getObjectB());
+        	if (e1 == null || e2 == null)
+        		return;
         	e1.onOngoingCollision(e2, event);
         	e2.onOngoingCollision(e1, event);
         });

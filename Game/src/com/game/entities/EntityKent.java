@@ -1,14 +1,17 @@
 package com.game.entities;
 
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+
+import java.util.Random;
+
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.math.Vector3f;
+import com.trapdoor.engine.renderer.particles.ParticleSystem;
 import com.trapdoor.engine.world.entities.Entity;
-import com.trapdoor.engine.world.entities.EntityEvent;
 import com.trapdoor.engine.world.entities.components.Transform;
-import static java.lang.Math.*;
-
-import java.util.Random;
+import com.trapdoor.engine.world.entities.extras.EntityEvent;
 
 public class EntityKent extends Entity {
 	
@@ -21,6 +24,7 @@ public class EntityKent extends Entity {
 	private int type = 0;
 	private Transform t;
 	private Random rand;
+	private ParticleSystem firey;
 	
 	public EntityKent(int type, Entity cameraEnt) {
 		super (0);
@@ -94,9 +98,9 @@ public class EntityKent extends Entity {
 			break;
 		case 3:
 			final float distConst = 15;
-			this.x += (other.getX() - this.x) / ((this.offset) * distConst);
-			this.y += (other.getY() - this.y) / ((this.offset) * distConst);
-			this.z += (other.getZ() - this.z) / ((this.offset) * distConst);
+			this.x += (other.getX() - (this.x + this.baseX)) / ((this.offset) * distConst);
+			this.y += (other.getY() - (this.y + this.baseY)) / ((this.offset) * distConst);
+			this.z += (other.getZ() - (this.z + this.baseZ)) / ((this.offset) * distConst);
 			break;
 		case 4:
 			this.x = 8 * (float) -sin(0.6 * (this.rad + this.offset));
@@ -116,10 +120,16 @@ public class EntityKent extends Entity {
 	@Override
 	public void onCollision(Entity other, PhysicsCollisionEvent event) {
 		super.onCollision(other, event);;
-		if (type == 3 && cameraEnt != null && (other == cameraEnt || other instanceof EntityKent)){
-			this.x = this.other.getX() + random();
-			this.y = this.other.getY() + random();
-			this.z = this.other.getZ() + random();
+		if (type == 3 && cameraEnt != null && (other == cameraEnt)){
+			if (firey != null) {
+				org.joml.Vector3f ps = new org.joml.Vector3f(this.x + this.baseX, this.y + this.baseY, this.z + this.baseZ);
+				
+				firey.generateParticles(ps);
+				firey.generateParticles(ps);
+				firey.generateParticles(ps);
+				firey.generateParticles(ps);
+			} 
+			this.world.removeEntityFromWorld(this);
 		}
 	}
 	
@@ -127,15 +137,14 @@ public class EntityKent extends Entity {
 	public void onSpecialEvent(EntityEvent e, Object... objects) {
 		if (e == EntityEvent.SPAWNED) {
 			if (objects.length < 1)
-				throw new RuntimeException("Invalid event called {SPAWNED}");
-			this.cameraEnt = (Entity) objects[0];
-			this.type = 3;
+				throw new RuntimeException("Invalid Spawn Config");
+			firey = (ParticleSystem) objects[0];
 		}
 	}
 	
 	private final float radius = 320;
 	
-	private float random() {
+	public float random() {
 		return rand.nextFloat() * radius - radius/2;
 	}
 	

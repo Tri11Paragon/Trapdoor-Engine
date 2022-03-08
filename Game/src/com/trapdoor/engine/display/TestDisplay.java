@@ -26,6 +26,7 @@ import com.trapdoor.engine.world.entities.BouncingEntity;
 import com.trapdoor.engine.world.entities.Entity;
 import com.trapdoor.engine.world.entities.EntityCamera;
 import com.trapdoor.engine.world.entities.EntitySpawner;
+import com.trapdoor.engine.world.entities.extras.EntityKentSpawnType;
 import com.trapdoor.engine.world.sound.SoundSystem;
 import com.trapdoor.engine.world.sound.SoundSystemType;
 
@@ -175,7 +176,6 @@ public class TestDisplay extends IDisplay {
 		
 		new Kentipede(world, 150, 10, 0, 2, 1, 10, rixie);
 		new Kentipede(world, -35, 0, -35, 2, 2, 10, rixie);
-		new Kentipede(world, 2, 3, 10, rixie);
 		new Kentipede(world, 35, 0, -35, 2, 4, 10, rixie);
 		
 //		Entity e = new Entity();
@@ -184,17 +184,18 @@ public class TestDisplay extends IDisplay {
 //		e.getComponent(Transform.class).setScale(20, 20, 20);
 //		this.world.addEntityToWorld(e);
 		
-		this.world.addEntityToWorld(new EntitySpawner(
-												new EntityKent(0, cameraEnt).setModel(GameRegistry.getModel("resources/models/kent.dae")), 
-												rixie,
-												12000)
-										.setModel(GameRegistry.getModel("resources/models/spawner.dae"))
-										.setPosition(75, -8, -25));
-		
 		ps = new AnimatedParticleSystem("resources/textures/particles/fire/", 100, 20, 0, 0.5f, 5);
 		this.world.addParticleSystemToWorld(ps);
 		smokey = new AnimatedParticleSystem("resources/textures/particles/smoke/", 100, 3, 0, 5, 10);
 		this.world.addParticleSystemToWorld(smokey);
+		
+		this.world.addEntityToWorld(new EntitySpawner(
+				new EntityKentSpawnType(rixie), 
+				smokey,
+				ps,
+				12000, 15, 6)
+					.setModel(GameRegistry.getModel("resources/models/spawner.dae"))
+					.setPosition(75, -8, -25));
 		
 	}
 

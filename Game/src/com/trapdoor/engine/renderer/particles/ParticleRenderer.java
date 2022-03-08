@@ -35,7 +35,7 @@ public class ParticleRenderer {
 		shader = new ParticleShader();
 		storage = new ArrayList<Particle>();
 		dataStorage = BufferUtils.createFloatBuffer(DATA_SIZE * MAX_PARTICLES);
-		quad = VAOLoader.loadToVAO(VERTICES, 2);
+		quad = VAOLoader.loadToVAO(VERTICES, 2, 6);
 		vbo = VAOLoader.createEmptyVBO(DATA_SIZE * 4 * MAX_PARTICLES);
 		VAOLoader.addInstancedAttribute(quad.getVaoID(), vbo, 1, 4, DATA_SIZE * 4, 0);
 		VAOLoader.addInstancedAttribute(quad.getVaoID(), vbo, 2, 4, DATA_SIZE * 4, 4 * 4);
@@ -57,12 +57,6 @@ public class ParticleRenderer {
 	public void render(World world, Camera camera){
 		shader.start();
 		GL33.glBindVertexArray(quad.getVaoID());
-		GL33.glEnableVertexAttribArray(0);
-		GL33.glEnableVertexAttribArray(1);
-		GL33.glEnableVertexAttribArray(2);
-		GL33.glEnableVertexAttribArray(3);
-		GL33.glEnableVertexAttribArray(4);
-		GL33.glEnableVertexAttribArray(5);
 		
 		GL33.glDepthMask(false);
 		GL33.glEnable(GL33.GL_BLEND);
@@ -111,12 +105,6 @@ public class ParticleRenderer {
 		GL33.glDepthMask(true);
 		GL33.glDisable(GL33.GL_BLEND);
 		
-		GL33.glDisableVertexAttribArray(0);
-		GL33.glDisableVertexAttribArray(1);
-		GL33.glDisableVertexAttribArray(2);
-		GL33.glDisableVertexAttribArray(3);
-		GL33.glDisableVertexAttribArray(4);
-		GL33.glDisableVertexAttribArray(5);
 		GL33.glBindVertexArray(0);
 		shader.stop();
 	}
