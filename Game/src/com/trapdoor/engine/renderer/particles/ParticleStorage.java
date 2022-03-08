@@ -66,6 +66,12 @@ public class ParticleStorage {
 		return particles[i];
 	}
 	
+	private void set(int i, Particle p) {
+		if (i > lastIndex)
+			throw new IndexOutOfBoundsException(i);
+		particles[i] = p;
+	}
+	
 	/**
 	 * removes an entity from this array. Now in constant time!
 	 * @param e entity to remove
@@ -113,35 +119,53 @@ public class ParticleStorage {
 	}
 	
 	/**
-	 * Sorts a list of particles so that the particles with the highest distance
+	 * Sorts the list of particles so that the particles with the highest distance
 	 * from the camera are first, and the particles with the shortest distance
 	 * are last.
 	 * 
-	 * @param list
-	 *            - the list of particles needing sorting.
 	 */
-	public void sortHighToLow() {
-		for (int i = 1; i < size(); i++) {
-			Particle item = get(i);
-			if (item == null)
-				continue;
-			Particle item2 = get(i - 1);
-			if (item2 == null)
-				continue;
-			if (item.getDistance() > item2.getDistance()) {
-				sortUpHighToLow(i);
+	public void insertionSort() {  
+		removeNulls();
+		
+		// insertion sort
+        int n = size();  
+        for (int j = 1; j < n; j++) {  
+            Particle key = get(j);  
+            int i = j-1;  
+            while ( (i > -1) && ( get(i).getDistance() < key.getDistance() ) ) {  
+                set(i+1, get(i));  
+                i--;  
+            }  
+            set(i+1, key);  
+        }  
+    }  
+	
+	private void removeNulls() {
+		// remove all the null
+		int end = 0;
+		openIndices = new LinkedQueue<Integer>();
+		this.indexes = new HashMap<Particle, Integer>(MAX_PARTICLES);
+		
+		for (int i = 0; i < size(); i++) {
+			if (particles[i] == null) {
+				for (int j = i + 1; j < size(); j++) {
+					if (particles[j] != null) {
+						particles[i] = particles[j];
+						particles[j] = null;
+						break;
+					}
+				}
 			}
+			if (particles[i] != null) {
+				end = i;
+			}
+			this.indexes.put(particles[i], i);
 		}
+		this.lastIndex = end + 1;
 	}
-
-	private void sortUpHighToLow(int i) {
-		Particle item = get(i);
-		int attemptPos = i - 1;
-		while (attemptPos != 0 && get(attemptPos - 1).getDistance() < item.getDistance()) {
-			attemptPos--;
-		}
-		remove(item);
-		particles[attemptPos] = (item);
+	
+	public void quickSort() {
+		
 	}
 
 	

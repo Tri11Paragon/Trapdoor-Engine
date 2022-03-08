@@ -18,14 +18,16 @@ import com.trapdoor.engine.world.World;
  */
 public class ParticleSystem {
 	
-	private float pps, averageSpeed, gravityComplient, averageLifeLength, averageScale;
+	protected float x,y,z;
+	
+	protected float pps, averageSpeed, gravityComplient, averageLifeLength, averageScale;
 
-	private float speedError, lifeError, scaleError = 0;
-	private boolean randomRotation = false;
-	private Vector3f direction;
-	private float directionDeviation = 0;
+	protected float speedError, lifeError, scaleError = 0;
+	protected boolean randomRotation = false;
+	protected Vector3f direction;
+	protected float directionDeviation = 0;
 
-	private Random random = new Random();
+	protected Random random = new Random();
 	
 	protected ParticleRenderer renderer;
 	protected World world;
@@ -50,7 +52,7 @@ public class ParticleSystem {
 		for (int i = 0; i < count; i++) {
 			emitParticle(systemCenter);
 		}
-		if (Math.random() < partialParticle) {
+		if (random.nextDouble() < partialParticle) {
 			emitParticle(systemCenter);
 		}
 	}
@@ -66,11 +68,15 @@ public class ParticleSystem {
 		velocity.mul(generateValue(averageSpeed, speedError));
 		float scale = generateValue(averageScale, scaleError);
 		float lifeLength = generateValue(averageLifeLength, lifeError);
-		renderer.getStorage().addParticle(
-					new Particle(new Vector3f(center), velocity, gravityComplient, lifeLength, generateRotation(), scale)
-					.setCurrentTexture(GameRegistry.getParticleTexture("resources/textures/particles/atlas/atlas_0.png"))
-					.setNextTexture(GameRegistry.getParticleTexture("resources/textures/particles/atlas/atlas_7.png"))
+		renderer.getStorage().add(
+					createParticle(new Vector3f(center.x + x, center.y + y, center.z + z), velocity, gravityComplient, lifeLength, generateRotation(), scale)
 				);
+	}
+	
+	protected Particle createParticle(Vector3f center, Vector3f velocity, float gravity, float life, float rotation, float scale) {
+		return new Particle(center, velocity, gravity, life, rotation, scale)
+			.setCurrentTexture(GameRegistry.getParticleTexture("resources/textures/character Texture.png"))
+			.setNextTexture(GameRegistry.getParticleTexture("resources/textures/particles/smoke/smoke_33.png"));
 	}
 
 	private float generateValue(float average, float errorMargin) {
@@ -126,37 +132,83 @@ public class ParticleSystem {
 	 * @param direction - The average direction in which particles are emitted.
 	 * @param deviation - A value between 0 and 1 indicating how far from the chosen direction particles can deviate.
 	 */
-	public void setDirection(Vector3f direction, float deviation) {
+	public ParticleSystem setDirection(Vector3f direction, float deviation) {
 		this.direction = new Vector3f(direction);
 		this.directionDeviation = (float) (deviation * Math.PI);
+		return this;
 	}
 
-	public void randomizeRotation() {
+	public ParticleSystem randomizeRotation() {
 		randomRotation = true;
+		return this;
 	}
 
 	/**
 	 * @param error
 	 *            - A number between 0 and 1, where 0 means no error margin.
 	 */
-	public void setSpeedError(float error) {
+	public ParticleSystem setSpeedError(float error) {
 		this.speedError = error * averageSpeed;
+		return this;
 	}
 
 	/**
 	 * @param error
 	 *            - A number between 0 and 1, where 0 means no error margin.
 	 */
-	public void setLifeError(float error) {
+	public ParticleSystem setLifeError(float error) {
 		this.lifeError = error * averageLifeLength;
+		return this;
 	}
 
 	/**
 	 * @param error
 	 *            - A number between 0 and 1, where 0 means no error margin.
 	 */
-	public void setScaleError(float error) {
+	public ParticleSystem setScaleError(float error) {
 		this.scaleError = error * averageScale;
+		return this;
+	}
+	
+	public ParticleSystem setPosition(float x, float y, float z) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		return this;
+	}
+	
+	public ParticleSystem setPosition(Vector3f pos) {
+		this.x = pos.x;
+		this.y = pos.y;
+		this.z = pos.z;
+		return this;
+	}
+
+	public float getX() {
+		return x;
+	}
+
+	public ParticleSystem setX(float x) {
+		this.x = x;
+		return this;
+	}
+
+	public float getY() {
+		return y;
+	}
+
+	public ParticleSystem setY(float y) {
+		this.y = y;
+		return this;
+	}
+
+	public float getZ() {
+		return z;
+	}
+
+	public ParticleSystem setZ(float z) {
+		this.z = z;
+		return this;
 	}
 	
 }

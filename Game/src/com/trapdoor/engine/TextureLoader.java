@@ -167,9 +167,8 @@ public class TextureLoader {
 		}
 	}
 	
-	public static int loadSpecialTextureATLAS(List<TextureData> textures, Map<String, Integer> map) {
+	public static int loadSpecialTextureATLAS(int width, int height, List<TextureData> textures, Map<String, Integer> map) {
 		try {
-			TextureData texture = textures.get(0);
 			//for more detail on array textures
 			//https://www.khronos.org/opengl/wiki/Array_Texture
 			float anisf = Math.min(SettingsLoader.AF, GL11.glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
@@ -180,9 +179,9 @@ public class TextureLoader {
 			GL13.glActiveTexture(GL13.GL_TEXTURE0);
 			// bind the texture buffer, this time to texture array.
 			GL11.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, id); 
-
-			assignTextureModes(GL11.GL_NEAREST_MIPMAP_LINEAR, GL11.GL_REPEAT);
-	        GL42.glTexStorage3D(GL30.GL_TEXTURE_2D_ARRAY, 4, GL11.GL_RGBA, texture.getWidth(), texture.getHeight(), textures.size());
+			
+			
+	        GL42.glTexStorage3D(GL30.GL_TEXTURE_2D_ARRAY, 4, GL11.GL_RGBA8, width, height, textures.size());
 	        
 	        // loop through all textures.
 	        for (int i = 0; i < textures.size(); i++) {
@@ -194,15 +193,20 @@ public class TextureLoader {
 	        			// x,y,z offsets using the texture # as the position in the array
 	        			0, 0, i,
 	        			// width, height depth
-	        			data.getWidth(), data.getHeight(), 1, 
+	        			width, height, 1, 
 	        			// format, format
 	        			GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, 
 	        			// decode the image texture
 	        			data.getBuffer());
-	        	map.put(textures.get(i).getName(), i);
 	        	// AF
 	        	GL11.glTexParameterf(GL30.GL_TEXTURE_2D_ARRAY, EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT, anisf);
+	        	map.put(textures.get(i).getName(), i);
 	        }
+	        
+	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST); 
+	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
+	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT);
 	        
 	        GL30.glGenerateMipmap(GL30.GL_TEXTURE_2D_ARRAY);
 			// > 0 = less detail
@@ -211,7 +215,9 @@ public class TextureLoader {
 			// add texture for later deletion.
 			TextureLoader.textures.add(id);
 			return id;
-		} catch (Exception e) {}
+		} catch (Exception e) {
+			Logging.logger.fatal(e.getMessage(), e);
+		}
 		return 0;
 	}
 	

@@ -16,6 +16,7 @@ import com.trapdoor.engine.registry.GameRegistry;
 import com.trapdoor.engine.registry.annotations.PostRegistrationEventSubscriber;
 import com.trapdoor.engine.registry.annotations.RegistrationEventSubscriber;
 import com.trapdoor.engine.renderer.particles.ParticleSystem;
+import com.trapdoor.engine.renderer.particles.systems.AnimatedParticleSystem;
 import com.trapdoor.engine.renderer.ui.CommandBox;
 import com.trapdoor.engine.renderer.ui.DebugInfo;
 import com.trapdoor.engine.tools.RayCasting;
@@ -43,6 +44,7 @@ public class TestDisplay extends IDisplay {
 	private World world;
 	private Model cubeModel;
 	private ParticleSystem ps;
+	private ParticleSystem smokey;
 	
 	@RegistrationEventSubscriber
 	public static void register() {
@@ -71,9 +73,13 @@ public class TestDisplay extends IDisplay {
 		GameRegistry.registerSound("resources/sounds/music/weapons of mass distraction remasted.ogg");
 		GameRegistry.registerSound("resources/sounds/music/weapons of mass distraction.ogg");
 		
-		GameRegistry.registerParticleTexture("resources/textures/particles/atlas/atlas_0.png");
-		GameRegistry.registerParticleTexture("resources/textures/particles/atlas/atlas_2.png");
-		GameRegistry.registerParticleTexture("resources/textures/particles/atlas/atlas_7.png");
+		GameRegistry.registerParticleTexture("resources/textures/512_64.png",
+											 "resources/textures/character Texture.png",
+											 "resources/textures/particles/atlas/atlas_2.png",
+											 "resources/textures/particles/atlas/atlas_7.png");
+		
+		GameRegistry.registerParticleTextureFolder("resources/textures/particles/fire/");
+		GameRegistry.registerParticleTextureFolder("resources/textures/particles/smoke/");
 		
 	}
 	
@@ -172,15 +178,23 @@ public class TestDisplay extends IDisplay {
 		new Kentipede(world, 2, 3, 10, rixie);
 		new Kentipede(world, 35, 0, -35, 2, 4, 10, rixie);
 		
+//		Entity e = new Entity();
+//		e.setModel(GameRegistry.getModel("resources/models/kent.dae"));
+//		e.setPosition(0, 50, 0);
+//		e.getComponent(Transform.class).setScale(20, 20, 20);
+//		this.world.addEntityToWorld(e);
+		
 		this.world.addEntityToWorld(new EntitySpawner(
 												new EntityKent(0, cameraEnt).setModel(GameRegistry.getModel("resources/models/kent.dae")), 
-												cameraEnt,
+												rixie,
 												12000)
 										.setModel(GameRegistry.getModel("resources/models/spawner.dae"))
 										.setPosition(75, -8, -25));
 		
-		ps = new ParticleSystem(100, 20, 0.2f, 1, 1);
+		ps = new AnimatedParticleSystem("resources/textures/particles/fire/", 100, 20, 0, 0.5f, 5);
 		this.world.addParticleSystemToWorld(ps);
+		smokey = new AnimatedParticleSystem("resources/textures/particles/smoke/", 100, 3, 0, 5, 10);
+		this.world.addParticleSystemToWorld(smokey);
 		
 	}
 
@@ -223,6 +237,7 @@ public class TestDisplay extends IDisplay {
 		}
 		this.cameraEnt.grab(rayCasting.getCurrentRay());
 		this.ps.generateParticles(new Vector3f(0, 0, 0));
+		this.smokey.generateParticles(new Vector3f(50, -8, 10));
 	}
 
 	@Override

@@ -10,6 +10,7 @@ uniform sampler2D gNormal;
 uniform sampler2D gAlbedoSpec;
 uniform sampler2D gRenderState;
 uniform sampler2D ssaoColor;
+uniform sampler2D depthTexture;
 
 const int NR_LIGHTS = 32;
 
@@ -30,6 +31,46 @@ uniform mat4 viewMatrix;
 
 //const float gamma = 2.2;
 
+vec3 calculateLighting(vec3 FragPos, vec3 Normal, vec3 Diffuse, vec3 directlightDir, float specularMapAmount){
+    float AmbientOcclusion = texture(ssaoColor, textureCoords).r;
+    // then calculate lighting as usual
+    vec3 lighting = Diffuse * 0.03f * (AmbientOcclusion); // hard-coded ambient component
+
+    // add directional lighting
+    lighting += Diffuse * (max(dot(Normal, directlightDir), 0.0) * directLightColor);
+
+    vec3 viewDir  = normalize(-FragPos);
+
+    // Normal Lighting
+    for(int i = 0; i < NR_LIGHTS; ++i) {
+        // calculate distance between light source and current fragment
+        vec3 lmp = Position[i].xyz - FragPos;
+        float distance = length(lmp);
+            // diffuse
+        vec3 lightDir = normalize(lmp);
+        vec3 lightColor = vec3(LightInfo[i].yzw);
+        vec3 diffuse = max(dot(Normal, lightDir), 0.0) * Diffuse * lightColor;
+
+        vec3 specular = vec3(0.0f);
+        if (diffuse != vec3(0.0f)){
+                // specular (blinn phong)
+            vec3 halfwayDir = normalize(lightDir + viewDir);  
+            
+            float specAmount = pow(max(dot(Normal, halfwayDir), 0.0), 16.0);
+            
+            specular = lightColor * specAmount * specularMapAmount;
+        }
+            // attenuation, 0.7f (l) 1.2f (q)
+        float attenuation = 1.0 / (1.0 + Position[i].w * distance + LightInfo[i].x * distance * distance);
+        diffuse *= attenuation;
+        specular *= attenuation;
+
+        lighting += (diffuse * AmbientOcclusion + specular);
+    }    
+
+    return lighting;
+}
+
 void main(){
     vec4 renderState = texture(gRenderState, textureCoords);
 
@@ -37,49 +78,20 @@ void main(){
     vec3 FragPos = texture(gPosition, textureCoords).rgb;
     vec3 Normal = texture(gNormal, textureCoords).rgb;
     vec4 albedoSpec = texture(gAlbedoSpec, textureCoords);
+    vec4 depth = texture(depthTexture, textureCoords);
     vec3 Diffuse = albedoSpec.xyz;
     // TODO: impliment this
     float specularMapAmount = albedoSpec.w;
     
-    if (renderState.x != 0.0f){
-    	float AmbientOcclusion = texture(ssaoColor, textureCoords).r;
-    	Diffuse = Diffuse * renderState.b;
-        // then calculate lighting as usual
-        vec3 lighting = Diffuse * 0.03f * (AmbientOcclusion); // hard-coded ambient component
+    if (renderState.x > 0.0f){
+        if (renderState.x < 0.8f){
+            out_Color = albedoSpec;
 
-        // add directional lighting
-        lighting += Diffuse * (max(dot(Normal, directlightDir), 0.0) * directLightColor);
-
-        vec3 viewDir  = normalize(-FragPos);
-
-        // Normal Lighting
-        for(int i = 0; i < NR_LIGHTS; ++i) {
-            // calculate distance between light source and current fragment
-            vec3 lmp = Position[i].xyz - FragPos;
-            float distance = length(lmp);
-                // diffuse
-            vec3 lightDir = normalize(lmp);
-            vec3 lightColor = vec3(LightInfo[i].yzw);
-            vec3 diffuse = max(dot(Normal, lightDir), 0.0) * Diffuse * lightColor;
-
-            vec3 specular = vec3(0.0f);
-            if (diffuse != vec3(0.0f)){
-                    // specular (blinn phong)
-                vec3 halfwayDir = normalize(lightDir + viewDir);  
-                
-                float specAmount = pow(max(dot(Normal, halfwayDir), 0.0), 16.0);
-                
-                specular = lightColor * specAmount * specularMapAmount;
-            }
-                // attenuation, 0.7f (l) 1.2f (q)
-            float attenuation = 1.0 / (1.0 + Position[i].w * distance + LightInfo[i].x * distance * distance);
-            diffuse *= attenuation;
-            specular *= attenuation;
-
-            lighting += (diffuse * AmbientOcclusion + specular);
-        }    
-        
-        out_Color = vec4(lighting, 1.0);
+            float brightness = dot(out_Color.rgb, vec3(0.2126, 0.7152, 0.0722));
+            bright_Color = vec4(out_Color.rgb, albedoSpec.a) * brightness * brightness;
+        } else {
+            out_Color = vec4(calculateLighting(FragPos, Normal, Diffuse, directlightDir, specularMapAmount), 1.0);
+        }
         // apply gamma correction
         //out_Color.rgb = pow(out_Color.rgb, vec3(1.0/gamma));
 
@@ -90,4 +102,5 @@ void main(){
         bright_Color = vec4(0.0, 0.0, 0.0, 1.0);
     }
 
+    gl_FragDepth = depth.x;
 }

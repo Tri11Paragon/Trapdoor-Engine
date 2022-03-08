@@ -85,6 +85,9 @@ public class World {
         //this.physWorld.setMaxSubSteps(0);
         this.physWorld.useDeterministicDispatch(false);
         this.physWorld.useScr(false);
+        // this helps/
+        //this.physWorld.setAccuracy(1f/120f);
+        
         this.physWorld.addCollisionListener((PhysicsCollisionEvent event) -> {
         	Entity e1 = entityPhyiscsMap.get(event.getObjectA());
         	Entity e2 = entityPhyiscsMap.get(event.getObjectB());
@@ -125,7 +128,6 @@ public class World {
 		for (int i = 0; i < ents.size(); i++)
 			ents.get(i).render();
 		
-		this.particleRenderer.render(c);
 		this.skyboxRenderer.render(c);
 		this.deferredRenderer.endFirstPass();
 		
@@ -139,6 +141,11 @@ public class World {
 		}
 		
 		this.deferredRenderer.runSecondPass(this.ssaoRenderer);
+		for (int i = 0; i < particleSystems.size(); i++) {
+			particleSystems.get(i).update();
+		}
+		particleRenderer.update(this, c);
+		this.particleRenderer.render(this, c);
 		
 		if (SettingsLoader.GRAPHICS_LEVEL < 2) {
 			this.bloomRenderer.applyBlur(this.deferredRenderer);
@@ -164,10 +171,6 @@ public class World {
 		for (int i = 0; i < allEnts.size(); i++) {
 			Entity a = allEnts.get(i);
 			a.update();
-		}
-		particleRenderer.update(this, c);
-		for (int i = 0; i < particleSystems.size(); i++) {
-			particleSystems.get(i).update();
 		}
 		
 		// calcualte the phys, stepped relative to the game speed
@@ -269,6 +272,9 @@ public class World {
 	}
 	
 	public int getParticleCount() {
+		return particleRenderer.getStorage().size();
+	}
+	public int getParticleSize() {
 		return particleRenderer.getStorage().size();
 	}
 	

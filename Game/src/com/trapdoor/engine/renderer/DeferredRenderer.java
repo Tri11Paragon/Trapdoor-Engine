@@ -12,6 +12,7 @@ import com.trapdoor.engine.datatypes.lighting.Light;
 import com.trapdoor.engine.display.DisplayManager;
 import com.trapdoor.engine.renderer.ao.SSAORenderer;
 import com.trapdoor.engine.renderer.debug.TextureRenderer;
+import com.trapdoor.engine.tools.SettingsLoader;
 import com.trapdoor.engine.world.World;
 import com.trapdoor.engine.world.entities.Entity;
 
@@ -167,9 +168,10 @@ public class DeferredRenderer implements Runnable {
 		GL33.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		GL33.glClear(GL33.GL_COLOR_BUFFER_BIT | GL33.GL_DEPTH_BUFFER_BIT);
 		
-		GL33.glActiveTexture(GL33.GL_TEXTURE5);
-		GL33.glBindTexture(GL33.GL_TEXTURE_2D_ARRAY, world.getShadowMap().getDepthMapTexture());
-		
+		if (SettingsLoader.GRAPHICS_LEVEL < 2) {
+			GL33.glActiveTexture(GL33.GL_TEXTURE5);
+			GL33.glBindTexture(GL33.GL_TEXTURE_2D_ARRAY, world.getShadowMap().getDepthMapTexture());
+		}
 	}
 	
 	public void enableMainShaders() {
@@ -213,7 +215,15 @@ public class DeferredRenderer implements Runnable {
 		GL33.glBindVertexArray(0);
 	}
 	
+	public void blitDpeth(int drawBuffer) {
+		GL33.glBindFramebuffer(GL33.GL_READ_FRAMEBUFFER, multiGBuffer);
+		GL33.glBindFramebuffer(GL33.GL_DRAW_FRAMEBUFFER, drawBuffer);
+		GL33.glBlitFramebuffer(0, 0, DisplayManager.WIDTH, DisplayManager.HEIGHT, 0, 0, DisplayManager.WIDTH, DisplayManager.HEIGHT, GL33.GL_DEPTH_BUFFER_BIT, GL33.GL_NEAREST);
+	}
+	
 	public void runSecondPass(SSAORenderer renderer) {
+		
+		
 		secondPassShader.start();
 		secondPassShader.loadViewMatrix(camera.getViewMatrix());
 		secondPassShader.loadViewPos(camera.getPosition());
@@ -224,8 +234,13 @@ public class DeferredRenderer implements Runnable {
 		lights.clear();
 		
 		bindBuffersTextures();
-		GL33.glActiveTexture(GL33.GL_TEXTURE4);
-		GL33.glBindTexture(GL33.GL_TEXTURE_2D, renderer.getSSAOBluredTexture());
+		if (SettingsLoader.GRAPHICS_LEVEL < 2) {
+			GL33.glActiveTexture(GL33.GL_TEXTURE4);
+			GL33.glBindTexture(GL33.GL_TEXTURE_2D, renderer.getSSAOBluredTexture());
+		}
+		
+		GL33.glActiveTexture(GL33.GL_TEXTURE5);
+		GL33.glBindTexture(GL33.GL_TEXTURE_2D, this.depthMap);
 		
 		bindAndRenderQuad();
 	    

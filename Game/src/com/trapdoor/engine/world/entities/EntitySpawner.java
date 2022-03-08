@@ -23,7 +23,7 @@ public class EntitySpawner extends Entity {
 	private Transform spawnTransform;
 	private Transform t;
 	private Vector3d center;
-	private EntityCamera camera;
+	private Entity camera;
 	private Random random;
 	
 	private double delta;
@@ -35,7 +35,7 @@ public class EntitySpawner extends Entity {
 	private int spawnAmount;
 	
 	// doesn't matter what you pass as spawn, it currently only spawns EntityKent
-	public EntitySpawner(Entity spawn, EntityCamera camera, long spawnTimeMs, float spawnRadius, int spawnAmount) {
+	public EntitySpawner(Entity spawn, Entity camera, long spawnTimeMs, float spawnRadius, int spawnAmount) {
 		this.spawn = spawn;
 		this.camera = camera;
 		this.spawnTransform = spawn.getComponent(Transform.class);
@@ -47,15 +47,15 @@ public class EntitySpawner extends Entity {
 		this.spawnAmount = spawnAmount;
 	}
 	
-	public EntitySpawner(Entity spawn, EntityCamera camera, long spawnTimeMs, int spawnAmount) {
+	public EntitySpawner(Entity spawn, Entity camera, long spawnTimeMs, int spawnAmount) {
 		this(spawn, camera, spawnTimeMs, 6, spawnAmount);
 	}
 	
-	public EntitySpawner(Entity spawn, EntityCamera camera, long spawnTimeMs) {
+	public EntitySpawner(Entity spawn, Entity camera, long spawnTimeMs) {
 		this(spawn, camera, spawnTimeMs, 6, 3);
 	}
 	
-	public EntitySpawner(Entity spawn, EntityCamera camera) {
+	public EntitySpawner(Entity spawn, Entity camera) {
 		this(spawn, camera, 32000, 6, 3);
 	}
 	

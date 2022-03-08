@@ -52,8 +52,12 @@ public class Particle {
 		return elapsedTime < lifeLength;
 	}
 	
+	protected float getElapsedPercent() {
+		return elapsedTime / lifeLength;
+	}
+	
 	protected void updateTextureBlend() {
-		this.blend = elapsedTime / lifeLength;
+		this.blend = getElapsedPercent();
 	}
 	
 	public Vector3f getPosition() {

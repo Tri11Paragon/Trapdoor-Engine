@@ -54,6 +54,7 @@ public class GameRegistry {
 	 * this is the max number of method callers to be printed during an error
 	 */
 	private static final int MAX_CALLERS_LOG = 5;
+	private static final int PARTICLE_SIZE = 128;
 	//private static final HashMap<String, String> allowedFormats = new HashMap<String, String>();
 	//private static final ArrayList<IDisplay> registeredDisplays = new ArrayList<IDisplay>();
 	
@@ -120,6 +121,8 @@ public class GameRegistry {
 		GameRegistry.materials.put("resources/textures/error/error3.png", errorMaterial);
 		GameRegistry.materials.put("error/error3.png", errorMaterial);
 		
+		particleTextureData.add(TextureLoader.decodeTextureToSize("resources/textures/error/tp.png", false, false, PARTICLE_SIZE, PARTICLE_SIZE));
+		
 		InputMaster.registerKeyListener(new ScreenShot());
 	}
 	
@@ -127,7 +130,7 @@ public class GameRegistry {
 		for (Material m : registeredMaterials) {
 			m.loadTexturesFromGameRegistry();
 		}
-		particleTextueAtlas = TextureLoader.loadSpecialTextureATLAS(particleTextureData, particleTextureDataAtlas);
+		particleTextueAtlas = TextureLoader.loadSpecialTextureATLAS(PARTICLE_SIZE, PARTICLE_SIZE, particleTextureData, particleTextureDataAtlas);
 	}
 	
 	public static Material registerMaterial2(Material m) {
@@ -252,8 +255,6 @@ public class GameRegistry {
 		}));
 	}
 	
-	private static final int PARTICLE_SIZE = 64;
-	
 	public static void registerParticleTexture(String texture) {
 		if (!texture.contains("."))
 			return;
@@ -273,7 +274,7 @@ public class GameRegistry {
 				}
 				GameRegistry.particleLocks.put(texture, 1);
 				
-				String rt = "Loading texture: " + texture;
+				String rt = "Loading particle texture: " + texture;
 				if (LoadingScreenDisplay.info != null)
 					LoadingScreenDisplay.info.getTextState().setText(rt);
 				Logging.logger.debug(rt);
@@ -286,6 +287,7 @@ public class GameRegistry {
 				printFatalMethodCallers(stackTraceElements);
 				System.exit(-1);
 			}
+			LoadingScreenDisplay.progress();
 		});
 	}
 	
@@ -296,37 +298,16 @@ public class GameRegistry {
 	 */
 	public static void registerParticleTexture(String... textures) {
 		for (String texture : textures) {
-			if (!texture.contains("."))
-				return;
-			if (!new File(texture).exists()) {
-				Logging.logger.error("File: " + texture + " does not exist!");
-				return;
-			}
-			LoadingScreenDisplay.max();
-			StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-		
-			Threading.execute(() -> {
-				try {
-					// we already loaded the file
-					if (GameRegistry.particleLocks.get(texture) != null) {
-						LoadingScreenDisplay.progress();
-						return;
-					}
-					GameRegistry.particleLocks.put(texture, 1);
-					
-					String rt = "Loading texture: " + texture;
-					if (LoadingScreenDisplay.info != null)
-						LoadingScreenDisplay.info.getTextState().setText(rt);
-					Logging.logger.debug(rt);
-					
-					particleTextureData.add(TextureLoader.decodeTextureToSize(texture, false, true, PARTICLE_SIZE, PARTICLE_SIZE));
-				} catch (Exception e) {
-					Logging.logger.fatal(e.getMessage(), e);
-					Logging.logger.fatal("Tried to load texture " + texture + ", didn't work!");
-					printFatalMethodCallers(stackTraceElements);
-					System.exit(-1);
-				}
-			});
+			GameRegistry.registerParticleTexture(texture);
+		}
+	}
+	
+	public static void registerParticleTextureFolder(String folder) {
+		File[] files = new File(folder).listFiles();
+		for (File f : files) {
+			if (f.isDirectory())
+				continue;
+			GameRegistry.registerParticleTexture(f.getPath());
 		}
 	}
 	
@@ -406,7 +387,10 @@ public class GameRegistry {
 	}
 	
 	public static int getParticleTexture(String path) {
-		return particleTextureDataAtlas.get(path);
+		Integer i = particleTextureDataAtlas.get(path);
+		if (i == null)
+			return 0;
+		return i;
 	}
 	
 	/**
