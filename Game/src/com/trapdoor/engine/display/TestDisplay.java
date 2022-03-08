@@ -44,6 +44,7 @@ public class TestDisplay extends IDisplay {
 	private World world;
 	private Model cubeModel;
 	private ParticleSystem ps;
+	private ParticleSystem smokey;
 	
 	@RegistrationEventSubscriber
 	public static void register() {
@@ -78,6 +79,7 @@ public class TestDisplay extends IDisplay {
 											 "resources/textures/particles/atlas/atlas_7.png");
 		
 		GameRegistry.registerParticleTextureFolder("resources/textures/particles/fire/");
+		GameRegistry.registerParticleTextureFolder("resources/textures/particles/smoke/");
 		
 	}
 	
@@ -189,8 +191,10 @@ public class TestDisplay extends IDisplay {
 										.setModel(GameRegistry.getModel("resources/models/spawner.dae"))
 										.setPosition(75, -8, -25));
 		
-		ps = new AnimatedParticleSystem("resources/textures/particles/fire/", 100, 20, 15f, 0.5f, 5);
+		ps = new AnimatedParticleSystem("resources/textures/particles/fire/", 100, 20, 0, 0.5f, 5);
 		this.world.addParticleSystemToWorld(ps);
+		smokey = new AnimatedParticleSystem("resources/textures/particles/smoke/", 100, 3, 0, 5, 10);
+		this.world.addParticleSystemToWorld(smokey);
 		
 	}
 
@@ -233,6 +237,7 @@ public class TestDisplay extends IDisplay {
 		}
 		this.cameraEnt.grab(rayCasting.getCurrentRay());
 		this.ps.generateParticles(new Vector3f(0, 0, 0));
+		this.smokey.generateParticles(new Vector3f(50, -8, 10));
 	}
 
 	@Override

@@ -2,6 +2,8 @@
 package com.trapdoor.engine.renderer.particles;
 
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
@@ -18,6 +20,7 @@ public class ParticleRenderer {
 	
 	private static final float[] VERTICES = {-0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, 0.5f, -0.5f};
 	
+	public static final int MAX_PARTICLES = 100000;
 	private static final int DATA_SIZE = 16 + 3;
 	
 	private VAO quad;
@@ -25,15 +28,15 @@ public class ParticleRenderer {
 	private ParticleShader shader;
 	private Matrix4f modelView = new Matrix4f();
 	
-	private ParticleStorage storage;
+	private List<Particle> storage;
 	private FloatBuffer dataStorage;
 	
 	public ParticleRenderer(){
 		shader = new ParticleShader();
-		storage = new ParticleStorage();
-		dataStorage = BufferUtils.createFloatBuffer(DATA_SIZE * storage.MAX_PARTICLES);
+		storage = new ArrayList<Particle>();
+		dataStorage = BufferUtils.createFloatBuffer(DATA_SIZE * MAX_PARTICLES);
 		quad = VAOLoader.loadToVAO(VERTICES, 2);
-		vbo = VAOLoader.createEmptyVBO(DATA_SIZE * 4 * storage.MAX_PARTICLES);
+		vbo = VAOLoader.createEmptyVBO(DATA_SIZE * 4 * MAX_PARTICLES);
 		VAOLoader.addInstancedAttribute(quad.getVaoID(), vbo, 1, 4, DATA_SIZE * 4, 0);
 		VAOLoader.addInstancedAttribute(quad.getVaoID(), vbo, 2, 4, DATA_SIZE * 4, 4 * 4);
 		VAOLoader.addInstancedAttribute(quad.getVaoID(), vbo, 3, 4, DATA_SIZE * 4, 8 * 4);
@@ -42,13 +45,13 @@ public class ParticleRenderer {
 	}
 	
 	public void update(World world, Camera camera) {
-		for (int i = 0; i < storage.getSize(); i++) {
-			Particle p = storage.getParticle(i);
+		for (int i = 0; i < storage.size(); i++) {
+			Particle p = storage.get(i);
 			if (p != null && !p.update(world, camera)) {
 				storage.remove(p);
 			}
 		}
-		storage.insertionSort();
+		sortHighToLow(storage);
 	}
 	
 	public void render(World world, Camera camera){
@@ -137,12 +140,42 @@ public class ParticleRenderer {
 		return modelView.mul(modelMatrix);
 	}
 	
-	public ParticleStorage getStorage() {
+	public List<Particle> getStorage() {
 		return storage;
 	}
 	
 	public void cleanUp(){
 		shader.cleanUp();
 	}
+	
+	/**
+	 * Sorts a list of particles so that the particles with the highest distance
+	 * from the camera are first, and the particles with the shortest distance
+	 * are last.
+	 * 
+	 * @param list
+	 *            - the list of particles needing sorting.
+	 */
+	private static void sortHighToLow(List<Particle> list) {
+		for (int i = 1; i < list.size(); i++) {
+			Particle item = list.get(i);
+			try {
+				if (item.getDistance() > list.get(i - 1).getDistance()) {
+					sortUpHighToLow(list, i);
+				}
+			} catch (NullPointerException e) {}
+		}
+	}
+
+	private static void sortUpHighToLow(List<Particle> list, int i) {
+		Particle item = list.get(i);
+		int attemptPos = i - 1;
+		while (attemptPos != 0 && list.get(attemptPos - 1).getDistance() < item.getDistance()) {
+			attemptPos--;
+		}
+		list.remove(i);
+		list.add(attemptPos, item);
+	}
+
 
 }

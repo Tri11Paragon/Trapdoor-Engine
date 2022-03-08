@@ -272,7 +272,7 @@ public class World {
 	}
 	
 	public int getParticleCount() {
-		return particleRenderer.getStorage().count();
+		return particleRenderer.getStorage().size();
 	}
 	public int getParticleSize() {
 		return particleRenderer.getStorage().size();

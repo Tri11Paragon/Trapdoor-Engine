@@ -19,8 +19,7 @@ void main(void){
 		t2, 
 		textureInfo.z
 	);
-	if (out_Color.a < 0.01f)
-		discard;
+
 
 	bright_Color = vec4(0.0f);
 }
