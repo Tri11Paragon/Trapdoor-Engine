@@ -5,7 +5,7 @@ package com.trapdoor.engine.datatypes;
 *	Feb 10, 2020
 *	Holds two types of data as a single data
 */ 
-public class Tuple<X,Y> {
+public class Tuple<X,Y> extends Object {
 	
 	private X x;
 	private Y y;

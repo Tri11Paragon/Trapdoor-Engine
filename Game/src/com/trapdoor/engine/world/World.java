@@ -85,6 +85,9 @@ public class World {
         //this.physWorld.setMaxSubSteps(0);
         this.physWorld.useDeterministicDispatch(false);
         this.physWorld.useScr(false);
+        // this helps/
+        //this.physWorld.setAccuracy(1f/120f);
+        
         this.physWorld.addCollisionListener((PhysicsCollisionEvent event) -> {
         	Entity e1 = entityPhyiscsMap.get(event.getObjectA());
         	Entity e2 = entityPhyiscsMap.get(event.getObjectB());
@@ -126,11 +129,6 @@ public class World {
 			ents.get(i).render();
 		
 		this.skyboxRenderer.render(c);
-		particleRenderer.update(this, c);
-		for (int i = 0; i < particleSystems.size(); i++) {
-			particleSystems.get(i).update();
-		}
-		this.particleRenderer.render(this, c);
 		this.deferredRenderer.endFirstPass();
 		
 		if (SettingsLoader.GRAPHICS_LEVEL < 2) {
@@ -143,6 +141,11 @@ public class World {
 		}
 		
 		this.deferredRenderer.runSecondPass(this.ssaoRenderer);
+		for (int i = 0; i < particleSystems.size(); i++) {
+			particleSystems.get(i).update();
+		}
+		particleRenderer.update(this, c);
+		this.particleRenderer.render(this, c);
 		
 		if (SettingsLoader.GRAPHICS_LEVEL < 2) {
 			this.bloomRenderer.applyBlur(this.deferredRenderer);
@@ -269,6 +272,9 @@ public class World {
 	}
 	
 	public int getParticleCount() {
+		return particleRenderer.getStorage().count();
+	}
+	public int getParticleSize() {
 		return particleRenderer.getStorage().size();
 	}
 	

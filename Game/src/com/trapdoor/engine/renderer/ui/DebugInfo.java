@@ -81,7 +81,7 @@ public class DebugInfo implements IKeyState {
 					+ Main.mx.getNonHeapMemoryUsage().getCommitted()  / 1024 / 1024
 				+ "mb");
 		
-		particleCount = new Label("Particle Count: " + 0);
+		particleCount = new Label("Particle Count: " + 0 + " : " + 0);
 		
 		
 		
@@ -255,6 +255,8 @@ public class DebugInfo implements IKeyState {
 		builder = new StringBuilder();
 		builder.append("Particle Count: ");
 		builder.append(world.getParticleCount()); 
+		builder.append(" : ");
+		builder.append(world.getParticleSize()); 
 		particleCount.getTextState().setText(builder.toString());
 	}
 	

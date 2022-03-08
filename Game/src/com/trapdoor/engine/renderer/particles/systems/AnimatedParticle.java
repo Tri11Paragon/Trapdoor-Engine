@@ -3,7 +3,6 @@ package com.trapdoor.engine.renderer.particles.systems;
 import org.joml.Vector3f;
 
 import com.trapdoor.engine.camera.Camera;
-import com.trapdoor.engine.display.DisplayManager;
 import com.trapdoor.engine.registry.GameRegistry;
 import com.trapdoor.engine.renderer.particles.Particle;
 import com.trapdoor.engine.world.World;
@@ -25,17 +24,16 @@ public class AnimatedParticle extends Particle {
 	
 	@Override
 	public boolean update(World world, Camera camera) {
-		//current = (textures.length * getElapsedPercent());
-		//int c = (int) Math.min(current, textures.length-1);
-		current += DisplayManager.getFrameTimeSeconds();
+		current = (textures.length * getElapsedPercent());
+		
 		setCurrentTexture(GameRegistry.getParticleTexture(textures[(int) (current % textures.length)]));
-		//setNextTexture(GameRegistry.getParticleTexture(textures[(c < textures.length - 1 ? c + 1 : c) % textures.length]));
+		setNextTexture(GameRegistry.getParticleTexture(textures[(int) ((current < textures.length - 1 ? current + 1 : current) % textures.length)]));
 		return super.update(world, camera);
 	}
 	
 	@Override
 	protected void updateTextureBlend() {
-		this.blend = 0; 
+		this.blend = current % 1; 
 	}
 
 }

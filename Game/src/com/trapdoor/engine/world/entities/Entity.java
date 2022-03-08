@@ -6,7 +6,8 @@ import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
-import com.jme3.bullet.collision.shapes.GImpactCollisionShape;
+import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
+import com.jme3.bullet.collision.shapes.HullCollisionShape;
 import com.jme3.bullet.collision.shapes.MeshCollisionShape;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.math.Vector3f;
@@ -299,19 +300,27 @@ public class Entity implements Comparable<Entity>,Cloneable {
 			return this;
 		// TODO: fix this
 		
-		if (this.isStatic())
-			this.collisionObject.setCollisionShape(new MeshCollisionShape(true, this.model.getMeshColliderData()));
-		else {
+		if (this.isStatic()) {
+			MeshCollisionShape shape = new MeshCollisionShape(true, this.model.getMeshColliderData());
+			shape.setMargin(0.10f);
+			// disabled because this seems to prevent collision of certian objects with static entities
+			shape.setContactFilterEnabled(false);
+			this.collisionObject.setCollisionShape(shape);
+		} else {
 			// TODO: dynamics
-			GImpactCollisionShape gics = new GImpactCollisionShape(this.model.getMeshColliderData());
+			//GImpactCollisionShape gics = new GImpactCollisionShape(this.model.getMeshColliderData());
 			
-			//CompoundCollisionShape ccs = new CompoundCollisionShape(this.model.getMeshes().length);
 			
-			//for (int i = 0; i < this.model.getMeshes().length; i++) {
-			//	ccs.addChildShape(new HullCollisionShape(this.model.getMeshes()[i].getVertices()));
-			//}
+			CompoundCollisionShape ccs = new CompoundCollisionShape(this.model.getMeshes().length);
 			
-			this.collisionObject.setCollisionShape(gics);
+			for (int i = 0; i < this.model.getMeshes().length; i++) {
+				ccs.addChildShape(new HullCollisionShape(this.model.getMeshes()[i].getVertices()));
+			}
+			ccs.setMargin(0.10f);
+			//ccs.setContactFilterEnabled(false);
+			this.collisionObject.setCollisionShape(ccs);
+			
+			//this.collisionObject.setCollisionShape(gics);
 		}
 		return this;
 	}

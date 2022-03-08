@@ -119,18 +119,36 @@ public class ParticleStorage {
 	}
 	
 	/**
-	 * Sorts a list of particles so that the particles with the highest distance
+	 * Sorts the list of particles so that the particles with the highest distance
 	 * from the camera are first, and the particles with the shortest distance
 	 * are last.
 	 * 
-	 * @param list
-	 *            - the list of particles needing sorting.
 	 */
-	public void sortHighToLow() {
+	public void insertionSort() {  
+		removeNulls();
+		
+		// insertion sort
+        int n = size();  
+        for (int j = 1; j < n; j++) {  
+            Particle key = get(j);  
+            int i = j-1;  
+            while ( (i > -1) && ( get(i).getDistance() < key.getDistance() ) ) {  
+                set(i+1, get(i));  
+                i--;  
+            }  
+            set(i+1, key);  
+        }  
+    }  
+	
+	private void removeNulls() {
+		// remove all the null
 		int end = 0;
+		openIndices = new LinkedQueue<Integer>();
+		this.indexes = new HashMap<Particle, Integer>(MAX_PARTICLES);
+		
 		for (int i = 0; i < size(); i++) {
 			if (particles[i] == null) {
-				for (int j = i+1; j < size(); j++) {
+				for (int j = i + 1; j < size(); j++) {
 					if (particles[j] != null) {
 						particles[i] = particles[j];
 						particles[j] = null;
@@ -141,21 +159,13 @@ public class ParticleStorage {
 			if (particles[i] != null) {
 				end = i;
 			}
+			this.indexes.put(particles[i], i);
 		}
 		this.lastIndex = end + 1;
-		openIndices = new LinkedQueue<Integer>();
-		for (int i = 0; i < size(); i++) {
-			Particle item = get(i);
-			for (int j = i; j < size(); j++) {
-				Particle item2 = get(j);
-				if (item2 == null)
-					continue;
-				if (item2.getDistance() > item.getDistance()) {
-					set(i, item2);
-					set(j, item);
-				}
-			}
-		}
+	}
+	
+	public void quickSort() {
+		
 	}
 
 	

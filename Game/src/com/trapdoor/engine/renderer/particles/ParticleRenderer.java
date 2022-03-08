@@ -44,10 +44,11 @@ public class ParticleRenderer {
 	public void update(World world, Camera camera) {
 		for (int i = 0; i < storage.getSize(); i++) {
 			Particle p = storage.getParticle(i);
-			if (p != null && !p.update(world, camera)) 
-				storage.remove(storage.get(i));
+			if (p != null && !p.update(world, camera)) {
+				storage.remove(p);
+			}
 		}
-		storage.sortHighToLow();
+		storage.insertionSort();
 	}
 	
 	public void render(World world, Camera camera){
@@ -65,6 +66,7 @@ public class ParticleRenderer {
 		GL33.glBlendFunc(GL33.GL_SRC_ALPHA, GL33.GL_ONE_MINUS_SRC_ALPHA);
 		GL33.glActiveTexture(GL33.GL_TEXTURE0);
 		GL33.glBindTexture(GL33.GL_TEXTURE_2D_ARRAY, GameRegistry.getParticleTextureAtlas());
+		
 		//GL33.glBlendFunc(GL33.GL_SRC_ALPHA, GL33.GL_ONE);
 		
 		dataStorage.clear();

@@ -10,6 +10,7 @@ uniform sampler2D gNormal;
 uniform sampler2D gAlbedoSpec;
 uniform sampler2D gRenderState;
 uniform sampler2D ssaoColor;
+uniform sampler2D depthTexture;
 
 const int NR_LIGHTS = 32;
 
@@ -77,6 +78,7 @@ void main(){
     vec3 FragPos = texture(gPosition, textureCoords).rgb;
     vec3 Normal = texture(gNormal, textureCoords).rgb;
     vec4 albedoSpec = texture(gAlbedoSpec, textureCoords);
+    vec4 depth = texture(depthTexture, textureCoords);
     vec3 Diffuse = albedoSpec.xyz;
     // TODO: impliment this
     float specularMapAmount = albedoSpec.w;
@@ -100,4 +102,5 @@ void main(){
         bright_Color = vec4(0.0, 0.0, 0.0, 1.0);
     }
 
+    gl_FragDepth = depth.x;
 }

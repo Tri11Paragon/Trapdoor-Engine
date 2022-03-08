@@ -67,7 +67,7 @@ public class ParticleSystem {
 		float scale = generateValue(averageScale, scaleError);
 		float lifeLength = generateValue(averageLifeLength, lifeError);
 		renderer.getStorage().addParticle(
-					createParticle(new Vector3f(center), velocity, lifeLength, lifeLength, generateRotation(), scale)
+					createParticle(new Vector3f(center), velocity, gravityComplient, lifeLength, generateRotation(), scale)
 				);
 	}
 	

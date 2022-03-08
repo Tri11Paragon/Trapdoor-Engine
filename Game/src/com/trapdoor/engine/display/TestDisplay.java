@@ -26,7 +26,6 @@ import com.trapdoor.engine.world.entities.BouncingEntity;
 import com.trapdoor.engine.world.entities.Entity;
 import com.trapdoor.engine.world.entities.EntityCamera;
 import com.trapdoor.engine.world.entities.EntitySpawner;
-import com.trapdoor.engine.world.entities.components.Transform;
 import com.trapdoor.engine.world.sound.SoundSystem;
 import com.trapdoor.engine.world.sound.SoundSystemType;
 
@@ -190,7 +189,7 @@ public class TestDisplay extends IDisplay {
 										.setModel(GameRegistry.getModel("resources/models/spawner.dae"))
 										.setPosition(75, -8, -25));
 		
-		ps = new AnimatedParticleSystem("resources/textures/particles/fire/", 100, 20, 0.2f, 2, 5);
+		ps = new AnimatedParticleSystem("resources/textures/particles/fire/", 100, 20, 15f, 0.5f, 5);
 		this.world.addParticleSystemToWorld(ps);
 		
 	}
