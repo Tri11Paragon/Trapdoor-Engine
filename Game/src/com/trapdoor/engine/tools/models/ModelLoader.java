@@ -1,9 +1,6 @@
 package com.trapdoor.engine.tools.models;
 
-import static org.lwjgl.system.MemoryUtil.memFree;
-
 import java.io.File;
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -21,8 +18,6 @@ import org.lwjgl.assimp.AIVector3D;
 import org.lwjgl.assimp.Assimp;
 import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.util.meshoptimizer.MeshOptimizer;
-import org.lwjgl.util.meshoptimizer.MeshoptStream;
-
 import com.jme3.bullet.collision.shapes.infos.IndexedMesh;
 import com.trapdoor.engine.datatypes.IndexingFloatArrayList;
 import com.trapdoor.engine.datatypes.IndexingIntArrayList;
@@ -140,7 +135,7 @@ public class ModelLoader {
 				displacementTexturePath = findDisplacementMap(texturePath);
 			
 			AIString AOPath = AIString.calloc();
-			Assimp.aiGetMaterialTexture(material, Assimp.aiTextureType_DISPLACEMENT, 0, AOPath, (IntBuffer) null, null, null, null, null, null);
+			Assimp.aiGetMaterialTexture(material, Assimp.aiTextureType_AMBIENT_OCCLUSION, 0, AOPath, (IntBuffer) null, null, null, null, null, null);
 			String AOTexture = AOPath.dataString();
 			String AOTexturePath = (texturesDir + "/" + AOTexture).replace("//", "/");
 			
@@ -151,7 +146,7 @@ public class ModelLoader {
 				AOTexturePath = findAOMap(texturePath);
 			
 			AIString SpecPath = AIString.calloc();
-			Assimp.aiGetMaterialTexture(material, Assimp.aiTextureType_DISPLACEMENT, 0, SpecPath, (IntBuffer) null, null, null, null, null, null);
+			Assimp.aiGetMaterialTexture(material, Assimp.aiTextureType_SPECULAR, 0, SpecPath, (IntBuffer) null, null, null, null, null, null);
 			String SpecTexture = SpecPath.dataString();
 			String SpecTexturePath = (texturesDir + "/" + SpecTexture).replace("//", "/");
 			
@@ -161,8 +156,19 @@ public class ModelLoader {
 			} else
 				SpecTexturePath = findSpecMap(texturePath);
 			
+			AIString bumpPath = AIString.calloc();
+			Assimp.aiGetMaterialTexture(material, Assimp.aiTextureType_DIFFUSE_ROUGHNESS, 0, bumpPath, (IntBuffer) null, null, null, null, null, null);
+			String bumpTexture = bumpPath.dataString();
+			String bumbTexturePath = (texturesDir + "/" + bumpTexture).replace("//", "/");
+			
+			if (bumpTexture != null && bumpTexture.length() > 0) {
+				GameRegistry.registerTexture(bumbTexturePath);
+				Logging.logger.error(bumbTexturePath);
+			} else
+				bumbTexturePath = findSpecMap(texturePath);
+			
 			if (normalTexturePath == GameRegistry.DEFAULT_EMPTY_NORMAL_MAP && displacementTexturePath == GameRegistry.DEFAULT_EMPTY_DISPLACEMENT_MAP &&
-					AOTexturePath == GameRegistry.DEFAULT_EMPTY_AO_MAP && SpecTexturePath == GameRegistry.DEFAULT_EMPTY_SPEC_MAP)
+					AOTexturePath == GameRegistry.DEFAULT_EMPTY_AO_MAP && SpecTexturePath == GameRegistry.DEFAULT_EMPTY_SPEC_MAP && bumbTexturePath == GameRegistry.DEFAULT_EMPTY_SPEC_MAP)
 				Logging.logger.warn("Failed to load extra texture maps after checking possible resource locations! :(");
 			
 			return GameRegistry.registerMaterial2(
@@ -171,7 +177,7 @@ public class ModelLoader {
 							normalTexturePath, 
 							displacementTexturePath, 
 							AOTexturePath, 
-							SpecTexturePath, 
+							bumbTexturePath, 
 							new Vector3f(average(diffuse), average(specular), average(ambient))
 						)
 					);

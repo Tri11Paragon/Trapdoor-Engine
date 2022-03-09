@@ -64,7 +64,6 @@ public class EntityKent extends Entity {
 		// TODO Auto-generated method stub
 		super.onAddedToWorld();
 		this.getRigidbody().setGravity(new Vector3f(0, 0, 0)); // Sets gravity to 0
-		this.getRigidbody().setCollisionShape(new BoxCollisionShape(1.0f));
 //		this.getRigidbody().setLinearVelocity(new Vector3f(0, 1000, 0)); // Sets velocity at start
 	}
 	

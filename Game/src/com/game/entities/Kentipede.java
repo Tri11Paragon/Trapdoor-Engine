@@ -22,6 +22,7 @@ public class Kentipede {
 		
 		for (float i = 0; i < length*Math.PI; i+=Math.PI/density) {
 			a = new EntityKent(i + 1, type, camera).setBasePosition(baseX, baseY, baseZ).setModel(m);
+			a.generateApproximateCollider();
 			w.addEntityToWorld(a);
 		}
 		

@@ -60,6 +60,8 @@ public class TestDisplay extends IDisplay {
 		GameRegistry.registerModel("resources/models/zucc.dae");
 		GameRegistry.registerModel("resources/models/playerblend.dae");
 		GameRegistry.registerModel("resources/models/spawner.dae");
+		GameRegistry.registerModel("resources/models/megacube.dae");
+		GameRegistry.registerModel("resources/models/megacube.fbx");
 		
 		GameRegistry.registerModel("resources/models/poop.dae");
 		GameRegistry.registerModel("resources/models/Mackenzie_Hallway_brt.dae");
@@ -134,10 +136,10 @@ public class TestDisplay extends IDisplay {
 		
 		this.cubeModel = GameRegistry.getModel("resources/models/depression.dae");
 		this.world.addEntityToWorld(new Entity().setModel(GameRegistry.getModel("resources/models/test object.dae")).setPosition(0, -15.0f, 0));
-		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(25, 0, 0));
-		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(-25, 0, 0));
-		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(0, 0, 25));
-		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(0, 0, -25));
+		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(25, 0, 0).generateApproximateCollider());
+		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(-25, 0, 0).generateApproximateCollider());
+		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(0, 0, 25).generateApproximateCollider());
+		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(0, 0, -25).generateApproximateCollider());
 		BouncingEntity rixie = new BouncingEntity(120);
 		rixie.setModel(cubeModel);
 		rixie.setPosition(-60, 5, 0);
@@ -146,7 +148,7 @@ public class TestDisplay extends IDisplay {
 		this.world.addEntityToWorld(new EntityKent()
 											.setModel(GameRegistry.getModel("resources/models/kent.dae"))
 											.setPosition(25, -15, -40)
-											.addLight(new Light(Light.lightings[5], 0, 1, 0)));
+											.addLight(new Light(Light.lightings[5], 0, 1, 0)).generateApproximateCollider());
 		this.world.addEntityToWorld(new EntityKent().setModel(GameRegistry.getModel("resources/models/zucc.dae")).setPosition(30, -15, -45));
 		this.world.addEntityToWorld(
 				new Entity()
@@ -156,7 +158,7 @@ public class TestDisplay extends IDisplay {
 							new Light(Light.lightings[6], 2.5f, 2.5f, 1.5f, -5, -5, -5)
 							 )
 					);
-		this.world.addEntityToWorld(new EntityKent().setModel(GameRegistry.getModel("resources/models/kent.dae")).setPosition(00, 10, -50));
+		this.world.addEntityToWorld(new EntityKent().setModel(GameRegistry.getModel("resources/models/kent.dae")).setPosition(00, 10, -50).generateApproximateCollider());
 		// add entity
 		this.world.addEntityToWorld(
 				new Entity()

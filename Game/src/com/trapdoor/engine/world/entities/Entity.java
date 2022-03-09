@@ -2,6 +2,8 @@ package com.trapdoor.engine.world.entities;
 
 import java.util.ArrayList;
 
+import org.joml.Vector3d;
+
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
@@ -11,7 +13,9 @@ import com.jme3.bullet.collision.shapes.HullCollisionShape;
 import com.jme3.bullet.collision.shapes.MeshCollisionShape;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.math.Vector3f;
+import com.trapdoor.engine.datatypes.collision.AxisAlignedBoundingBox;
 import com.trapdoor.engine.datatypes.lighting.Light;
+import com.trapdoor.engine.datatypes.ogl.assimp.Mesh;
 import com.trapdoor.engine.datatypes.ogl.assimp.Model;
 import com.trapdoor.engine.tools.Logging;
 import com.trapdoor.engine.world.World;
@@ -290,6 +294,7 @@ public class Entity implements Comparable<Entity>,Cloneable {
 			return updateCollisionStateFromModel();
 		}
 	}
+	
 	/**
 	 * updates the entity rigid body with mesh collider from the assigned model
 	 * @return
@@ -299,7 +304,6 @@ public class Entity implements Comparable<Entity>,Cloneable {
 			throw new RuntimeException("Model cannot be null while trying to generate ridigid body from model!");
 		if (usingAssignedCollisonState)
 			return this;
-		// TODO: fix this
 		
 		if (this.isStatic()) {
 			MeshCollisionShape shape = new MeshCollisionShape(true, this.model.getMeshColliderData());
@@ -308,7 +312,6 @@ public class Entity implements Comparable<Entity>,Cloneable {
 			shape.setContactFilterEnabled(false);
 			this.collisionObject.setCollisionShape(shape);
 		} else {
-			// TODO: dynamics
 			//GImpactCollisionShape gics = new GImpactCollisionShape(this.model.getMeshColliderData());
 			
 			
@@ -323,6 +326,32 @@ public class Entity implements Comparable<Entity>,Cloneable {
 			
 			//this.collisionObject.setCollisionShape(gics);
 		}
+		return this;
+	}
+	
+	/**
+	 * sets the entity collider to a general box collider which attempts to fit the mesh data
+	 * this is much more efficient then using a mesh collider (which is default)
+	 */
+	public Entity generateApproximateCollider() {
+		if (this.model == null)
+			throw new RuntimeException("Model cannot be null while trying to generate ridigid body from model!");
+		if (usingAssignedCollisonState)
+			return this;
+		
+		CompoundCollisionShape shaper = new CompoundCollisionShape();
+		
+		Mesh[] m = this.model.getMeshes();
+		
+		for (Mesh mesh : m) {
+			AxisAlignedBoundingBox aabb = mesh.getBoundingBox();
+			Vector3d ad = aabb.getCenterSafe();
+			shaper.addChildShape(new BoxCollisionShape((float)aabb.getXHalfExtends(), (float)aabb.getYHalfExtends(), (float)aabb.getZHalfExtends()), 
+									(float)ad.x, (float)ad.y, (float)ad.z);
+		}
+		
+		this.collisionObject.setCollisionShape(shaper);
+		
 		return this;
 	}
 	
