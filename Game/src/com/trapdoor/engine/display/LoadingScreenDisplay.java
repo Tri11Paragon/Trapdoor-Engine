@@ -151,7 +151,7 @@ public class LoadingScreenDisplay extends IDisplay {
 			trapdoor.setPosition(DisplayManager.WIDTH/ 2 - event.getNewSize().x()/2, DisplayManager.HEIGHT/ 2 - event.getNewSize().y()/2);
 		});
 		trapdoor.getStyle().getBackground().setIcon(trap);
-		layer.add(trapdoor);
+		//layer.add(trapdoor);
 		
 		info = new Label();
 		info.getStyle().setDisplay(DisplayType.NONE);

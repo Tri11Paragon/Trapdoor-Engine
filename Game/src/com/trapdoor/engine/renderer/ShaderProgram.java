@@ -3,6 +3,8 @@ package com.trapdoor.engine.renderer;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3d;
@@ -190,6 +192,7 @@ public abstract class ShaderProgram {
 	 * @return the id of the shader
 	 */
 	private static int loadShader(String file, int type) {
+		ArrayList<String> lines = new ArrayList<String>();
 		StringBuilder shaderSource = new StringBuilder();
 		/**
 		 * reads all the lines in a shader file
@@ -198,13 +201,42 @@ public abstract class ShaderProgram {
 			BufferedReader reader = new BufferedReader(new FileReader("resources/shaders/" + file));
 			String line;
 			while ((line = reader.readLine()) != null) {
-				shaderSource.append(line).append("//\n");
+				lines.add(line);
 			}
 			reader.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(-1);
 		}
+		
+		ArrayList<String> newLines = new ArrayList<String>();
+		
+		// preprocess stage
+		for (int i = 0; i < lines.size(); i++) {
+			String line = lines.get(i);
+			String[] vars = line.split("\\$");
+			if (vars.length > 1) {
+				try {
+					String variable = vars[1].toLowerCase();
+					Object o = ShaderLookup.get(variable);
+					if (o != null) {
+						newLines.add(1, "#define " + variable + " " + o);
+					}
+					String newLine = vars[0] + variable;
+					for (int j = 2; j < vars.length; j++) {
+						newLine += vars[j];
+					}
+					line = newLine;
+				} catch (Exception e) {}
+			}
+			newLines.add(line);
+		}
+
+		// combine stage
+		for (int i = 0; i < newLines.size(); i++) {
+			shaderSource.append(newLines.get(i)).append("//\n");
+		}
+		
 		// creates a shader
 		int shaderID = GL20.glCreateShader(type);
 		// puts the loaded shader code into the graphics card

@@ -132,7 +132,6 @@ public class World {
 		for (int i = 0; i < ents.size(); i++)
 			ents.get(i).render();
 		
-		this.skyboxRenderer.render(c);
 		this.deferredRenderer.endFirstPass();
 		
 		if (SettingsLoader.GRAPHICS_LEVEL < 2) {
@@ -150,6 +149,7 @@ public class World {
 		}
 		particleRenderer.update(this, c);
 		this.particleRenderer.render(this, c);
+		this.skyboxRenderer.render(c);
 		
 		if (SettingsLoader.GRAPHICS_LEVEL < 2) {
 			this.bloomRenderer.applyBlur(this.deferredRenderer);
