@@ -221,8 +221,8 @@ public class DisplayManager {
 		glfwDefaultWindowHints(); 
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); 
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 		
 		
 		window = glfwCreateWindow(WIDTH, HEIGHT, title, NULL, NULL);

@@ -249,6 +249,7 @@ public abstract class ShaderProgram {
 			System.err.println("Could not compile shader! (Shader type: " 
 								+ (type == GL20.GL_VERTEX_SHADER ? "vertex" : type == GL33.GL_GEOMETRY_SHADER ? "geometry" : "fragment")
 								+ ")");
+			System.err.println("Shader File: " + file);
 			System.exit(-1);
 		}
 		return shaderID;
