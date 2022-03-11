@@ -2,6 +2,8 @@ package com.trapdoor.engine.datatypes;
 
 import java.nio.IntBuffer;
 import java.util.Iterator;
+
+import org.lwjgl.BufferUtils;
 import org.lwjgl.system.MemoryUtil;
 
 /**
@@ -39,7 +41,7 @@ public class IndexingIntArrayList implements Iterable<Integer> {
 			return;
 		
 		int[] newArr = new int[size()];
-		IntBuffer allocInt = MemoryUtil.memAllocInt(size());
+		IntBuffer allocInt = BufferUtils.createIntBuffer(size());
 		for (int i = 0; i < size(); i++) {
 			newArr[i] = get(i);
 			allocInt.put(get(i));

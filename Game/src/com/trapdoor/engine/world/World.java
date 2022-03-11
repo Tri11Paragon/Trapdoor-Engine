@@ -144,12 +144,12 @@ public class World {
 		}
 		
 		this.deferredRenderer.runSecondPass(this.ssaoRenderer);
+		this.skyboxRenderer.render(c);
 		for (int i = 0; i < particleSystems.size(); i++) {
 			particleSystems.get(i).update();
 		}
 		particleRenderer.update(this, c);
 		this.particleRenderer.render(this, c);
-		this.skyboxRenderer.render(c);
 		
 		if (SettingsLoader.GRAPHICS_LEVEL < 2) {
 			this.bloomRenderer.applyBlur(this.deferredRenderer);
@@ -297,9 +297,11 @@ public class World {
 	public void cleanup() {
 		Logging.logger.debug("Destorying world!");
 		this.deferredRenderer.cleanup();
-		this.shadowRenderer.cleanup();
-		this.ssaoRenderer.cleanup();
-		this.bloomRenderer.cleanup();
+		if (SettingsLoader.GRAPHICS_LEVEL < 2) {
+			this.shadowRenderer.cleanup();
+			this.ssaoRenderer.cleanup();
+			this.bloomRenderer.cleanup();
+		}
 		this.particleRenderer.cleanUp();
 	}
 	

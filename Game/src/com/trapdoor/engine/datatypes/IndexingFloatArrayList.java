@@ -2,7 +2,8 @@ package com.trapdoor.engine.datatypes;
 
 import java.nio.FloatBuffer;
 import java.util.Iterator;
-import org.lwjgl.system.MemoryUtil;
+
+import org.lwjgl.BufferUtils;
 
 /**
  * @author laptop
@@ -39,7 +40,7 @@ public class IndexingFloatArrayList implements Iterable<Float> {
 			return;
 		
 		float[] newArr = new float[size()];
-		FloatBuffer allocByte = MemoryUtil.memAllocFloat(size());
+		FloatBuffer allocByte = BufferUtils.createFloatBuffer(size());
 		for (int i = 0; i < size(); i++) {
 			newArr[i] = get(i);
 			allocByte.put(get(i));
