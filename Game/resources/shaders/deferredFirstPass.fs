@@ -4,7 +4,6 @@ in vec2 textureCoords;
 
 in vec3 normalo;
 in vec3 fragpos;
-in vec3 fragPosWorldSpace;
 in vec4 shadowCoords;
 in mat3 tbnMat;
 
@@ -51,7 +50,7 @@ float shadowCalc(vec3 normal){
         layer = cascadeCount;
     }
 
-    vec4 fragPosLightSpace = lightSpaceMatrices[layer] * vec4(fragPosWorldSpace, 1.0);
+    vec4 fragPosLightSpace = lightSpaceMatrices[layer] * vec4(fragpos, 1.0);
     // perform perspective divide
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
     // transform to [0,1] range
@@ -89,12 +88,12 @@ float shadowCalc(vec3 normal){
 
 void main(){
 	
-    vec3 normaltbn = normalize(texture(normalMap, textureCoords).rgb * 2.0f - vec3(1.0f));
+    vec3 normaltbn = normalize(texture(normalMap, textureCoords).rgb);
     vec3 normali = normalize(tbnMat * normaltbn);
 
     // tbnMat * normaltbn
 
-	float shadower = shadowCalc(normalo);
+	float shadower = shadowCalc(normali);
 	float lightFactor = 1.0 - (0.6 * shadower);
 
     vec3 viewDir  = normalize(viewPos - fragpos);

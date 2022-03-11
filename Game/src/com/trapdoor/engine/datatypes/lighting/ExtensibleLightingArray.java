@@ -3,7 +3,6 @@ package com.trapdoor.engine.datatypes.lighting;
 import java.util.ArrayList;
 
 import org.joml.Matrix4f;
-import org.joml.Vector4f;
 
 import com.trapdoor.engine.UBOLoader;
 import com.trapdoor.engine.datatypes.Tuple;

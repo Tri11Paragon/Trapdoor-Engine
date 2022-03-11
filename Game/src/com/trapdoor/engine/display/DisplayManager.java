@@ -87,11 +87,11 @@ public class DisplayManager {
 	public static final String title = gameName + " - V" + gameVersion + " // " + engineName + " V" + engineVersion;
 	
 	// TODO: make this per display
-	public static Vector3f lightDirection = new Vector3f(150, 300, 50).normalize();
-	public static Vector3f lightColor = new Vector3f(1.0f);
-	public static boolean enableShadows = true;
-	//public static Vector3f lightDirection = new Vector3f(0, 0, 0).normalize();
-	//public static Vector3f lightColor = new Vector3f(0.0f);
+	//public static Vector3f lightDirection = new Vector3f(150, 300, 50).normalize();
+	//public static Vector3f lightColor = new Vector3f(1.0f);
+	public static boolean enableShadows = false;
+	public static Vector3f lightDirection = new Vector3f(0, 0, 0).normalize();
+	public static Vector3f lightColor = new Vector3f(0.0f);
 	
 	// window
 	public static long window;

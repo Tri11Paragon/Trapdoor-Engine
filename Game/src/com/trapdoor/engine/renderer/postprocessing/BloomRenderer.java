@@ -139,7 +139,7 @@ public class BloomRenderer implements Runnable {
 			exposure = Maths.lerp(exposure, 0.5f / lum * exposureMultiplier, adjSpeed);
 			exposure = Maths.clamp(exposure, exposureRangeMin, exposureRangeMax);
 			
-			combineShader.loadExposure(1.0f);
+			combineShader.loadExposure(exposure);
 		}
 		GL33.glActiveTexture(GL33.GL_TEXTURE1);
 		GL33.glBindTexture(GL33.GL_TEXTURE_2D, blur2Texture);
