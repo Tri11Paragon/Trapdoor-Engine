@@ -91,12 +91,16 @@ public class World {
         this.physWorld.addCollisionListener((PhysicsCollisionEvent event) -> {
         	Entity e1 = entityPhyiscsMap.get(event.getObjectA());
         	Entity e2 = entityPhyiscsMap.get(event.getObjectB());
+        	if (e1 == null || e2 == null)
+        		return;
         	e1.onCollision(e2, event);
         	e2.onCollision(e1, event);
         });
         this.physWorld.addOngoingCollisionListener((PhysicsCollisionEvent event) -> {
         	Entity e1 = entityPhyiscsMap.get(event.getObjectA());
         	Entity e2 = entityPhyiscsMap.get(event.getObjectB());
+        	if (e1 == null || e2 == null)
+        		return;
         	e1.onOngoingCollision(e2, event);
         	e2.onOngoingCollision(e1, event);
         });
@@ -128,7 +132,6 @@ public class World {
 		for (int i = 0; i < ents.size(); i++)
 			ents.get(i).render();
 		
-		this.skyboxRenderer.render(c);
 		this.deferredRenderer.endFirstPass();
 		
 		if (SettingsLoader.GRAPHICS_LEVEL < 2) {
@@ -141,6 +144,7 @@ public class World {
 		}
 		
 		this.deferredRenderer.runSecondPass(this.ssaoRenderer);
+		this.skyboxRenderer.render(c);
 		for (int i = 0; i < particleSystems.size(); i++) {
 			particleSystems.get(i).update();
 		}
@@ -293,9 +297,11 @@ public class World {
 	public void cleanup() {
 		Logging.logger.debug("Destorying world!");
 		this.deferredRenderer.cleanup();
-		this.shadowRenderer.cleanup();
-		this.ssaoRenderer.cleanup();
-		this.bloomRenderer.cleanup();
+		if (SettingsLoader.GRAPHICS_LEVEL < 2) {
+			this.shadowRenderer.cleanup();
+			this.ssaoRenderer.cleanup();
+			this.bloomRenderer.cleanup();
+		}
 		this.particleRenderer.cleanUp();
 	}
 	

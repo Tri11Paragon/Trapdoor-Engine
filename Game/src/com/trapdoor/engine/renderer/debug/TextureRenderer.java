@@ -14,7 +14,7 @@ public class TextureRenderer {
 	
 	public static void init() {
 		float[] positions = {0, 1, 0, 0, 1, 1, 1, 0};
-		quad = VAOLoader.loadToVAO(positions, 2);
+		quad = VAOLoader.loadToVAO(positions, 2, 1);
 		shader = new TextureShader();
 		arrayShader = new TextureArrayShader();
 	}

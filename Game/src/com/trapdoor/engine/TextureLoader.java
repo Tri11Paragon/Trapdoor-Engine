@@ -31,7 +31,7 @@ import com.trapdoor.engine.tools.SettingsLoader;
 public class TextureLoader {
 	
 	public static float TEXTURE_LOD = -0.2f;
-	public static final int MINMAG_FILTER = GL11.GL_NEAREST_MIPMAP_LINEAR;
+	public static final int MINMAG_FILTER = GL11.GL_NEAREST;
 	public static int TEXTURE_SCALE = 1;
 	
 	public static Texture nullTexture = new Texture(0, 32, 32, 4);

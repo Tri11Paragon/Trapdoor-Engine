@@ -52,6 +52,7 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL33;
 import org.lwjgl.system.MemoryStack;
 
 import com.spinyowl.legui.system.context.CallbackKeeper;
@@ -63,6 +64,7 @@ import com.trapdoor.engine.VAOLoader;
 import com.trapdoor.engine.registry.GameRegistry;
 import com.trapdoor.engine.registry.Threading;
 import com.trapdoor.engine.registry.annotations.AnnotationHandler;
+import com.trapdoor.engine.renderer.ShaderLookup;
 import com.trapdoor.engine.renderer.SyncSave;
 import com.trapdoor.engine.renderer.debug.TextureRenderer;
 import com.trapdoor.engine.renderer.ui.CommandBox;
@@ -219,8 +221,8 @@ public class DisplayManager {
 		glfwDefaultWindowHints(); 
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); 
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 		
 		
 		window = glfwCreateWindow(WIDTH, HEIGHT, title, NULL, NULL);
@@ -256,6 +258,12 @@ public class DisplayManager {
 		
 		GLIcon gli = new GLIcon("resources/textures/icon/icontrap16.png", "resources/textures/icon/icontrap32.png");
 		glfwSetWindowIcon(window, gli.getBuffer());
+		
+		String vendor = GL33.glGetString(GL33.GL_VENDOR).toLowerCase();
+		
+		Logging.logger.info("GPU Vendor is: " + vendor);
+		
+		ShaderLookup.put(vendor, 1);
 		
 		UBOLoader.createMatrixUBO();
 		

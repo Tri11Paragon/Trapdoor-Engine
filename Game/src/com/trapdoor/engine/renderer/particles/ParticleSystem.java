@@ -21,6 +21,7 @@ public class ParticleSystem {
 	protected float x,y,z;
 	
 	protected float pps, averageSpeed, gravityComplient, averageLifeLength, averageScale;
+	protected float ppsOld, averageSpeedOld, gravityComplientOld, averageLifeLengthOld, averageScaleOld;
 
 	protected float speedError, lifeError, scaleError = 0;
 	protected boolean randomRotation = false;
@@ -33,11 +34,11 @@ public class ParticleSystem {
 	protected World world;
 
 	public ParticleSystem(float pps, float speed, float gravityComplient, float lifeLength, float scale) {
-		this.pps = pps;
-		this.averageSpeed = speed;
-		this.gravityComplient = gravityComplient;
-		this.averageLifeLength = lifeLength;
-		this.averageScale = scale;
+		this.pps = this.ppsOld = pps;
+		this.averageSpeed = this.averageSpeedOld = speed;
+		this.gravityComplient = this.gravityComplientOld = gravityComplient;
+		this.averageLifeLength = this.averageLifeLengthOld = lifeLength;
+		this.averageScale = this.averageScaleOld = scale;
 	}
 	
 	public void update() {
@@ -128,6 +129,28 @@ public class ParticleSystem {
 		return new Vector3f(x, y, z);
 	}
 	
+	public void saveState(float pps, float speed, float gravityComplient, float lifeLength, float scale) {
+		this.ppsOld = this.pps;
+		this.averageSpeedOld = this.averageSpeed;
+		this.gravityComplientOld = this.gravityComplient;
+		this.averageLifeLengthOld = this.averageLifeLength;
+		this.averageScaleOld = this.averageScale;
+		
+		this.pps = pps;
+		this.averageSpeed = speed;
+		this.gravityComplient = gravityComplient;
+		this.averageLifeLength = lifeLength;
+		this.averageScale = scale;
+	}
+	
+	public void restoreState() {
+		this.pps = this.ppsOld;
+		this.averageSpeed = this.averageSpeedOld;
+		this.gravityComplient = this.gravityComplientOld;
+		this.averageLifeLength = this.averageLifeLengthOld;
+		this.averageScale = this.averageScaleOld;
+	}
+	
 	/**
 	 * @param direction - The average direction in which particles are emitted.
 	 * @param deviation - A value between 0 and 1 indicating how far from the chosen direction particles can deviate.
@@ -209,6 +232,26 @@ public class ParticleSystem {
 	public ParticleSystem setZ(float z) {
 		this.z = z;
 		return this;
+	}
+
+	public float getPps() {
+		return pps;
+	}
+
+	public float getAverageSpeed() {
+		return averageSpeed;
+	}
+
+	public float getAverageLifeLength() {
+		return averageLifeLength;
+	}
+
+	public float getAverageScale() {
+		return averageScale;
+	}
+
+	public float getGravityComplient() {
+		return gravityComplient;
 	}
 	
 }

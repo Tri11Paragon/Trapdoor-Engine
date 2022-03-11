@@ -112,9 +112,6 @@ public class Main {
 		SettingsLoader.loadSettings();
 		Threading.init(processors-1);
 
-		// create the display
-		DisplayManager.createDisplay(false);
-		
 		/**
 		 * Display important info about OS (After game info is displayed)
 		 */
@@ -124,6 +121,9 @@ public class Main {
 				"Number of cores: " + processors,
 				"Current Thread: " + Thread.currentThread() + "\n"
 				);
+		
+		// create the display
+		DisplayManager.createDisplay(false);
 		
 		IDisplay dis = new LoadingScreenDisplay();
 		DisplayManager.createDisplay(dis);

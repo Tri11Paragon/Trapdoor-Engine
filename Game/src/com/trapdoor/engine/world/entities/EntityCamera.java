@@ -173,6 +173,7 @@ public class EntityCamera extends Entity {
 		bullet.setPosition(this.localTransform.getX() + ray.x * offset, this.localTransform.getY() + ray.y * offset, this.localTransform.getZ() + ray.z * offset);
 		bullet.applyCentralImpulse(ray.x * force, ray.y * force, ray.z * force);
 		bullet.getRigidbody().setFriction(5f);
+		bullet.generateApproximateCollider();
 		this.world.addEntityToWorld(bullet);
 	}
 	

@@ -11,6 +11,7 @@ import java.util.HashMap;
 
 import org.lwjgl.glfw.GLFW;
 
+import com.trapdoor.Main;
 import com.trapdoor.engine.ProjectionMatrix;
 import com.trapdoor.engine.TextureLoader;
 import com.trapdoor.engine.display.DisplayManager;
@@ -26,7 +27,7 @@ import com.trapdoor.engine.renderer.shadows.ShadowMap;
 
 public class SettingsLoader {
 
-	private static final String SETTINGS_LOCATION = "settings.txt";
+	private static String SETTINGS_LOCATION = "settings.txt";
 	private static final HashMap<Integer, String> comments = new HashMap<Integer, String>();
 	
 	/*
@@ -46,10 +47,18 @@ public class SettingsLoader {
 	
 	private static int readLines = 1;
 	public static void loadSettings() {
+		String set = SETTINGS_LOCATION;
+		if (Main.os.toLowerCase().contains("linux")) {
+			SETTINGS_LOCATION = Main.user_home + "/.local/share/Trapdoor/" + set;
+			new File(Main.user_home + "/.local/share/Trapdoor/").mkdirs();
+		} else {
+			SETTINGS_LOCATION = Main.user_home + "/Documents/Trapdoor/" + set;
+			new File(Main.user_home + "/Documents/Trapdoor/").mkdirs();
+		}
+		
 		Logging.logger.debug("Loading settings!");
 		try {
 			// load the settings file
-			new File(SETTINGS_LOCATION).createNewFile();
 			BufferedReader reader = new BufferedReader(new FileReader(SETTINGS_LOCATION));
 			String line;
 			while((line = reader.readLine()) != null) {

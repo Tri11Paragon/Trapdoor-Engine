@@ -166,6 +166,22 @@ public class AxisAlignedBoundingBox implements ICollider {
     	return centered;
     }
     
+    public double getXHalfExtends() {
+    	double min = Math.abs(Math.abs(this.minX) - centered.x);
+    	double max = Math.abs(Math.abs(this.maxX) - centered.x);
+    	return min > max ? min : max;
+    }
+    public double getYHalfExtends() {
+    	double min = Math.abs(Math.abs(this.minY) - centered.y);
+    	double max = Math.abs(Math.abs(this.maxY) - centered.y);
+    	return min > max ? min : max;
+    }
+    public double getZHalfExtends() {
+    	double min = Math.abs(Math.abs(this.minZ) - centered.z);
+    	double max = Math.abs(Math.abs(this.maxZ) - centered.z);
+    	return min > max ? min : max;
+    }
+    
     public void scale(float x, float y, float z) {
     	this.maxX *= x;
     	this.minX *= x;

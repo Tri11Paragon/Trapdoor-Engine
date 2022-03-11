@@ -29,7 +29,6 @@ import com.trapdoor.engine.tools.Logging;
  * 	<li>Normal Texture</li>
  *  <li>Specular Map (planned)</li>
  *  <li>Bump Map (planned)</li>
- *  <li>Ambient Occlusion Map (planned)</li>
  *  <li>Base Specular value</li>
  *  <li>Base Diffuse value</li>
  *  <li>Base Ambient value (lighting)</li>

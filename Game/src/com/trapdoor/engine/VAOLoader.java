@@ -82,9 +82,11 @@ public class VAOLoader {
 		return new VAO(vao, vbos, indicies.length);
 	}
 	
-	public static VAO loadToVAO(float[] positions, int dimensions) {
+	public static VAO loadToVAO(float[] positions, int dimensions, int numOfVaosUsed) {
 		// create the VAO
 		int vaoID = createVAO();
+		for (int i = 0; i < numOfVaosUsed; i++)
+			GL33.glEnableVertexAttribArray(i);
 		int[] vbos = new int[1];
 		// store data in its first position
 		vbos[0] = storeDataInAttributeList(0, 2, positions);

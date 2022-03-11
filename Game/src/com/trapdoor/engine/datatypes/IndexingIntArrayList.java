@@ -2,7 +2,9 @@ package com.trapdoor.engine.datatypes;
 
 import java.nio.IntBuffer;
 import java.util.Iterator;
-import org.lwjgl.system.MemoryUtil;
+
+import org.eclipse.jdt.annotation.Nullable;
+import org.lwjgl.BufferUtils;
 
 /**
  * @author laptop
@@ -34,15 +36,27 @@ public class IndexingIntArrayList implements Iterable<Integer> {
 		return arr;
 	}
 	
-	public void generateStructures() {
+	public void generateStructures(@Nullable int[] copyto) {
 		if (!additions)
 			return;
+		if (copyto != null) {
+			if (copyto.length < size())
+				throw new ArrayIndexOutOfBoundsException("Your array is too small!");
+		}
 		
 		int[] newArr = new int[size()];
-		IntBuffer allocInt = MemoryUtil.memAllocInt(size());
-		for (int i = 0; i < size(); i++) {
-			newArr[i] = get(i);
-			allocInt.put(get(i));
+		IntBuffer allocInt = BufferUtils.createIntBuffer(size());
+		if (copyto == null) {
+			for (int i = 0; i < size(); i++) {
+				newArr[i] = get(i);
+				allocInt.put(get(i));
+			}
+		} else {
+			for (int i = 0; i < size(); i++) {
+				newArr[i] = get(i);
+				copyto[i] = newArr[i];
+				allocInt.put(get(i));
+			}
 		}
 		
 		allocInt.flip();
@@ -55,13 +69,13 @@ public class IndexingIntArrayList implements Iterable<Integer> {
 	
 	public int[] getTruncatedArray() {
 		if (additions)
-			generateStructures();
+			generateStructures(null);
 		return truncArray;
 	}
 	
 	public IntBuffer toIntBuffer() {
 		if (additions)
-			generateStructures();
+			generateStructures(null);
 		return toInt;
 	}
 	

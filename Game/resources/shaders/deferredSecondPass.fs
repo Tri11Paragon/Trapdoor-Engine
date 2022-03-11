@@ -31,13 +31,13 @@ uniform mat4 viewMatrix;
 
 //const float gamma = 2.2;
 
-vec3 calculateLighting(vec3 FragPos, vec3 Normal, vec3 Diffuse, vec3 directlightDir, float specularMapAmount){
+vec3 calculateLighting(vec3 FragPos, vec3 Normal, vec3 Diffuse, vec3 directlightDir, float specularMapAmount, float shadowAmount){
     float AmbientOcclusion = texture(ssaoColor, textureCoords).r;
     // then calculate lighting as usual
     vec3 lighting = Diffuse * 0.03f * (AmbientOcclusion); // hard-coded ambient component
 
     // add directional lighting
-    lighting += Diffuse * (max(dot(Normal, directlightDir), 0.0) * directLightColor);
+    lighting += Diffuse * (max(dot(Normal, directlightDir), 0.0) * directLightColor) * shadowAmount;
 
     vec3 viewDir  = normalize(-FragPos);
 
@@ -90,7 +90,7 @@ void main(){
             float brightness = dot(out_Color.rgb, vec3(0.2126, 0.7152, 0.0722));
             bright_Color = vec4(out_Color.rgb, albedoSpec.a) * brightness * brightness;
         } else {
-            out_Color = vec4(calculateLighting(FragPos, Normal, Diffuse, directlightDir, specularMapAmount), 1.0);
+            out_Color = vec4(calculateLighting(FragPos, Normal, Diffuse, directlightDir, specularMapAmount, renderState.b), 1.0);
         }
         // apply gamma correction
         //out_Color.rgb = pow(out_Color.rgb, vec3(1.0/gamma));

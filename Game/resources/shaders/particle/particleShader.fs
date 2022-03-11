@@ -20,7 +20,6 @@ void main(void){
 		textureInfo.z
 	);
 
-
 	bright_Color = vec4(0.0f);
 }
 
