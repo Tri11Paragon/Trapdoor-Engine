@@ -62,6 +62,58 @@ public class Test {
 
         memPutInt(mesh.address() + ParShapesMesh.NPOINTS, uniqueVertices);
 
+// FOLLOWING seems to be superseded by assimp
+	    
+//	    // 3 floats per vertex
+//	    int vertex_count = vertices.size() / 3;
+//	    // 3 vertices per face
+//	    int face_count = vertex_count / 3;
+//	    int index_count = face_count * 3;
+//	    
+//	    IntBuffer remap = MemoryUtil.memAllocInt(index_count);
+//	    
+//	    MeshoptStream.Buffer streams = MeshoptStream.create(3)
+//	            .apply(0, it -> it
+//	                .data(memByteBuffer(vertexBuffer))
+//	                .size(4 * 3)
+//	                .stride(4 * 3))
+//	            .apply(1, it -> it
+//	                .data(memByteBuffer(normalBuffer))
+//	                .size(4 * 3)
+//	                .stride(4 * 3))
+//	            .apply(2, it -> it
+//		                .data(memByteBuffer(textureBuffer))
+//		                .size(4 * 2)
+//		                .stride(4 * 2));
+//	    
+//	    
+//	    int uniqueVertices = (int) MeshOptimizer.meshopt_generateVertexRemapMulti(remap, indexBuffer, indexBuffer.remaining(), streams);
+//
+//	    
+//	    MeshOptimizer.meshopt_remapIndexBuffer(indexBuffer, indexBuffer, remap);
+//	    MeshOptimizer.meshopt_remapVertexBuffer(MemoryUtil.memByteBuffer(vertexBuffer), MemoryUtil.memByteBuffer(vertexBuffer), Float.BYTES * 3, remap);
+//	    MeshOptimizer.meshopt_remapVertexBuffer(MemoryUtil.memByteBuffer(normalBuffer), MemoryUtil.memByteBuffer(normalBuffer), Float.BYTES * 3, remap);
+//	    MeshOptimizer.meshopt_remapVertexBuffer(MemoryUtil.memByteBuffer(textureBuffer), MemoryUtil.memByteBuffer(textureBuffer), Float.BYTES * 2, remap);
+//
+//	    if (uniqueVertices < remap.remaining()) {
+//	    	remap.limit(uniqueVertices);
+//	    	vertexBuffer.limit(uniqueVertices * 3);
+//	    	textureBuffer.limit(uniqueVertices * 2);
+//	    	normalBuffer.limit(uniqueVertices * 3);
+//	    }
+//	    
+//	    MeshOptimizer.meshopt_optimizeVertexCache(indexBuffer, indexBuffer, uniqueVertices);
+//	    MeshOptimizer.meshopt_optimizeOverdraw(indexBuffer, indexBuffer, vertexBuffer, uniqueVertices, 3 * Float.BYTES, 1.05f);
+//	    
+//	    assert (int)MeshOptimizer.meshopt_optimizeVertexFetchRemap(remap, indexBuffer) == uniqueVertices;
+//	    
+//	    MeshOptimizer.meshopt_remapIndexBuffer(indexBuffer, indexBuffer, remap);
+//	    MeshOptimizer.meshopt_remapVertexBuffer(MemoryUtil.memByteBuffer(vertexBuffer), MemoryUtil.memByteBuffer(vertexBuffer), Float.BYTES * 3, remap);
+//	    MeshOptimizer.meshopt_remapVertexBuffer(MemoryUtil.memByteBuffer(normalBuffer), MemoryUtil.memByteBuffer(normalBuffer), Float.BYTES * 3, remap);
+//	    MeshOptimizer.meshopt_remapVertexBuffer(MemoryUtil.memByteBuffer(textureBuffer), MemoryUtil.memByteBuffer(textureBuffer), Float.BYTES * 2, remap);
+	    
+	    //MemoryUtil.memFree(remap);
+        
         System.out.println("\nAFTER:");
         System.out.println("------");
         printStats(mesh);

@@ -61,7 +61,6 @@ public class TestDisplay extends IDisplay {
 		GameRegistry.registerModel("resources/models/playerblend.dae");
 		GameRegistry.registerModel("resources/models/spawner.dae");
 		GameRegistry.registerModel("resources/models/megacube.dae");
-		GameRegistry.registerModel("resources/models/megacube.fbx");
 		
 		GameRegistry.registerModel("resources/models/poop.dae");
 		GameRegistry.registerModel("resources/models/Mackenzie_Hallway_brt.dae");

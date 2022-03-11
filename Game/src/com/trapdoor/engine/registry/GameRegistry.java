@@ -243,7 +243,7 @@ public class GameRegistry {
 				while (GameRegistry.textureDatas.get(fd) == null)
 					Thread.sleep(0, 500); // sleeps for 500ns
 				
-				Texture t = TextureLoader.loadTextureI(fd,GameRegistry.textureDatas.get(fd), TextureLoader.TEXTURE_LOD, GL11.GL_LINEAR_MIPMAP_LINEAR);
+				Texture t = TextureLoader.loadTextureI(fd,GameRegistry.textureDatas.get(fd), TextureLoader.TEXTURE_LOD, GL11.GL_LINEAR);
 				GameRegistry.textures.put(fd, t);
 			} catch (Exception e) {
 				Logging.logger.fatal(e.getMessage(), e);

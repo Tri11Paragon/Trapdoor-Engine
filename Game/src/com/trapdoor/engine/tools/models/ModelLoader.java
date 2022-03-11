@@ -1,14 +1,12 @@
 package com.trapdoor.engine.tools.models;
 
 import java.io.File;
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 
 import org.joml.Vector3f;
 import org.joml.Vector4f;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIColor4D;
 import org.lwjgl.assimp.AIFace;
@@ -18,10 +16,6 @@ import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.AIString;
 import org.lwjgl.assimp.AIVector3D;
 import org.lwjgl.assimp.Assimp;
-import org.lwjgl.system.MemoryUtil;
-import org.lwjgl.util.meshoptimizer.MeshOptimizer;
-import org.lwjgl.util.meshoptimizer.MeshoptStream;
-
 import com.jme3.bullet.collision.shapes.infos.IndexedMesh;
 import com.trapdoor.engine.datatypes.IndexingFloatArrayList;
 import com.trapdoor.engine.datatypes.IndexingIntArrayList;
@@ -42,7 +36,14 @@ import com.trapdoor.engine.tools.models.materials.MaterialFSFormater;
 public class ModelLoader {
 	
 	// TODO: Maybe use the transform and have individual transforms per submesh?
-	public static final int DEFAULT_FLAGS = Assimp.aiProcess_JoinIdenticalVertices | Assimp.aiProcess_Triangulate | Assimp.aiProcess_FixInfacingNormals | Assimp.aiProcess_PreTransformVertices;
+	public static final int DEFAULT_FLAGS = Assimp.aiProcess_JoinIdenticalVertices 
+												| Assimp.aiProcess_CalcTangentSpace 
+												| Assimp.aiProcess_Triangulate 
+												| Assimp.aiProcess_FixInfacingNormals 
+												| Assimp.aiProcess_PreTransformVertices
+												| Assimp.aiProcess_ImproveCacheLocality
+												| Assimp.aiProcess_RemoveRedundantMaterials
+												| Assimp.aiProcess_OptimizeMeshes;
 	
 	public static Model load(String path, String texturesDir) {
 		return load(path, texturesDir, DEFAULT_FLAGS);
@@ -199,15 +200,21 @@ public class ModelLoader {
 		IndexingFloatArrayList vertices = new IndexingFloatArrayList();
 		IndexingFloatArrayList textures = new IndexingFloatArrayList();
 		IndexingFloatArrayList normals = new IndexingFloatArrayList();
+		IndexingFloatArrayList tangents = new IndexingFloatArrayList();
+		IndexingFloatArrayList bitangents = new IndexingFloatArrayList();
 		IndexingIntArrayList indices = new IndexingIntArrayList();
 		
 		AxisAlignedBoundingBox aabb = processVertices(mesh, vertices, faceV);
-	    processNormals(mesh, normals);
+	    processNormals(mesh, normals, tangents, bitangents);
 	    processTextCoords(mesh, textures);
 	    processIndices(mesh, indices);
 	    
-	    indices.generateStructures();
+	    int[] indcies = new int[indices.size()];
+	    
+	    indices.generateStructures(indcies);
 	    textures.generateStructures();
+	    tangents.generateStructures();
+	    bitangents.generateStructures();
 	    normals.generateStructures();
 	    vertices.generateStructures();
 	    
@@ -223,15 +230,10 @@ public class ModelLoader {
 	    }
 	    
 	    com.jme3.math.Vector3f[] positions = new com.jme3.math.Vector3f[faceV.size()];
-	    int[] indcies = new int[indices.size()];
-	    
-	    for (int i = 0; i < positions.length; i++) {
-	    	positions[i] = faceV.get(i);
-	    }
 	    
 	    // TODO: remove this?
-	    for (int i = 0; i < indices.size(); i++) {
-	    	indcies[i] = indices.get(i);
+	    for (int i = 0; i < positions.length; i++) {
+	    	positions[i] = faceV.get(i);
 	    }
 	    
 	    IndexedMesh meshInfo = new IndexedMesh(positions, indcies);
@@ -240,66 +242,11 @@ public class ModelLoader {
 	    FloatBuffer vertexBuffer = vertices.toFloatBuffer();
 	    FloatBuffer textureBuffer = textures.toFloatBuffer();
 	    FloatBuffer normalBuffer = normals.toFloatBuffer();
+	    FloatBuffer bitangentBuffer = bitangents.toFloatBuffer();
+	    FloatBuffer tangentBuffer = tangents.toFloatBuffer();
 	    
-	    // 3 floats per vertex
-	    int vertex_count = vertices.size() / 3;
-	    // 3 vertices per face
-	    int face_count = vertex_count / 3;
-	    int index_count = face_count * 3;
-	    
-	    IntBuffer remap = MemoryUtil.memAllocInt(index_count);
-	    
-	    int uniqueVertices = (int) MeshOptimizer.meshopt_generateVertexRemap(remap, indexBuffer, index_count, MemoryUtil.memByteBuffer(vertexBuffer), Float.BYTES * 3) * 3 * 4;
-
-	    IntBuffer indicesRemapped = MemoryUtil.memAllocInt(indexBuffer.capacity());
-	    ByteBuffer verticesRemapped = MemoryUtil.memAlloc(uniqueVertices);
-	    
-	    MeshOptimizer.meshopt_remapIndexBuffer(indicesRemapped, indexBuffer, remap);
-	    MeshOptimizer.meshopt_remapVertexBuffer(verticesRemapped, MemoryUtil.memByteBuffer(vertexBuffer), Float.BYTES * 3, remap);
-	    
-	    indexBuffer = BufferUtils.createIntBuffer(indicesRemapped.capacity());
-	    indexBuffer.put(indicesRemapped);
-	    indexBuffer.flip();
-	    System.out.println("vertex: " + vertexBuffer.capacity());
-	    vertexBuffer = BufferUtils.createFloatBuffer(verticesRemapped.capacity() / 4);
-	    System.out.println("uniq " + uniqueVertices);
-	    System.out.println("remap " + vertexBuffer.capacity());
-	    while (verticesRemapped.hasRemaining())
-	    	vertexBuffer.put(verticesRemapped.getFloat());
-	    System.out.println("in " + vertexBuffer.position());
-	    vertexBuffer.flip();
-	    System.out.println("out " + vertexBuffer.position());
-	    System.out.println("up " + indexBuffer.position());
-	    
-//	    remap(vertexBuffer, indexBuffer, normalBuffer, textureBuffer, remap);
-//	    
-//	    if (uniqueVertices < remap.remaining()) {
-//            remap.limit(uniqueVertices);
-//
-//            vertexBuffer.limit(uniqueVertices * 3);
-//            normalBuffer.limit(uniqueVertices * 3);
-//            textureBuffer.limit(uniqueVertices * 2);
-//        }
-//	    
-//	    MeshOptimizer.meshopt_optimizeVertexCache(indexBuffer, indexBuffer, uniqueVertices);
-//	    MeshOptimizer.meshopt_optimizeOverdraw(indexBuffer, indexBuffer, vertexBuffer, uniqueVertices, 3 * Float.BYTES, 1.05f);
-//	    
-//	    assert (int)MeshOptimizer.meshopt_optimizeVertexFetchRemap(remap, indexBuffer) == uniqueVertices;
-//	    remap(vertexBuffer, indexBuffer, normalBuffer, textureBuffer, remap);
-	    
-	    MemoryUtil.memFree(remap);
-	    MemoryUtil.memFree(indicesRemapped);
-	    MemoryUtil.memFree(verticesRemapped);
-	    
-		return new Mesh(m, aabb, vertexBuffer, textureBuffer, normalBuffer, indexBuffer, meshInfo);
+		return new Mesh(m, aabb, vertexBuffer, textureBuffer, normalBuffer, tangentBuffer, bitangentBuffer, indexBuffer, meshInfo);
 	}
-	
-	private static void remap(FloatBuffer vertexBuffer, IntBuffer indexBuffer, FloatBuffer normalBuffer, FloatBuffer texturebuffer, IntBuffer remap) {
-        MeshOptimizer.meshopt_remapIndexBuffer(indexBuffer, indexBuffer, remap);
-        MeshOptimizer.meshopt_remapVertexBuffer(MemoryUtil.memByteBuffer(vertexBuffer), MemoryUtil.memByteBuffer(vertexBuffer), Float.BYTES, remap);
-        MeshOptimizer.meshopt_remapVertexBuffer(MemoryUtil.memByteBuffer(normalBuffer), MemoryUtil.memByteBuffer(normalBuffer), Float.BYTES, remap);
-        //MeshOptimizer.meshopt_remapVertexBuffer(MemoryUtil.memByteBuffer(texturebuffer), MemoryUtil.memByteBuffer(texturebuffer), Float.BYTES, remap);
-    }
 	
 	private static AxisAlignedBoundingBox processVertices(AIMesh mesh, IndexingFloatArrayList vertices, ArrayList<com.jme3.math.Vector3f> faceV) {
 		float maxX = 0, maxY = 0, maxZ = 0;
@@ -330,13 +277,27 @@ public class ModelLoader {
 	    return new AxisAlignedBoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
 	}
 	
-	private static void processNormals(AIMesh mesh, IndexingFloatArrayList normals) {
+	private static void processNormals(AIMesh mesh, IndexingFloatArrayList normals, IndexingFloatArrayList tangents, IndexingFloatArrayList bitangents) {
 	    AIVector3D.Buffer norms = mesh.mNormals();
 	    while (norms.remaining() > 0) {
 	        AIVector3D aiVertex = norms.get();
 	        normals.add(aiVertex.x());
 	        normals.add(aiVertex.y());
 	        normals.add(aiVertex.z());
+	    }
+	    AIVector3D.Buffer tangs = mesh.mTangents();
+	    while (tangs.remaining() > 0) {
+	    	AIVector3D v = tangs.get();
+	    	tangents.add(v.x());
+	    	tangents.add(v.y());
+	    	tangents.add(v.z());
+	    }
+	    AIVector3D.Buffer bitangs = mesh.mBitangents();
+	    while (bitangs.remaining() > 0) {
+	    	AIVector3D v = bitangs.get();
+	    	bitangents.add(v.x());
+	    	bitangents.add(v.y());
+	    	bitangents.add(v.z());
 	    }
 	}
 	
