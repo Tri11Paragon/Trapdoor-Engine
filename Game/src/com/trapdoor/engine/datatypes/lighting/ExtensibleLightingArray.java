@@ -92,7 +92,8 @@ public class ExtensibleLightingArray {
 		store.x = l.getX() + t.getX();
 		store.y = l.getY() + t.getY();
 		store.z = l.getZ() + t.getZ();
-		Vector4f transedV = viewMatrix.transform(store);
+		//Vector4f transedV = viewMatrix.transform(store);
+		Vector4f transedV = store;
 		
 		lightArray[base] = transedV.x;
 		lightArray[base+1] = transedV.y;

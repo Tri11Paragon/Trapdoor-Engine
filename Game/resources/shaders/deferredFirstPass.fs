@@ -6,6 +6,7 @@ in vec3 normalo;
 in vec3 fragpos;
 in vec3 fragPosWorldSpace;
 in vec4 shadowCoords;
+in mat3 tbnMat;
 
 
 layout (location = 0) out vec4 gPosition;
@@ -88,7 +89,10 @@ float shadowCalc(vec3 normal){
 
 void main(){
 	
-    vec3 normali = normalize(normalo);
+    vec3 normaltbn = normalize(texture(normalMap, textureCoords).rgb * 2.0f - vec3(1.0f));
+    vec3 normali = normalize(tbnMat * normaltbn);
+
+    // tbnMat * normaltbn
 
 	float shadower = shadowCalc(normali);
 	float lightFactor = 1.0 - (0.6 * shadower);

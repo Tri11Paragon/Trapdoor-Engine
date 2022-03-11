@@ -32,9 +32,10 @@ uniform mat4 viewMatrix;
 //const float gamma = 2.2;
 
 vec3 calculateLighting(vec3 FragPos, vec3 Normal, vec3 Diffuse, vec3 directlightDir, float specularMapAmount, float shadowAmount){
-    float AmbientOcclusion = texture(ssaoColor, textureCoords).r;
+    //float AmbientOcclusion = texture(ssaoColor, textureCoords).r;
     // then calculate lighting as usual
-    vec3 lighting = Diffuse * 0.03f * (AmbientOcclusion); // hard-coded ambient component
+    //vec3 lighting = Diffuse * 0.03f * (AmbientOcclusion); // hard-coded ambient component
+    vec3 lighting = Diffuse * 0.03f;
 
     // add directional lighting
     lighting += Diffuse * (max(dot(Normal, directlightDir), 0.0) * directLightColor) * shadowAmount;
@@ -65,7 +66,8 @@ vec3 calculateLighting(vec3 FragPos, vec3 Normal, vec3 Diffuse, vec3 directlight
         diffuse *= attenuation;
         specular *= attenuation;
 
-        lighting += (diffuse * AmbientOcclusion + specular);
+        //lighting += (diffuse * AmbientOcclusion + specular);
+        lighting += (diffuse + specular);
     }    
 
     return lighting;

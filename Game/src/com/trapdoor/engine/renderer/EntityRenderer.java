@@ -45,6 +45,8 @@ public class EntityRenderer {
 			GL20.glEnableVertexAttribArray(0);
 			GL20.glEnableVertexAttribArray(1);
 			GL20.glEnableVertexAttribArray(2);
+			GL20.glEnableVertexAttribArray(3);
+			GL20.glEnableVertexAttribArray(4);
 			
 			GL13.glActiveTexture(GL13.GL_TEXTURE0);	
 			GL11.glBindTexture(GL11.GL_TEXTURE_2D, mat.getDiffuseTexture().getID());
@@ -74,6 +76,8 @@ public class EntityRenderer {
 			GL20.glDisableVertexAttribArray(0);
 			GL20.glDisableVertexAttribArray(1);
 			GL20.glDisableVertexAttribArray(2);
+			GL20.glDisableVertexAttribArray(3);
+			GL20.glDisableVertexAttribArray(4);
 			GL30.glBindVertexArray(0);
 		}
 	}

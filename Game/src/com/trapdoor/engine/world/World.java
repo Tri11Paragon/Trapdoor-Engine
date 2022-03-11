@@ -135,7 +135,7 @@ public class World {
 		this.deferredRenderer.endFirstPass();
 		
 		if (SettingsLoader.GRAPHICS_LEVEL < 2) {
-			ssaoRenderer.render(this.deferredRenderer);
+			//ssaoRenderer.render(this.deferredRenderer);
 		}
 		
 		// TODO: add bloomy option
@@ -297,10 +297,12 @@ public class World {
 	public void cleanup() {
 		Logging.logger.debug("Destorying world!");
 		this.deferredRenderer.cleanup();
-		if (SettingsLoader.GRAPHICS_LEVEL < 2) {
+		try {
 			this.shadowRenderer.cleanup();
 			this.ssaoRenderer.cleanup();
 			this.bloomRenderer.cleanup();
+		} catch (Exception e) {
+			Logging.logger.error(e.getMessage(), e);
 		}
 		this.particleRenderer.cleanUp();
 	}

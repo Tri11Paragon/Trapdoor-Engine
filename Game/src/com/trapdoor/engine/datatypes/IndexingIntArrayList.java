@@ -3,7 +3,8 @@ package com.trapdoor.engine.datatypes;
 import java.nio.IntBuffer;
 import java.util.Iterator;
 
-import org.eclipse.jdt.annotation.Nullable;
+import javax.annotation.Nullable;
+
 import org.lwjgl.BufferUtils;
 
 /**

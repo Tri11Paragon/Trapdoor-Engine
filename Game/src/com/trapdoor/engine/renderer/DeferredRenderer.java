@@ -3,6 +3,8 @@ package com.trapdoor.engine.renderer;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 import org.lwjgl.opengl.GL33;
 
 import com.trapdoor.engine.ProjectionMatrix;
@@ -43,6 +45,9 @@ public class DeferredRenderer implements Runnable {
 	private int multiGRenderState;
 	private int multiRboDepth;
 	private int depthMap;
+	
+	private final Vector4f store = new Vector4f();
+	private final Vector3f results = new Vector3f();
 	
 	private DeferredFirstPassShader firstPassShader;
 	private DeferredSecondPassShader secondPassShader;
@@ -223,10 +228,19 @@ public class DeferredRenderer implements Runnable {
 	
 	public void runSecondPass(SSAORenderer renderer) {
 		
+		// this can be used to set light dir and color per display
+		store.x = DisplayManager.lightDirection.x;
+		store.y = DisplayManager.lightDirection.y;
+		store.z = DisplayManager.lightDirection.z;
+		camera.getViewMatrix().transform(store);
+		results.x = store.x;
+		results.y = store.y;
+		results.z = store.z;
 		
 		secondPassShader.start();
 		secondPassShader.loadViewMatrix(camera.getViewMatrix());
 		secondPassShader.loadViewPos(camera.getPosition());
+		//secondPassShader.loadLightDir(results);
 		
 		GL33.glClear(GL33.GL_COLOR_BUFFER_BIT | GL33.GL_DEPTH_BUFFER_BIT);
 
@@ -235,8 +249,8 @@ public class DeferredRenderer implements Runnable {
 		
 		bindBuffersTextures();
 		if (SettingsLoader.GRAPHICS_LEVEL < 2) {
-			GL33.glActiveTexture(GL33.GL_TEXTURE4);
-			GL33.glBindTexture(GL33.GL_TEXTURE_2D, renderer.getSSAOBluredTexture());
+			//GL33.glActiveTexture(GL33.GL_TEXTURE4);
+			//GL33.glBindTexture(GL33.GL_TEXTURE_2D, renderer.getSSAOBluredTexture());
 		}
 		
 		GL33.glActiveTexture(GL33.GL_TEXTURE5);

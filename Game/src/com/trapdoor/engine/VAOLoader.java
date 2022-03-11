@@ -153,6 +153,8 @@ public class VAOLoader {
 			Mesh mesh = meshes[i];
 			// create the VAO
 			int vaoID = createVAO();
+			for (int j = 0; j < 5; j++)
+				GL33.glEnableVertexAttribArray(j);
 			// bind the indices buffer
 			bindIndicesBuffer(mesh.getIndices());
 			/**
@@ -160,10 +162,12 @@ public class VAOLoader {
 			 * you still need to enable the VBO when rendering.
 			 */
 			// store data into the vao
-			int[] vbos = new int[3];
+			int[] vbos = new int[5];
 			vbos[0] = storeDataInAttributeList(0,3,mesh.getVertices());
 			vbos[1] = storeDataInAttributeList(1,2,mesh.getTextures());
 			vbos[2] = storeDataInAttributeList(2,3,mesh.getNormals());
+			vbos[3] = storeDataInAttributeList(3,3,mesh.getTangents());
+			vbos[4] = storeDataInAttributeList(4,3,mesh.getBitangents());
 			// unbind the VAO
 			unbindVAO();
 			// return the model
