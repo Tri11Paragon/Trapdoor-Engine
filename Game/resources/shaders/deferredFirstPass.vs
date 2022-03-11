@@ -37,11 +37,9 @@ void main(void){
 	mat3 viewTang = mat3(translationMatrix);
 
 	vec3 T = normalize(viewTang * tangent);
-	vec3 B = normalize(viewTang * bitangent);
-   	//vec3 B = normalize(vec3(viewMatrix * vec4(bitangent, 0.0)));
    	vec3 N = normalize(viewTang * normal);
-	//T = normalize(T - dot(T, N) * N);
-	//vec3 B = cross(T, N);
+	T = normalize(T - dot(T, N) * N);
+	vec3 B = cross(T, N);
    	tbnMat = mat3(T, B, N);
 
     gl_Position = positionRelativeToCam;

@@ -83,21 +83,21 @@ public class ExtensibleLightingArray {
 		}
 	}
 	
-	private final Vector4f store = new Vector4f(0,0,0, 1.0f);
+	//private final Vector4f store = new Vector4f(0,0,0, 1.0f);
 	
 	private void setLightData(Matrix4f viewMatrix, Light l, int index, Entity e) {
 		int base = index * 4;
 		Transform t = (Transform)e.getComponent(Transform.class);
 		// TODO: apply entity rotation
-		store.x = l.getX() + t.getX();
-		store.y = l.getY() + t.getY();
-		store.z = l.getZ() + t.getZ();
+//		store.x = l.getX() + t.getX();
+//		store.y = l.getY() + t.getY();
+//		store.z = l.getZ() + t.getZ();
 		//Vector4f transedV = viewMatrix.transform(store);
-		Vector4f transedV = store;
+//		Vector4f transedV = store;
 		
-		lightArray[base] = transedV.x;
-		lightArray[base+1] = transedV.y;
-		lightArray[base+2] = transedV.z;
+		lightArray[base] = l.getX() + t.getX();
+		lightArray[base+1] = l.getY() + t.getY();
+		lightArray[base+2] = l.getZ() + t.getZ();
 		lightArray[base+3] = l.getLinear();
 		int baseOffset = base + 512 / 4;
 		lightArray[baseOffset] = l.getQuadratic();

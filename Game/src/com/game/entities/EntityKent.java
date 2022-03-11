@@ -6,7 +6,6 @@ import static java.lang.Math.sin;
 import java.util.Random;
 
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
-import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.math.Vector3f;
 import com.trapdoor.engine.renderer.particles.ParticleSystem;
 import com.trapdoor.engine.world.entities.Entity;

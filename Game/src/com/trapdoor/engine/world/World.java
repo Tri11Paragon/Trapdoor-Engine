@@ -62,7 +62,6 @@ public class World {
 	private SkyboxRenderer skyboxRenderer;
 	private DeferredRenderer deferredRenderer;
 	private ShadowRenderer shadowRenderer;
-	private SSAORenderer ssaoRenderer;
 	private BloomRenderer bloomRenderer;
 	private ParticleRenderer particleRenderer;
 
@@ -76,7 +75,6 @@ public class World {
 		particleRenderer = new ParticleRenderer();
 		if (SettingsLoader.GRAPHICS_LEVEL < 2) {
 			this.shadowRenderer = new ShadowRenderer(c);
-			this.ssaoRenderer = new SSAORenderer();
 			this.bloomRenderer = new BloomRenderer();
 		}
 		
@@ -134,16 +132,12 @@ public class World {
 		
 		this.deferredRenderer.endFirstPass();
 		
-		if (SettingsLoader.GRAPHICS_LEVEL < 2) {
-			//ssaoRenderer.render(this.deferredRenderer);
-		}
-		
 		// TODO: add bloomy option
 		if (SettingsLoader.GRAPHICS_LEVEL < 2) {
 			this.bloomRenderer.bindBloom();
 		}
 		
-		this.deferredRenderer.runSecondPass(this.ssaoRenderer);
+		this.deferredRenderer.runSecondPass();
 		this.skyboxRenderer.render(c);
 		for (int i = 0; i < particleSystems.size(); i++) {
 			particleSystems.get(i).update();
@@ -286,10 +280,6 @@ public class World {
 		return shadowRenderer.getShadowMap();
 	}
 	
-	public SSAORenderer getSSAOMap() {
-		return ssaoRenderer;
-	}
-	
 	public Vector3f getGravity() {
 		return physWorld.getGravity(new Vector3f());
 	}
@@ -299,7 +289,6 @@ public class World {
 		this.deferredRenderer.cleanup();
 		try {
 			this.shadowRenderer.cleanup();
-			this.ssaoRenderer.cleanup();
 			this.bloomRenderer.cleanup();
 		} catch (Exception e) {
 			Logging.logger.error(e.getMessage(), e);

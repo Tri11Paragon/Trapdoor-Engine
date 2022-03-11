@@ -94,7 +94,7 @@ void main(){
 
     // tbnMat * normaltbn
 
-	float shadower = shadowCalc(normali);
+	float shadower = shadowCalc(normalo);
 	float lightFactor = 1.0 - (0.6 * shadower);
 
     vec3 viewDir  = normalize(viewPos - fragpos);
