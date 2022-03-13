@@ -2,6 +2,7 @@ package com.trapdoor.engine.renderer;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3d;
+import org.joml.Vector3f;
 
 import com.trapdoor.engine.display.DisplayManager;
 import com.trapdoor.engine.renderer.shadows.ShadowRenderer;
@@ -24,6 +25,7 @@ public class DeferredFirstPassShader extends ShaderProgram {
 	private int location_shadowMap;
 	
 	private int location_specAmount;
+	private int location_diffuseAmount;
 	
 	private int location_cascadeCount;
 	private int[] location_cascadePlaneDistances;
@@ -51,6 +53,8 @@ public class DeferredFirstPassShader extends ShaderProgram {
 		super.bindAttribute(0, "position");
 		super.bindAttribute(1, "textureCoordinates");
 		super.bindAttribute(2, "normal");
+		super.bindAttribute(3, "tangent");
+		super.bindAttribute(4, "bitangent");
 	}
 
 	@Override
@@ -66,6 +70,7 @@ public class DeferredFirstPassShader extends ShaderProgram {
 		location_shadowMap = super.getUniformLocation("shadowMap");
 		
 		location_specAmount = super.getUniformLocation("specAmount");
+		location_diffuseAmount = super.getUniformLocation("diffuse");
 		location_viewPos = super.getUniformLocation("viewPos");
 		
 		location_cascadeCount = super.getUniformLocation("cascadeCount");
@@ -84,6 +89,10 @@ public class DeferredFirstPassShader extends ShaderProgram {
 	
 	public void loadSpecAmount(float amount) {
 		super.loadFloat(location_specAmount, amount);
+	}
+	
+	public void loadDiffuseAmount(Vector3f diffuse) {
+		super.loadVector(location_diffuseAmount, diffuse);
 	}
 	
 	public void loadTranslationMatrix(Matrix4f matrix) {

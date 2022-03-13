@@ -1,6 +1,8 @@
 package com.trapdoor.engine.renderer;
 
 import java.util.ArrayList;
+
+import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
@@ -12,6 +14,7 @@ import com.trapdoor.engine.datatypes.ogl.assimp.Material;
 import com.trapdoor.engine.datatypes.ogl.assimp.Mesh;
 import com.trapdoor.engine.datatypes.ogl.assimp.Model;
 import com.trapdoor.engine.datatypes.ogl.obj.VAO;
+import com.trapdoor.engine.registry.GameRegistry;
 import com.trapdoor.engine.renderer.shadows.ShadowRenderer;
 import com.trapdoor.engine.renderer.shadows.ShadowShader;
 import com.trapdoor.engine.tools.math.Maths;
@@ -24,6 +27,8 @@ import com.trapdoor.engine.world.entities.components.Transform;
  * 
  */
 public class EntityRenderer {
+	
+	private static final Vector3f nodiffuse = new Vector3f(-1);
 	
 	public void renderChunk(DeferredRenderer renderer, Model m, ArrayList<Entity> lis) {
 		DeferredFirstPassShader shader = renderer.getShader();
@@ -45,9 +50,16 @@ public class EntityRenderer {
 			GL20.glEnableVertexAttribArray(0);
 			GL20.glEnableVertexAttribArray(1);
 			GL20.glEnableVertexAttribArray(2);
+			GL20.glEnableVertexAttribArray(3);
+			GL20.glEnableVertexAttribArray(4);
 			
 			GL13.glActiveTexture(GL13.GL_TEXTURE0);	
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, mat.getDiffuseTexture().getID());
+			if (mat.getDiffuseTexture() == GameRegistry.getErrorMaterial().getDiffuseTexture())
+				shader.loadDiffuseAmount(mat.getDiffuse());
+			else {
+				shader.loadDiffuseAmount(nodiffuse);
+				GL11.glBindTexture(GL11.GL_TEXTURE_2D, mat.getDiffuseTexture().getID());
+			}
 			GL13.glActiveTexture(GL13.GL_TEXTURE1);	
 			GL11.glBindTexture(GL11.GL_TEXTURE_2D, mat.getNormalTexture().getID());
 			GL13.glActiveTexture(GL13.GL_TEXTURE2);	
@@ -57,7 +69,7 @@ public class EntityRenderer {
 			GL13.glActiveTexture(GL13.GL_TEXTURE4);	
 			GL11.glBindTexture(GL11.GL_TEXTURE_2D, mat.getAmbientOcclusionTexture().getID());
 			
-			shader.loadSpecAmount(mat.getColorInformation().y);
+			shader.loadSpecAmount(mat.getSpecular().y);
 			
 			for (int j = 0; j < lis.size(); j++) {
 				Entity entity = lis.get(j);
@@ -74,6 +86,8 @@ public class EntityRenderer {
 			GL20.glDisableVertexAttribArray(0);
 			GL20.glDisableVertexAttribArray(1);
 			GL20.glDisableVertexAttribArray(2);
+			GL20.glDisableVertexAttribArray(3);
+			GL20.glDisableVertexAttribArray(4);
 			GL30.glBindVertexArray(0);
 		}
 	}

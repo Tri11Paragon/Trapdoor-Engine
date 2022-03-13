@@ -21,7 +21,6 @@ public class DeferredSecondPassShader extends WorldShader {
 	private int location_gnormal;
 	private int location_gcolor;
 	private int location_gRenderState;
-	private int location_ssaoColor;
 	private int location_view;
 	private int location_lightDir;
 	private int location_lightDirColor;
@@ -51,7 +50,6 @@ public class DeferredSecondPassShader extends WorldShader {
 		location_gnormal = getUniformLocation("gNormal");
 		location_gcolor = getUniformLocation("gAlbedoSpec");
 		location_gRenderState = getUniformLocation("gRenderState");
-		location_ssaoColor = getUniformLocation("ssaoColor");
 		location_depthTexture = getUniformLocation("depthTexture");
 		location_view = super.getUniformLocation("viewPos");
 		location_lightDir = super.getUniformLocation("directLight");
@@ -75,8 +73,7 @@ public class DeferredSecondPassShader extends WorldShader {
 		super.loadInt(location_gnormal, 1);
 		super.loadInt(location_gcolor, 2);
 		super.loadInt(location_gRenderState, 3);
-		super.loadInt(location_ssaoColor, 4);
-		super.loadInt(location_depthTexture, 5);
+		super.loadInt(location_depthTexture, 4);
 	}
 
 }

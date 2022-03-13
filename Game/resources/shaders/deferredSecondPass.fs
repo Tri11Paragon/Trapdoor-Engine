@@ -9,7 +9,6 @@ uniform sampler2D gPosition;
 uniform sampler2D gNormal;
 uniform sampler2D gAlbedoSpec;
 uniform sampler2D gRenderState;
-uniform sampler2D ssaoColor;
 uniform sampler2D depthTexture;
 
 const int NR_LIGHTS = 32;
@@ -32,14 +31,15 @@ uniform mat4 viewMatrix;
 //const float gamma = 2.2;
 
 vec3 calculateLighting(vec3 FragPos, vec3 Normal, vec3 Diffuse, vec3 directlightDir, float specularMapAmount, float shadowAmount){
-    float AmbientOcclusion = texture(ssaoColor, textureCoords).r;
+    //float AmbientOcclusion = texture(ssaoColor, textureCoords).r;
     // then calculate lighting as usual
-    vec3 lighting = Diffuse * 0.03f * (AmbientOcclusion); // hard-coded ambient component
+    //vec3 lighting = Diffuse * 0.03f * (AmbientOcclusion); // hard-coded ambient component
+    vec3 lighting = Diffuse * 0.03f;
 
     // add directional lighting
     lighting += Diffuse * (max(dot(Normal, directlightDir), 0.0) * directLightColor) * shadowAmount;
 
-    vec3 viewDir  = normalize(-FragPos);
+    vec3 viewDir  = normalize(viewPos-FragPos);
 
     // Normal Lighting
     for(int i = 0; i < NR_LIGHTS; ++i) {
@@ -65,7 +65,8 @@ vec3 calculateLighting(vec3 FragPos, vec3 Normal, vec3 Diffuse, vec3 directlight
         diffuse *= attenuation;
         specular *= attenuation;
 
-        lighting += (diffuse * AmbientOcclusion + specular);
+        //lighting += (diffuse * AmbientOcclusion + specular);
+        lighting += (diffuse + specular);
     }    
 
     return lighting;

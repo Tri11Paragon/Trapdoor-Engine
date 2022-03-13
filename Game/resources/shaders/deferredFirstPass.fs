@@ -6,6 +6,7 @@ in vec3 normalo;
 in vec3 fragpos;
 in vec3 fragPosWorldSpace;
 in vec4 shadowCoords;
+in mat3 tbnMat;
 
 
 layout (location = 0) out vec4 gPosition;
@@ -31,6 +32,7 @@ uniform sampler2DArray shadowMap;
 uniform vec3 viewPos;
 
 uniform float specAmount;
+uniform vec3 diffuse;
 
 const int pcfCount = 2;
 const float totalTexels = (pcfCount * 2.0 + 1.0) * (pcfCount * 2.0 + 1.0);
@@ -88,16 +90,24 @@ float shadowCalc(vec3 normal){
 
 void main(){
 	
-    vec3 normali = normalize(normalo);
+    vec3 normaltbn = normalize(texture(normalMap, textureCoords).rgb);
+    vec3 normali = normalize(tbnMat * normaltbn);
+
+    // tbnMat * normaltbn
 
 	float shadower = shadowCalc(normali);
 	float lightFactor = 1.0 - (0.6 * shadower);
 
-    vec3 viewDir  = normalize(viewPos - fragpos);
+    vec3 viewDir  = normalize(viewPos - fragPosWorldSpace);
 
-    gPosition = vec4(fragpos, 1.0f);
+    gPosition = vec4(fragPosWorldSpace, 1.0f);
     gNormal = vec4(normali, 1.0f);
-    gAlbedoSpec = texture(diffuseTexture, textureCoords);
+
+    if (diffuse.x != -1){
+        gAlbedoSpec.rgb = diffuse;
+        gAlbedoSpec.a = 1.0f;
+    } else
+        gAlbedoSpec = texture(diffuseTexture, textureCoords);
 
 
     if (gAlbedoSpec.a < 0.1f)

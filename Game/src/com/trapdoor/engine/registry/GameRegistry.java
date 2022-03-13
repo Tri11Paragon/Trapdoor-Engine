@@ -102,7 +102,7 @@ public class GameRegistry {
 		defaultAOTexture = TextureLoader.loadTexture("error/default_ao.png");
 		defaultSpecTexture = TextureLoader.loadTexture("error/default_spec.png");
 		errorMaterial = new Material("resources/textures/error/error3.png", DEFAULT_EMPTY_NORMAL_MAP, 
-				DEFAULT_EMPTY_DISPLACEMENT_MAP, DEFAULT_EMPTY_AO_MAP, DEFAULT_EMPTY_SPEC_MAP, new Vector3f(0.0f, 0.0f, 0.0f));
+				DEFAULT_EMPTY_DISPLACEMENT_MAP, DEFAULT_EMPTY_AO_MAP, DEFAULT_EMPTY_SPEC_MAP, new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(), new Vector3f());
 		
 		errorMaterial.setDiffuseTexture(errorTexture);
 		errorMaterial.setNormalTexture(defaultNormalTexture);

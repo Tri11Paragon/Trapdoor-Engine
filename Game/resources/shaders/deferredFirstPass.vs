@@ -3,11 +3,14 @@
 in vec3 position;
 in vec2 textureCoordinates;
 in vec3 normal;
+in vec3 tangent;
+in vec3 bitangent;
 
 out vec2 textureCoords;
 out vec3 normalo;
 out vec3 fragpos;
 out vec3 fragPosWorldSpace;
+out mat3 tbnMat;
 
 layout (std140) uniform Matricies {
     mat4 projectionMatrix;
@@ -24,11 +27,22 @@ void main(void){
 	vec4 viewSpacePos = viewTrans * vec4(position,1.0);
 
 	vec4 worldPosition = translationMatrix * vec4(position,1.0);
-	fragPosWorldSpace = worldPosition.xyz;
 	vec4 positionRelativeToCam = projectionViewMatrix * worldPosition;
 
-    fragpos = viewSpacePos.xyz;
-	normalo = normal * transpose(mat3(viewTrans));
+    fragPosWorldSpace = worldPosition.xyz;
+	//mat3 viewTransTrans = transpose(mat3(viewTrans));
+	normalo = normal;
+
+	fragpos = viewSpacePos.xyz;
+
+	mat3 tangMat = mat3(translationMatrix);
+
+	vec3 T = normalize(tangMat * tangent);
+	vec3 B = normalize(tangMat * bitangent);
+   	vec3 N = normalize(tangMat * normal);
+	//T = normalize(T - dot(T, N) * N);
+	//vec3 B = cross(T, N);
+   	tbnMat = mat3(T, B, N);
 
     gl_Position = positionRelativeToCam;
 	textureCoords = textureCoordinates;

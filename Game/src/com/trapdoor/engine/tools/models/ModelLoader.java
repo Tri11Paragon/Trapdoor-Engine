@@ -6,7 +6,6 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 
 import org.joml.Vector3f;
-import org.joml.Vector4f;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIColor4D;
 import org.lwjgl.assimp.AIFace;
@@ -16,6 +15,7 @@ import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.AIString;
 import org.lwjgl.assimp.AIVector3D;
 import org.lwjgl.assimp.Assimp;
+
 import com.jme3.bullet.collision.shapes.infos.IndexedMesh;
 import com.trapdoor.engine.datatypes.IndexingFloatArrayList;
 import com.trapdoor.engine.datatypes.IndexingIntArrayList;
@@ -99,22 +99,22 @@ public class ModelLoader {
 			if (!materialTexturePath.contains("NORENDER"))
 				GameRegistry.registerTexture(texturePath);
 			
-			Vector4f ambient = Material.DEFAULT_COLOUR;
+			Vector3f ambient = Material.DEFAULT_COLOUR;
 		    int result = Assimp.aiGetMaterialColor(material, Assimp.AI_MATKEY_COLOR_AMBIENT, Assimp.aiTextureType_NONE, 0, colour);
 		    if (result == 0) {
-		        ambient = new Vector4f(colour.r(), colour.g(), colour.b(), colour.a());
+		        ambient = new Vector3f(colour.r(), colour.g(), colour.b());
 		    }
 
-		    Vector4f diffuse = Material.DEFAULT_COLOUR;
+		    Vector3f diffuse = Material.DEFAULT_COLOUR;
 		    result = Assimp.aiGetMaterialColor(material, Assimp.AI_MATKEY_COLOR_DIFFUSE, Assimp.aiTextureType_NONE, 0, colour);
 		    if (result == 0) {
-		        diffuse = new Vector4f(colour.r(), colour.g(), colour.b(), colour.a());
+		        diffuse = new Vector3f(colour.r(), colour.g(), colour.b());
 		    }
 
-		    Vector4f specular = Material.DEFAULT_COLOUR;
+		    Vector3f specular = Material.DEFAULT_COLOUR;
 		    result = Assimp.aiGetMaterialColor(material, Assimp.AI_MATKEY_COLOR_SPECULAR, Assimp.aiTextureType_NONE, 0, colour);
 		    if (result == 0) {
-		        specular = new Vector4f(colour.r(), colour.g(), colour.b(), colour.a());
+		        specular = new Vector3f(colour.r(), colour.g(), colour.b());
 		    }
 		    
 			AIString normalPath = AIString.calloc();
@@ -183,16 +183,14 @@ public class ModelLoader {
 							displacementTexturePath, 
 							AOTexturePath, 
 							bumbTexturePath, 
-							new Vector3f(average(diffuse), average(specular), average(ambient))
+							diffuse, 
+							ambient, 
+							specular
 						)
 					);
 		}
 		// can't load texture, meaning we need to load error material
 		return GameRegistry.getErrorMaterial();
-	}
-	
-	private static float average(Vector4f vec) {
-		return (vec.x + vec.y + vec.z + vec.w) / 4f;
 	}
 	
 	private static Mesh processMesh(AIMesh mesh, Material[] materials) {
