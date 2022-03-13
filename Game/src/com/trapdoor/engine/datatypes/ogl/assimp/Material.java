@@ -1,7 +1,6 @@
 package com.trapdoor.engine.datatypes.ogl.assimp;
 
 import org.joml.Vector3f;
-import org.joml.Vector4f;
 
 import com.trapdoor.engine.datatypes.ogl.Texture;
 import com.trapdoor.engine.registry.GameRegistry;
@@ -13,7 +12,7 @@ import com.trapdoor.engine.registry.GameRegistry;
  */
 public class Material {
 	
-	public static final Vector4f DEFAULT_COLOUR = new Vector4f();
+	public static final Vector3f DEFAULT_COLOUR = new Vector3f();
 	
 	private String diffuseTexturePath;
 	private String normalTexturePath;
@@ -22,7 +21,10 @@ public class Material {
 	private String specularTexturePath;
 	
 	private boolean usingSpecialMaterial = false;
-	private Vector3f colorInformation;
+	
+	private Vector3f diffuse;
+	private Vector3f ambient;
+	private Vector3f specular;
 	
 	private Texture diffuseTexture;
 	private Texture normalTexture;
@@ -30,7 +32,7 @@ public class Material {
 	private Texture ambientOcclusionTexture;
 	private Texture specularTexture;
 	
-	public Material(String diffuseTexture, String normalMapTexture, String displacementTexturePath, String ambientOcclusionTexturePath, String specularTexturePath, Vector3f colorInformation) {
+	public Material(String diffuseTexture, String normalMapTexture, String displacementTexturePath, String ambientOcclusionTexturePath, String specularTexturePath, Vector3f diffuse, Vector3f ambient, Vector3f specular) {
 		this.diffuseTexturePath = diffuseTexture;
 		
 		//if (normalMapTexture == GameRegistry.DEFAULT_EMPTY_NORMAL_MAP)
@@ -39,7 +41,9 @@ public class Material {
 		if (normalMapTexture != null || displacementTexturePath != null || ambientOcclusionTexturePath != null)
 			usingSpecialMaterial = true;
 		this.normalTexturePath = normalMapTexture;
-		this.colorInformation = colorInformation;
+		this.diffuse = diffuse;
+		this.ambient = ambient;
+		this.specular = specular;
 		this.displacementTexturePath = displacementTexturePath;
 		this.ambientOcclusionTexturePath = ambientOcclusionTexturePath;
 		this.specularTexturePath = specularTexturePath;
@@ -57,7 +61,7 @@ public class Material {
 	}
 	
 	public Material clone() {
-		Material m = new Material(diffuseTexturePath, diffuseTexturePath, displacementTexturePath, ambientOcclusionTexturePath, specularTexturePath, colorInformation);
+		Material m = new Material(diffuseTexturePath, diffuseTexturePath, displacementTexturePath, ambientOcclusionTexturePath, specularTexturePath, diffuse, ambient, specular);
 		//GameRegistry.registerMaterial2(m);
 		return m;
 	}
@@ -105,10 +109,6 @@ public class Material {
 	public void setNormalTexturePath(String texture) {
 		this.normalTexturePath = texture;
 	}
-	
-	public Vector3f getColorInformation() {
-		return this.colorInformation;
-	}
 
 	public String getDisplacementTexturePath() {
 		return displacementTexturePath;
@@ -144,6 +144,18 @@ public class Material {
 
 	public void setSpecularTexture(Texture specularTexture) {
 		this.specularTexture = specularTexture;
+	}
+
+	public Vector3f getDiffuse() {
+		return diffuse;
+	}
+
+	public Vector3f getAmbient() {
+		return ambient;
+	}
+
+	public Vector3f getSpecular() {
+		return specular;
 	}
 	
 }

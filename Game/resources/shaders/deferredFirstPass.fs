@@ -4,6 +4,7 @@ in vec2 textureCoords;
 
 in vec3 normalo;
 in vec3 fragpos;
+in vec3 fragPosWorldSpace;
 in vec4 shadowCoords;
 in mat3 tbnMat;
 
@@ -31,6 +32,7 @@ uniform sampler2DArray shadowMap;
 uniform vec3 viewPos;
 
 uniform float specAmount;
+uniform vec3 diffuse;
 
 const int pcfCount = 2;
 const float totalTexels = (pcfCount * 2.0 + 1.0) * (pcfCount * 2.0 + 1.0);
@@ -50,7 +52,7 @@ float shadowCalc(vec3 normal){
         layer = cascadeCount;
     }
 
-    vec4 fragPosLightSpace = lightSpaceMatrices[layer] * vec4(fragpos, 1.0);
+    vec4 fragPosLightSpace = lightSpaceMatrices[layer] * vec4(fragPosWorldSpace, 1.0);
     // perform perspective divide
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
     // transform to [0,1] range
@@ -96,11 +98,16 @@ void main(){
 	float shadower = shadowCalc(normali);
 	float lightFactor = 1.0 - (0.6 * shadower);
 
-    vec3 viewDir  = normalize(viewPos - fragpos);
+    vec3 viewDir  = normalize(viewPos - fragPosWorldSpace);
 
-    gPosition = vec4(fragpos, 1.0f);
+    gPosition = vec4(fragPosWorldSpace, 1.0f);
     gNormal = vec4(normali, 1.0f);
-    gAlbedoSpec = texture(diffuseTexture, textureCoords);
+
+    if (diffuse.x != -1){
+        gAlbedoSpec.rgb = diffuse;
+        gAlbedoSpec.a = 1.0f;
+    } else
+        gAlbedoSpec = texture(diffuseTexture, textureCoords);
 
 
     if (gAlbedoSpec.a < 0.1f)

@@ -63,6 +63,7 @@ public class TestDisplay extends IDisplay {
 		GameRegistry.registerModel("resources/models/megacube.dae");
 		
 		GameRegistry.registerModel("resources/models/poop.dae");
+		GameRegistry.registerModel("resources/models/greg.dae");
 		GameRegistry.registerModel("resources/models/Mackenzie_Hallway_brt.dae");
 		
 		GameRegistry.registerSound("resources/sounds/penis.ogg");
@@ -197,6 +198,8 @@ public class TestDisplay extends IDisplay {
 				12000, 15, 6)
 					.setModel(GameRegistry.getModel("resources/models/spawner.dae"))
 					.setPosition(75, -8, -25));
+		
+		this.world.addEntityToWorld(new Entity().setModel(GameRegistry.getModel("resources/models/greg.dae")).setPosition(-5, -18, 20));
 		
 	}
 

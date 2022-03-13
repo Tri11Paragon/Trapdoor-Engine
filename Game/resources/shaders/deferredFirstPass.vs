@@ -23,15 +23,17 @@ layout (std140) uniform Matricies {
 uniform mat4 translationMatrix;
 
 void main(void){
-	//mat4 viewTrans = viewMatrix * translationMatrix;
-	//vec4 viewSpacePos = viewTrans * vec4(position,1.0);
+	mat4 viewTrans = viewMatrix * translationMatrix;
+	vec4 viewSpacePos = viewTrans * vec4(position,1.0);
 
 	vec4 worldPosition = translationMatrix * vec4(position,1.0);
 	vec4 positionRelativeToCam = projectionViewMatrix * worldPosition;
 
-    fragpos = worldPosition.xyz;
+    fragPosWorldSpace = worldPosition.xyz;
 	//mat3 viewTransTrans = transpose(mat3(viewTrans));
 	normalo = normal;
+
+	fragpos = viewSpacePos.xyz;
 
 	mat3 tangMat = mat3(translationMatrix);
 

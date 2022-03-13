@@ -48,11 +48,11 @@ public class MaterialFSFormater {
 				writeString(dos, m.getAmbientOcclusionTexturePath());
 				writeString(dos, m.getSpecularTexturePath());
 				dos.writeChar('f');
-				dos.writeFloat(m.getColorInformation().x);
+				dos.writeFloat(m.getDiffuse().x);
 				dos.writeChar('f');
-				dos.writeFloat(m.getColorInformation().y);
+				dos.writeFloat(m.getDiffuse().y);
 				dos.writeChar('f');
-				dos.writeFloat(m.getColorInformation().z);
+				dos.writeFloat(m.getDiffuse().z);
 				dos.writeChar('e');
 			}
 			dos.writeChar('q');
@@ -136,6 +136,7 @@ public class MaterialFSFormater {
 				if (!diffuseTexture.contains("NORENDER"))
 					GameRegistry.registerTexture(diffuseTexture);
 				GameRegistry.registerTexture(normalTexture);
+				// TODO
 				m.add(GameRegistry.registerMaterial2(
 						new Material(
 								diffuseTexture, 
@@ -143,7 +144,9 @@ public class MaterialFSFormater {
 								displacementTexture, 
 								AOTexture, 
 								SpecTexture, 
-								new Vector3f(diffuse, specular, ambient)
+								new Vector3f(diffuse, specular, ambient),
+								new Vector3f(),
+								new Vector3f()
 							)
 						));
 			}

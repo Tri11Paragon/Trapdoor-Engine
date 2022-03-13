@@ -127,7 +127,7 @@ public class ModelEditorDisplay extends IDisplay {
 		diffuseSlider.getListenerMap().addListener((SliderChangeValueEvent.class), l -> {
 			float f = l.getNewValue() / 100f;
 			diffuseInput.getTextState().setText(Float.toString(f));
-			currentMaterial.getColorInformation().x = f;
+			currentMaterial.getDiffuse().x = currentMaterial.getDiffuse().y = currentMaterial.getDiffuse().z = f;
 		});
 		
 		diffuseInput.setSize(48, 30);
@@ -135,7 +135,7 @@ public class ModelEditorDisplay extends IDisplay {
 		diffuseInput.getListenerMap().addListener((TextInputContentChangeEvent.class), l -> {
 			try {
 				float f = Float.parseFloat(l.getNewValue());
-				currentMaterial.getColorInformation().x = f;
+				currentMaterial.getDiffuse().x = currentMaterial.getDiffuse().y = currentMaterial.getDiffuse().z = f;
 				diffuseSlider.setValue(f);
 			} catch (NumberFormatException e) {}
 		});
@@ -155,7 +155,7 @@ public class ModelEditorDisplay extends IDisplay {
 		specSlider.getListenerMap().addListener((SliderChangeValueEvent.class), l -> {
 			float f = l.getNewValue() / 100f;
 			specInput.getTextState().setText(Float.toString(f));
-			currentMaterial.getColorInformation().y = f;
+			currentMaterial.getSpecular().x = currentMaterial.getSpecular().y = currentMaterial.getSpecular().z = f;
 		});
 		
 		specInput.setSize(48, 30);
@@ -163,7 +163,7 @@ public class ModelEditorDisplay extends IDisplay {
 		specInput.getListenerMap().addListener((TextInputContentChangeEvent.class), l -> {
 			try {
 				float f = Float.parseFloat(l.getNewValue());
-				currentMaterial.getColorInformation().y = f;
+				currentMaterial.getSpecular().x = currentMaterial.getSpecular().y = currentMaterial.getSpecular().z = f;
 				specSlider.setValue(f);
 			} catch (NumberFormatException e) {}
 		});
@@ -183,7 +183,7 @@ public class ModelEditorDisplay extends IDisplay {
 		ambientSlider.getListenerMap().addListener((SliderChangeValueEvent.class), l -> {
 			float f = l.getNewValue() / 100f;
 			ambientInput.getTextState().setText(Float.toString(f));
-			currentMaterial.getColorInformation().z = f;
+			currentMaterial.getAmbient().x = currentMaterial.getAmbient().y = currentMaterial.getAmbient().z = f;
 		});
 		
 		ambientInput.setSize(48, 30);
@@ -191,7 +191,7 @@ public class ModelEditorDisplay extends IDisplay {
 		ambientInput.getListenerMap().addListener((TextInputContentChangeEvent.class), l -> {
 			try {
 				float f = Float.parseFloat(l.getNewValue());
-				currentMaterial.getColorInformation().z = f;
+				currentMaterial.getAmbient().x = currentMaterial.getAmbient().y = currentMaterial.getAmbient().z = f;
 				ambientSlider.setValue(f);
 			} catch (NumberFormatException e) {}
 		});
@@ -223,14 +223,14 @@ public class ModelEditorDisplay extends IDisplay {
 					diffuseTexture.getTextState().setText(currentMaterial.getDiffuseTexturePath());
 					normalTexture.getTextState().setText(currentMaterial.getNormalTexturePath());
 					
-					diffuseInput.getTextState().setText(Float.toString(currentMaterial.getColorInformation().x));
-					diffuseSlider.setValue(currentMaterial.getColorInformation().x * 100);
+					diffuseInput.getTextState().setText(Float.toString(currentMaterial.getDiffuse().x));
+					diffuseSlider.setValue(currentMaterial.getDiffuse().x * 100);
 					
-					specInput.getTextState().setText(Float.toString(currentMaterial.getColorInformation().y));
-					specSlider.setValue(currentMaterial.getColorInformation().y * 100);
+					specInput.getTextState().setText(Float.toString(currentMaterial.getSpecular().y));
+					specSlider.setValue(currentMaterial.getSpecular().y * 100);
 					
-					ambientInput.getTextState().setText(Float.toString(currentMaterial.getColorInformation().z));
-					ambientSlider.setValue(currentMaterial.getColorInformation().z * 100);
+					ambientInput.getTextState().setText(Float.toString(currentMaterial.getAmbient().x));
+					ambientSlider.setValue(currentMaterial.getAmbient().x * 100);
 					
 				});
 		
