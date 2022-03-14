@@ -1,8 +1,10 @@
 package com.game.displays;
 
+import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-import com.game.entities.EntityGolfBall;
+import com.game.entities.EntityBall;
+import com.game.entities.EntityGrid;
 import com.game.entities.EntityKent;
 import com.game.entities.Kentipede;
 import com.game.entities.SloshyEntityCamera;
@@ -31,8 +33,8 @@ public class SinglePlayerDisplay extends IDisplay{
 	public CreativeFirstPerson camera;
 	public World world;
 	private Layer layers, cameraIcon, ballIcon;
-	private Entity a;
-	private SloshyEntityCamera s;
+	private Entity a, ball;
+//	private SloshyEntityCamera s;
 //	private SmoothEntityCamera s;
 //	private EntityCamera s;
 	
@@ -57,68 +59,27 @@ public class SinglePlayerDisplay extends IDisplay{
 				"resources/textures/skyboxes/urban-skyboxes/CNTower/negz.jpg"	// back
 			);
 		
-		s = (SloshyEntityCamera) new SloshyEntityCamera(camera).setPosition(0, 0, 5);
+		this.camera.setPosition(new Vector3f(20, 10, 20));
+//		s = (SloshyEntityCamera) new SloshyEntityCamera(camera).setPosition(0, 0, 5);
 //		s = new SmoothEntityCamera(this.camera);
 //		s = new EntityCamera(this.camera);
-		this.world.addEntityToWorld(s);
+//		this.world.addEntityToWorld(s);
 		
 		a = new Entity().setModel(GameRegistry.getModel("resources/models/simple/grid.dae"))
 				.setPosition(0, -5, 0);
 		this.world.addEntityToWorld(a);
+		
+		Entity b = new EntityGrid().setModel(GameRegistry.getModel("resources/models/simple/grid.dae"))
+				.setPosition(0, 2, 0);
+		Transform t = (Transform) b.getComponent(Transform.class);
+		t.setScale(1, 0.01f, 1);
+		t.setRoll((float) -Math.PI / 2);
+		this.world.addEntityToWorld(b);
 				
-		a = new EntityGolfBall().setModel(GameRegistry.getModel("resources/models/simple/ball.dae"))
-				.setPosition(0, 0, -6);
-		this.world.addEntityToWorld(a);
+		ball = new EntityBall().setModel(GameRegistry.getModel("resources/models/simple/ball.dae"));
+		this.world.addEntityToWorld(ball);
 		
-		//kent
-//		new Kentipede(this.world, 2, 10, s);
-		
-//		for (float i = 0; i < 2*Math.PI; i+=Math.PI/15) {
-//			a = new EntityKent(i).setModel(GameRegistry.getModel("resources/models/kent.dae"));
-//			this.world.addEntityToWorld(a);
-//		}
-		
-//		for (float i = 0; i < 2*Math.PI; i+=Math.PI/10) {
-//			a = new EntityKent(i, 2).setModel(GameRegistry.getModel("resources/models/kent.dae"));
-//			this.world.addEntityToWorld(a);
-//		}
-		
-		// GUI
-		Layer layer = new Layer();
-		layer.setPosition(0, 0);
-		layer.setSize(300, 300);		
-		SimpleLineBorder border = new SimpleLineBorder();
-		border.setColor(new Vector4f(0 / 255f, 0 / 255f, 0 / 255f, 200 / 255f));
-		border.setThickness(2);		
-		layer.getStyle().setBorder(border);		
-		Background bg2 = new Background();
-		bg2.setColor(new Vector4f(50 / 255f, 50 / 255f, 50 / 255f, 0.75f));
-		layer.getStyle().setBackground(bg2);
-		
-		cameraIcon = new Layer();
-//		cameraIcon.setPosition(150, 150);
-		cameraIcon.setSize(10, 10);
-		Background bg3 = new Background();
-		bg3.setColor(new Vector4f(1f, 1f, 1f, 1f));
-		cameraIcon.getStyle().setBackground(bg3);
-		
-		ballIcon = new Layer();
-//		ballIcon.setPosition(150, 150);
-		ballIcon.setSize(10, 10);
-		Background bg4 = new Background();
-		bg4.setColor(new Vector4f(1f, 0f, 0f, 1f));
-		ballIcon.getStyle().setBackground(bg4);
-		
-		layers = new Layer();
-		layers.setSize(DisplayManager.WIDTH, DisplayManager.HEIGHT);
-		layers.add(layer);
-		layers.add(cameraIcon);
-		layers.add(ballIcon);
-		UIMaster.getMasterFrame().addLayer(layers);
-		
-		layers.setEnabled(false);
-		layers.getStyle().setDisplay(layers.isEnabled() == true ? DisplayType.MANUAL : DisplayType.NONE);
-		
+		doGUI();
 	}
 
 	@Override
@@ -132,9 +93,9 @@ public class SinglePlayerDisplay extends IDisplay{
 	public void render() {
 		// TODO Auto-generated method stub
 		this.world.render();
-		Transform t = s.getComponent(Transform.class);
+//		Transform t = s.getComponent(Transform.class);
 		Transform u = a.getComponent(Transform.class);
-		cameraIcon.setPosition(150 + 6*t.getX(), 150 + 6*t.getZ());
+//		cameraIcon.setPosition(150 + 6*t.getX(), 150 + 6*t.getZ());
 		ballIcon.setPosition(150 + 6*u.getX(), 150 + 6*u.getZ());
 	}
 	
@@ -154,6 +115,44 @@ public class SinglePlayerDisplay extends IDisplay{
 	public void onDestory() {
 		// TODO Auto-generated method stub
 		this.world.cleanup();
+	}
+	
+	private void doGUI() {
+		// GUI
+		Layer layer = new Layer();
+		layer.setPosition(0, 0);
+		layer.setSize(300, 300);		
+		SimpleLineBorder border = new SimpleLineBorder();
+		border.setColor(new Vector4f(0 / 255f, 0 / 255f, 0 / 255f, 200 / 255f));
+		border.setThickness(2);		
+		layer.getStyle().setBorder(border);		
+		Background bg2 = new Background();
+		bg2.setColor(new Vector4f(50 / 255f, 50 / 255f, 50 / 255f, 0.75f));
+		layer.getStyle().setBackground(bg2);
+		
+		cameraIcon = new Layer();
+//				cameraIcon.setPosition(150, 150);
+		cameraIcon.setSize(10, 10);
+		Background bg3 = new Background();
+		bg3.setColor(new Vector4f(1f, 1f, 1f, 1f));
+		cameraIcon.getStyle().setBackground(bg3);
+		
+		ballIcon = new Layer();
+//				ballIcon.setPosition(150, 150);
+		ballIcon.setSize(10, 10);
+		Background bg4 = new Background();
+		bg4.setColor(new Vector4f(1f, 0f, 0f, 1f));
+		ballIcon.getStyle().setBackground(bg4);
+		
+		layers = new Layer();
+		layers.setSize(DisplayManager.WIDTH, DisplayManager.HEIGHT);
+		layers.add(layer);
+		layers.add(cameraIcon);
+		layers.add(ballIcon);
+		UIMaster.getMasterFrame().addLayer(layers);
+		
+		layers.setEnabled(false);
+		layers.getStyle().setDisplay(layers.isEnabled() == true ? DisplayType.MANUAL : DisplayType.NONE);
 	}
 	
 }
