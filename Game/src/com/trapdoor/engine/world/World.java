@@ -22,7 +22,6 @@ import com.trapdoor.engine.display.DisplayManager;
 import com.trapdoor.engine.registry.Threading;
 import com.trapdoor.engine.renderer.DeferredRenderer;
 import com.trapdoor.engine.renderer.EntityRenderer;
-import com.trapdoor.engine.renderer.ao.SSAORenderer;
 import com.trapdoor.engine.renderer.particles.ParticleRenderer;
 import com.trapdoor.engine.renderer.particles.ParticleSystem;
 import com.trapdoor.engine.renderer.postprocessing.BloomRenderer;
@@ -65,6 +64,7 @@ public class World {
 	private BloomRenderer bloomRenderer;
 	private ParticleRenderer particleRenderer;
 
+	@SuppressWarnings("deprecation")
 	public World(Camera c) {
 		// entitiesinworld is shared memory between the renderer and the world object.
 		this.renderer = new EntityRenderer();
@@ -158,6 +158,7 @@ public class World {
 	/**
 	 * called by the physics thread
 	 */
+	@SuppressWarnings("deprecation")
 	public void update() {
 		ArrayList<Entity> allEnts = this.entityStorage.getAllEntities();
 		entityCount = allEnts.size();

@@ -106,7 +106,7 @@ public class ModelLoader {
 		    }
 
 		    Vector3f diffuse = Material.DEFAULT_COLOUR;
-		    result = Assimp.aiGetMaterialColor(material, Assimp.AI_MATKEY_COLOR_DIFFUSE, Assimp.aiTextureType_NONE, 0, colour);
+		    result = Assimp.aiGetMaterialColor(material, Assimp.AI_MATKEY_BASE_COLOR, Assimp.aiTextureType_NONE, 0, colour);
 		    if (result == 0) {
 		        diffuse = new Vector3f(colour.r(), colour.g(), colour.b());
 		    }

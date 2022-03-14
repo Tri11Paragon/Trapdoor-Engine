@@ -58,8 +58,8 @@ public class EntityRenderer {
 				shader.loadDiffuseAmount(mat.getDiffuse());
 			else {
 				shader.loadDiffuseAmount(nodiffuse);
-				GL11.glBindTexture(GL11.GL_TEXTURE_2D, mat.getDiffuseTexture().getID());
 			}
+			GL11.glBindTexture(GL11.GL_TEXTURE_2D, mat.getDiffuseTexture().getID());
 			GL13.glActiveTexture(GL13.GL_TEXTURE1);	
 			GL11.glBindTexture(GL11.GL_TEXTURE_2D, mat.getNormalTexture().getID());
 			GL13.glActiveTexture(GL13.GL_TEXTURE2);	

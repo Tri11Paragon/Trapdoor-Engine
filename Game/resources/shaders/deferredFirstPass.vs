@@ -11,6 +11,10 @@ out vec3 normalo;
 out vec3 fragpos;
 out vec3 fragPosWorldSpace;
 out mat3 tbnMat;
+out vec3 TangentViewPos;
+out vec3 TangentFragPos;
+
+uniform vec3 viewPos;
 
 layout (std140) uniform Matricies {
     mat4 projectionMatrix;
@@ -43,6 +47,11 @@ void main(void){
 	//T = normalize(T - dot(T, N) * N);
 	//vec3 B = cross(T, N);
    	tbnMat = mat3(T, B, N);
+
+	//mat3 TBN = transpose(tbnMat);
+
+    //TangentViewPos  = TBN * viewPos;
+    //TangentFragPos  = TBN * fragPosWorldSpace;
 
     gl_Position = positionRelativeToCam;
 	textureCoords = textureCoordinates;

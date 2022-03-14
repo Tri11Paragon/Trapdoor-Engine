@@ -7,6 +7,8 @@ in vec3 fragpos;
 in vec3 fragPosWorldSpace;
 in vec4 shadowCoords;
 in mat3 tbnMat;
+in vec3 TangentViewPos;
+in vec3 TangentFragPos;
 
 
 layout (location = 0) out vec4 gPosition;
@@ -25,7 +27,6 @@ uniform float farPlane;
 uniform sampler2D diffuseTexture;
 uniform sampler2D normalMap;
 uniform sampler2D displacementMap;
-uniform sampler2D aoMap;
 uniform sampler2D specMap;
 uniform sampler2DArray shadowMap;
 
@@ -88,17 +89,71 @@ float shadowCalc(vec3 normal){
     return shadow;
 }
 
+const float heightScale = 0.05f;
+
+// vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir) { 
+//     float height =  texture(displacementMap, texCoords).r;    
+//     vec2 p = viewDir.xy / viewDir.z * (height * height_scale);
+//     return texCoords - p;    
+// } 
+
+vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir)
+{ 
+    // number of depth layers
+    const float minLayers = 8;
+    const float maxLayers = 32;
+    float numLayers = mix(maxLayers, minLayers, abs(dot(vec3(0.0, 0.0, 1.0), viewDir)));  
+    // calculate the size of each layer
+    float layerDepth = 1.0 / numLayers;
+    // depth of current layer
+    float currentLayerDepth = 0.0;
+    // the amount to shift the texture coordinates per layer (from vector P)
+    vec2 P = viewDir.xy / viewDir.z * heightScale; 
+    vec2 deltaTexCoords = P / numLayers;
+  
+    // get initial values
+    vec2  currentTexCoords     = texCoords;
+    float currentDepthMapValue = texture(displacementMap, currentTexCoords).r;
+      
+    while(currentLayerDepth < currentDepthMapValue)
+    {
+        // shift texture coordinates along direction of P
+        currentTexCoords -= deltaTexCoords;
+        // get depthmap value at current texture coordinates
+        currentDepthMapValue = texture(displacementMap, currentTexCoords).r;  
+        // get depth of next layer
+        currentLayerDepth += layerDepth;  
+    }
+    
+    // get texture coordinates before collision (reverse operations)
+    vec2 prevTexCoords = currentTexCoords + deltaTexCoords;
+
+    // get depth after and before collision for linear interpolation
+    float afterDepth  = currentDepthMapValue - currentLayerDepth;
+    float beforeDepth = texture(displacementMap, prevTexCoords).r - currentLayerDepth + layerDepth;
+ 
+    // interpolation of texture coordinates
+    float weight = afterDepth / (afterDepth - beforeDepth);
+    vec2 finalTexCoords = prevTexCoords * weight + currentTexCoords * (1.0 - weight);
+
+    return finalTexCoords;
+}
+
 void main(){
-	
-    vec3 normaltbn = normalize(texture(normalMap, textureCoords).rgb);
+
+    vec3 viewDir = normalize(TangentViewPos - TangentFragPos);
+    //vec2 texCoords = ParallaxMapping(textureCoords,  viewDir);
+    vec2 texCoords = textureCoords;
+
+    vec3 normaltbn = normalize(texture(normalMap, texCoords).rgb);
     vec3 normali = normalize(tbnMat * normaltbn);
 
     // tbnMat * normaltbn
 
 	float shadower = shadowCalc(normali);
-	float lightFactor = 1.0 - (0.6 * shadower);
+	float lightFactor = 1.0 - (0.8 * shadower);
 
-    vec3 viewDir  = normalize(viewPos - fragPosWorldSpace);
+    //
 
     gPosition = vec4(fragPosWorldSpace, 1.0f);
     gNormal = vec4(normali, 1.0f);
@@ -107,23 +162,23 @@ void main(){
         gAlbedoSpec.rgb = diffuse;
         gAlbedoSpec.a = 1.0f;
     } else
-        gAlbedoSpec = texture(diffuseTexture, textureCoords);
+        gAlbedoSpec = texture(diffuseTexture, texCoords);
 
 
     if (gAlbedoSpec.a < 0.1f)
         discard;
     
-    vec4 specMapTexture = texture(specMap, textureCoords);
+    vec4 specMapTexture = texture(specMap, texCoords);
     if (specMapTexture.a > 0)
         gAlbedoSpec.a = specMapTexture.r;
     else
         gAlbedoSpec.a = specAmount;
     
 
-    vec4 displacementMapTexture = texture(displacementMap, textureCoords);
-    float displacement = -1.0f;
-    if (displacementMapTexture.a > 0)
-        displacement = displacementMapTexture.r;
+    //  vec4 displacementMapTexture = texture(displacementMap, textureCoords);
+    //  float displacement = -1.0f;
+    //  if (displacementMapTexture.a > 0)
+    //      displacement = displacementMapTexture.r;
 
-    gRenderState = vec4(1.0f, displacement, lightFactor, 0.0f);
+    gRenderState = vec4(1.0f, 0.0f, lightFactor, 0.0f);
 }
