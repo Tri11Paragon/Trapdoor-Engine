@@ -5,22 +5,21 @@ import com.trapdoor.engine.tools.input.Keyboard;
 import com.trapdoor.engine.world.entities.Entity;
 import com.trapdoor.engine.world.entities.components.Transform;
 
-public class EntityBall extends Entity {
+public class EntityKevin extends Entity {
 	
 	private Transform t;
-	private float p = 0, x, y, z;
-	private boolean dir = true;
+	private float x, y, z, speed = 0.3f;
 	
-	private final float zero = 6.325f;
-	
-	public EntityBall() {
+	public EntityKevin() {
 		super(0);
 		this.t = (Transform) this.getComponent(Transform.class);
 	}
 	
-	public EntityBall(int z) {
+	public EntityKevin(int x, int y, int z) {
 		super(0);
 		this.t = (Transform) this.getComponent(Transform.class);
+		this.x = x;
+		this.y = y;
 		this.z = z;
 	}
 	
@@ -37,22 +36,14 @@ public class EntityBall extends Entity {
 		
 		this.t.setPosition(this.x, this.y, this.z);
 		
-		if (this.p > zero) {
-			dir = false;
-			this.p = zero;
-		}
-		else if (this.p < -zero) {
-			dir = true;
-			this.p = -zero;
-		}
-		
-		if (this.dir)
-			this.p += 0.1f;
-		else
-			this.p -= 0.1f;
-		
-		this.x = this.p;
-		this.y = (float) (-0.5 * this.x * this.x + 20);
+		if (Keyboard.isKeyDown(Keyboard.W))
+			this.z -= speed;
+		if (Keyboard.isKeyDown(Keyboard.S))
+			this.z += speed;
+		if(Keyboard.isKeyDown(Keyboard.A))
+			this.x -= speed;
+		if (Keyboard.isKeyDown(Keyboard.D))
+			this.x += speed;
 	}
 	
 }
