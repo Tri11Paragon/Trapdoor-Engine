@@ -11,6 +11,7 @@ import com.spinyowl.legui.component.Layer;
 import com.spinyowl.legui.component.event.component.ChangeSizeEvent;
 import com.spinyowl.legui.intersection.RectangleIntersector;
 import com.spinyowl.legui.style.Background;
+import com.spinyowl.legui.style.Style.DisplayType;
 import com.spinyowl.legui.style.border.SimpleLineBorder;
 import com.trapdoor.Main;
 import com.trapdoor.engine.camera.CreativeFirstPerson;
@@ -29,7 +30,7 @@ public class SinglePlayerDisplay extends IDisplay{
 	
 	public CreativeFirstPerson camera;
 	public World world;
-	private Layer cameraIcon, ballIcon;
+	private Layer layers, cameraIcon, ballIcon;
 	private Entity a;
 	private SloshyEntityCamera s;
 //	private SmoothEntityCamera s;
@@ -108,19 +109,23 @@ public class SinglePlayerDisplay extends IDisplay{
 		bg4.setColor(new Vector4f(1f, 0f, 0f, 1f));
 		ballIcon.getStyle().setBackground(bg4);
 		
-		Layer layers = new Layer();
+		layers = new Layer();
 		layers.setSize(DisplayManager.WIDTH, DisplayManager.HEIGHT);
 		layers.add(layer);
 		layers.add(cameraIcon);
 		layers.add(ballIcon);
 		UIMaster.getMasterFrame().addLayer(layers);
 		
+		layers.setEnabled(false);
+		layers.getStyle().setDisplay(layers.isEnabled() == true ? DisplayType.MANUAL : DisplayType.NONE);
+		
 	}
 
 	@Override
 	public void onSwitch() {
 		// TODO Auto-generated method stub
-		
+		layers.setEnabled(true);
+		layers.getStyle().setDisplay(layers.isEnabled() == true ? DisplayType.MANUAL : DisplayType.NONE);
 	}
 
 	@Override
@@ -141,7 +146,8 @@ public class SinglePlayerDisplay extends IDisplay{
 	@Override
 	public void onLeave() {
 		// TODO Auto-generated method stub
-		
+		layers.setEnabled(false);
+		layers.getStyle().setDisplay(layers.isEnabled() == true ? DisplayType.MANUAL : DisplayType.NONE);
 	}
 
 	@Override
