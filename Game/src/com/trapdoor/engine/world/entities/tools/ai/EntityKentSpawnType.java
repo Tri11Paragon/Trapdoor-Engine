@@ -1,4 +1,4 @@
-package com.trapdoor.engine.world.entities.extras;
+package com.trapdoor.engine.world.entities.tools.ai;
 
 import com.game.entities.EntityKent;
 import com.trapdoor.engine.registry.GameRegistry;

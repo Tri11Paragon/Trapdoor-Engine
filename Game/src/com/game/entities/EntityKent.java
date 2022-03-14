@@ -10,7 +10,7 @@ import com.jme3.math.Vector3f;
 import com.trapdoor.engine.renderer.particles.ParticleSystem;
 import com.trapdoor.engine.world.entities.Entity;
 import com.trapdoor.engine.world.entities.components.Transform;
-import com.trapdoor.engine.world.entities.extras.EntityEvent;
+import com.trapdoor.engine.world.entities.tools.EntityEvent;
 
 public class EntityKent extends Entity {
 	

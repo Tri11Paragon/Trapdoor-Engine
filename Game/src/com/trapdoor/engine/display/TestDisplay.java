@@ -19,14 +19,14 @@ import com.trapdoor.engine.renderer.particles.ParticleSystem;
 import com.trapdoor.engine.renderer.particles.systems.AnimatedParticleSystem;
 import com.trapdoor.engine.renderer.ui.CommandBox;
 import com.trapdoor.engine.renderer.ui.DebugInfo;
-import com.trapdoor.engine.tools.RayCasting;
 import com.trapdoor.engine.tools.input.Mouse;
 import com.trapdoor.engine.world.World;
 import com.trapdoor.engine.world.entities.BouncingEntity;
 import com.trapdoor.engine.world.entities.Entity;
 import com.trapdoor.engine.world.entities.EntityCamera;
 import com.trapdoor.engine.world.entities.EntitySpawner;
-import com.trapdoor.engine.world.entities.extras.EntityKentSpawnType;
+import com.trapdoor.engine.world.entities.tools.Weapon;
+import com.trapdoor.engine.world.entities.tools.ai.EntityKentSpawnType;
 import com.trapdoor.engine.world.sound.SoundSystem;
 import com.trapdoor.engine.world.sound.SoundSystemType;
 
@@ -41,7 +41,6 @@ public class TestDisplay extends IDisplay {
 	//private ArrayList<Entity> e = new ArrayList<Entity>();
 	private CreativeFirstPerson camera;
 	private EntityCamera cameraEnt;
-	private RayCasting rayCasting;
 	private World world;
 	private Model cubeModel;
 	private ParticleSystem ps;
@@ -111,8 +110,7 @@ public class TestDisplay extends IDisplay {
 		
 		this.camera = new CreativeFirstPerson();
 		this.world = new World(camera);
-		this.rayCasting = new RayCasting(camera, world);
-		
+
 		// .setModel(GameRegistry.getModel("resources/models/playerblend.dae"))
 		this.world.addEntityToWorld((cameraEnt = new EntityCamera(this.camera)));
 		
@@ -206,7 +204,7 @@ public class TestDisplay extends IDisplay {
 	@Override
 	public void onSwitch() {
 		// can be added to any screen, will just overwrite on load
-		CommandBox.registerCommand("raycast", new RayCastCommand(rayCasting));
+		CommandBox.registerCommand("raycast", new RayCastCommand(this.world.getRaycast()));
 		TeleportCommand tp = new TeleportCommand(cameraEnt, camera);
 		CommandBox.registerCommand("teleport", tp);
 		CommandBox.registerCommand("tp", tp);
@@ -222,6 +220,7 @@ public class TestDisplay extends IDisplay {
 	public void render() {
 		this.world.render();
 		SoundSystem.update();
+		this.cameraEnt.getGreg().update();
 		//TextureRenderer.renderTexture(this.world.getSSAOMap().getSSAOBluredTexture(), DisplayManager.WIDTH-512, 0, 512, 512);
 		//TextureRenderer.renderTextureArray(this.world.getShadowMap().getDepthMapTexture(), 0, 0, 0, 256, 256);
 		//TextureRenderer.renderTextureArray(this.world.getShadowMap().getDepthMapTexture(), 1, 256, 0, 256, 256);
@@ -232,15 +231,38 @@ public class TestDisplay extends IDisplay {
 	long last = System.currentTimeMillis();
 	long max = 60;
 	
+	private boolean rightLastFrame = false;
+	
 	@Override
 	public void update() {
 		this.world.update();
-		this.rayCasting.update();
 		if (Mouse.isMiddleClick() && System.currentTimeMillis() - last > max) {
-			this.cameraEnt.shoot(rayCasting.getCurrentRay());
+			this.cameraEnt.shoot(this.world.getRaycast().getCurrentRay());
 			last = System.currentTimeMillis();
 		}
-		this.cameraEnt.grab(rayCasting.getCurrentRay());
+		//if (Mouse.isLeftClick()) {
+		//	this.cameraEnt.grab(rayCasting.getCurrentRay());
+		//} else
+		//	this.cameraEnt.notgrab();
+		Weapon greg = this.cameraEnt.getGreg();
+		if (Mouse.isLeftClick()) {
+			greg.shoot();
+		} else
+			greg.shootN();
+		
+		if (Mouse.isRightClick()) {
+			greg.alt();
+			rightLastFrame = true;
+		} else {
+			if (rightLastFrame)
+				greg.altRelease();
+			rightLastFrame = false;
+			greg.altN();
+		}
+		
+		greg.update();
+		
+		
 		this.ps.generateParticles(new Vector3f(0, 0, 0));
 		this.smokey.generateParticles(new Vector3f(50, -8, 10));
 	}

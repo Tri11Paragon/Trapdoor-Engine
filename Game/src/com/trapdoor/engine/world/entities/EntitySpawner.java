@@ -10,8 +10,8 @@ import com.trapdoor.engine.display.DisplayManager;
 import com.trapdoor.engine.renderer.particles.ParticleSystem;
 import com.trapdoor.engine.tools.Logging;
 import com.trapdoor.engine.world.entities.components.Transform;
-import com.trapdoor.engine.world.entities.extras.EntityEvent;
-import com.trapdoor.engine.world.entities.extras.EntitySpawnType;
+import com.trapdoor.engine.world.entities.tools.EntityEvent;
+import com.trapdoor.engine.world.entities.tools.ai.EntitySpawnType;
 
 /**
  * @author brett

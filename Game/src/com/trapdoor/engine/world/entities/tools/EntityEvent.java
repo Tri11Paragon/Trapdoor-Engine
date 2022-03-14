@@ -1,4 +1,4 @@
-package com.trapdoor.engine.world.entities.extras;
+package com.trapdoor.engine.world.entities.tools;
 
 /**
  * @author brett

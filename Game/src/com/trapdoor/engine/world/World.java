@@ -28,6 +28,7 @@ import com.trapdoor.engine.renderer.postprocessing.BloomRenderer;
 import com.trapdoor.engine.renderer.shadows.ShadowMap;
 import com.trapdoor.engine.renderer.shadows.ShadowRenderer;
 import com.trapdoor.engine.tools.Logging;
+import com.trapdoor.engine.tools.RayCasting;
 import com.trapdoor.engine.tools.SettingsLoader;
 import com.trapdoor.engine.world.entities.Entity;
 
@@ -50,6 +51,7 @@ public class World {
 	
 	// Physics container
 	private PhysicsSpace physWorld;
+	private RayCasting raycast;
 	
 	/*
 	 * everything else
@@ -103,7 +105,7 @@ public class World {
         	e2.onOngoingCollision(e1, event);
         });
 		//this.physWorld.setGravity(new Vector3f(0.0f, 0.0f, 0.0f));
-		
+        raycast = new RayCasting(c, this);
 	}
 	
 	/**
@@ -181,6 +183,7 @@ public class World {
 			Logging.logger.fatal(e.getLocalizedMessage(), e);
 			System.exit(-1);
 		}
+		raycast.update();
 	}
 	
 	private final Vector3f v1 = new Vector3f();
@@ -199,6 +202,10 @@ public class World {
 		return physWorld.rayTestRaw(v1, v2, otherResults);
 	}
 	
+	public List<PhysicsRayTestResult> raycast(float distance) {
+		return raycast(this.raycast.getCurrentRay(), distance);
+	}
+	
 	private final Vector3f s1 = new Vector3f();
 	private final Vector3f s2 = new Vector3f();
 	private final List<PhysicsRayTestResult> results = new ArrayList<PhysicsRayTestResult>();
@@ -213,6 +220,10 @@ public class World {
 		s2.z = s1.z + ray.z * distance;
 		
 		return physWorld.rayTest(s1, s2, results);
+	}
+	
+	public List<PhysicsRayTestResult> raycastSorted(float distance) {
+		return raycast(this.raycast.getCurrentRay(), distance);
 	}
 	
 	public void modelChanged(Entity e, Model old, Model n) {
@@ -283,6 +294,10 @@ public class World {
 	
 	public Vector3f getGravity() {
 		return physWorld.getGravity(new Vector3f());
+	}
+	
+	public RayCasting getRaycast() {
+		return raycast;
 	}
 	
 	public void cleanup() {

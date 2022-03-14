@@ -20,6 +20,8 @@ import com.trapdoor.engine.tools.input.Keyboard;
 import com.trapdoor.engine.tools.input.Mouse;
 import com.trapdoor.engine.world.entities.components.SoundListener;
 import com.trapdoor.engine.world.entities.components.Transform;
+import com.trapdoor.engine.world.entities.tools.Weapon;
+import com.trapdoor.engine.world.entities.tools.WeaponGreg;
 
 /**
  * @author brett
@@ -46,6 +48,8 @@ public class EntityCamera extends Entity {
 	protected PhysicsCharacter ch;
 	protected final com.jme3.math.Vector3f store = new com.jme3.math.Vector3f();
 	private SoundListener sl;
+	
+	private WeaponGreg greg;
 	
 	public EntityCamera(Camera c) {
 		super(50);
@@ -100,70 +104,80 @@ public class EntityCamera extends Entity {
 	private float scrollAmount = 0;
 	
 	public void grab(Vector3f ray) {
-		if (Mouse.isLeftClick()) {
-			if (grabbedEnt == null) {
-				List<PhysicsRayTestResult> results = this.world.raycastSorted(ray, 50);
-				for (int i = 0; i < results.size(); i++) {
-					Entity ass = this.world.getEntity(results.get(i).getCollisionObject());
-					if (!ass.isStatic() && ass != this) {
-						grabbedEnt = ass;
-						grabbedEnt.getRigidbody().setGravity(new com.jme3.math.Vector3f());
-						Transform t = grabbedEnt.getComponent(Transform.class);
-						yaw = t.getYaw();
-						pitch = t.getPitch();
-						roll = t.getRoll();
-						break;
-					}
+		if (grabbedEnt == null) {
+			List<PhysicsRayTestResult> results = this.world.raycastSorted(ray, 50);
+			for (int i = 0; i < results.size(); i++) {
+				Entity ass = this.world.getEntity(results.get(i).getCollisionObject());
+				if (!ass.isStatic() && ass != this) {
+					grabbedEnt = ass;
+					grabbedEnt.getRigidbody().setGravity(new com.jme3.math.Vector3f());
+					Transform t = grabbedEnt.getComponent(Transform.class);
+					yaw = t.getYaw();
+					pitch = t.getPitch();
+					roll = t.getRoll();
+					break;
 				}
-			} else {
-				Transform t = grabbedEnt.getComponent(Transform.class);
-				AxisAlignedBoundingBox aabb = grabbedEnt.getModel().getAABB();
-				Vector3d center =  aabb.getCenter();
-				float ox = t.getX();
-				float oy = t.getY();
-				float oz = t.getZ();
-				if (distance < 1) {
-					float dx = ox - this.localTransform.getX();
-					float dy = oy - this.localTransform.getY();
-					float dz = oz - this.localTransform.getZ();
-					distance = (float) Math.sqrt(dx * dx + dy * dy + dz * dz);
-				} else {
-					if (InputMaster.scrollState != 0)
-						scrollAmount = 35 * InputMaster.scrollState;
-					else {
-						if (scrollAmount != 0)
-							scrollAmount += -Math.signum(scrollAmount) * 2.0f;
-					}
-					distance += scrollAmount * Threading.getFrameTimeSeconds();
-					double l = center.length();
-					if (distance < l)
-						distance = (float)l;
-				}
-				float lx = ray.x * distance + this.localTransform.getX() + (float)center.x;
-				// add height of player
-				float ly = ray.y * distance + this.localTransform.getY() + (float)center.y + 1.0f;
-				float lz = ray.z * distance + this.localTransform.getZ() + (float)center.z;
-				
-				final float mul = 3250;
-				
-				float dx = (ox - lx);
-				float dy = (oy - ly);
-				float dz = (oz - lz);
-				
-				float localDist = (float) Math.sqrt(dx * dx + dy * dy + dz * dz) * 2;
-				dx *= -mul * localDist;
-				dy *= -mul * localDist;
-				dz *= -mul * localDist;
-				
-				grabbedEnt.setLinearVelocity(0, 0, 0);
-				grabbedEnt.applyCentralForce(dx, dy, dz);
 			}
 		} else {
-			if (grabbedEnt != null)
-				grabbedEnt.getRigidbody().setGravity(world.getGravity());
-			grabbedEnt = null;
-			distance = 0;
+			Transform t = grabbedEnt.getComponent(Transform.class);
+			AxisAlignedBoundingBox aabb = grabbedEnt.getModel().getAABB();
+			Vector3d center = aabb.getCenter();
+			float ox = t.getX();
+			float oy = t.getY();
+			float oz = t.getZ();
+			if (distance < 1) {
+				float dx = ox - this.localTransform.getX();
+				float dy = oy - this.localTransform.getY();
+				float dz = oz - this.localTransform.getZ();
+				distance = (float) Math.sqrt(dx * dx + dy * dy + dz * dz);
+			} else {
+				if (InputMaster.scrollState != 0)
+					scrollAmount = 35 * InputMaster.scrollState;
+				else {
+					if (scrollAmount != 0)
+						scrollAmount += -Math.signum(scrollAmount) * 2.0f;
+				}
+				distance += scrollAmount * Threading.getFrameTimeSeconds();
+				double l = center.length();
+				if (distance < l)
+					distance = (float) l;
+			}
+			float lx = ray.x * distance + this.localTransform.getX() + (float) center.x;
+			// add height of player
+			float ly = ray.y * distance + this.localTransform.getY() + (float) center.y + 1.0f;
+			float lz = ray.z * distance + this.localTransform.getZ() + (float) center.z;
+
+			final float mul = 3250;
+
+			float dx = (ox - lx);
+			float dy = (oy - ly);
+			float dz = (oz - lz);
+
+			float localDist = (float) Math.sqrt(dx * dx + dy * dy + dz * dz) * 2;
+			dx *= -mul * localDist;
+			dy *= -mul * localDist;
+			dz *= -mul * localDist;
+
+			grabbedEnt.setLinearVelocity(0, 0, 0);
+			grabbedEnt.applyCentralForce(dx, dy, dz);
 		}
+	}
+	
+	public void notgrab() {
+		if (grabbedEnt != null)
+			grabbedEnt.getRigidbody().setGravity(world.getGravity());
+		grabbedEnt = null;
+		distance = 0;
+	}
+	
+	@Override
+	public void onAddedToWorld() {
+		super.onAddedToWorld();
+		greg = new WeaponGreg(this, world);
+	}
+	
+	public Weapon getGreg() {
+		return greg;
 	}
 	
 	public void shoot(Vector3f ray) {
@@ -226,6 +240,10 @@ public class EntityCamera extends Entity {
 	@Override
 	public Entity updateCollisionStateFromModel() {
 		return this;
+	}
+	
+	public Transform getLocalTransform() {
+		return localTransform;
 	}
 	
 }

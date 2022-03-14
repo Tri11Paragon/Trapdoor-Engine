@@ -22,7 +22,7 @@ import com.trapdoor.engine.world.World;
 import com.trapdoor.engine.world.entities.components.ComponentStore;
 import com.trapdoor.engine.world.entities.components.IComponent;
 import com.trapdoor.engine.world.entities.components.Transform;
-import com.trapdoor.engine.world.entities.extras.EntityEvent;
+import com.trapdoor.engine.world.entities.tools.EntityEvent;
 
 /**
  * @author laptop
