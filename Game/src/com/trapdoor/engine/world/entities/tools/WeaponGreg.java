@@ -72,8 +72,7 @@ public class WeaponGreg extends Weapon {
 				indicies.put(m.getIndices());
 				
 				verts.rewind();
-				indicies.flip();
-				System.out.println(indicies.remaining());
+				indicies.rewind();
 				
 				com.jme3.math.Vector3f[] vertsFloatArr = new com.jme3.math.Vector3f[verts.capacity()/3];
 				int[] indexesIntArr = new int[indicies.capacity()];
@@ -81,7 +80,7 @@ public class WeaponGreg extends Weapon {
 				for (int j = 0; j < vertsFloatArr.length; j++)
 					vertsFloatArr[j] = new com.jme3.math.Vector3f(verts.get(), verts.get(), verts.get());
 				
-				for (int j = 0; j < indexesIntArr.length; i++)
+				for (int j = 0; j < indexesIntArr.length; j++)
 					indexesIntArr[j] = indicies.get();
 				
 				indicies.rewind();
