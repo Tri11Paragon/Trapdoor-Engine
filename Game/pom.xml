@@ -24,6 +24,8 @@
 	<properties>
 		<lwjgl.version>3.3.1</lwjgl.version>
 		<joml.version>1.10.4</joml.version>
+		<imgui.java.version>1.86.4</imgui.java.version>
+		<bulleyphys.version>14.0.0</bulleyphys.version>
 		<maven.compiler.release>17</maven.compiler.release>
 	</properties>
 
@@ -101,8 +103,28 @@
 	<dependencies>
 		<dependency>
 	        <groupId>io.github.spair</groupId>
-	        <artifactId>imgui-java-app</artifactId>
-	        <version>1.86.4</version>
+	        <artifactId>imgui-java-binding</artifactId>
+	        <version>${imgui.java.version}</version>
+	    </dependency>
+	    <dependency>
+	        <groupId>io.github.spair</groupId>
+	        <artifactId>imgui-java-lwjgl3</artifactId>
+	        <version>${imgui.java.version}</version>
+	    </dependency>
+	    <dependency>
+	        <groupId>io.github.spair</groupId>
+	        <artifactId>imgui-java-natives-windows</artifactId>
+	        <version>${imgui.java.version}</version>
+	    </dependency>
+		<dependency>
+	        <groupId>io.github.spair</groupId>
+	        <artifactId>imgui-java-natives-linux</artifactId>
+	        <version>${imgui.java.version}</version>
+	    </dependency>
+		<dependency>
+	        <groupId>io.github.spair</groupId>
+	        <artifactId>imgui-java-natives-macos</artifactId>
+	        <version>${imgui.java.version}</version>
 	    </dependency>
 		<dependency>
 		    <groupId>org.apache.logging.log4j</groupId>
@@ -122,7 +144,7 @@
 		<dependency>
 		    <groupId>com.github.stephengold</groupId>
 		    <artifactId>Libbulletjme</artifactId>
-		    <version>14.0.0</version>
+		    <version>${bulleyphys.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.liquidengine</groupId>
