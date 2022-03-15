@@ -70,10 +70,16 @@ public class UIMaster {
 	    Themes.setDefaultTheme(Themes.FLAT_DARK);;
 	}
 
+	@Deprecated
 	public static DefaultInitializer getInitl() {
 		return initializer;
 	}
 	
+	@Deprecated
+	/**
+	 * Use ImGUI instead. The CPP code should almost directly translate to Java
+	 * https://github.com/ocornut/imgui#usage
+	 */
 	public static Frame getMasterFrame() {
 		return frame;
 	}
