@@ -65,6 +65,8 @@ public class Main {
 		if (processors < 4)
 			processors = 4;
 		
+		// create the logger instance
+		Logging.init();
 		
 		NativeLibraryLoader.loadLibbulletjme(true, new File(user_workingdir + "/natives"), "Release", "Sp");
 		
@@ -105,8 +107,6 @@ public class Main {
 		// assign the variables.
 		CommandLineInput.callOptionAssigners();
 		
-		// create the logger instance
-		Logging.init();
 		AnnotationHandler.init();
 		
 		SettingsLoader.loadSettings();

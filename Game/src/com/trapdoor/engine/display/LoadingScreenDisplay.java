@@ -66,8 +66,6 @@ public class LoadingScreenDisplay extends IDisplay {
 		mainMenu = new MainMenuDisplay();
 		time = System.currentTimeMillis();
 		
-		AnnotationHandler.runPreRegistration();
-		
 		AnnotationHandler.runRegistration();
 		
 		GameRegistry.registerFont("bettergrade", "resources/fonts/bettergrade/BetterGrade-519DV.ttf");

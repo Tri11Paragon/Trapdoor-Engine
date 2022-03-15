@@ -65,6 +65,8 @@ public class GameRegistry {
 	private static final Map<String, Integer> textureLocks = Collections.synchronizedMap(new ConcurrentHashMap<String, Integer>());
 	private static final Map<String, Integer> meshLocks = Collections.synchronizedMap(new ConcurrentHashMap<String, Integer>());
 	private static final Map<String, Integer> particleLocks = Collections.synchronizedMap(new ConcurrentHashMap<String, Integer>());
+	private static final Map<String, Integer> fontSizes = Collections.synchronizedMap(new ConcurrentHashMap<String, Integer>());
+	private static final ArrayList<String> fonts = new ArrayList<String>();
 	
 	/*
 	 * important entity related storage
@@ -425,7 +427,14 @@ public class GameRegistry {
 	}
 	
 	public static void registerFont(String name, String path) {
+		registerFont(name, path, 14);
+	}
+	
+	public static void registerFont(String name, String path, int size) {
 		FontRegistry.registerFont(name, path);
+		
+		fonts.add(path);
+		fontSizes.put(path, size);
 	}
 	
 	public static Set<Entry<String, Model>> getModelEntries() {
@@ -456,6 +465,14 @@ public class GameRegistry {
 			source.cleanup();
 		}
 		Logging.logger.info("Gameregistry cleanup complete!");
+	}
+	
+	public static ArrayList<String> getFonts(){
+		return fonts;
+	}
+	
+	public static int getFontSize(String name) {
+		return fontSizes.get(name);
 	}
 	
 	/**

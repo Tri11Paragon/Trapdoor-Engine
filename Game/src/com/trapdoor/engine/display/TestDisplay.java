@@ -30,6 +30,10 @@ import com.trapdoor.engine.world.entities.tools.ai.EntityKentSpawnType;
 import com.trapdoor.engine.world.sound.SoundSystem;
 import com.trapdoor.engine.world.sound.SoundSystemType;
 
+import imgui.ImGui;
+import imgui.flag.ImGuiInputTextFlags;
+import imgui.type.ImString;
+
 /**
  * @author brett
  * @date Oct. 18, 2021
@@ -216,8 +220,28 @@ public class TestDisplay extends IDisplay {
 		DebugInfo.assignWorld(world);
 	}
 	
+	float[] flt = new float[1];
+	ImString str = new ImString();
+	
 	@Override
 	public void render() {
+		ImGui.begin("The Best Debug Menu");
+		ImGui.beginChild("The child!", 256, 256);
+		ImGui.text("Hello, World! ");
+        if (ImGui.button(" Save")) {
+            System.out.println("hello!");
+        }
+        ImGui.sameLine();
+        ImGui.text(String.valueOf(5));
+        ImGui.inputText("string", str, ImGuiInputTextFlags.CallbackResize);
+        ImGui.text("Result: " + str.get());
+        ImGui.sliderFloat("float", flt, 0, 1);
+        ImGui.separator();
+        ImGui.text("Extra");
+        ImGui.endChild();
+        ImGui.end();
+        
+		
 		this.world.render();
 		SoundSystem.update();
 		this.cameraEnt.getGreg().update();

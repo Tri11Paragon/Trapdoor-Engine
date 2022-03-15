@@ -18,6 +18,8 @@ import java.lang.annotation.Target;
  * This annotation registers the method to be called by the game registry *before* any
  * registration occurs. This should NOT be used to register models/textures/whatever.
  * Instead use the RegistrationEventSubscriber
+ * 
+ * (Use this to register fonts, since it is exactly called right before the execution of the ImGUI font registration)
  */
 public @interface PreRegistrationEventSubscriber {
 	

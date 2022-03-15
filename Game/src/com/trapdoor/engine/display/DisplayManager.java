@@ -34,8 +34,11 @@ import static org.lwjgl.glfw.GLFW.glfwWindowHint;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +46,6 @@ import org.joml.Vector3f;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWNativeWin32;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.ALC;
@@ -72,6 +74,7 @@ import com.trapdoor.engine.renderer.ui.CommandBox;
 import com.trapdoor.engine.renderer.ui.Console;
 import com.trapdoor.engine.renderer.ui.DebugInfo;
 import com.trapdoor.engine.renderer.ui.UIMaster;
+import com.trapdoor.engine.renderer.ui.render.ImGuiImplGl3;
 import com.trapdoor.engine.tools.Logging;
 import com.trapdoor.engine.tools.SettingsLoader;
 import com.trapdoor.engine.tools.icon.GLIcon;
@@ -79,27 +82,17 @@ import com.trapdoor.engine.tools.input.InputMaster;
 import com.trapdoor.engine.tools.input.Mouse;
 import com.trapdoor.engine.world.sound.SoundSystem;
 
+import imgui.ImFontConfig;
+import imgui.ImFontGlyphRangesBuilder;
 import imgui.ImGui;
 import imgui.ImGuiIO;
-import imgui.ImGuiPlatformIO;
-import imgui.ImGuiViewport;
-import imgui.ImVec2;
-import imgui.callback.ImStrConsumer;
-import imgui.callback.ImStrSupplier;
-import imgui.flag.ImGuiBackendFlags;
 import imgui.flag.ImGuiConfigFlags;
-import imgui.flag.ImGuiKey;
-import imgui.flag.ImGuiMouseButton;
-import imgui.flag.ImGuiMouseCursor;
+import imgui.glfw.ImGuiImplGlfw;
 
 public class DisplayManager {
-	
-	private static final String OS = System.getProperty("os.name", "generic").toLowerCase();
-    protected static final boolean IS_WINDOWS = OS.contains("win");
-    protected static final boolean IS_APPLE = OS.contains("mac") || OS.contains("darwin");
 
 	public static final String gameVersion = "0.0A";
-	public static final String engineVersion = "0.7.5A";
+	public static final String engineVersion = "0.8.0A";
 	public static final String gameName = "Rixie";
 	public static final String engineName = "Trapdoor";
 	public static final String title = gameName + " - V" + gameVersion + " // " + engineName + " V" + engineVersion;
@@ -112,9 +105,6 @@ public class DisplayManager {
 	//public static Vector3f lightColor = new Vector3f(0.0f);
 	
 	// window
-	private static int[] windowX = new int[1], windowY = new int[1];
-	//private static int[] monitorX = new int[1], monitorY = new int[1];
-	private static boolean wantUpdateMonitors = false;
 	public static long window;
 	public static boolean displayOpen = true;
 	public static long mainThreadID = 1;
@@ -141,16 +131,14 @@ public class DisplayManager {
 	public static double mouseX,mouseY;
 	private static int mx, my;
 	private static double[] mouseXA = new double[1], mouseYA = new double[1];
-	private static double[] mouseXIM = new double[1], mouseYIM = new double[1];
 	private static double dx, dy, lx, ly;
 	public static boolean isMouseGrabbed = false;
-	private static final long[] mouseCursors = new long[ImGuiMouseCursor.COUNT];
-    private static final boolean[] mouseJustPressed = new boolean[ImGuiMouseButton.COUNT];
-	private static ImVec2 mousePosBackup = new ImVec2();
     
 	// display
 	private static IDisplay currentDisplay; 
 	private static List<IDisplay> allDisplays = new ArrayList<IDisplay>();
+	private static ImGuiImplGl3 imguiGL3;
+	private static ImGuiImplGlfw imguiGLFW;
 	
 	// debugger nonsense
 	private static DebugInfo debugInfoLayer;
@@ -165,91 +153,18 @@ public class DisplayManager {
 		GL13.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		while(!GLFW.glfwWindowShouldClose(DisplayManager.window)) {
 			try {
+				long start = getCurrentTime();
+				GL11.glClearColor(currentDisplay.getSky1R(), currentDisplay.getSky1G(), currentDisplay.getSky1B(), 1.0f);
+				GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
 				/**
 				 * Dear ImGUI updating
 				 */
-				final ImGuiIO io = ImGui.getIO();
-				
-		        io.setDeltaTime((float)delta);
-		        
-		        for (int i = 0; i < ImGuiMouseButton.COUNT; i++) {
-		            // If a mouse press event came, always pass it as "mouse held this frame", so we don't miss click-release events that are shorter than 1 frame.
-		            io.setMouseDown(i, mouseJustPressed[i] || GLFW.glfwGetMouseButton(window, i) != 0);
-		            mouseJustPressed[i] = false;
-		        }
-
-		        io.getMousePos(mousePosBackup);
-		        io.setMousePos(-Float.MAX_VALUE, -Float.MAX_VALUE);
-		        io.setMouseHoveredViewport(0);
-
-		        final ImGuiPlatformIO platformIO = ImGui.getPlatformIO();
-
-		        for (int n = 0; n < platformIO.getViewportsSize(); n++) {
-		            final ImGuiViewport viewport = platformIO.getViewports(n);
-		            final long windowPtr = viewport.getPlatformHandle();
-
-		            final boolean focused = GLFW.glfwGetWindowAttrib(windowPtr, GLFW.GLFW_FOCUSED) != 0;
-
-		            final long mouseWindowPtr = (window == windowPtr || focused) ? windowPtr : 0;
-
-		            // Update mouse buttons
-		            if (focused) {
-		                for (int i = 0; i < ImGuiMouseButton.COUNT; i++) {
-		                    io.setMouseDown(i, GLFW.glfwGetMouseButton(windowPtr, i) != 0);
-		                }
-		            }
-
-		            // Set OS mouse position from Dear ImGui if requested (rarely used, only when ImGuiConfigFlags_NavEnableSetMousePos is enabled by user)
-		            // (When multi-viewports are enabled, all Dear ImGui positions are same as OS positions)
-		            if (io.getWantSetMousePos() && focused) {
-		            	GLFW.glfwSetCursorPos(windowPtr, mousePosBackup.x - viewport.getPosX(), mousePosBackup.y - viewport.getPosY());
-		            }
-
-		            // Set Dear ImGui mouse position from OS position
-		            if (mouseWindowPtr != 0) {
-		            	GLFW.glfwGetCursorPos(mouseWindowPtr, mouseXIM, mouseYIM);
-
-		                if (io.hasConfigFlags(ImGuiConfigFlags.ViewportsEnable)) {
-		                    // Multi-viewport mode: mouse position in OS absolute coordinates (io.MousePos is (0,0) when the mouse is on the upper-left of the primary monitor)
-		                	GLFW.glfwGetWindowPos(windowPtr, windowX, windowY);
-		                    io.setMousePos((float) mouseXIM[0] + windowX[0], (float) mouseYIM[0] + windowY[0]);
-		                } else {
-		                    // Single viewport mode: mouse position in client window coordinates (io.MousePos is (0,0) when the mouse is on the upper-left corner of the app window)
-		                    io.setMousePos((float) mouseXIM[0], (float) mouseYIM[0]);
-		                }
-		            }
-		        }
-		        
-		        final boolean noCursorChange = io.hasConfigFlags(ImGuiConfigFlags.NoMouseCursorChange);
-		        final boolean cursorDisabled = GLFW.glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED;
-
-		        if (noCursorChange || cursorDisabled) {} else {
-			        final int imguiCursor = ImGui.getMouseCursor();
-	
-			        for (int n = 0; n < platformIO.getViewportsSize(); n++) {
-			            final long windowPtr = platformIO.getViewports(n).getPlatformHandle();
-	
-			            if (imguiCursor == ImGuiMouseCursor.None || io.getMouseDrawCursor()) {
-			                // Hide OS mouse cursor if imgui is drawing it or if it wants no cursor
-			                glfwSetInputMode(windowPtr, GLFW_CURSOR, GLFW.GLFW_CURSOR_HIDDEN);
-			            } else {
-			                // Show OS mouse cursor
-			                // FIXME-PLATFORM: Unfocused windows seems to fail changing the mouse cursor with GLFW 3.2, but 3.3 works here.
-			            	GLFW.glfwSetCursor(windowPtr, mouseCursors[imguiCursor] != 0 ? mouseCursors[imguiCursor] : mouseCursors[ImGuiMouseCursor.Arrow]);
-			                glfwSetInputMode(windowPtr, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-			            }
-			        }
-		        }
-		        
-		        if (wantUpdateMonitors)
-		        	updateMonitors();
+				imguiGLFW.newFrame();
+				ImGui.newFrame();
 				
 				/**
 				 * window stuff // game engine
 				 */
-				long start = getCurrentTime();
-				GL11.glClearColor(currentDisplay.getSky1R(), currentDisplay.getSky1G(), currentDisplay.getSky1B(), 1.0f);
-				GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
 
 				UBOLoader.updateMatrixUBO();
 				
@@ -275,6 +190,16 @@ public class DisplayManager {
 				
 				UIMaster.render();
 				
+				ImGui.render();
+				imguiGL3.renderDrawData(ImGui.getDrawData());
+				
+				if (ImGui.getIO().hasConfigFlags(ImGuiConfigFlags.ViewportsEnable)) {
+		            final long backupWindowPtr = GLFW.glfwGetCurrentContext();
+		            ImGui.updatePlatformWindows();
+		            ImGui.renderPlatformWindowsDefault();
+		            GLFW.glfwMakeContextCurrent(backupWindowPtr);
+		        }
+				
 				glfwSwapBuffers(window);
 				glfwPollEvents();
 				
@@ -287,7 +212,7 @@ public class DisplayManager {
 					Threading.processMain(16000000-time);
 				else
 					Threading.processMain((1000000000/FPS_MAX)-time);
-					
+				
 				SyncSave.sync(FPS_MAX);
 				
 				long currentFrameTime = getCurrentTime();
@@ -411,99 +336,45 @@ public class DisplayManager {
 		ImGui.createContext();
 		
 		final ImGuiIO tio = ImGui.getIO();
-		
-		tio.addBackendFlags(ImGuiBackendFlags.HasMouseCursors | ImGuiBackendFlags.HasSetMousePos | ImGuiBackendFlags.PlatformHasViewports);
-		tio.setBackendPlatformName("imgui_java_impl_glfw");
-		
-        // Keyboard mapping. ImGui will use those indices to peek into the io.KeysDown[] array.
-        final int[] keyMap = new int[ImGuiKey.COUNT];
-        keyMap[ImGuiKey.Tab] = GLFW.GLFW_KEY_TAB;
-        keyMap[ImGuiKey.LeftArrow] = GLFW.GLFW_KEY_LEFT;
-        keyMap[ImGuiKey.RightArrow] = GLFW.GLFW_KEY_RIGHT;
-        keyMap[ImGuiKey.UpArrow] = GLFW.GLFW_KEY_UP;
-        keyMap[ImGuiKey.DownArrow] = GLFW.GLFW_KEY_DOWN;
-        keyMap[ImGuiKey.PageUp] = GLFW.GLFW_KEY_PAGE_UP;
-        keyMap[ImGuiKey.PageDown] = GLFW.GLFW_KEY_PAGE_DOWN;
-        keyMap[ImGuiKey.Home] = GLFW.GLFW_KEY_HOME;
-        keyMap[ImGuiKey.End] = GLFW.GLFW_KEY_END;
-        keyMap[ImGuiKey.Insert] = GLFW.GLFW_KEY_INSERT;
-        keyMap[ImGuiKey.Delete] = GLFW.GLFW_KEY_DELETE;
-        keyMap[ImGuiKey.Backspace] = GLFW.GLFW_KEY_BACKSPACE;
-        keyMap[ImGuiKey.Space] = GLFW.GLFW_KEY_SPACE;
-        keyMap[ImGuiKey.Enter] = GLFW.GLFW_KEY_ENTER;
-        keyMap[ImGuiKey.Escape] = GLFW.GLFW_KEY_ESCAPE;
-        keyMap[ImGuiKey.KeyPadEnter] = GLFW.GLFW_KEY_KP_ENTER;
-        keyMap[ImGuiKey.A] = GLFW.GLFW_KEY_A;
-        keyMap[ImGuiKey.C] = GLFW.GLFW_KEY_C;
-        keyMap[ImGuiKey.V] = GLFW.GLFW_KEY_V;
-        keyMap[ImGuiKey.X] = GLFW.GLFW_KEY_X;
-        keyMap[ImGuiKey.Y] = GLFW.GLFW_KEY_Y;
-        keyMap[ImGuiKey.Z] = GLFW.GLFW_KEY_Z;
 
-        tio.setKeyMap(keyMap);
+		tio.setIniFilename(null);
+		tio.addConfigFlags(ImGuiConfigFlags.DockingEnable);
+		tio.addConfigFlags(ImGuiConfigFlags.NavEnableKeyboard);
+		tio.addConfigFlags(ImGuiConfigFlags.ViewportsEnable);
+		tio.setConfigViewportsNoTaskBarIcon(true);
         
-        tio.setGetClipboardTextFn(new ImStrSupplier() {
-            @Override
-            public String get() {
-                final String clipboardString = GLFW.glfwGetClipboardString(window);
-                return clipboardString != null ? clipboardString : "";
-            }
-        });
-
-        tio.setSetClipboardTextFn(new ImStrConsumer() {
-            @Override
-            public void accept(final String str) {
-                GLFW.glfwSetClipboardString(window, str);
-            }
-        });
+        imguiGL3 = new ImGuiImplGl3();
+        imguiGLFW = new ImGuiImplGlfw();
         
-        // Mouse cursors mapping. Disable errors whilst setting due to X11.
-        final GLFWErrorCallback prevErrorCallback = glfwSetErrorCallback(null);
-        mouseCursors[ImGuiMouseCursor.Arrow] = GLFW.glfwCreateStandardCursor(GLFW.GLFW_ARROW_CURSOR);
-        mouseCursors[ImGuiMouseCursor.TextInput] = GLFW.glfwCreateStandardCursor(GLFW.GLFW_IBEAM_CURSOR);
-        mouseCursors[ImGuiMouseCursor.ResizeAll] = GLFW.glfwCreateStandardCursor(GLFW.GLFW_ARROW_CURSOR);
-        mouseCursors[ImGuiMouseCursor.ResizeNS] = GLFW.glfwCreateStandardCursor(GLFW.GLFW_VRESIZE_CURSOR);
-        mouseCursors[ImGuiMouseCursor.ResizeEW] = GLFW.glfwCreateStandardCursor(GLFW.GLFW_HRESIZE_CURSOR);
-        mouseCursors[ImGuiMouseCursor.ResizeNESW] = GLFW.glfwCreateStandardCursor(GLFW.GLFW_ARROW_CURSOR);
-        mouseCursors[ImGuiMouseCursor.ResizeNWSE] = GLFW.glfwCreateStandardCursor(GLFW.GLFW_ARROW_CURSOR);
-        mouseCursors[ImGuiMouseCursor.Hand] = GLFW.glfwCreateStandardCursor(GLFW.GLFW_HAND_CURSOR);
-        mouseCursors[ImGuiMouseCursor.NotAllowed] = GLFW.glfwCreateStandardCursor(GLFW.GLFW_ARROW_CURSOR);
-        glfwSetErrorCallback(prevErrorCallback);
+        imguiGLFW.init(window, false);
+        imguiGL3.init("#version 330 core");
         
-        final ImGuiViewport mainViewport = ImGui.getMainViewport();
-        mainViewport.setPlatformHandle(window);
-
-        if (IS_WINDOWS) {
-            mainViewport.setPlatformHandleRaw(GLFWNativeWin32.glfwGetWin32Window(window));
+        AnnotationHandler.runPreRegistration();
+        
+        tio.getFonts().addFontDefault();
+        
+        final ImFontGlyphRangesBuilder rangesBuilder = new ImFontGlyphRangesBuilder(); // Glyphs ranges provide
+        rangesBuilder.addRanges(tio.getFonts().getGlyphRangesDefault());
+        rangesBuilder.addRanges(tio.getFonts().getGlyphRangesCyrillic());
+        rangesBuilder.addRanges(tio.getFonts().getGlyphRangesJapanese());
+        //rangesBuilder.addRanges(FontAwesomeIcons._IconRange);
+        
+        final ImFontConfig fontConfig = new ImFontConfig();
+        fontConfig.setMergeMode(true);
+        
+        final short[] glyphRanges = rangesBuilder.buildRanges();
+        //io.getFonts().addFontFromMemoryTTF(loadFromResources("Tahoma.ttf"), 14, fontConfig, glyphRanges); // cyrillic glyphs
+        //io.getFonts().addFontFromMemoryTTF(loadFromResources("NotoSansCJKjp-Medium.otf"), 14, fontConfig, glyphRanges); // japanese glyphs
+        //io.getFonts().addFontFromMemoryTTF(loadFromResources("fa-regular-400.ttf"), 14, fontConfig, glyphRanges); // font awesome
+        //io.getFonts().addFontFromMemoryTTF(loadFromResources("fa-solid-900.ttf"), 14, fontConfig, glyphRanges); // font awesome
+        for (int i = 0; i < GameRegistry.getFonts().size(); i++) {
+        	tio.getFonts().addFontFromMemoryTTF(loadFromResources(GameRegistry.getFonts().get(i)), GameRegistry.getFontSize(GameRegistry.getFonts().get(i)), fontConfig, glyphRanges);
         }
-
-        if (tio.hasConfigFlags(ImGuiConfigFlags.ViewportsEnable)) {
-        	/*final ImGuiPlatformIO platformIO = ImGui.getPlatformIO();
-
-	        // Register platform interface (will be coupled with a renderer interface)
-	        platformIO.setPlatformCreateWindow(new CreateWindowFunction());
-	        platformIO.setPlatformDestroyWindow(new DestroyWindowFunction());
-	        platformIO.setPlatformShowWindow(new ShowWindowFunction());
-	        platformIO.setPlatformGetWindowPos(new GetWindowPosFunction());
-	        platformIO.setPlatformSetWindowPos(new SetWindowPosFunction());
-	        platformIO.setPlatformGetWindowSize(new GetWindowSizeFunction());
-	        platformIO.setPlatformSetWindowSize(new SetWindowSizeFunction());
-	        platformIO.setPlatformSetWindowTitle(new SetWindowTitleFunction());
-	        platformIO.setPlatformSetWindowFocus(new SetWindowFocusFunction());
-	        platformIO.setPlatformGetWindowFocus(new GetWindowFocusFunction());
-	        platformIO.setPlatformGetWindowMinimized(new GetWindowMinimizedFunction());
-	        platformIO.setPlatformSetWindowAlpha(new SetWindowAlphaFunction());
-	        platformIO.setPlatformRenderWindow(new RenderWindowFunction());
-	        platformIO.setPlatformSwapBuffers(new SwapBuffersFunction());
-
-	        // Register main window handle (which is owned by the main application, not by us)
-	        // This is mostly for simplicity and consistency, so that our code (e.g. mouse handling etc.) can use same logic for main and secondary viewports.
-	        final ImGuiViewport mainViewport = ImGui.getMainViewport();
-	        final ImGuiViewportDataGlfw data = new ImGuiViewportDataGlfw();
-	        data.window = windowPtr;
-	        data.windowOwned = false;
-	        mainViewport.setPlatformUserData(data);*/
-        }
+        tio.getFonts().build();
+        
+        fontConfig.destroy();
+        
+        imguiGL3.updateFontsTexture();
 		
 		keeper.getChainKeyCallback().add((window, key, scancode, action, mods) -> {
 			if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE ) {
@@ -514,55 +385,27 @@ public class DisplayManager {
 			if ( action == GLFW_RELEASE )
 				InputMaster.keyReleased(key);
 			
-			 final ImGuiIO io = ImGui.getIO();
-			 
-			if (key >= 0 && key < 512) {
-				if (action == GLFW_PRESS) {
-					io.setKeysDown(key, true);
-				} else if (action == GLFW_RELEASE) {
-					io.setKeysDown(key, false);
-				}
-			}
-
-			io.setKeyCtrl(io.getKeysDown(GLFW.GLFW_KEY_LEFT_CONTROL) || io.getKeysDown(GLFW.GLFW_KEY_RIGHT_CONTROL));
-			io.setKeyShift(io.getKeysDown(GLFW.GLFW_KEY_LEFT_SHIFT) || io.getKeysDown(GLFW.GLFW_KEY_RIGHT_SHIFT));
-			io.setKeyAlt(io.getKeysDown(GLFW.GLFW_KEY_LEFT_ALT) || io.getKeysDown(GLFW.GLFW_KEY_RIGHT_ALT));
-			io.setKeySuper(io.getKeysDown(GLFW.GLFW_KEY_LEFT_SUPER) || io.getKeysDown(GLFW.GLFW_KEY_RIGHT_SUPER));
+			imguiGLFW.keyCallback(window, key, scancode, action, mods);
 		});
 		keeper.getChainMouseButtonCallback().add((window, button, action, mods) -> {
 			if ( action == GLFW_PRESS )
 				InputMaster.mousePressed(button);
 			if ( action == GLFW_RELEASE )
 				InputMaster.mouseReleased(button);
-			if (action == GLFW_PRESS && button >= 0 && button < mouseJustPressed.length) {
-	            mouseJustPressed[button] = true;
-	        }
+			imguiGLFW.mouseButtonCallback(window, button, action, mods);
 		});
 		keeper.getChainWindowSizeCallback().add((window, x, y) -> {
-			int[] fbWidth = new int[1];
-			int[] fbHeight = new int[1];
-			GLFW.glfwGetFramebufferSize(window, fbWidth, fbHeight);
 			DisplayManager.WIDTH = x;
 			DisplayManager.HEIGHT = y;
 			GL11.glViewport(0, 0, x, y);
 			UIMaster.updateScreenSize();
 			ProjectionMatrix.updateProjectionMatrix();
 			AnnotationHandler.runRescaleEvent(x, y);
-			final ImGuiIO io = ImGui.getIO();
-			io.setDisplaySize((float) x, (float) y);
-			if (x > 0 && x > 0) {
-	            final float scaleX = (float) fbWidth[0] / x;
-	            final float scaleY = (float) fbHeight[0] / y;
-	            io.setDisplayFramebufferScale(scaleX, scaleY);
-	        }
-			
 		});
 		keeper.getChainScrollCallback().add((window, x, y) -> {
 			InputMaster.scrollMoved((int)y);
 
-	        final ImGuiIO io = ImGui.getIO();
-	        io.setMouseWheelH(io.getMouseWheelH() + (float) x);
-	        io.setMouseWheel(io.getMouseWheel() + (float) y);
+	        imguiGLFW.scrollCallback(window, x, y);
 		});
 		keeper.getChainCursorPosCallback().add((window, x, y) -> {
 			DisplayManager.mx = (int) x;
@@ -572,17 +415,14 @@ public class DisplayManager {
 			displayOpen = false;
 		});
 		keeper.getChainWindowFocusCallback().add((window, focused) -> {
-			ImGui.getIO().addFocusEvent(focused);
+			imguiGLFW.windowFocusCallback(window, focused);
 		});
 		keeper.getChainCursorEnterCallback().add((window, entered) -> {
-			
+			imguiGLFW.cursorEnterCallback(window, entered);
 		});
 		keeper.getChainCharCallback().add((window, c) -> {
-			final ImGuiIO io = ImGui.getIO();
-			io.addInputCharacter(c);
+			imguiGLFW.charCallback(window, c);
 		});
-		updateMonitors();
-		GLFW.glfwSetMonitorCallback((window, i) -> {wantUpdateMonitors = true;});
 		debugInfoLayer = new DebugInfo();
 		CommandBox.init();
 		InputMaster.registerKeyListener(new Console());
@@ -594,8 +434,9 @@ public class DisplayManager {
 	}
 
 	public static void closeDisplay() {
-		for (int i = 0; i < ImGuiMouseCursor.COUNT; i++)
-            GLFW.glfwDestroyCursor(mouseCursors[i]);
+		imguiGL3.dispose();
+		imguiGLFW.dispose();
+		ImGui.destroyContext();
 		if (context != NULL)
             ALC11.alcDestroyContext(context);
         if (device != NULL)
@@ -618,58 +459,6 @@ public class DisplayManager {
 		glfwTerminate();
 		glfwSetErrorCallback(null).free();
 		Threading.cleanup();
-	}
-	
-	private static void updateMonitors() {
-		/*final ImGuiPlatformIO platformIO = ImGui.getPlatformIO();
-		final PointerBuffer monitors = GLFW.glfwGetMonitors();
-
-		platformIO.resizeMonitors(0);
-
-		for (int n = 0; n < monitors.limit(); n++) {
-			final long monitor = monitors.get(n);
-
-			GLFW.glfwGetMonitorPos(monitor, monitorX, monitorY);
-			final GLFWVidMode vidMode = glfwGetVideoMode(monitor);
-			final float mainPosX = monitorX[0];
-			final float mainPosY = monitorY[0];
-			final float mainSizeX = vidMode.width();
-			final float mainSizeY = vidMode.height();
-
-			final boolean glfwHasMonitorWorkArea = f;
-			
-			if (glfwHasMonitorWorkArea) {
-				GLFW.glfwGetMonitorWorkarea(monitor, monitorWorkAreaX, monitorWorkAreaY, monitorWorkAreaWidth,
-						monitorWorkAreaHeight);
-			}
-
-			float workPosX = 0;
-			float workPosY = 0;
-			float workSizeX = 0;
-			float workSizeY = 0;
-
-			// Workaround a small GLFW issue reporting zero on monitor changes:
-			// https://github.com/glfw/glfw/pull/1761
-			if (glfwHasMonitorWorkArea && monitorWorkAreaWidth[0] > 0 && monitorWorkAreaHeight[0] > 0) {
-				workPosX = monitorWorkAreaX[0];
-				workPosY = monitorWorkAreaY[0];
-				workSizeX = monitorWorkAreaWidth[0];
-				workSizeY = monitorWorkAreaHeight[0];
-			}
-
-			// Warning: the validity of monitor DPI information on Windows depends on the
-			// application DPI awareness settings,
-			// which generally needs to be set in the manifest or at runtime.
-			if (glfwHasPerMonitorDpi) {
-				glfwGetMonitorContentScale(monitor, monitorContentScaleX, monitorContentScaleY);
-			}
-			final float dpiScale = monitorContentScaleX[0];
-
-			platformIO.pushMonitors(mainPosX, mainPosY, mainSizeX, mainSizeY, workPosX, workPosY, workSizeX, workSizeY,
-					dpiScale);
-		}*/
-
-		wantUpdateMonitors = false;
 	}
 	
 	private static void initAudio() {
@@ -786,5 +575,13 @@ public class DisplayManager {
 	public static void disableCulling() {
 		GL11.glDisable(GL11.GL_CULL_FACE);
 	}
+	
+	private static byte[] loadFromResources(String path) {
+        try {
+            return Files.readAllBytes(Paths.get(path));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 	
 }

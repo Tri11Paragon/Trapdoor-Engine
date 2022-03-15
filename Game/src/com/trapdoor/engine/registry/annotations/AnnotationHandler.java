@@ -29,8 +29,21 @@ public class AnnotationHandler {
 	public static void init() {
 		Logging.logger.debug("Loading event subscribers");
 		
-		ourClasses = new Reflections("com");
-
+		// search for game implementations of the engine's annotations
+		ourClasses = new Reflections("com.game");
+		runAnnotationSearch(ourClasses);
+		
+		// should never have any in here, but just in case
+		ourClasses = new Reflections("com.karl");
+		runAnnotationSearch(ourClasses);
+		
+		// finally get the engine annotations, last since this is most likely the place for all the important annotations
+		ourClasses = new Reflections("com.trapdoor");
+		runAnnotationSearch(ourClasses);
+		
+	}
+	
+	private static void runAnnotationSearch(Reflections ourClasses) {
 		Set<Class<? extends AnnotatedClass>> classes = ourClasses.getSubTypesOf(AnnotatedClass.class);
 		
 		classes.forEach((c) -> {

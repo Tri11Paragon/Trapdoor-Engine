@@ -12,12 +12,12 @@ import com.spinyowl.legui.listener.MouseClickEventListener;
 import com.spinyowl.legui.listener.processor.EventProcessorProvider;
 import com.spinyowl.legui.style.border.SimpleLineBorder;
 import com.spinyowl.legui.style.color.ColorConstants;
-import com.spinyowl.legui.style.font.FontRegistry;
 import com.spinyowl.legui.system.context.Context;
 import com.spinyowl.legui.system.layout.LayoutManager;
 import com.spinyowl.legui.system.renderer.Renderer;
 import com.spinyowl.legui.theme.Themes;
 import com.trapdoor.engine.display.DisplayManager;
+import com.trapdoor.engine.registry.GameRegistry;
 
 /**
  * @author laptop
@@ -62,10 +62,10 @@ public class UIMaster {
 	    context.updateGlfwWindow();
 	    context.setPixelRatio(1);
 	    
-	    FontRegistry.registerFont("orbitron-light", "resources/fonts/orbitron-light.otf");
-	    FontRegistry.registerFont("orbitron-medium", "resources/fonts/orbitron-medium.otf");
+	    GameRegistry.registerFont("orbitron-light", "resources/fonts/orbitron-light.otf");
+	    GameRegistry.registerFont("orbitron-medium", "resources/fonts/orbitron-medium.otf");
 	    
-	    FontRegistry.registerFont("mono", "resources/fonts/liberation/LiberationMono-Regular.ttf");
+	    GameRegistry.registerFont("mono", "resources/fonts/liberation/LiberationMono-Regular.ttf");
 	    
 	    Themes.setDefaultTheme(Themes.FLAT_DARK);;
 	}
