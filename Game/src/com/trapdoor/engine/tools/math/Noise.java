@@ -1,4 +1,4 @@
-package com.trapdoor.engine.tools;
+package com.trapdoor.engine.tools.math;
 //<pre>
 
 //Copyright 2001 Ken Perlin

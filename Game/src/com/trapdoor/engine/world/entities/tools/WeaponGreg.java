@@ -17,6 +17,7 @@ import com.trapdoor.engine.datatypes.collision.AxisAlignedBoundingBox;
 import com.trapdoor.engine.datatypes.ogl.assimp.Mesh;
 import com.trapdoor.engine.datatypes.ogl.assimp.Model;
 import com.trapdoor.engine.display.DisplayManager;
+import com.trapdoor.engine.tools.math.Noise;
 import com.trapdoor.engine.world.World;
 import com.trapdoor.engine.world.entities.Entity;
 import com.trapdoor.engine.world.entities.EntityCamera;
@@ -40,9 +41,12 @@ public class WeaponGreg extends Weapon {
 	
 	private float distance = 0;
 	private float timer = 0;
+	
+	private Noise noisey;
 
 	public WeaponGreg(EntityCamera player, World world) {
 		super(player, world);
+		this.noisey = new Noise(694);
 	}
 
 	@Override
@@ -104,10 +108,10 @@ public class WeaponGreg extends Weapon {
 	@Override
 	public void render() {
 		if (!pendingDestruction && uploadingDestruction) {
-			VAOLoader.loadToVAO(newModelStore, GL33.GL_STREAM_DRAW);
+			VAOLoader.loadToVAO(newModelStore, GL33.GL_DYNAMIC_DRAW);
 			
 			Transform tra = heldEntity.getComponent(Transform.class);
-			Entity he = new Entity().setModel(newModelStore).setPosition(tra.getX(), tra.getY(), tra.getZ());
+			Entity he = new Entity(heldEntity.getRigidbody().getMass()).setModel(newModelStore).setPosition(tra.getX(), tra.getY(), tra.getZ());
 			Transform trhe = he.getComponent(Transform.class);
 			trhe.setScale(tra.getScaleX(), tra.getScaleY(), tra.getScaleZ());
 			trhe.setRotation(tra.getYaw(), tra.getPitch(), tra.getRoll());
@@ -121,19 +125,62 @@ public class WeaponGreg extends Weapon {
 			applyingDestruction = true;
 		}
 		if (applyingDestruction) {
-			System.out.println("Hello!");
-			FloatBuffer newVerts = MemoryUtil.memAllocFloat(newModelStore.getMeshes()[0].getVertices().capacity());
 			FloatBuffer verts = newModelStore.getMeshes()[0].getVertices();
-			verts.rewind();
-			for (int i = 0; i < verts.capacity(); i++) {
-				newVerts.put(verts.get());
+			FloatBuffer newVerts = BufferUtils.createFloatBuffer(verts.capacity());
+			AxisAlignedBoundingBox aabb = newModelStore.getMeshes()[0].getBoundingBox();
+			Vector3d center = aabb.getCenter();
+			for (int i = 0; i < verts.capacity() / 3; i++) {
+				/*float oldX = verts.get();
+				float oldY = verts.get();
+				float oldZ = verts.get();
+				
+				float rvx = (float) (Math.random() * 4);
+				float rvy = (float) (Math.random() * 4);
+				float rvz = (float) (Math.random() * 4);
+				
+				float distance = distance(center, oldX + rvx, oldY + rvy, oldZ + rvz);
+				
+				float noise = (float) noisey.noise(distance + Math.random());
+				
+				float change = (1 - (1/distance)) * noise;
+				
+				newVerts.put(oldX * change);
+				newVerts.put(oldY * change);
+				newVerts.put(oldZ * change);
+				
+				System.out.println(oldX  * change + " " + oldY * change + " " + oldZ * change + " || " + change + " " + noise + " " + distance);*/
+				float oldX = verts.get();
+				float oldY = verts.get();
+				float oldZ = verts.get();
+				
+				float dx = distanceX(center, oldX, oldY, oldZ);
+				float dy = distanceY(center, oldX, oldY, oldZ);
+				float dz = distanceZ(center, oldX, oldY, oldZ);
+				
+				
+				float nx = (float) (noisey.noise(dx, dy, dz));
+				float ny = (float) (noisey.noise(nx, dy, dz));
+				float nz = (float) (noisey.noise(nx, ny, dz));
+				
+				newVerts.put(oldX + nx);
+				newVerts.put(oldY + ny);
+				newVerts.put(oldZ + nz);
+				
+				//float x = (float) Math.random() * 2.0f - 1.0f;
+				//float y = (float) Math.random() * 2.0f - 1.0f;
+				//float z = (float) Math.random() * 2.0f - 1.0f;
+				//newVerts.put(verts.get() + x);
+				//newVerts.put(y);
+				//newVerts.put(z);
 			}
-			newVerts.rewind();
-			verts.rewind();
-			System.out.println(newVerts.remaining());
-			System.out.println(verts.remaining());
-			VAOLoader.updateVBO(newModelStore.getMeshes()[0].getVAO().getVbos()[0], newVerts);
-			MemoryUtil.memFree(newVerts);
+			verts.flip();
+			newVerts.flip();
+			
+			GL33.glBindVertexArray(newModelStore.getMeshes()[0].getVAO().getVaoID());
+			VAOLoader.updateVBOGreg(newModelStore.getMeshes()[0].getVAO().getVbos()[0], newVerts);
+			GL33.glBindVertexArray(0);
+			
+			//MemoryUtil.memFree(newVerts);
 			applyingDestruction = false;
 		}
 	}
@@ -194,7 +241,7 @@ public class WeaponGreg extends Weapon {
 			if (timer > 0.5f) {
 				Vector3f ray = world.getRaycast().getCurrentRay();
 				float force = Math.min(2000, timer * 1000) * 5;
-				heldEntity.applyCentralImpulse(ray.x * force, ray.y * force, ray.z * force);
+				//heldEntity.applyCentralImpulse(ray.x * force, ray.y * force, ray.z * force);
 			}
 		}
 		heldEntity = null;
@@ -205,6 +252,28 @@ public class WeaponGreg extends Weapon {
 	@Override
 	public void altN() {
 		super.altN();
+	}
+	
+	public static float distance(Vector3d center, float x, float y, float z) {
+		double dx = center.x - x;
+		double dy = center.y - y;
+		double dz = center.z - z;
+		return (float)( dx * dx + dy * dy + dz * dz);
+	}
+	
+	public static float distanceX(Vector3d center, float x, float y, float z) {
+		double dx = center.x - x;
+		return (float)(dx * dx);
+	}
+	
+	public static float distanceY(Vector3d center, float x, float y, float z) {
+		double dy = center.y - y;
+		return (float)(dy * dy);
+	}
+	
+	public static float distanceZ(Vector3d center, float x, float y, float z) {
+		double dz = center.z - z;
+		return (float)(dz * dz);
 	}
 
 }

@@ -301,6 +301,19 @@ public class VAOLoader {
 	}
 	
 	/**
+	 * does the same thing as updateVBO expect it doesn't reallocate the buffer.
+	 * Use this if you know that the size of the buffer data hasn't changed
+	 * @param vbo the vbo to modify
+	 * @param buffer the buffer of data to store in the vbo
+	 */
+	public static void updateVBOGreg(int vbo, FloatBuffer buffer) {
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
+		//GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer.capacity(), GL15.GL_STREAM_DRAW);
+		GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, 0, buffer);
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+	}
+	
+	/**
 	 * stores a float[] into a vbo for drawing. This stores on the graphics card.
 	 * @param attributeNumber is the pointer for this float[] to be used inside the shader as the layout position
 	 * the layout position needs to be then defined inside the shader or bound when creating the shader class.
