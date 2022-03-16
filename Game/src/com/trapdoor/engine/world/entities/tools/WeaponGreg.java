@@ -4,8 +4,10 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.List;
 
+import org.joml.Matrix4f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL33;
 import org.lwjgl.system.MemoryUtil;
@@ -153,18 +155,39 @@ public class WeaponGreg extends Weapon {
 				float oldY = verts.get();
 				float oldZ = verts.get();
 				
-				float dx = distanceX(center, oldX, oldY, oldZ);
-				float dy = distanceY(center, oldX, oldY, oldZ);
-				float dz = distanceZ(center, oldX, oldY, oldZ);
+				float vectorScale = 8.4234f;
 				
+				float tdx = distanceX(center, oldX, oldY, oldZ);
+				float tdy = distanceY(center, oldX, oldY, oldZ);
+				float tdz = distanceZ(center, oldX, oldY, oldZ);
 				
-				float nx = (float) (noisey.noise(dx, dy, dz));
-				float ny = (float) (noisey.noise(nx, dy, dz));
-				float nz = (float) (noisey.noise(nx, ny, dz));
+				float dx = tdx / 8.6356f;
+				float dy = tdy / 7.2395f;
+				float dz = tdz / 8.5324f;
 				
-				newVerts.put(oldX + nx);
-				newVerts.put(oldY + ny);
-				newVerts.put(oldZ + nz);
+				//vectorScale *= 1 / ((tdx + tdy + tdz) / 3);
+				
+				float nx = (float) (noisey.noise(dx, dy, dz)) * vectorScale;
+				float ny = (float) (noisey.noise(dz, dx, dy)) * vectorScale;
+				float nz = (float) (noisey.noise(dy, dz, dx)) * vectorScale;
+				
+				Matrix4f mat4 = new Matrix4f();
+				
+				//mat4.translate(oldX, oldY, oldZ);
+				
+				mat4.translate(nx, ny, nz);
+				
+				final float rotScale = 16.0f;
+				
+				mat4.rotateX((float) (Math.PI * tdx / rotScale ));
+				mat4.rotateY((float) (Math.PI * tdy / rotScale ));
+				mat4.rotateZ((float) (Math.PI * tdz / rotScale ));
+				
+				Vector4f trans = mat4.transform(new Vector4f(oldX, oldY, oldZ, 1.0f));
+				
+				newVerts.put(trans.x);
+				newVerts.put(trans.y);
+				newVerts.put(trans.z);
 				
 				//float x = (float) Math.random() * 2.0f - 1.0f;
 				//float y = (float) Math.random() * 2.0f - 1.0f;
@@ -229,7 +252,7 @@ public class WeaponGreg extends Weapon {
 			dz *= -mul * localDist;
 
 			heldEntity.setLinearVelocity(0, 0, 0);
-			heldEntity.applyCentralForce(dx, dy, dz);
+			//heldEntity.applyCentralForce(dx, dy, dz);
 			timer += DisplayManager.getFrameTimeSeconds();
 		}
 	}

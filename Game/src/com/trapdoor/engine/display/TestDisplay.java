@@ -137,7 +137,7 @@ public class TestDisplay extends IDisplay {
 				.addLight(new Light(Light.lightings[7], 0, 2, 0)));
 		
 		this.cubeModel = GameRegistry.getModel("resources/models/depression.dae");
-		this.world.addEntityToWorld(new Entity().setModel(GameRegistry.getModel("resources/models/test object.dae")).setPosition(0, -15.0f, 0));
+		this.world.addEntityToWorld(new Entity(1500).setModel(GameRegistry.getModel("resources/models/test object.dae")).setPosition(0, -15.0f, 0));
 		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(25, 0, 0).generateApproximateCollider());
 		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(-25, 0, 0).generateApproximateCollider());
 		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(0, 0, 25).generateApproximateCollider());
