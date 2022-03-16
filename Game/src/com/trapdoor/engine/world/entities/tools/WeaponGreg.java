@@ -7,6 +7,8 @@ import java.util.List;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL33;
+import org.lwjgl.system.MemoryUtil;
 
 import com.jme3.bullet.collision.PhysicsRayTestResult;
 import com.jme3.bullet.collision.shapes.infos.IndexedMesh;
@@ -33,7 +35,6 @@ public class WeaponGreg extends Weapon {
 	private boolean uploadingDestruction = false;
 	private boolean applyingDestruction = false;
 	private Entity heldEntity = null;
-	private Entity destroyOStore = null;
 	
 	private Model newModelStore;
 	
@@ -52,7 +53,6 @@ public class WeaponGreg extends Weapon {
 	@Override
 	public void update() {
 		if (pendingDestruction && this.heldEntity != null) {
-			destroyOStore = new Entity();
 			newModelStore = this.heldEntity.getModel();
 			Mesh[] newMehses = new Mesh[newModelStore.getMeshes().length];
 			
@@ -85,10 +85,14 @@ public class WeaponGreg extends Weapon {
 				
 				indicies.rewind();
 				verts.rewind();
+				textures.rewind();
+				normals.rewind();
+				tangents.rewind();
+				bitangents.rewind();
 				
 				IndexedMesh imesh = new IndexedMesh(vertsFloatArr, indexesIntArr);
 				
-				newMehses[i] = new Mesh(m.getMaterial().clone(), m.getBoundingBox(), verts, textures, normals, tangents, bitangents, indicies, imesh);
+				newMehses[i] = new Mesh(m.getMaterial(), m.getBoundingBox(), verts, textures, normals, tangents, bitangents, indicies, imesh);
 			}
 			
 			newModelStore = new Model(newMehses, this.heldEntity.getModel().getMaterials(), this.heldEntity.getModel().getScene(), this.heldEntity.getModel().getPath());
@@ -100,9 +104,37 @@ public class WeaponGreg extends Weapon {
 	@Override
 	public void render() {
 		if (!pendingDestruction && uploadingDestruction) {
-			VAOLoader.loadToVAO(newModelStore);
+			VAOLoader.loadToVAO(newModelStore, GL33.GL_STREAM_DRAW);
+			
+			Transform tra = heldEntity.getComponent(Transform.class);
+			Entity he = new Entity().setModel(newModelStore).setPosition(tra.getX(), tra.getY(), tra.getZ());
+			Transform trhe = he.getComponent(Transform.class);
+			trhe.setScale(tra.getScaleX(), tra.getScaleY(), tra.getScaleZ());
+			trhe.setRotation(tra.getYaw(), tra.getPitch(), tra.getRoll());
+			
+			world.removeEntityFromWorld(heldEntity);
+			world.addEntityToWorld(he);
+			
+			heldEntity = he;
+			
 			uploadingDestruction = false;
 			applyingDestruction = true;
+		}
+		if (applyingDestruction) {
+			System.out.println("Hello!");
+			FloatBuffer newVerts = MemoryUtil.memAllocFloat(newModelStore.getMeshes()[0].getVertices().capacity());
+			FloatBuffer verts = newModelStore.getMeshes()[0].getVertices();
+			verts.rewind();
+			for (int i = 0; i < verts.capacity(); i++) {
+				newVerts.put(verts.get());
+			}
+			newVerts.rewind();
+			verts.rewind();
+			System.out.println(newVerts.remaining());
+			System.out.println(verts.remaining());
+			VAOLoader.updateVBO(newModelStore.getMeshes()[0].getVAO().getVbos()[0], newVerts);
+			MemoryUtil.memFree(newVerts);
+			applyingDestruction = false;
 		}
 	}
 	

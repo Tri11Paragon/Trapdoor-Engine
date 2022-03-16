@@ -244,7 +244,7 @@ public class TestDisplay extends IDisplay {
 		
 		this.world.render();
 		SoundSystem.update();
-		this.cameraEnt.getGreg().update();
+		this.cameraEnt.getGreg().render();
 		//TextureRenderer.renderTexture(this.world.getSSAOMap().getSSAOBluredTexture(), DisplayManager.WIDTH-512, 0, 512, 512);
 		//TextureRenderer.renderTextureArray(this.world.getShadowMap().getDepthMapTexture(), 0, 0, 0, 256, 256);
 		//TextureRenderer.renderTextureArray(this.world.getShadowMap().getDepthMapTexture(), 1, 256, 0, 256, 256);
