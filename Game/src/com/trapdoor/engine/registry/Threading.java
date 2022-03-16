@@ -69,7 +69,9 @@ public class Threading {
 				}
 				Logging.logger.info("Physics thread exiting! ");
 				DisplayManager.exited++;
-			} catch (Exception e) {System.exit(-1);}
+			} catch (Exception e) {
+				Logging.logger.fatal(e.getMessage(), e);
+				System.exit(-1);}
 		});
 		physics.start();
 		physics.setName("Phys&. Thread");

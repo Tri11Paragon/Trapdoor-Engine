@@ -21,6 +21,7 @@ import com.trapdoor.engine.datatypes.ogl.assimp.Model;
 import com.trapdoor.engine.display.DisplayManager;
 import com.trapdoor.engine.registry.Threading;
 import com.trapdoor.engine.renderer.DeferredRenderer;
+import com.trapdoor.engine.renderer.DepthPassRenderer;
 import com.trapdoor.engine.renderer.EntityRenderer;
 import com.trapdoor.engine.renderer.particles.ParticleRenderer;
 import com.trapdoor.engine.renderer.particles.ParticleSystem;
@@ -65,12 +66,15 @@ public class World {
 	private ShadowRenderer shadowRenderer;
 	private BloomRenderer bloomRenderer;
 	private ParticleRenderer particleRenderer;
+	
+	private DepthPassRenderer depthRenderer;
 
 	@SuppressWarnings("deprecation")
 	public World(Camera c) {
 		// entitiesinworld is shared memory between the renderer and the world object.
 		this.renderer = new EntityRenderer();
 		this.deferredRenderer = new DeferredRenderer(c);
+		this.depthRenderer = new DepthPassRenderer();
 		this.skyboxRenderer = new SkyboxRenderer();
 		this.c = c;
 		this.entityStorage = new WorldEntityStorage(c, this.renderer);
@@ -123,23 +127,26 @@ public class World {
 			GL33.glViewport(0, 0, DisplayManager.WIDTH, DisplayManager.HEIGHT);
 		}
 		
-		this.deferredRenderer.startFirstPass(this);
-		this.deferredRenderer.enableMainShaders();
-		this.deferredRenderer.getShader().loadViewPos(this.c.getPosition());
-		this.entityStorage.render(this.deferredRenderer);
+		//this.deferredRenderer.startFirstPass(this);
+		//this.deferredRenderer.enableMainShaders();
+		//this.deferredRenderer.getShader().loadViewPos(this.c.getPosition());
+		//this.deferredRenderer.endFirstPass();
+		
+		// TODO: add bloomy option
+		if (SettingsLoader.GRAPHICS_LEVEL < 2) {
+			//this.bloomRenderer.bindBloom();
+		}
+		
+		this.depthRenderer.start();
+		this.entityStorage.renderDepth(this.depthRenderer);
 		
 		ArrayList<Entity> ents = this.entityStorage.getAllEntities();
 		for (int i = 0; i < ents.size(); i++)
 			ents.get(i).render();
 		
-		this.deferredRenderer.endFirstPass();
+		this.depthRenderer.stop();
 		
-		// TODO: add bloomy option
-		if (SettingsLoader.GRAPHICS_LEVEL < 2) {
-			this.bloomRenderer.bindBloom();
-		}
-		
-		this.deferredRenderer.runSecondPass();
+		//this.deferredRenderer.runSecondPass();
 		this.skyboxRenderer.render(c);
 		for (int i = 0; i < particleSystems.size(); i++) {
 			particleSystems.get(i).update();
@@ -148,8 +155,8 @@ public class World {
 		this.particleRenderer.render(this, c);
 		
 		if (SettingsLoader.GRAPHICS_LEVEL < 2) {
-			this.bloomRenderer.applyBlur(this.deferredRenderer);
-			this.bloomRenderer.render(this.deferredRenderer);
+			//this.bloomRenderer.applyBlur(this.deferredRenderer);
+			//this.bloomRenderer.render(this.deferredRenderer);
 		}
 		
 		DisplayManager.disableCulling();

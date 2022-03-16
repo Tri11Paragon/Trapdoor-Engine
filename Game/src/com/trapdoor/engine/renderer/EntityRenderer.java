@@ -92,6 +92,40 @@ public class EntityRenderer {
 		}
 	}
 	
+	public void renderChunkDepth(DepthPassRenderer renderer, Model m, ArrayList<Entity> lis) {
+		DepthPassShader shader = renderer.getShader();
+		Mesh[] meshes = m.getMeshes();
+		for (int i = 0; i < meshes.length; i++) {
+			VAO mod = meshes[i].getVAO();
+			
+			if (mod == null)
+				continue;
+			
+			Material mat = meshes[i].getMaterial();
+			
+			if (mat.getDiffuseTexture() == null)
+				continue;
+			
+			GL30.glBindVertexArray(mod.getVaoID());
+			GL20.glEnableVertexAttribArray(0);
+			GL20.glEnableVertexAttribArray(1);
+			
+			GL13.glActiveTexture(GL13.GL_TEXTURE0);	
+			GL11.glBindTexture(GL11.GL_TEXTURE_2D, mat.getDiffuseTexture().getID());
+			
+			for (int j = 0; j < lis.size(); j++) {
+				Entity entity = lis.get(j);
+				shader.loadMatrix(ShaderProgram.std_TRANSFORM_MATRIX, Maths.createTransformationMatrix((Transform)entity.getComponent(Transform.class)));
+				
+				GL11.glDrawElements(GL11.GL_TRIANGLES, mod.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+			}
+			
+			GL20.glDisableVertexAttribArray(0);
+			GL20.glDisableVertexAttribArray(1);
+			GL30.glBindVertexArray(0);
+		}
+	}
+	
 	public void renderShadow(ShadowRenderer renderer, Model m, ArrayList<Entity> lis) {
 		ShadowShader shader = renderer.getShader();
 		Mesh[] meshes = m.getMeshes();

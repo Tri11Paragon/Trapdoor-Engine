@@ -17,7 +17,7 @@ import com.trapdoor.engine.registry.annotations.PostRegistrationEventSubscriber;
 import com.trapdoor.engine.registry.annotations.RegistrationEventSubscriber;
 import com.trapdoor.engine.renderer.particles.ParticleSystem;
 import com.trapdoor.engine.renderer.particles.systems.AnimatedParticleSystem;
-import com.trapdoor.engine.renderer.ui.CommandBox;
+import com.trapdoor.engine.renderer.ui.Console;
 import com.trapdoor.engine.renderer.ui.DebugInfo;
 import com.trapdoor.engine.tools.input.Mouse;
 import com.trapdoor.engine.world.World;
@@ -208,14 +208,14 @@ public class TestDisplay extends IDisplay {
 	@Override
 	public void onSwitch() {
 		// can be added to any screen, will just overwrite on load
-		CommandBox.registerCommand("raycast", new RayCastCommand(this.world.getRaycast()));
+		Console.registerCommand("raycast", new RayCastCommand(this.world.getRaycast()));
 		TeleportCommand tp = new TeleportCommand(cameraEnt, camera);
-		CommandBox.registerCommand("teleport", tp);
-		CommandBox.registerCommand("tp", tp);
-		CommandBox.registerCommand("gravity", new GravityCommand(cameraEnt));
+		Console.registerCommand("teleport", tp);
+		Console.registerCommand("tp", tp);
+		Console.registerCommand("gravity", new GravityCommand(cameraEnt));
 		FreeMoveCommand move = new FreeMoveCommand(camera);
-		CommandBox.registerCommand("move", move);
-		CommandBox.registerCommand("creative", move);
+		Console.registerCommand("move", move);
+		Console.registerCommand("creative", move);
 		
 		DebugInfo.assignWorld(world);
 	}

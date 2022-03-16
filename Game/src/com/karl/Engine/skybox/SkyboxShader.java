@@ -29,8 +29,8 @@ public class SkyboxShader extends WorldShader {
 	}
 	
 	public void loadColors(Vector4f color1, Vector4f color2) {
-		super.load4DVector(location_color1, color1);
-		super.load4DVector(location_color2, color2);
+		super.loadVector(location_color1, color1);
+		super.loadVector(location_color2, color2);
 		super.loadFloat(location_useColor, 1);
 	}
 	

@@ -127,81 +127,58 @@ public class WeaponGreg extends Weapon {
 			applyingDestruction = true;
 		}
 		if (applyingDestruction) {
-			FloatBuffer verts = newModelStore.getMeshes()[0].getVertices();
-			FloatBuffer newVerts = BufferUtils.createFloatBuffer(verts.capacity());
-			AxisAlignedBoundingBox aabb = newModelStore.getMeshes()[0].getBoundingBox();
-			Vector3d center = aabb.getCenter();
-			for (int i = 0; i < verts.capacity() / 3; i++) {
-				/*float oldX = verts.get();
-				float oldY = verts.get();
-				float oldZ = verts.get();
+			for (int p = 0; p < newModelStore.getMeshes().length; p++) {
+				FloatBuffer verts = newModelStore.getMeshes()[p].getVertices();
+				FloatBuffer newVerts = MemoryUtil.memAllocFloat(verts.capacity());
+				AxisAlignedBoundingBox aabb = newModelStore.getMeshes()[p].getBoundingBox();
+				Vector3d center = aabb.getCenter();
+				for (int i = 0; i < verts.capacity() / 3; i++) {
+					float oldX = verts.get();
+					float oldY = verts.get();
+					float oldZ = verts.get();
+					
+					float vectorScale = 1.4234f;
+					
+					float tdx = distanceX(center, oldX, oldY, oldZ);
+					float tdy = distanceY(center, oldX, oldY, oldZ);
+					float tdz = distanceZ(center, oldX, oldY, oldZ);
+					
+					float dx = tdx / 8.6356f;
+					float dy = tdy / 7.2395f;
+					float dz = tdz / 8.5324f;
+					
+					vectorScale /= ((tdx + tdy + tdz) / 3);
+					
+					float nx = (float) (noisey.noise(dx, dy, dz)) * vectorScale;
+					float ny = (float) (noisey.noise(dz, dx, dy)) * vectorScale;
+					float nz = (float) (noisey.noise(dy, dz, dx)) * vectorScale;
+					
+					Matrix4f mat4 = new Matrix4f();
+					
+					mat4.translate(nx, ny, nz);
+					
+					final float rotScale = 16.5342f;
+					final float rotFactor = (float) (Math.PI);
+					
+					mat4.rotateX((float)(rotFactor * noisey.noise(tdx / rotScale)));
+					mat4.rotateY((float)(rotFactor * noisey.noise(tdy / rotScale)));
+					mat4.rotateZ((float)(rotFactor * noisey.noise(tdz / rotScale)));
+					
+					Vector4f trans = mat4.transform(new Vector4f(oldX, oldY, oldZ, 1.0f));
+					
+					newVerts.put(trans.x);
+					newVerts.put(trans.y);
+					newVerts.put(trans.z);
+				}
+				verts.flip();
+				newVerts.flip();
 				
-				float rvx = (float) (Math.random() * 4);
-				float rvy = (float) (Math.random() * 4);
-				float rvz = (float) (Math.random() * 4);
+				GL33.glBindVertexArray(newModelStore.getMeshes()[p].getVAO().getVaoID());
+				VAOLoader.updateVBOGreg(newModelStore.getMeshes()[p].getVAO().getVbos()[0], newVerts);
+				GL33.glBindVertexArray(0);
 				
-				float distance = distance(center, oldX + rvx, oldY + rvy, oldZ + rvz);
-				
-				float noise = (float) noisey.noise(distance + Math.random());
-				
-				float change = (1 - (1/distance)) * noise;
-				
-				newVerts.put(oldX * change);
-				newVerts.put(oldY * change);
-				newVerts.put(oldZ * change);
-				
-				System.out.println(oldX  * change + " " + oldY * change + " " + oldZ * change + " || " + change + " " + noise + " " + distance);*/
-				float oldX = verts.get();
-				float oldY = verts.get();
-				float oldZ = verts.get();
-				
-				float vectorScale = 8.4234f;
-				
-				float tdx = distanceX(center, oldX, oldY, oldZ);
-				float tdy = distanceY(center, oldX, oldY, oldZ);
-				float tdz = distanceZ(center, oldX, oldY, oldZ);
-				
-				float dx = tdx / 8.6356f;
-				float dy = tdy / 7.2395f;
-				float dz = tdz / 8.5324f;
-				
-				//vectorScale *= 1 / ((tdx + tdy + tdz) / 3);
-				
-				float nx = (float) (noisey.noise(dx, dy, dz)) * vectorScale;
-				float ny = (float) (noisey.noise(dz, dx, dy)) * vectorScale;
-				float nz = (float) (noisey.noise(dy, dz, dx)) * vectorScale;
-				
-				Matrix4f mat4 = new Matrix4f();
-				
-				//mat4.translate(oldX, oldY, oldZ);
-				
-				mat4.translate(nx, ny, nz);
-				
-				final float rotScale = 16.0f;
-				
-				mat4.rotateX((float) (Math.PI * tdx / rotScale ));
-				mat4.rotateY((float) (Math.PI * tdy / rotScale ));
-				mat4.rotateZ((float) (Math.PI * tdz / rotScale ));
-				
-				Vector4f trans = mat4.transform(new Vector4f(oldX, oldY, oldZ, 1.0f));
-				
-				newVerts.put(trans.x);
-				newVerts.put(trans.y);
-				newVerts.put(trans.z);
-				
-				//float x = (float) Math.random() * 2.0f - 1.0f;
-				//float y = (float) Math.random() * 2.0f - 1.0f;
-				//float z = (float) Math.random() * 2.0f - 1.0f;
-				//newVerts.put(verts.get() + x);
-				//newVerts.put(y);
-				//newVerts.put(z);
+				MemoryUtil.memFree(newVerts);
 			}
-			verts.flip();
-			newVerts.flip();
-			
-			GL33.glBindVertexArray(newModelStore.getMeshes()[0].getVAO().getVaoID());
-			VAOLoader.updateVBOGreg(newModelStore.getMeshes()[0].getVAO().getVbos()[0], newVerts);
-			GL33.glBindVertexArray(0);
 			
 			//MemoryUtil.memFree(newVerts);
 			applyingDestruction = false;
@@ -252,7 +229,7 @@ public class WeaponGreg extends Weapon {
 			dz *= -mul * localDist;
 
 			heldEntity.setLinearVelocity(0, 0, 0);
-			//heldEntity.applyCentralForce(dx, dy, dz);
+			heldEntity.applyCentralForce(dx, dy, dz);
 			timer += DisplayManager.getFrameTimeSeconds();
 		}
 	}
@@ -264,7 +241,7 @@ public class WeaponGreg extends Weapon {
 			if (timer > 0.5f) {
 				Vector3f ray = world.getRaycast().getCurrentRay();
 				float force = Math.min(2000, timer * 1000) * 5;
-				//heldEntity.applyCentralImpulse(ray.x * force, ray.y * force, ray.z * force);
+				heldEntity.applyCentralImpulse(ray.x * force, ray.y * force, ray.z * force);
 			}
 		}
 		heldEntity = null;

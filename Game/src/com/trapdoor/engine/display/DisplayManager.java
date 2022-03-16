@@ -70,7 +70,6 @@ import com.trapdoor.engine.registry.annotations.AnnotationHandler;
 import com.trapdoor.engine.renderer.ShaderLookup;
 import com.trapdoor.engine.renderer.SyncSave;
 import com.trapdoor.engine.renderer.debug.TextureRenderer;
-import com.trapdoor.engine.renderer.ui.CommandBox;
 import com.trapdoor.engine.renderer.ui.Console;
 import com.trapdoor.engine.renderer.ui.DebugInfo;
 import com.trapdoor.engine.renderer.ui.UIMaster;
@@ -92,7 +91,7 @@ import imgui.glfw.ImGuiImplGlfw;
 public class DisplayManager {
 
 	public static final String gameVersion = "0.0A";
-	public static final String engineVersion = "0.8.0A";
+	public static final String engineVersion = "0.8.1A";
 	public static final String gameName = "Rixie";
 	public static final String engineName = "Trapdoor";
 	public static final String title = gameName + " - V" + gameVersion + " // " + engineName + " V" + engineVersion;
@@ -424,10 +423,9 @@ public class DisplayManager {
 			imguiGLFW.charCallback(window, c);
 		});
 		debugInfoLayer = new DebugInfo();
-		CommandBox.init();
-		InputMaster.registerKeyListener(new Console());
+		Console.init();
 		InputMaster.registerKeyListener(debugInfoLayer);
-		InputMaster.registerKeyListener(CommandBox.getInstance());
+		InputMaster.registerKeyListener(Console.getInstance());
 		
 		if (Main.devMode)
 			TextureRenderer.init();

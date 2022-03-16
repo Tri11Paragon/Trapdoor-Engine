@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
@@ -22,6 +23,10 @@ import org.lwjgl.opengl.GL33;
 
 public abstract class ShaderProgram {
 	
+	public static final String std_TRANSFORM_MATRIX = "transformMatrix";
+	public static final String std_VIEW_MATRIX = "viewMatrix";
+	public static final String std_PROJECT_MATIRX = "projectionMatrix";
+	
 	// this is the shader id;
 	protected int programID;
 
@@ -31,6 +36,8 @@ public abstract class ShaderProgram {
 	private int fragmentShaderID;
 
 	private static float[] matrixBuffer = new float[16];
+	
+	private HashMap<String, Integer> uniformVariables = new HashMap<String, Integer>();
 
 	public ShaderProgram(String vertexFile, String fragmentFile) {
 		// load the shaders
@@ -78,7 +85,9 @@ public abstract class ShaderProgram {
 	 * location
 	 */
 	protected int getUniformLocation(String uniformName) {
-		return GL20.glGetUniformLocation(programID, uniformName);
+		int loc = GL20.glGetUniformLocation(programID, uniformName);
+		uniformVariables.put(uniformName, loc);
+		return loc;
 	}
 
 	public void start() {
@@ -156,15 +165,19 @@ public abstract class ShaderProgram {
 		GL20.glUniform3f(location, x, y, z);
 	}
 
-	protected void load4DVector(int location, Vector4f vector) {
+	protected void loadVector(int location, Vector4f vector) {
 		GL20.glUniform4f(location, vector.x, vector.y, vector.z, vector.w);
 	}
+	
+	protected void loadVector(int location, float x, float y, float z, float w) {
+		GL20.glUniform4f(location, x, y, z, w);
+	}
 
-	protected void load2DVector(int location, Vector2f vector) {
+	protected void loadVector(int location, Vector2f vector) {
 		GL20.glUniform2f(location, vector.x, vector.y);
 	}
 
-	protected void load2DVector(int location, float x, float y) {
+	protected void loadVector(int location, float x, float y) {
 		GL20.glUniform2f(location, x, y);
 	}
 
@@ -179,6 +192,50 @@ public abstract class ShaderProgram {
 	protected void loadMatrix(int location, Matrix4f matrix) {
 		matrix.get(matrixBuffer);
 		GL20.glUniformMatrix4fv(location, false, matrixBuffer);
+	}
+	
+	public void loadFloat(String location, float value) {
+		loadFloat(uniformVariables.get(location), value);
+	}
+
+	public void loadInt(String location, int value) {
+		loadInt(uniformVariables.get(location), value);
+	}
+
+	public void loadVector(String location, Vector3f vector) {
+		loadVector(uniformVariables.get(location), vector.x, vector.y, vector.z);
+	}
+	
+	public void loadVector(String location, Vector3d vector) {
+		loadVector(uniformVariables.get(location), (float) vector.x, (float) vector.y, (float) vector.z);
+	}
+	
+	public void loadVector(String location, float x, float y, float z) {
+		loadVector(uniformVariables.get(location), x, y, z);
+	}
+
+	public void loadVector(String location, Vector4f vector) {
+		loadVector(uniformVariables.get(location), vector.x, vector.y, vector.z, vector.w);
+	}
+	
+	public void loadVector(String location, float x, float y, float z, float w) {
+		loadVector(uniformVariables.get(location), x, y, z, w);
+	}
+
+	public void loadVector(String location, Vector2f vector) {
+		loadVector(uniformVariables.get(location), vector.x, vector.y);
+	}
+
+	public void loadVector(String location, float x, float y) {
+		loadVector(uniformVariables.get(location), x, y);
+	}
+
+	public void loadBoolean(String location, boolean value) {
+		loadBoolean(uniformVariables.get(location), value);
+	}
+
+	public void loadMatrix(String location, Matrix4f matrix) {
+		loadMatrix(uniformVariables.get(location), matrix);
 	}
 	
 	protected void setUniformBlockLocation(String name, int location) {
