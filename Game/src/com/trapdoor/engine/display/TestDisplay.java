@@ -19,6 +19,8 @@ import com.trapdoor.engine.renderer.particles.ParticleSystem;
 import com.trapdoor.engine.renderer.particles.systems.AnimatedParticleSystem;
 import com.trapdoor.engine.renderer.ui.Console;
 import com.trapdoor.engine.renderer.ui.DebugInfo;
+import com.trapdoor.engine.renderer.ui.FontAwesomeIcons;
+import com.trapdoor.engine.renderer.ui.themes.AppleTheme;
 import com.trapdoor.engine.tools.input.Mouse;
 import com.trapdoor.engine.world.World;
 import com.trapdoor.engine.world.entities.BouncingEntity;
@@ -221,6 +223,8 @@ public class TestDisplay extends IDisplay {
 		Console.registerCommand("creative", move);
 		
 		DebugInfo.assignWorld(world);
+		
+		new AppleTheme(true, 1.00f).applyStyle(ImGui.getStyle());
 	}
 	
 	float[] flt = new float[1];
@@ -230,15 +234,15 @@ public class TestDisplay extends IDisplay {
 	public void render() {
 		ImGui.begin("The Best Debug Menu");
 		ImGui.beginChild("The child!", 256, 256);
-		ImGui.text("Hello, World! ");
-        if (ImGui.button(" Save")) {
+		ImGui.text("Hello, World! " + FontAwesomeIcons.Angry);
+        if (ImGui.button(FontAwesomeIcons.Save + " Save")) {
             System.out.println("hello!");
         }
         ImGui.sameLine();
         ImGui.text(String.valueOf(5));
-        ImGui.inputText("string", str, ImGuiInputTextFlags.CallbackResize);
+        ImGui.inputText("string \uf556", str, ImGuiInputTextFlags.CallbackResize);
         ImGui.text("Result: " + str.get());
-        ImGui.sliderFloat("float", flt, 0, 1);
+        ImGui.sliderFloat("float" + FontAwesomeIcons.Smile, flt, 0, 1);
         ImGui.separator();
         ImGui.text("Extra");
         //ImGui.image(this.world.getShadowMap().getDepthMapTexture(), 256, 256);

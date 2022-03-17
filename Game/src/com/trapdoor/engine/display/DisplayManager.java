@@ -72,6 +72,7 @@ import com.trapdoor.engine.renderer.SyncSave;
 import com.trapdoor.engine.renderer.debug.TextureRenderer;
 import com.trapdoor.engine.renderer.ui.Console;
 import com.trapdoor.engine.renderer.ui.DebugInfo;
+import com.trapdoor.engine.renderer.ui.FontAwesomeIcons;
 import com.trapdoor.engine.renderer.ui.UIMaster;
 import com.trapdoor.engine.renderer.ui.render.ImGuiImplGl3;
 import com.trapdoor.engine.tools.Logging;
@@ -81,6 +82,7 @@ import com.trapdoor.engine.tools.input.InputMaster;
 import com.trapdoor.engine.tools.input.Mouse;
 import com.trapdoor.engine.world.sound.SoundSystem;
 
+import imgui.ImFont;
 import imgui.ImFontConfig;
 import imgui.ImFontGlyphRangesBuilder;
 import imgui.ImGui;
@@ -350,28 +352,46 @@ public class DisplayManager {
         
         AnnotationHandler.runPreRegistration();
         
-        tio.getFonts().addFontDefault();
+        //tio.getFonts().addFontDefault();
         
         final ImFontGlyphRangesBuilder rangesBuilder = new ImFontGlyphRangesBuilder(); // Glyphs ranges provide
         rangesBuilder.addRanges(tio.getFonts().getGlyphRangesDefault());
-        rangesBuilder.addRanges(tio.getFonts().getGlyphRangesCyrillic());
-        rangesBuilder.addRanges(tio.getFonts().getGlyphRangesJapanese());
-        //rangesBuilder.addRanges(FontAwesomeIcons._IconRange);
+        //rangesBuilder.addRanges(tio.getFonts().getGlyphRangesCyrillic());
+        //rangesBuilder.addRanges(tio.getFonts().getGlyphRangesJapanese());
+        rangesBuilder.addRanges(FontAwesomeIcons._IconRange);
         
         final ImFontConfig fontConfig = new ImFontConfig();
-        fontConfig.setMergeMode(true);
+        final ImFontConfig fontConfig2 = new ImFontConfig();
+        fontConfig.setMergeMode(false);
+        fontConfig2.setMergeMode(true);
         
         final short[] glyphRanges = rangesBuilder.buildRanges();
-        //io.getFonts().addFontFromMemoryTTF(loadFromResources("Tahoma.ttf"), 14, fontConfig, glyphRanges); // cyrillic glyphs
-        //io.getFonts().addFontFromMemoryTTF(loadFromResources("NotoSansCJKjp-Medium.otf"), 14, fontConfig, glyphRanges); // japanese glyphs
-        //io.getFonts().addFontFromMemoryTTF(loadFromResources("fa-regular-400.ttf"), 14, fontConfig, glyphRanges); // font awesome
-        //io.getFonts().addFontFromMemoryTTF(loadFromResources("fa-solid-900.ttf"), 14, fontConfig, glyphRanges); // font awesome
-        for (int i = 0; i < GameRegistry.getFonts().size(); i++) {
-        	tio.getFonts().addFontFromMemoryTTF(loadFromResources(GameRegistry.getFonts().get(i)), GameRegistry.getFontSize(GameRegistry.getFonts().get(i)), fontConfig, glyphRanges);
-        }
+        
+        /*for (int i = 0; i < GameRegistry.getFonts().size(); i++) {
+        	if (i > 0)
+        		fontConfig.setMergeMode(true);
+        	ImFont f = tio.getFonts().addFontFromMemoryTTF(
+					loadFromResources(
+							GameRegistry.getFonts().get(i)), 
+							GameRegistry.getFontSize(
+									GameRegistry.getFonts().get(i)), fontConfig, glyphRanges);
+        	GameRegistry.regsterImFont(
+	        			f, 
+	        			GameRegistry.getFontNames().get(i)
+        			);
+        }*/
+        tio.getFonts().addFontFromMemoryTTF(loadFromResources("resources/fonts/roboto/Roboto-Regular.ttf"), 18, fontConfig, glyphRanges);
+        
+        fontConfig.setMergeMode(true);
+        
+        tio.getFonts().addFontFromMemoryTTF(loadFromResources("resources/fonts/fontawesome-free-6.1.0-web/webfonts/fa-regular-400.ttf"), 18, fontConfig2, glyphRanges);
+        tio.getFonts().addFontFromMemoryTTF(loadFromResources("resources/fonts/fontawesome-free-6.1.0-web/webfonts/fa-brands-400.ttf"), 18, fontConfig2, glyphRanges);
+        tio.getFonts().addFontFromMemoryTTF(loadFromResources("resources/fonts/fontawesome-free-6.1.0-web/webfonts/fa-solid-900.ttf"), 18, fontConfig2, glyphRanges);
+        
         tio.getFonts().build();
         
         fontConfig.destroy();
+        fontConfig2.destroy();
         
         imguiGL3.updateFontsTexture();
 		
@@ -494,6 +514,10 @@ public class DisplayManager {
 	
 	public static IDisplay getCurrentDisplay() {
 		return currentDisplay;
+	}
+	
+	public static void updateFontTextures() {
+		imguiGL3.updateFontsTexture();
 	}
 	
 	/*
