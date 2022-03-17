@@ -15,6 +15,7 @@ import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.PhysicsRayTestResult;
 import com.jme3.math.Vector3f;
 import com.karl.Engine.skybox.SkyboxRenderer;
+import com.trapdoor.engine.UBOLoader;
 import com.trapdoor.engine.camera.Camera;
 import com.trapdoor.engine.datatypes.DynamicArray;
 import com.trapdoor.engine.datatypes.ogl.assimp.Model;
@@ -34,6 +35,7 @@ import com.trapdoor.engine.tools.Logging;
 import com.trapdoor.engine.tools.RayCasting;
 import com.trapdoor.engine.tools.SettingsLoader;
 import com.trapdoor.engine.world.entities.Entity;
+import com.trapdoor.engine.world.entities.components.Transform;
 
 /**
  * @author brett
@@ -78,6 +80,7 @@ public class World {
 
 	@SuppressWarnings("deprecation")
 	public World(Camera c) {
+		UBOLoader.createLightingUBO();
 		// entitiesinworld is shared memory between the renderer and the world object.
 		//this.deferredRenderer = new DeferredRenderer(c);
 		this.depthRenderer = new DepthPassRenderer();
@@ -89,11 +92,10 @@ public class World {
 		if (SettingsLoader.GRAPHICS_LEVEL < 2) {
 			this.shadowRenderer = new ShadowRenderer(c);
 			this.bloomRenderer = new BloomRenderer();
+			this.shadowRenderFunction = new ShadowRenderFunction(this.shadowRenderer.getShader());
 		}
-		// setup render functions
 		this.depthRenderFunction = new DepthRenderFunction(this.depthRenderer.getShader());
 		this.entityRenderFunction = new EntityRenderFunction(this.materialRenderer.getShader(), this.materialRenderer.getLightingArray());
-		this.shadowRenderFunction = new ShadowRenderFunction(this.shadowRenderer.getShader());
 		
 		// setup physics
         this.physWorld = new PhysicsSpace(PhysicsSpace.BroadphaseType.DBVT);
@@ -101,7 +103,7 @@ public class World {
         this.physWorld.useDeterministicDispatch(false);
         this.physWorld.useScr(false);
         // this helps/
-        //this.physWorld.setAccuracy(1f/120f);
+        this.physWorld.setAccuracy(1f/120f);
         
         this.physWorld.addCollisionListener((PhysicsCollisionEvent event) -> {
         	Entity e1 = entityPhyiscsMap.get(event.getObjectA());
@@ -128,6 +130,7 @@ public class World {
 	 */
 	public void render() {
 		this.c.render();
+		UBOLoader.updateMatrixUBO();
 		
 		DisplayManager.enableCulling();
 		DisplayManager.disableTransparentcy(); 
@@ -137,11 +140,6 @@ public class World {
 			
 			GL33.glViewport(0, 0, DisplayManager.WIDTH, DisplayManager.HEIGHT);
 		}
-		
-		//this.deferredRenderer.startFirstPass(this);
-		//this.deferredRenderer.enableMainShaders();
-		//this.deferredRenderer.getShader().loadViewPos(this.c.getPosition());
-		//this.deferredRenderer.endFirstPass();
 		
 		// TODO: add bloomy option
 		if (SettingsLoader.GRAPHICS_LEVEL < 1) {
@@ -170,15 +168,15 @@ public class World {
 		this.materialRenderer.end();
 		
 		//this.deferredRenderer.runSecondPass();
+		
+		GL33.glDepthFunc(GL33.GL_LEQUAL);
+		
+		this.skyboxRenderer.render(c);
 		for (int i = 0; i < particleSystems.size(); i++) {
 			particleSystems.get(i).update();
 		}
 		particleRenderer.update(this, c);
 		this.particleRenderer.render(this, c);
-		
-		GL33.glDepthFunc(GL33.GL_LEQUAL);
-		
-		this.skyboxRenderer.render(c);
 		
 		if (SettingsLoader.GRAPHICS_LEVEL < 1) {
 			this.bloomRenderer.applyBlur();
@@ -205,6 +203,10 @@ public class World {
 		for (int i = 0; i < allEnts.size(); i++) {
 			Entity a = allEnts.get(i);
 			a.update();
+			Transform t = a.getComponent(Transform.class);
+			if (t == null)
+				continue;
+			t.updateDistanceToCamera(c);
 		}
 		
 		// calcualte the phys, stepped relative to the game speed

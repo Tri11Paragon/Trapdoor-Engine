@@ -194,7 +194,9 @@ vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir)
 void main(){
 
     vec3 viewDir = normalize(TangentViewPos - TangentFragPos);
+    
     //vec2 texCoords = ParallaxMapping(textureCoords,  viewDir);
+    
     vec2 texCoords = textureCoords;
 
     vec3 normaltbn = normalize(texture(normalMap, texCoords).rgb);

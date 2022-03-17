@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import org.joml.Vector3d;
+
+import com.trapdoor.engine.camera.Camera;
 import com.trapdoor.engine.datatypes.ogl.assimp.Model;
 import com.trapdoor.engine.renderer.functions.RenderFunction;
 import com.trapdoor.engine.world.entities.Entity;
@@ -16,12 +19,14 @@ import com.trapdoor.engine.world.entities.Entity;
  */
 public class WorldChunk {
 	
-	public static int CHUNK_SIZE = 32;
+	public static final int CHUNK_SIZE = 32;
 	
 	private final ArrayList<Entity> entities = new ArrayList<Entity>();
 	private final HashMap<Model, ArrayList<Entity>> entityMap = new HashMap<Model, ArrayList<Entity>>();
 	
 	private final int cx, cy, cz;
+	
+	private float distance;
 	
 	public WorldChunk(int cx, int cy, int cz) {
 		this.cx = cx;
@@ -74,6 +79,14 @@ public class WorldChunk {
 		entities.remove(e);
 	}
 	
+	public void updateDistance(Camera c) {
+		Vector3d pos = c.getPosition();
+		float dx = (float) (pos.x - this.cx);
+		float dy = (float) (pos.y - this.cy);
+		float dz = (float) (pos.z - this.cz);
+		this.distance = dx * dx + dy * dy + dz * dz;
+	}
+	
 	public ArrayList<Entity> getEntities(){
 		return entities;
 	}
@@ -92,6 +105,10 @@ public class WorldChunk {
 	
 	public int getChunkZ() {
 		return this.cz;
+	}
+	
+	public float getDistance() {
+		return distance;
 	}
 	
 }

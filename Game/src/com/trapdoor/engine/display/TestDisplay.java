@@ -85,6 +85,10 @@ public class TestDisplay extends IDisplay {
 		GameRegistry.registerParticleTextureFolder("resources/textures/particles/fire/");
 		GameRegistry.registerParticleTextureFolder("resources/textures/particles/smoke/");
 		
+		GameRegistry.registerParticleTextureFolder("resources/textures/particles/kenny/smoke/");
+		GameRegistry.registerParticleTextureFolder("resources/textures/particles/kenny/star/");
+		GameRegistry.registerParticleTextureFolder("resources/textures/particles/kenny/spark/");
+		
 	}
 	
 	@PostRegistrationEventSubscriber
@@ -114,7 +118,7 @@ public class TestDisplay extends IDisplay {
 		this.world = new World(camera);
 
 		// .setModel(GameRegistry.getModel("resources/models/playerblend.dae"))
-		this.world.addEntityToWorld((cameraEnt = new EntityCamera(this.camera)));
+		this.world.addEntityToWorld((cameraEnt = new EntityCamera(this.camera)).setModel(GameRegistry.getModel("resources/models/playerblend.dae")));
 		
 		this.world.addEntityToWorld(
 				new Entity(0, true, null)

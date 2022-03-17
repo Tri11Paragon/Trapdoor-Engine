@@ -165,7 +165,7 @@ public class DisplayManager {
 				 * window stuff // game engine
 				 */
 
-				UBOLoader.updateMatrixUBO();
+				//UBOLoader.updateMatrixUBO();
 				
 				currentDisplay.render();
 				

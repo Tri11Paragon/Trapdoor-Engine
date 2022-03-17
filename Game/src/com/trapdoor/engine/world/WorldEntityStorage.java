@@ -33,7 +33,6 @@ public class WorldEntityStorage {
 	/* chunking */
 	private NdHashMap<Integer, WorldChunk> chunks = new NdHashMap<Integer, WorldChunk>();
 	
-	
 	private Camera camera;
 	
 	public WorldEntityStorage(Camera camera) {
@@ -68,6 +67,12 @@ public class WorldEntityStorage {
 		}
 	}
 	
+	public void sort() {
+		chunks.iterate((NdHashMap<Integer, WorldChunk> dt, Integer k1, Integer k2, Integer k3, WorldChunk v1) -> {
+			v1.updateDistance(camera);
+		});
+	}
+	
 	public void render(RenderFunction render) {
 		final int f = SettingsLoader.RENDER_DISTANCE;
 		Vector3d pos = camera.getPosition();
@@ -82,15 +87,15 @@ public class WorldEntityStorage {
 					int cy = (y >> 5) + j;
 					int cz = (z >> 5) + k;
 					
-					//int ccx = cx * 32;
-					//int ccy = cy * 32;
-					//int ccz = cz * 32;
+					int ccx = cx * WorldChunk.CHUNK_SIZE;
+					int ccy = cy * WorldChunk.CHUNK_SIZE;
+					int ccz = cz * WorldChunk.CHUNK_SIZE;
 					
-					//final float padding = 16;
+					final float padding = 16;
 					
 					// TODO:
 					//if (!camera.cubeInFrustum(ccx - padding, ccy - padding, ccz - padding, ccx+32 + padding, ccy+32 + padding, ccz+32 + padding))
-						//continue;
+					//	continue;
 					
 					WorldChunk c = this.chunks.get(cx, cy, cz);
 					

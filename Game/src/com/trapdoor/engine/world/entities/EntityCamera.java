@@ -64,6 +64,7 @@ public class EntityCamera extends Entity {
 		this.setCollisionObject(ch);
 		this.sl = new SoundListener();
 		this.addComponent(sl);
+		
 	}
 	
 	@Override
@@ -92,6 +93,8 @@ public class EntityCamera extends Entity {
 		this.c.getViewMatrix().positiveZ(at).negate();
 		this.c.getViewMatrix().positiveY(up);
 		sl.setOrientation(at, up);
+		
+		c.updateViewMatrix();
 	}
 	
 	private float offset = 2;
@@ -191,16 +194,19 @@ public class EntityCamera extends Entity {
 		this.world.addEntityToWorld(bullet);
 	}
 	
+	final float walkSpeed = 20f;
+	final float runSpeed = 150f/2f;
+	
 	protected void move() {
 		if (!Mouse.isGrabbed())
 			return;
 		
 		if (Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_ALT))
-			speed = 5f;
+			speed = walkSpeed / 8f;
 		else if (Keyboard.isKeyDown(Keyboard.L_CONTROL))
-			speed=150f;
+			speed = runSpeed;
 		else
-			speed = 40f;
+			speed = walkSpeed;
 		
 		final float timeConstant = (float) 1;
 		

@@ -54,7 +54,8 @@ public class GameRegistry {
 	 * this is the max number of method callers to be printed during an error
 	 */
 	private static final int MAX_CALLERS_LOG = 5;
-	private static final int PARTICLE_SIZE = 128;
+	// TODO: make this changeable
+	private static final int PARTICLE_SIZE = 256;
 	//private static final HashMap<String, String> allowedFormats = new HashMap<String, String>();
 	//private static final ArrayList<IDisplay> registeredDisplays = new ArrayList<IDisplay>();
 	

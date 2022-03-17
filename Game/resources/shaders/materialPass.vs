@@ -40,12 +40,12 @@ void main(void){
 
 	mat3 tangMat = mat3(transformMatrix);
 
-	vec3 T = normalize(tangMat * tangent);
-	vec3 B = normalize(tangMat * bitangent);
-   	vec3 N = normalize(tangMat * normal);
+	//vec3 T = normalize(tangMat * tangent);
+	//vec3 B = normalize(tangMat * bitangent);
+   	//vec3 N = normalize(tangMat * normal);
 	//T = normalize(T - dot(T, N) * N);
 	//vec3 B = cross(T, N);
-   	tbnMat = mat3(T, B, N);
+   	//tbnMat = mat3(T, B, N);
 
 	//mat3 TBN = transpose(tbnMat);
 
