@@ -1,19 +1,16 @@
 package com.trapdoor.engine.renderer;
 
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 
 import org.lwjgl.opengl.GL33;
 
 import com.trapdoor.engine.ProjectionMatrix;
 import com.trapdoor.engine.camera.Camera;
 import com.trapdoor.engine.datatypes.lighting.ExtensibleLightingArray;
-import com.trapdoor.engine.datatypes.lighting.Light;
 import com.trapdoor.engine.display.DisplayManager;
 import com.trapdoor.engine.renderer.debug.TextureRenderer;
 import com.trapdoor.engine.tools.SettingsLoader;
 import com.trapdoor.engine.world.World;
-import com.trapdoor.engine.world.entities.Entity;
 
 /**
  * @author brett
@@ -259,10 +256,12 @@ public class DeferredRenderer implements Runnable {
 		GL33.glDeleteTextures(multiColorSpec);
 		GL33.glDeleteTextures(multiGRenderState);
 		GL33.glDeleteRenderbuffers(multiRboDepth);
+		GL33.glDeleteVertexArrays(quadVAO);
+		GL33.glDeleteBuffers(quadVBO);
 	}
 	
-	public void addLightingArray(ArrayList<Light> lights, Entity e) {
-		this.lights.add(lights, e);
+	public ExtensibleLightingArray getLightingArray() {
+		return this.lights;
 	}
 
 	@Override
