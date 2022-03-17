@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    
+<meta charset="UTF-8">
+    
+<title>Brock University</title>
+<meta charset="UTF-8">
+    
+<meta name="viewport" content="width=device-width, initial-scale=1">
+    
+
+<link rel="stylesheet" type="text/css" href="style.css">
+  
+
+</head>
+
+
+<body>
+
+ 
+   
+
+<div class="container-fluid">
+<div id="top">
+<div class="row">
+<div class="col-sm-6">
+    
+<img src="brocku-384x232.png" alt="Brock University logo" id="brocklogo">
+</div>
+    
+
+<div class="col-sm-6"></div>
+</div><!--.row-->
+    <h1>Welcome to Brock University</h1>
+</div><!--#top-->
+        
+
+<div id="bottom">
+<div class="row">
+<div class="col-sm-5">
+
+<div class="info" id="login">
+            
+
+<form method="post" autocomplete="off" action="/auth/index.html/u">
+            Username:<br/>
+            
+<input type="text" name="user" accesskey="u" size="25" value="">
+            <br>
+            Password:<br/>
+            
+<input type="password" name="password" accesskey="p" size="25" value="">
+            <br>
+            
+<input type="submit" value="I Agree">
+ 
+
+     
+<p>Logging in as a registered user indicates you have read and accepted the Terms and Conditions.</p>
+            
+
+<script>
+{
+var q = window.location.search;
+var errmsg = null;
+if (q && q.length > 1) {
+q = q.substring(1).split(/[=&]/);
+for (var i = 0; i < q.length - 1; i += 2) {
+if (q[i] == "errmsg") {
+errmsg = unescape(q[i + 1]);
+break;
+}
+}
+}
+if (errmsg && errmsg.length > 0) {
+switch(errmsg) {
+case "Authentication Failed":
+localized_msg="Authentication Failed";
+break;
+default:
+localised_msg=errmsg;
+break;
+} errmsg =
+"<div id='errorbox'>\n" +
+localised_msg +
+"\n</div>\n";
+document.write(errmsg);
+};
+} </script>
+
+</form>
+</div><!--.info-->
+</div><!--.col-sm-6-->
+    
+<div class="col-sm-7">
+<div class="info" id="terms">
+    
+
+<img src="wifi.png" alt="wifi icon" id="wifiimg">
+    
+
+<h2>BrockEvents WI-FI Terms and Conditions</h2>
+    <h3>User Expectations:</h3>
+
+    <p>Brock University is not responsible for the security and privacy of online transactions, data transmitted or loss of 
+    information over BrockEvents Wireless Network.</p>
+
+    <p>Because BrockEvents network is not encrypted, users of BrockEvents are encouraged to take steps
+    to keep their Wi-Fi sessions secure and practice safe Internet use.</p>
+
+    <p>Users of BrockEvents are solely responsible for the safety and protection of their devices from viruses, spyware spam or 
+    any malware.</p>
+
+    <p>Brock University is not responsible and will have no liability for any content uploaded, shared, transmitted, or 
+    downloaded by user or any third party, or for anything a 
+    user may encounter or any data that may be lost or compromised while connected to BrockEvents WI-FI.</p>
+
+    <p>Inappropriate use of the BrockEvents is not permitted. These Terms and Condition do not list all possible inappropriate 
+    uses but lists guidelines that Brock University may use to make a determination whether a particular use is 
+    inappropriate:</p>
+
+    <ul>
+    <li>Users must respect the privacy and intellectual property rights of others.</li>
+    <li>Users must not use the service to access or download any material that is illegal.</li>
+    <li>Users must respect the integrity of our network and any other public or private computing and network systems.</li>
+    <li>Users must not use the service for malicious, fraudulent, or misrepresentative purposes.</li>
+    <li>Users must not use the service in a manner that modifies, disrupts, or interferes in any way with service for any 
+    user, host, or network.</li>
+    <li>Users must not use the service that extends coverage of BrockEvents wireless network to areas
+    other than Brock University approved coverage areas.</li> 
+    </ul>
+
+    <h3>Service Expectations:</h3>
+
+    <p>Even though Brock University IT staff will make every effort to keep BrockEvents available, service levels can't be 
+    guaranteed.</p>
+
+    <p>The connectivity speed depends on the time of day, the number of devices using the network and types of activity that 
+    it is being used for.</p>
+
+    <p>Brock University does not guarantee any level of network speed or performance.</p>
+
+    <p>Technical support for BrockEvents is limited and will not be provided after-hours and on weekends or holidays.</p>
+
+    <p>Brock University reserves the right to disable access at any time to any user without any prior notification.</p>
+
+</div><!--.info-->
+</div><!--.col-sm-6-->
+</div><!--.row-->
+</div><!--#bottom-->     
+</div><!--#container1-->
+      
+
+
+</body>
+</html>

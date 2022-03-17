@@ -24,6 +24,7 @@ import com.spinyowl.legui.style.Style.DisplayType;
 import com.trapdoor.engine.registry.GameRegistry;
 import com.trapdoor.engine.registry.Threading;
 import com.trapdoor.engine.registry.annotations.AnnotationHandler;
+import com.trapdoor.engine.registry.annotations.RegistrationEventSubscriber;
 import com.trapdoor.engine.renderer.ui.UIMaster;
 import com.trapdoor.engine.tools.Logging;
 
@@ -57,6 +58,25 @@ public class LoadingScreenDisplay extends IDisplay {
 	
 	public static void updateBar() {
 		bar.setValue((PROGRESS.get()/MAX.get()) * 100);
+	}
+	
+	@RegistrationEventSubscriber
+	public static void register() {
+		GameRegistry.registerFont("roboto-black", "resources/fonts/roboto/Roboto-Black.ttf");
+		GameRegistry.registerFont("roboto-blackitalic", "resources/fonts/roboto/Roboto-BlackItalic.ttf");
+		GameRegistry.registerFont("roboto-rold", "resources/fonts/roboto/Roboto-Bold.ttf");
+		
+		GameRegistry.registerFont("roboto-bolditalic", "resources/fonts/roboto/Roboto-BoldItalic.ttf");
+		GameRegistry.registerFont("roboto-italic", "resources/fonts/roboto/Roboto-Italic.ttf");
+		GameRegistry.registerFont("roboto-light", "resources/fonts/roboto/Roboto-Light.ttf");
+		
+		GameRegistry.registerFont("roboto-lightitalic", "resources/fonts/roboto/Roboto-LightItalic.ttf");
+		GameRegistry.registerFont("roboto-medium", "resources/fonts/roboto/Roboto-Medium.ttf");
+		GameRegistry.registerFont("roboto-mediumitalic", "resources/fonts/roboto/Roboto-MediumItalic.ttf");
+		
+		GameRegistry.registerFont("roboto-regular", "resources/fonts/roboto/Roboto-Regular.ttf");
+		GameRegistry.registerFont("roboto-thin", "resources/fonts/roboto/Roboto-Thin.ttf");
+		GameRegistry.registerFont("roboto-thinitalic", "resources/fonts/roboto/Roboto-ThinItalic.ttf");
 	}
 	
 	@Override

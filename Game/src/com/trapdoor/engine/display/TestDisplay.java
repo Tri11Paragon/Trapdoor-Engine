@@ -30,6 +30,8 @@ import com.trapdoor.engine.world.entities.tools.ai.EntityKentSpawnType;
 import com.trapdoor.engine.world.sound.SoundSystem;
 import com.trapdoor.engine.world.sound.SoundSystemType;
 
+import imgui.ImGui;
+import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.ImString;
 
 /**
@@ -88,7 +90,6 @@ public class TestDisplay extends IDisplay {
 		GameRegistry.registerParticleTextureFolder("resources/textures/particles/kenny/smoke/");
 		GameRegistry.registerParticleTextureFolder("resources/textures/particles/kenny/star/");
 		GameRegistry.registerParticleTextureFolder("resources/textures/particles/kenny/spark/");
-		
 	}
 	
 	@PostRegistrationEventSubscriber
@@ -227,7 +228,7 @@ public class TestDisplay extends IDisplay {
 	
 	@Override
 	public void render() {
-		/*ImGui.begin("The Best Debug Menu");
+		ImGui.begin("The Best Debug Menu");
 		ImGui.beginChild("The child!", 256, 256);
 		ImGui.text("Hello, World! ");
         if (ImGui.button(" Save")) {
@@ -242,7 +243,7 @@ public class TestDisplay extends IDisplay {
         ImGui.text("Extra");
         //ImGui.image(this.world.getShadowMap().getDepthMapTexture(), 256, 256);
         ImGui.endChild();
-        ImGui.end();*/
+        ImGui.end();
         
 		
 		this.world.render();
