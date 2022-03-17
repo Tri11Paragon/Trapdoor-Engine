@@ -20,9 +20,11 @@ import com.trapdoor.engine.datatypes.DynamicArray;
 import com.trapdoor.engine.datatypes.ogl.assimp.Model;
 import com.trapdoor.engine.display.DisplayManager;
 import com.trapdoor.engine.registry.Threading;
-import com.trapdoor.engine.renderer.DeferredRenderer;
 import com.trapdoor.engine.renderer.DepthPassRenderer;
-import com.trapdoor.engine.renderer.EntityRenderer;
+import com.trapdoor.engine.renderer.MaterialPassRenderer;
+import com.trapdoor.engine.renderer.functions.DepthRenderFunction;
+import com.trapdoor.engine.renderer.functions.EntityRenderFunction;
+import com.trapdoor.engine.renderer.functions.ShadowRenderFunction;
 import com.trapdoor.engine.renderer.particles.ParticleRenderer;
 import com.trapdoor.engine.renderer.particles.ParticleSystem;
 import com.trapdoor.engine.renderer.postprocessing.BloomRenderer;
@@ -60,29 +62,38 @@ public class World {
 	public static int entityCount;
 	
 	private Camera c;
-	private EntityRenderer renderer;
 	private SkyboxRenderer skyboxRenderer;
-	private DeferredRenderer deferredRenderer;
+	//private DeferredRenderer deferredRenderer;
 	private ShadowRenderer shadowRenderer;
 	private BloomRenderer bloomRenderer;
 	private ParticleRenderer particleRenderer;
 	
 	private DepthPassRenderer depthRenderer;
+	private MaterialPassRenderer materialRenderer;
+	
+	// render functions
+	private DepthRenderFunction depthRenderFunction;
+	private EntityRenderFunction entityRenderFunction;
+	private ShadowRenderFunction shadowRenderFunction;
 
 	@SuppressWarnings("deprecation")
 	public World(Camera c) {
 		// entitiesinworld is shared memory between the renderer and the world object.
-		this.renderer = new EntityRenderer();
-		this.deferredRenderer = new DeferredRenderer(c);
+		//this.deferredRenderer = new DeferredRenderer(c);
 		this.depthRenderer = new DepthPassRenderer();
+		this.materialRenderer = new MaterialPassRenderer(c);
 		this.skyboxRenderer = new SkyboxRenderer();
 		this.c = c;
-		this.entityStorage = new WorldEntityStorage(c, this.renderer);
-		particleRenderer = new ParticleRenderer();
+		this.entityStorage = new WorldEntityStorage(c);
+		this.particleRenderer = new ParticleRenderer();
 		if (SettingsLoader.GRAPHICS_LEVEL < 2) {
 			this.shadowRenderer = new ShadowRenderer(c);
 			this.bloomRenderer = new BloomRenderer();
 		}
+		// setup render functions
+		this.depthRenderFunction = new DepthRenderFunction(this.depthRenderer.getShader());
+		this.entityRenderFunction = new EntityRenderFunction(this.materialRenderer.getShader(), this.materialRenderer.getLightingArray());
+		this.shadowRenderFunction = new ShadowRenderFunction(this.shadowRenderer.getShader());
 		
 		// setup physics
         this.physWorld = new PhysicsSpace(PhysicsSpace.BroadphaseType.DBVT);
@@ -122,7 +133,7 @@ public class World {
 		DisplayManager.disableTransparentcy(); 
 		
 		if (SettingsLoader.GRAPHICS_LEVEL <  2 && DisplayManager.enableShadows) {
-			this.shadowRenderer.renderDepthMap(c, entityStorage);
+			this.shadowRenderer.renderDepthMap(c, entityStorage, this.shadowRenderFunction);
 			
 			GL33.glViewport(0, 0, DisplayManager.WIDTH, DisplayManager.HEIGHT);
 		}
@@ -133,30 +144,45 @@ public class World {
 		//this.deferredRenderer.endFirstPass();
 		
 		// TODO: add bloomy option
-		if (SettingsLoader.GRAPHICS_LEVEL < 2) {
-			//this.bloomRenderer.bindBloom();
+		if (SettingsLoader.GRAPHICS_LEVEL < 1) {
+			this.bloomRenderer.bindBloom();
 		}
 		
+		// render depth pass
 		this.depthRenderer.start();
-		this.entityStorage.renderDepth(this.depthRenderer);
+		this.entityStorage.render(this.depthRenderFunction);
+		this.depthRenderer.stop();
+		
+		// render material pass
+		GL33.glDepthFunc(GL33.GL_EQUAL);
+		
+		this.materialRenderer.start();
+		if (SettingsLoader.GRAPHICS_LEVEL < 2) {
+			GL33.glActiveTexture(GL33.GL_TEXTURE5);
+			GL33.glBindTexture(GL33.GL_TEXTURE_2D_ARRAY, this.getShadowMap().getDepthMapTexture());
+		}
+		this.entityStorage.render(this.entityRenderFunction);
 		
 		ArrayList<Entity> ents = this.entityStorage.getAllEntities();
 		for (int i = 0; i < ents.size(); i++)
 			ents.get(i).render();
 		
-		this.depthRenderer.stop();
+		this.materialRenderer.end();
 		
 		//this.deferredRenderer.runSecondPass();
-		this.skyboxRenderer.render(c);
 		for (int i = 0; i < particleSystems.size(); i++) {
 			particleSystems.get(i).update();
 		}
 		particleRenderer.update(this, c);
 		this.particleRenderer.render(this, c);
 		
-		if (SettingsLoader.GRAPHICS_LEVEL < 2) {
-			//this.bloomRenderer.applyBlur(this.deferredRenderer);
-			//this.bloomRenderer.render(this.deferredRenderer);
+		GL33.glDepthFunc(GL33.GL_LEQUAL);
+		
+		this.skyboxRenderer.render(c);
+		
+		if (SettingsLoader.GRAPHICS_LEVEL < 1) {
+			this.bloomRenderer.applyBlur();
+			this.bloomRenderer.render();
 		}
 		
 		DisplayManager.disableCulling();
@@ -309,7 +335,7 @@ public class World {
 	
 	public void cleanup() {
 		Logging.logger.debug("Destorying world!");
-		this.deferredRenderer.cleanup();
+		//this.deferredRenderer.cleanup();
 		try {
 			this.shadowRenderer.cleanup();
 			this.bloomRenderer.cleanup();

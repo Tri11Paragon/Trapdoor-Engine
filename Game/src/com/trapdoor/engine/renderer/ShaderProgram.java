@@ -241,6 +241,10 @@ public abstract class ShaderProgram {
 	protected void setUniformBlockLocation(String name, int location) {
 		GL33.glUniformBlockBinding(this.programID, GL33.glGetUniformBlockIndex(this.programID, name), location);
 	}
+	
+	public int getStoredLocation(String loc) {
+		return uniformVariables.get(loc);
+	}
 
 	/**
 	 * 

@@ -42,7 +42,6 @@ public class SinglePlayerDisplay extends IDisplay{
 	}
 	
 	@Override
-	@SuppressWarnings("unused")
 	public void onCreate() {
 		
 		this.camera = new CreativeFirstPerson();;
