@@ -82,7 +82,6 @@ import com.trapdoor.engine.tools.input.InputMaster;
 import com.trapdoor.engine.tools.input.Mouse;
 import com.trapdoor.engine.world.sound.SoundSystem;
 
-import imgui.ImFont;
 import imgui.ImFontConfig;
 import imgui.ImFontGlyphRangesBuilder;
 import imgui.ImGui;
@@ -109,6 +108,8 @@ public class DisplayManager {
 	public static long window;
 	public static boolean displayOpen = true;
 	public static long mainThreadID = 1;
+	
+	public static int windowPosX, windowPosY;
 		
 	private static long lastFrameTime;
 	private static double delta;
@@ -163,6 +164,16 @@ public class DisplayManager {
 				imguiGLFW.newFrame();
 				ImGui.newFrame();
 				
+				try (MemoryStack stack = MemoryStack.stackPush()){
+					IntBuffer x = stack.callocInt(1);
+					IntBuffer y = stack.callocInt(1);
+					
+					GLFW.glfwGetWindowPos(window, x, y);
+					
+					windowPosX = x.get();
+					windowPosY = y.get();
+				}
+				
 				/**
 				 * window stuff // game engine
 				 */
@@ -170,6 +181,7 @@ public class DisplayManager {
 				//UBOLoader.updateMatrixUBO();
 				
 				currentDisplay.render();
+				debugInfoLayer.updateFrame();
 				
 				lx = mouseX;
 				ly = mouseY;
@@ -229,8 +241,8 @@ public class DisplayManager {
 				}
 				if (currentTime - lastPUpdate > 250) {
 					debugInfoLayer.update();
+					lastPUpdate = currentTime;
 				}
-				debugInfoLayer.update();
 				//System.out.println(getFrameTimeMilis() + " :: " + 1000/getFrameTimeMilis() + " (" + 0 + ") :: " + 1000);
 			} catch (Exception e) {Logging.logger.fatal(e.getMessage(), e); System.exit(-1);}
 		}
@@ -367,6 +379,8 @@ public class DisplayManager {
         
         final short[] glyphRanges = rangesBuilder.buildRanges();
         
+        // TODO:
+        
         /*for (int i = 0; i < GameRegistry.getFonts().size(); i++) {
         	if (i > 0)
         		fontConfig.setMergeMode(true);
@@ -380,9 +394,10 @@ public class DisplayManager {
 	        			GameRegistry.getFontNames().get(i)
         			);
         }*/
-        tio.getFonts().addFontFromMemoryTTF(loadFromResources("resources/fonts/roboto/Roboto-Regular.ttf"), 18, fontConfig, glyphRanges);
-        
-        fontConfig.setMergeMode(true);
+        GameRegistry.regsterImFont(
+        		tio.getFonts().addFontFromMemoryTTF(loadFromResources("resources/fonts/roboto/Roboto-Regular.ttf"), 18, fontConfig, glyphRanges), 
+    			"roboto-regular"
+			);
         
         tio.getFonts().addFontFromMemoryTTF(loadFromResources("resources/fonts/fontawesome-free-6.1.0-web/webfonts/fa-regular-400.ttf"), 18, fontConfig2, glyphRanges);
         tio.getFonts().addFontFromMemoryTTF(loadFromResources("resources/fonts/fontawesome-free-6.1.0-web/webfonts/fa-brands-400.ttf"), 18, fontConfig2, glyphRanges);

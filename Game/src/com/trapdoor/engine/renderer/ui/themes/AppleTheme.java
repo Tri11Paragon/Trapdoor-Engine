@@ -28,6 +28,8 @@ public class AppleTheme implements ITheme {
 		
 		style.setAlpha(1.0f);
         style.setFrameRounding(3.0f);
+        style.setWindowRounding(6.0f);
+        
         style.setColor(Text, 0.00f, 0.00f, 0.00f, 1.00f);
         style.setColor(TextDisabled, 0.60f, 0.60f, 0.60f, 1.00f);
         style.setColor(WindowBg, 0.94f, 0.94f, 0.94f, 0.94f);

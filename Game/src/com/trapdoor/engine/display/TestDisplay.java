@@ -232,7 +232,9 @@ public class TestDisplay extends IDisplay {
 	
 	@Override
 	public void render() {
-		ImGui.begin("The Best Debug Menu");
+		ImGui.pushFont(GameRegistry.getFont("roboto-regular"));
+		
+		/*ImGui.begin("The Best Debug Menu");
 		ImGui.beginChild("The child!", 256, 256);
 		ImGui.text("Hello, World! " + FontAwesomeIcons.Angry);
         if (ImGui.button(FontAwesomeIcons.Save + " Save")) {
@@ -247,7 +249,7 @@ public class TestDisplay extends IDisplay {
         ImGui.text("Extra");
         //ImGui.image(this.world.getShadowMap().getDepthMapTexture(), 256, 256);
         ImGui.endChild();
-        ImGui.end();
+        ImGui.end();*/
         
 		
 		this.world.render();
@@ -258,6 +260,7 @@ public class TestDisplay extends IDisplay {
 		//TextureRenderer.renderTextureArray(this.world.getShadowMap().getDepthMapTexture(), 1, 256, 0, 256, 256);
 		//TextureRenderer.renderTextureArray(this.world.getShadowMap().getDepthMapTexture(), 2, 0, 256, 256, 256);
 		//TextureRenderer.renderTextureArray(this.world.getShadowMap().getDepthMapTexture(), 3, 256, 256, 256, 256);
+		ImGui.popFont();
 	}
 	
 	long last = System.currentTimeMillis();
