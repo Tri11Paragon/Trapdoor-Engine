@@ -155,6 +155,8 @@ public class DisplayManager {
 		GL13.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		while(!GLFW.glfwWindowShouldClose(DisplayManager.window)) {
 			try {
+				System.out.flush();
+				System.err.flush();
 				long start = getCurrentTime();
 				GL11.glClearColor(currentDisplay.getSky1R(), currentDisplay.getSky1G(), currentDisplay.getSky1B(), 1.0f);
 				GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
@@ -182,6 +184,7 @@ public class DisplayManager {
 				
 				currentDisplay.render();
 				debugInfoLayer.updateFrame();
+				Console.getInstance().render();
 				
 				lx = mouseX;
 				ly = mouseY;
@@ -244,7 +247,7 @@ public class DisplayManager {
 					lastPUpdate = currentTime;
 				}
 				//System.out.println(getFrameTimeMilis() + " :: " + 1000/getFrameTimeMilis() + " (" + 0 + ") :: " + 1000);
-			} catch (Exception e) {Logging.logger.fatal(e.getMessage(), e); System.exit(-1);}
+			} catch (Exception e) {Logging.logger.fatal(e.getMessage(), e); System.out.flush(); System.err.flush(); System.exit(-1);}
 		}
 	}
 	

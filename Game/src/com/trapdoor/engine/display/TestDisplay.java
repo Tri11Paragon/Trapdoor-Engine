@@ -221,6 +221,7 @@ public class TestDisplay extends IDisplay {
 		FreeMoveCommand move = new FreeMoveCommand(camera);
 		Console.registerCommand("move", move);
 		Console.registerCommand("creative", move);
+		Console.registerCommand("noclip", move);
 		
 		DebugInfo.assignWorld(world);
 		

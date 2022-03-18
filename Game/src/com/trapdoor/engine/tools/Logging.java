@@ -1,5 +1,8 @@
 package com.trapdoor.engine.tools;
 
+import java.io.PrintStream;
+
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -11,6 +14,8 @@ public class Logging {
 	public static final Logger logger = LogManager.getRootLogger();
 	
 	public static void init() {
+		System.setErr(new PrintStream(new LoggingOutputStream(logger, Level.ERROR)));
+		System.setOut(new PrintStream(new LoggingOutputStream(logger, Level.TRACE)));
 		logger.debug("Logger Init Successful");
 	}
 	
