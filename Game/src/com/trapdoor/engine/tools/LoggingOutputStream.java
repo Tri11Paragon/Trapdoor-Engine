@@ -109,6 +109,8 @@ public class LoggingOutputStream extends OutputStream {
         final byte[] bytes = new byte[count];
         System.arraycopy(buf, 0, bytes, 0, count);
         String str = new String(bytes);
+        if (str.endsWith("\n"))
+        	str = str.substring(0, str.length()-1);
         log.log(level, str);
         count = 0;
     }

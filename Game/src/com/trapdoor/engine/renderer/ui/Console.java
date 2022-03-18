@@ -81,8 +81,10 @@ public class Console implements IKeyState, AnnotatedClass {
 		
 		ImGui.end();
 		ImGui.popFont();
-		System.out.println("Hello!");
-		System.err.println("GAY!");
+	}
+	
+	public void append(String str) {
+		output += str;
 	}
 	
 	@Override
