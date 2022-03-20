@@ -92,7 +92,7 @@ public class EntityCamera extends Entity {
 		
 		this.c.getViewMatrix().positiveZ(at).negate();
 		this.c.getViewMatrix().positiveY(up);
-		sl.setOrientation(at, up);
+		this.sl.setOrientation(at, up);
 		
 		c.updateViewMatrix();
 	}

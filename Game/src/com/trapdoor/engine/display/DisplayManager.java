@@ -31,6 +31,43 @@ import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
 import static org.lwjgl.glfw.GLFW.glfwWindowHint;
+import static org.lwjgl.openal.AL10.AL_EXTENSIONS;
+import static org.lwjgl.openal.AL10.AL_RENDERER;
+import static org.lwjgl.openal.AL10.AL_VENDOR;
+import static org.lwjgl.openal.AL10.AL_VERSION;
+import static org.lwjgl.openal.AL10.alGetString;
+import static org.lwjgl.openal.ALC10.ALC_DEFAULT_DEVICE_SPECIFIER;
+import static org.lwjgl.openal.ALC10.ALC_DEVICE_SPECIFIER;
+import static org.lwjgl.openal.ALC10.ALC_EXTENSIONS;
+import static org.lwjgl.openal.ALC10.ALC_MAJOR_VERSION;
+import static org.lwjgl.openal.ALC10.ALC_MINOR_VERSION;
+import static org.lwjgl.openal.ALC10.ALC_NO_ERROR;
+import static org.lwjgl.openal.ALC10.alcGetError;
+import static org.lwjgl.openal.ALC10.alcGetInteger;
+import static org.lwjgl.openal.ALC10.alcGetString;
+import static org.lwjgl.openal.ALC10.alcMakeContextCurrent;
+import static org.lwjgl.openal.ALC11.ALC_CAPTURE_DEFAULT_DEVICE_SPECIFIER;
+import static org.lwjgl.openal.ALC11.ALC_CAPTURE_DEVICE_SPECIFIER;
+import static org.lwjgl.openal.EXTEfx.ALC_EFX_MAJOR_VERSION;
+import static org.lwjgl.openal.EXTEfx.ALC_EFX_MINOR_VERSION;
+import static org.lwjgl.openal.EXTEfx.ALC_MAX_AUXILIARY_SENDS;
+import static org.lwjgl.openal.EXTEfx.AL_EFFECT_AUTOWAH;
+import static org.lwjgl.openal.EXTEfx.AL_EFFECT_CHORUS;
+import static org.lwjgl.openal.EXTEfx.AL_EFFECT_COMPRESSOR;
+import static org.lwjgl.openal.EXTEfx.AL_EFFECT_DISTORTION;
+import static org.lwjgl.openal.EXTEfx.AL_EFFECT_EAXREVERB;
+import static org.lwjgl.openal.EXTEfx.AL_EFFECT_ECHO;
+import static org.lwjgl.openal.EXTEfx.AL_EFFECT_EQUALIZER;
+import static org.lwjgl.openal.EXTEfx.AL_EFFECT_FLANGER;
+import static org.lwjgl.openal.EXTEfx.AL_EFFECT_FREQUENCY_SHIFTER;
+import static org.lwjgl.openal.EXTEfx.AL_EFFECT_PITCH_SHIFTER;
+import static org.lwjgl.openal.EXTEfx.AL_EFFECT_REVERB;
+import static org.lwjgl.openal.EXTEfx.AL_EFFECT_RING_MODULATOR;
+import static org.lwjgl.openal.EXTEfx.AL_EFFECT_VOCAL_MORPHER;
+import static org.lwjgl.openal.EXTEfx.AL_FILTER_BANDPASS;
+import static org.lwjgl.openal.EXTEfx.AL_FILTER_HIGHPASS;
+import static org.lwjgl.openal.EXTEfx.AL_FILTER_LOWPASS;
+import static org.lwjgl.openal.EXTThreadLocalContext.alcSetThreadContext;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -40,7 +77,9 @@ import java.nio.IntBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import org.joml.Vector3f;
 import org.lwjgl.Version;
@@ -48,9 +87,12 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.openal.AL;
+import org.lwjgl.openal.AL11;
 import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.ALC11;
 import org.lwjgl.openal.ALCCapabilities;
+import org.lwjgl.openal.ALUtil;
+import org.lwjgl.openal.EnumerateAllExt;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
@@ -64,6 +106,7 @@ import com.trapdoor.engine.ProjectionMatrix;
 import com.trapdoor.engine.TextureLoader;
 import com.trapdoor.engine.UBOLoader;
 import com.trapdoor.engine.VAOLoader;
+import com.trapdoor.engine.datatypes.sound.EFXUtil;
 import com.trapdoor.engine.registry.GameRegistry;
 import com.trapdoor.engine.registry.Threading;
 import com.trapdoor.engine.registry.annotations.AnnotationHandler;
@@ -128,6 +171,7 @@ public class DisplayManager {
 	// sound
 	public static long device;
     public static long context;
+    private static boolean useTLC = false;
 	
 	// mouse
 	public static double mouseX,mouseY;
@@ -246,7 +290,7 @@ public class DisplayManager {
 					debugInfoLayer.update();
 					lastPUpdate = currentTime;
 				}
-				//System.out.println(getFrameTimeMilis() + " :: " + 1000/getFrameTimeMilis() + " (" + 0 + ") :: " + 1000);
+				//Logging.logger.info(getFrameTimeMilis() + " :: " + 1000/getFrameTimeMilis() + " (" + 0 + ") :: " + 1000);
 			} catch (Exception e) {Logging.logger.fatal(e.getMessage(), e); System.out.flush(); System.err.flush(); System.exit(-1);}
 		}
 	}
@@ -333,14 +377,16 @@ public class DisplayManager {
 			System.exit(-1);
 		}
 		setMouseGrabbed(isMouseGrabbed);
+		GameRegistry.init();
 		try {
-			initAudio();
+			DisplayManager.initAudio();
 		} catch (Exception e) {
 			Logging.logger.fatal(e.getMessage(), e);
 			System.exit(-1);
 		}
-		GameRegistry.init();
 		SoundSystem.init();
+		
+		AL11.alDistanceModel(AL11.AL_EXPONENT_DISTANCE);
 		
 		glfwWindowHint(GLFW.GLFW_DOUBLEBUFFER, GLFW_TRUE);
 		
@@ -473,10 +519,19 @@ public class DisplayManager {
 		imguiGL3.dispose();
 		imguiGLFW.dispose();
 		ImGui.destroyContext();
-		if (context != NULL)
+        
+        if (context != NULL)
             ALC11.alcDestroyContext(context);
         if (device != NULL)
             ALC11.alcCloseDevice(device);
+        
+        alcMakeContextCurrent(NULL);
+        
+        if (useTLC) {
+            AL.setCurrentThread(null);
+        } else {
+            AL.setCurrentProcess(null);
+        }
         
 		for (int i = 0; i < allDisplays.size(); i++)
 			allDisplays.get(i).onDestory();
@@ -497,20 +552,157 @@ public class DisplayManager {
 		Threading.cleanup();
 	}
 	
-	private static void initAudio() {
+	public static void initAudio() {
 		device = ALC11.alcOpenDevice((ByteBuffer) null);
         if (device == NULL) {
             throw new IllegalStateException("Failed to open the default OpenAL device.");
         }
         ALCCapabilities deviceCaps = ALC.createCapabilities(device);
+        
+        
         context = ALC11.alcCreateContext(device, (IntBuffer) null);
+        
+        checkALCError(device);
+        
+        useTLC = deviceCaps.ALC_EXT_thread_local_context && alcSetThreadContext(context);
+        
+        checkALCError(device);
+        
         if (context == NULL) {
             throw new IllegalStateException("Failed to create OpenAL context.");
         }
-        ALC11.alcMakeContextCurrent(context);
+        if (!ALC11.alcMakeContextCurrent(context)) {
+     	   throw new IllegalStateException();
+        }
         AL.createCapabilities(deviceCaps);
+        
+        printALCInfo(device, deviceCaps);
+        printALInfo();
+        if (deviceCaps.ALC_EXT_EFX) {
+            printEFXInfo(device);
+        }
 	}
+	
+	private static void printALCInfo(long device, ALCCapabilities caps) {
+        // we're running 1.1, so really no need to query for the 'ALC_ENUMERATION_EXT' extension
+        if (caps.ALC_ENUMERATION_EXT) {
+            if (caps.ALC_ENUMERATE_ALL_EXT) {
+                printDevices(EnumerateAllExt.ALC_ALL_DEVICES_SPECIFIER, "playback");
+            } else {
+                printDevices(ALC_DEVICE_SPECIFIER, "playback");
+            }
+            printDevices(ALC_CAPTURE_DEVICE_SPECIFIER, "capture");
+        } else {
+            Logging.logger.info("No device enumeration available");
+        }
 
+        if (caps.ALC_ENUMERATE_ALL_EXT) {
+            Logging.logger.info("Default playback device: " + alcGetString(0, EnumerateAllExt.ALC_DEFAULT_ALL_DEVICES_SPECIFIER));
+        } else {
+            Logging.logger.info("Default playback device: " + alcGetString(0, ALC_DEFAULT_DEVICE_SPECIFIER));
+        }
+
+        Logging.logger.info("Default capture device: " + alcGetString(0, ALC_CAPTURE_DEFAULT_DEVICE_SPECIFIER));
+
+        Logging.logger.info("ALC device specifier: " + alcGetString(device, ALC_DEVICE_SPECIFIER));
+
+        int majorVersion = alcGetInteger(device, ALC_MAJOR_VERSION);
+        int minorVersion = alcGetInteger(device, ALC_MINOR_VERSION);
+        checkALCError(device);
+
+        Logging.logger.info("ALC version: " + majorVersion + "." + minorVersion);
+
+        Logging.logger.info("ALC extensions:");
+        String[] extensions = Objects.requireNonNull(alcGetString(device, ALC_EXTENSIONS)).split(" ");
+        checkALCError(device);
+        for (String extension : extensions) {
+            if (extension.trim().isEmpty()) {
+                continue;
+            }
+            Logging.logger.info("    " + extension);
+        }
+    }
+
+    private static void printALInfo() {
+        Logging.logger.info("OpenAL vendor string: " + alGetString(AL_VENDOR));
+        Logging.logger.info("OpenAL renderer string: " + alGetString(AL_RENDERER));
+        Logging.logger.info("OpenAL version string: " + alGetString(AL_VERSION));
+        Logging.logger.info("AL extensions:");
+        String[] extensions = Objects.requireNonNull(alGetString(AL_EXTENSIONS)).split(" ");
+        for (String extension : extensions) {
+            if (extension.trim().isEmpty()) {
+                continue;
+            }
+            Logging.logger.info("    " + extension);
+        }
+        checkALError();
+    }
+
+    private static void printEFXInfo(long device) {
+        int efxMajor = alcGetInteger(device, ALC_EFX_MAJOR_VERSION);
+        int efxMinor = alcGetInteger(device, ALC_EFX_MINOR_VERSION);
+        if (alcGetError(device) == ALC_NO_ERROR) {
+            Logging.logger.info("EFX version: " + efxMajor + "." + efxMinor);
+        }
+
+        int auxSends = alcGetInteger(device, ALC_MAX_AUXILIARY_SENDS);
+        if (alcGetError(device) == ALC_NO_ERROR) {
+            Logging.logger.info("Max auxiliary sends: " + auxSends);
+        }
+
+        Logging.logger.info("Supported filters: ");
+        HashMap<String, Integer> filters = new HashMap<>();
+        filters.put("Low-pass", AL_FILTER_LOWPASS);
+        filters.put("High-pass", AL_FILTER_HIGHPASS);
+        filters.put("Band-pass", AL_FILTER_BANDPASS);
+
+        filters.entrySet().stream()
+            .filter(entry -> EFXUtil.isFilterSupported(entry.getValue()))
+            .forEach(entry -> Logging.logger.info("    " + entry.getKey()));
+
+        Logging.logger.info("Supported effects: ");
+        HashMap<String, Integer> effects = new HashMap<>();
+        effects.put("EAX Reverb", AL_EFFECT_EAXREVERB);
+        effects.put("Reverb", AL_EFFECT_REVERB);
+        effects.put("Chorus", AL_EFFECT_CHORUS);
+        effects.put("Distortion", AL_EFFECT_DISTORTION);
+        effects.put("Echo", AL_EFFECT_ECHO);
+        effects.put("Flanger", AL_EFFECT_FLANGER);
+        effects.put("Frequency Shifter", AL_EFFECT_FREQUENCY_SHIFTER);
+        effects.put("Vocal Morpher", AL_EFFECT_VOCAL_MORPHER);
+        effects.put("Pitch Shifter", AL_EFFECT_PITCH_SHIFTER);
+        effects.put("Ring Modulator", AL_EFFECT_RING_MODULATOR);
+        effects.put("Autowah", AL_EFFECT_AUTOWAH);
+        effects.put("Compressor", AL_EFFECT_COMPRESSOR);
+        effects.put("Equalizer", AL_EFFECT_EQUALIZER);
+
+        effects.entrySet().stream()
+            .filter(e -> EFXUtil.isEffectSupported(e.getValue()))
+            .forEach(e -> Logging.logger.info("    " + e.getKey()));
+    }
+    
+    private static void printDevices(int which, String kind) {
+        List<String> devices = Objects.requireNonNull(ALUtil.getStringList(NULL, which));
+        Logging.logger.info("Available " + kind + " devices: ");
+        for (String d : devices) {
+            Logging.logger.info("    " + d);
+        }
+    }
+
+	private static void checkALCError(long device) {
+        int err = ALC11.alcGetError(device);
+        if (err != ALC11.ALC_NO_ERROR) {
+            throw new RuntimeException(ALC11.alcGetString(device, err));
+        }
+    }
+
+    private static void checkALError() {
+        int err = AL11.alGetError();
+        if (err != AL11.AL_NO_ERROR) {
+            throw new RuntimeException(AL11.alGetString(err));
+        }
+    }
+	
 	/*
 	 * Display manager functions
 	 */

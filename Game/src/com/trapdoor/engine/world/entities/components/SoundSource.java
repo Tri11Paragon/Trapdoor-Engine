@@ -2,6 +2,7 @@ package com.trapdoor.engine.world.entities.components;
 
 import org.joml.Vector3f;
 import org.lwjgl.openal.AL10;
+import org.lwjgl.openal.AL11;
 
 import com.trapdoor.engine.datatypes.sound.SoundFile;
 import com.trapdoor.engine.world.entities.Entity;
@@ -17,7 +18,7 @@ public class SoundSource extends IComponent {
 	private final int sourceId;
 
     public SoundSource() {
-    	this(false, true);
+    	this(false, false);
     }
     
     public SoundSource(boolean loop, boolean relative) {
@@ -29,6 +30,8 @@ public class SoundSource extends IComponent {
         if (relative) {
         	AL10.alSourcei(sourceId, AL10.AL_SOURCE_RELATIVE, AL10.AL_TRUE);
         }
+        AL10.alSourcef(sourceId, AL10.AL_ROLLOFF_FACTOR, 1.0f);
+        AL10.alSourcef(sourceId, AL10.AL_REFERENCE_DISTANCE, 10.0f);
     }
 
     public SoundSource setSound(SoundFile file) {
@@ -59,6 +62,14 @@ public class SoundSource extends IComponent {
 
     public void setGain(float gain) {
     	AL10.alSourcef(sourceId, AL10.AL_GAIN, gain);
+    }
+    
+    public void changeGain(float gain) {
+    	int bytes = AL10.alGetSourcei(sourceId, AL11.AL_BYTE_OFFSET);
+    	stop();
+    	setGain(gain);
+    	AL10.alSourcei(sourceId, AL11.AL_BYTE_OFFSET, bytes);
+    	play();
     }
 
     public void setProperty(int param, float value) {

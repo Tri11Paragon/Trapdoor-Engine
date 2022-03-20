@@ -1,6 +1,8 @@
 package com.trapdoor.engine.world.entities;
 
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
+import com.trapdoor.engine.registry.GameRegistry;
+import com.trapdoor.engine.world.entities.components.SoundSource;
 import com.trapdoor.engine.world.entities.components.Transform;
 
 /**
@@ -14,10 +16,13 @@ public class BouncingEntity extends Entity {
 	private long lastTime = 0;
 	private float ox, oy, oz;
 	private Transform t;
+	private SoundSource source;
 	
 	public BouncingEntity(float mass) {
 		super(mass);
 		this.t = super.getComponent(Transform.class);
+		this.addComponent(source = new SoundSource());
+		source.setSound(GameRegistry.getSound("resources/sounds/penis.ogg"));
 	}
 	
 	@Override
@@ -27,6 +32,9 @@ public class BouncingEntity extends Entity {
 			this.applyCentralImpulse(0, 2500, 0);
 			bounced = true;
 			lastTime = System.currentTimeMillis();
+			if (this.source.isPlaying())
+				this.source.stop();
+			this.source.play();
 		}
 		if (Math.abs(this.ox - t.getX()) > 50 || Math.abs(this.oy - t.getY()) > 50 || Math.abs(this.oz - t.getY()) > 50 ) {
 			this.t.setPosition(ox, oy, oz);
