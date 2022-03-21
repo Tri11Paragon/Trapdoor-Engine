@@ -17,8 +17,10 @@ import com.trapdoor.engine.registry.annotations.PostRegistrationEventSubscriber;
 import com.trapdoor.engine.registry.annotations.RegistrationEventSubscriber;
 import com.trapdoor.engine.renderer.particles.ParticleSystem;
 import com.trapdoor.engine.renderer.particles.systems.AnimatedParticleSystem;
-import com.trapdoor.engine.renderer.ui.CommandBox;
+import com.trapdoor.engine.renderer.ui.Console;
 import com.trapdoor.engine.renderer.ui.DebugInfo;
+import com.trapdoor.engine.renderer.ui.FontAwesomeIcons;
+import com.trapdoor.engine.renderer.ui.themes.AppleTheme;
 import com.trapdoor.engine.tools.input.Mouse;
 import com.trapdoor.engine.world.World;
 import com.trapdoor.engine.world.entities.BouncingEntity;
@@ -87,6 +89,9 @@ public class TestDisplay extends IDisplay {
 		GameRegistry.registerParticleTextureFolder("resources/textures/particles/fire/");
 		GameRegistry.registerParticleTextureFolder("resources/textures/particles/smoke/");
 		
+		GameRegistry.registerParticleTextureFolder("resources/textures/particles/kenny/smoke/");
+		GameRegistry.registerParticleTextureFolder("resources/textures/particles/kenny/star/");
+		GameRegistry.registerParticleTextureFolder("resources/textures/particles/kenny/spark/");
 	}
 	
 	@PostRegistrationEventSubscriber
@@ -111,12 +116,21 @@ public class TestDisplay extends IDisplay {
 					"resources/textures/skyboxes/lolzplus2/front.png.jpg", 	// front
 					"resources/textures/skyboxes/lolzplus2/back.png.jpg"	// back
 				);
+
+		/*this.setSkyTextures(
+				"resources/textures/skyboxes/mountain-skyboxes/Ryfjallet/posx.jpg", 	// right
+				"resources/textures/skyboxes/mountain-skyboxes/Ryfjallet/negx.jpg", 	// left
+				"resources/textures/skyboxes/mountain-skyboxes/Ryfjallet/posy.jpg", 	// top
+				"resources/textures/skyboxes/mountain-skyboxes/Ryfjallet/negy.jpg", // bottom
+				"resources/textures/skyboxes/mountain-skyboxes/Ryfjallet/posz.jpg", 	// front
+				"resources/textures/skyboxes/mountain-skyboxes/Ryfjallet/negz.jpg"	// back
+			);*/
 		
 		this.camera = new CreativeFirstPerson();
 		this.world = new World(camera);
 
 		// .setModel(GameRegistry.getModel("resources/models/playerblend.dae"))
-		this.world.addEntityToWorld((cameraEnt = new EntityCamera(this.camera)));
+		this.world.addEntityToWorld((cameraEnt = new EntityCamera(this.camera)).setModel(GameRegistry.getModel("resources/models/playerblend.dae")));
 		
 		this.world.addEntityToWorld(
 				new Entity(0, true, null)
@@ -137,7 +151,7 @@ public class TestDisplay extends IDisplay {
 				.addLight(new Light(Light.lightings[7], 0, 2, 0)));
 		
 		this.cubeModel = GameRegistry.getModel("resources/models/depression.dae");
-		this.world.addEntityToWorld(new Entity().setModel(GameRegistry.getModel("resources/models/test object.dae")).setPosition(0, -15.0f, 0));
+		this.world.addEntityToWorld(new Entity(1500).setModel(GameRegistry.getModel("resources/models/test object.dae")).setPosition(0, -15.0f, 0));
 		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(25, 0, 0).generateApproximateCollider());
 		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(-25, 0, 0).generateApproximateCollider());
 		this.world.addEntityToWorld(new Entity().setModel(cubeModel).setPosition(0, 0, 25).generateApproximateCollider());
@@ -208,16 +222,19 @@ public class TestDisplay extends IDisplay {
 	@Override
 	public void onSwitch() {
 		// can be added to any screen, will just overwrite on load
-		CommandBox.registerCommand("raycast", new RayCastCommand(this.world.getRaycast()));
+		Console.registerCommand("raycast", new RayCastCommand(this.world.getRaycast()));
 		TeleportCommand tp = new TeleportCommand(cameraEnt, camera);
-		CommandBox.registerCommand("teleport", tp);
-		CommandBox.registerCommand("tp", tp);
-		CommandBox.registerCommand("gravity", new GravityCommand(cameraEnt));
+		Console.registerCommand("teleport", tp);
+		Console.registerCommand("tp", tp);
+		Console.registerCommand("gravity", new GravityCommand(cameraEnt));
 		FreeMoveCommand move = new FreeMoveCommand(camera);
-		CommandBox.registerCommand("move", move);
-		CommandBox.registerCommand("creative", move);
+		Console.registerCommand("move", move);
+		Console.registerCommand("creative", move);
+		Console.registerCommand("noclip", move);
 		
 		DebugInfo.assignWorld(world);
+		
+		new AppleTheme(true, 1.00f).applyStyle(ImGui.getStyle());
 	}
 	
 	float[] flt = new float[1];
@@ -225,31 +242,35 @@ public class TestDisplay extends IDisplay {
 	
 	@Override
 	public void render() {
-		ImGui.begin("The Best Debug Menu");
+		ImGui.pushFont(GameRegistry.getFont("roboto-regular"));
+		
+		/*ImGui.begin("The Best Debug Menu");
 		ImGui.beginChild("The child!", 256, 256);
-		ImGui.text("Hello, World! ");
-        if (ImGui.button(" Save")) {
+		ImGui.text("Hello, World! " + FontAwesomeIcons.Angry);
+        if (ImGui.button(FontAwesomeIcons.Save + " Save")) {
             System.out.println("hello!");
         }
         ImGui.sameLine();
         ImGui.text(String.valueOf(5));
-        ImGui.inputText("string", str, ImGuiInputTextFlags.CallbackResize);
+        ImGui.inputText("string \uf556", str, ImGuiInputTextFlags.CallbackResize);
         ImGui.text("Result: " + str.get());
-        ImGui.sliderFloat("float", flt, 0, 1);
+        ImGui.sliderFloat("float" + FontAwesomeIcons.Smile, flt, 0, 1);
         ImGui.separator();
         ImGui.text("Extra");
+        //ImGui.image(this.world.getShadowMap().getDepthMapTexture(), 256, 256);
         ImGui.endChild();
-        ImGui.end();
+        ImGui.end();*/
         
 		
 		this.world.render();
 		SoundSystem.update();
-		this.cameraEnt.getGreg().update();
+		this.cameraEnt.getGreg().render();
 		//TextureRenderer.renderTexture(this.world.getSSAOMap().getSSAOBluredTexture(), DisplayManager.WIDTH-512, 0, 512, 512);
 		//TextureRenderer.renderTextureArray(this.world.getShadowMap().getDepthMapTexture(), 0, 0, 0, 256, 256);
 		//TextureRenderer.renderTextureArray(this.world.getShadowMap().getDepthMapTexture(), 1, 256, 0, 256, 256);
 		//TextureRenderer.renderTextureArray(this.world.getShadowMap().getDepthMapTexture(), 2, 0, 256, 256, 256);
 		//TextureRenderer.renderTextureArray(this.world.getShadowMap().getDepthMapTexture(), 3, 256, 256, 256, 256);
+		ImGui.popFont();
 	}
 	
 	long last = System.currentTimeMillis();

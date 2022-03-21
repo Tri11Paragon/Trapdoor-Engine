@@ -148,6 +148,10 @@ public class VAOLoader {
 	}
 	
 	public static void loadToVAO(Model model) {
+		loadToVAO(model, GL33.GL_STATIC_DRAW);
+	}
+	
+	public static void loadToVAO(Model model, int bufferMode) {
 		Mesh[] meshes = model.getMeshes();
 		for (int i = 0; i < meshes.length; i++) {
 			Mesh mesh = meshes[i];
@@ -163,11 +167,11 @@ public class VAOLoader {
 			 */
 			// store data into the vao
 			int[] vbos = new int[5];
-			vbos[0] = storeDataInAttributeList(0,3,mesh.getVertices());
-			vbos[1] = storeDataInAttributeList(1,2,mesh.getTextures());
-			vbos[2] = storeDataInAttributeList(2,3,mesh.getNormals());
-			vbos[3] = storeDataInAttributeList(3,3,mesh.getTangents());
-			vbos[4] = storeDataInAttributeList(4,3,mesh.getBitangents());
+			vbos[0] = storeDataInAttributeList(0,3,mesh.getVertices(), bufferMode);
+			vbos[1] = storeDataInAttributeList(1,2,mesh.getTextures(), bufferMode);
+			vbos[2] = storeDataInAttributeList(2,3,mesh.getNormals(), bufferMode);
+			vbos[3] = storeDataInAttributeList(3,3,mesh.getTangents(), bufferMode);
+			vbos[4] = storeDataInAttributeList(4,3,mesh.getBitangents(), bufferMode);
 			// unbind the VAO
 			unbindVAO();
 			// return the model
@@ -297,6 +301,19 @@ public class VAOLoader {
 	}
 	
 	/**
+	 * does the same thing as updateVBO expect it doesn't reallocate the buffer.
+	 * Use this if you know that the size of the buffer data hasn't changed
+	 * @param vbo the vbo to modify
+	 * @param buffer the buffer of data to store in the vbo
+	 */
+	public static void updateVBOGreg(int vbo, FloatBuffer buffer) {
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
+		//GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer.capacity(), GL15.GL_STREAM_DRAW);
+		GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, 0, buffer);
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+	}
+	
+	/**
 	 * stores a float[] into a vbo for drawing. This stores on the graphics card.
 	 * @param attributeNumber is the pointer for this float[] to be used inside the shader as the layout position
 	 * the layout position needs to be then defined inside the shader or bound when creating the shader class.
@@ -322,7 +339,7 @@ public class VAOLoader {
 		return vboID;
 	}
 	
-	private static int storeDataInAttributeList(int attributeNumber, int coordinateSize, FloatBuffer data){
+	private static int storeDataInAttributeList(int attributeNumber, int coordinateSize, FloatBuffer data, int buffer){
 		// creates a VBO
 		int vboID = GL15.glGenBuffers();
 		// add for later deletion
@@ -330,7 +347,7 @@ public class VAOLoader {
 		// binds the buffer as just a standard array buffer
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID);
 		// puts the data into the VBO
-		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, data, GL15.GL_STATIC_DRAW);
+		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, data, buffer);
 		// assign this VBO to the pointer and coordinate size. We are using floats, they are not normalized and start at 0
 		GL20.glVertexAttribPointer(attributeNumber,coordinateSize,GL11.GL_FLOAT,false,0,0);
 		// unbind the VBO

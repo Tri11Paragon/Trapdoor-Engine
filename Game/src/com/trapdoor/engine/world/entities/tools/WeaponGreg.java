@@ -4,9 +4,13 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.List;
 
+import org.joml.Matrix4f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL33;
+import org.lwjgl.system.MemoryUtil;
 
 import com.jme3.bullet.collision.PhysicsRayTestResult;
 import com.jme3.bullet.collision.shapes.infos.IndexedMesh;
@@ -15,6 +19,7 @@ import com.trapdoor.engine.datatypes.collision.AxisAlignedBoundingBox;
 import com.trapdoor.engine.datatypes.ogl.assimp.Mesh;
 import com.trapdoor.engine.datatypes.ogl.assimp.Model;
 import com.trapdoor.engine.display.DisplayManager;
+import com.trapdoor.engine.tools.math.Noise;
 import com.trapdoor.engine.world.World;
 import com.trapdoor.engine.world.entities.Entity;
 import com.trapdoor.engine.world.entities.EntityCamera;
@@ -33,15 +38,17 @@ public class WeaponGreg extends Weapon {
 	private boolean uploadingDestruction = false;
 	private boolean applyingDestruction = false;
 	private Entity heldEntity = null;
-	private Entity destroyOStore = null;
 	
 	private Model newModelStore;
 	
 	private float distance = 0;
 	private float timer = 0;
+	
+	private Noise noisey;
 
 	public WeaponGreg(EntityCamera player, World world) {
 		super(player, world);
+		this.noisey = new Noise(694);
 	}
 
 	@Override
@@ -52,7 +59,6 @@ public class WeaponGreg extends Weapon {
 	@Override
 	public void update() {
 		if (pendingDestruction && this.heldEntity != null) {
-			destroyOStore = new Entity();
 			newModelStore = this.heldEntity.getModel();
 			Mesh[] newMehses = new Mesh[newModelStore.getMeshes().length];
 			
@@ -85,10 +91,14 @@ public class WeaponGreg extends Weapon {
 				
 				indicies.rewind();
 				verts.rewind();
+				textures.rewind();
+				normals.rewind();
+				tangents.rewind();
+				bitangents.rewind();
 				
 				IndexedMesh imesh = new IndexedMesh(vertsFloatArr, indexesIntArr);
 				
-				newMehses[i] = new Mesh(m.getMaterial().clone(), m.getBoundingBox(), verts, textures, normals, tangents, bitangents, indicies, imesh);
+				newMehses[i] = new Mesh(m.getMaterial(), m.getBoundingBox(), verts, textures, normals, tangents, bitangents, indicies, imesh);
 			}
 			
 			newModelStore = new Model(newMehses, this.heldEntity.getModel().getMaterials(), this.heldEntity.getModel().getScene(), this.heldEntity.getModel().getPath());
@@ -100,9 +110,78 @@ public class WeaponGreg extends Weapon {
 	@Override
 	public void render() {
 		if (!pendingDestruction && uploadingDestruction) {
-			VAOLoader.loadToVAO(newModelStore);
+			VAOLoader.loadToVAO(newModelStore, GL33.GL_DYNAMIC_DRAW);
+			
+			Transform tra = heldEntity.getComponent(Transform.class);
+			Entity he = new Entity(heldEntity.getRigidbody().getMass()).setModel(newModelStore).setPosition(tra.getX(), tra.getY(), tra.getZ());
+			Transform trhe = he.getComponent(Transform.class);
+			trhe.setScale(tra.getScaleX(), tra.getScaleY(), tra.getScaleZ());
+			trhe.setRotation(tra.getYaw(), tra.getPitch(), tra.getRoll());
+			
+			world.removeEntityFromWorld(heldEntity);
+			world.addEntityToWorld(he);
+			
+			heldEntity = he;
+			
 			uploadingDestruction = false;
 			applyingDestruction = true;
+		}
+		if (applyingDestruction) {
+			for (int p = 0; p < newModelStore.getMeshes().length; p++) {
+				FloatBuffer verts = newModelStore.getMeshes()[p].getVertices();
+				FloatBuffer newVerts = MemoryUtil.memAllocFloat(verts.capacity());
+				AxisAlignedBoundingBox aabb = newModelStore.getMeshes()[p].getBoundingBox();
+				Vector3d center = aabb.getCenter();
+				for (int i = 0; i < verts.capacity() / 3; i++) {
+					float oldX = verts.get();
+					float oldY = verts.get();
+					float oldZ = verts.get();
+					
+					float vectorScale = 1.4234f;
+					
+					float tdx = distanceX(center, oldX, oldY, oldZ);
+					float tdy = distanceY(center, oldX, oldY, oldZ);
+					float tdz = distanceZ(center, oldX, oldY, oldZ);
+					
+					float dx = tdx / 8.6356f;
+					float dy = tdy / 7.2395f;
+					float dz = tdz / 8.5324f;
+					
+					vectorScale /= ((tdx + tdy + tdz) / 3);
+					
+					float nx = (float) (noisey.noise(dx, dy, dz)) * vectorScale;
+					float ny = (float) (noisey.noise(dz, dx, dy)) * vectorScale;
+					float nz = (float) (noisey.noise(dy, dz, dx)) * vectorScale;
+					
+					Matrix4f mat4 = new Matrix4f();
+					
+					mat4.translate(nx, ny, nz);
+					
+					final float rotScale = 16.5342f;
+					final float rotFactor = (float) (Math.PI);
+					
+					mat4.rotateX((float)(rotFactor * noisey.noise(tdx / rotScale)));
+					mat4.rotateY((float)(rotFactor * noisey.noise(tdy / rotScale)));
+					mat4.rotateZ((float)(rotFactor * noisey.noise(tdz / rotScale)));
+					
+					Vector4f trans = mat4.transform(new Vector4f(oldX, oldY, oldZ, 1.0f));
+					
+					newVerts.put(trans.x);
+					newVerts.put(trans.y);
+					newVerts.put(trans.z);
+				}
+				verts.flip();
+				newVerts.flip();
+				
+				GL33.glBindVertexArray(newModelStore.getMeshes()[p].getVAO().getVaoID());
+				VAOLoader.updateVBOGreg(newModelStore.getMeshes()[p].getVAO().getVbos()[0], newVerts);
+				GL33.glBindVertexArray(0);
+				
+				MemoryUtil.memFree(newVerts);
+			}
+			
+			//MemoryUtil.memFree(newVerts);
+			applyingDestruction = false;
 		}
 	}
 	
@@ -173,6 +252,28 @@ public class WeaponGreg extends Weapon {
 	@Override
 	public void altN() {
 		super.altN();
+	}
+	
+	public static float distance(Vector3d center, float x, float y, float z) {
+		double dx = center.x - x;
+		double dy = center.y - y;
+		double dz = center.z - z;
+		return (float)( dx * dx + dy * dy + dz * dz);
+	}
+	
+	public static float distanceX(Vector3d center, float x, float y, float z) {
+		double dx = center.x - x;
+		return (float)(dx * dx);
+	}
+	
+	public static float distanceY(Vector3d center, float x, float y, float z) {
+		double dy = center.y - y;
+		return (float)(dy * dy);
+	}
+	
+	public static float distanceZ(Vector3d center, float x, float y, float z) {
+		double dz = center.z - z;
+		return (float)(dz * dz);
 	}
 
 }

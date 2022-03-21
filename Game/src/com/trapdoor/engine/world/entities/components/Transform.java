@@ -4,11 +4,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.joml.Matrix4f;
 import org.joml.Quaterniond;
+import org.joml.Vector3d;
 
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.trapdoor.engine.camera.Camera;
 import com.trapdoor.engine.world.entities.Entity;
 
 /**
@@ -33,6 +35,7 @@ public class Transform extends IComponent {
 	private Quaternion physQuat;
 	private Quaternion physQuatStore;
 	private final Quaterniond localStore = new Quaterniond();
+	private float distanceToCamera;
 	
 	
 	// render
@@ -141,6 +144,15 @@ public class Transform extends IComponent {
 		}
 	}
 	
+	public void updateDistanceToCamera(Camera c) {
+		Vector3d pos = c.getPosition();
+		float dx = (float) (this.x - pos.x);
+		float dy = (float) (this.y - pos.y);
+		float dz = (float) (this.z - pos.z);
+		
+		this.distanceToCamera = dx * dx + dy * dy + dz * dz;
+	}
+	
 	/**
 	 * only use for setting position at startup!
 	 */
@@ -237,7 +249,10 @@ public class Transform extends IComponent {
 	}
 	
 	
-	
+
+	public float getDistanceToCamera() {
+		return distanceToCamera;
+	}
 	public float getX() {
 		return this.x;
 	}

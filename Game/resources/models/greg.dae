@@ -5,8 +5,8 @@
       <author>Blender User</author>
       <authoring_tool>Blender 3.0.1</authoring_tool>
     </contributor>
-    <created>2022-03-14T01:15:00</created>
-    <modified>2022-03-14T01:15:00</modified>
+    <created>2022-03-14T18:21:20</created>
+    <modified>2022-03-14T18:21:20</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -87,14 +87,14 @@
     </effect>
     <effect id="G_GregCycld-effect">
       <profile_COMMON>
-        <newparam sid="gregglow1-surface">
+        <newparam sid="greggl-surface">
           <surface type="2D">
-            <init_from>gregglow1</init_from>
+            <init_from>greggl</init_from>
           </surface>
         </newparam>
-        <newparam sid="gregglow1-sampler">
+        <newparam sid="greggl-sampler">
           <sampler2D>
-            <source>gregglow1-surface</source>
+            <source>greggl-surface</source>
           </sampler2D>
         </newparam>
         <technique sid="common">
@@ -103,7 +103,7 @@
               <color sid="emission">0 0 0 1</color>
             </emission>
             <diffuse>
-              <texture texture="gregglow1-sampler" texcoord="UVMap"/>
+              <texture texture="greggl-sampler" texcoord="UVMap"/>
             </diffuse>
             <index_of_refraction>
               <float sid="ior">1.45</float>
@@ -117,8 +117,8 @@
     <image id="greg" name="greg">
       <init_from>/home/brett/Documents/Brock/Gamers/Java%20Brock%202021%20Project/Game/resources/textures/greg/greg.png</init_from>
     </image>
-    <image id="gregglow1" name="gregglow1">
-      <init_from>/home/brett/Documents/Brock/Gamers/Java%20Brock%202021%20Project/Game/resources/textures/greg/gregglowcylnder.png</init_from>
+    <image id="greggl" name="greggl">
+      <init_from>/home/brett/Documents/Brock/Gamers/Java%20Brock%202021%20Project/Game/resources/textures/greg/greggl.png</init_from>
     </image>
     <image id="gregglow2" name="gregglow2">
       <init_from>/home/brett/Documents/Brock/Gamers/Java%20Brock%202021%20Project/Game/resources/textures/greg/gregglowdisk.png</init_from>

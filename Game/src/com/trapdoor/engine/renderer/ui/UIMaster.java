@@ -70,7 +70,6 @@ public class UIMaster {
 	    Themes.setDefaultTheme(Themes.FLAT_DARK);;
 	}
 
-	@Deprecated
 	public static DefaultInitializer getInitl() {
 		return initializer;
 	}

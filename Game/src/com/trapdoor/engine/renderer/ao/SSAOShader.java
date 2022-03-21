@@ -45,7 +45,7 @@ public class SSAOShader extends ShaderProgram {
 	}
 	
 	public void loadNoiseScale(float x, float y) {
-		super.load2DVector(location_noiseScale, x, y);
+		super.loadVector(location_noiseScale, x, y);
 	}
 	
 	public void connectTextureUnits() {

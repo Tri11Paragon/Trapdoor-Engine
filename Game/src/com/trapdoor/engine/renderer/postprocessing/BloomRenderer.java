@@ -6,7 +6,6 @@ import org.lwjgl.opengl.GL33;
 
 import com.trapdoor.engine.ProjectionMatrix;
 import com.trapdoor.engine.display.DisplayManager;
-import com.trapdoor.engine.renderer.DeferredRenderer;
 import com.trapdoor.engine.tools.SettingsLoader;
 import com.trapdoor.engine.tools.math.Maths;
 
@@ -28,9 +27,30 @@ public class BloomRenderer implements Runnable {
 	private GaussianBlurShader blurShader;
 	private CombineShader combineShader;
 	
+	private int quadVAO = 0;
+	private int quadVBO;
+	
 	public BloomRenderer() {
 		blurShader = new GaussianBlurShader();
 		combineShader = new CombineShader();
+		
+		final float quadVertices[] = {
+	            // positions        	// texture Coords
+	            -1.0f,  1.0f, 0.0f, 	0.0f, 1.0f,
+	            -1.0f, -1.0f, 0.0f, 	0.0f, 0.0f,
+	             1.0f,  1.0f, 0.0f, 	1.0f, 1.0f,
+	             1.0f, -1.0f, 0.0f, 	1.0f, 0.0f,
+	       };
+		quadVAO = GL33.glGenVertexArrays();
+		quadVBO = GL33.glGenBuffers();
+		GL33.glBindVertexArray(quadVAO);
+		GL33.glBindBuffer(GL33.GL_ARRAY_BUFFER, quadVBO);
+		GL33.glBufferData(GL33.GL_ARRAY_BUFFER, quadVertices, GL33.GL_STATIC_DRAW);
+		GL33.glEnableVertexAttribArray(0);
+		GL33.glVertexAttribPointer(0, 3, GL33.GL_FLOAT, false, 5 * 4, 0);
+		GL33.glEnableVertexAttribArray(1);
+		GL33.glVertexAttribPointer(1, 2, GL33.GL_FLOAT, false, 5 * 4, (3 * 4));
+		
 		create();
 		ProjectionMatrix.addProjectionUpdateListener(this);
 	}
@@ -98,7 +118,7 @@ public class BloomRenderer implements Runnable {
 		return hdrFBO;
 	}
 	
-	public void applyBlur(DeferredRenderer renderer) {
+	public void applyBlur() {
 		boolean horizontal = true, first_iteration = true;
 		final int amount = 10;
 		blurShader.start();
@@ -108,7 +128,7 @@ public class BloomRenderer implements Runnable {
 		    blurShader.loadUseHorizontal(horizontal);
 		    GL33.glActiveTexture(GL33.GL_TEXTURE0);
 		    GL33.glBindTexture(GL33.GL_TEXTURE_2D, first_iteration ? colorBuffers[1] : (horizontal ? blur1Texture : blur2Texture)); 
-		    renderer.bindAndRenderQuad();
+		    bindAndRenderQuad();
 		    horizontal = !horizontal;
 		    if (first_iteration)
 		        first_iteration = false;
@@ -122,11 +142,11 @@ public class BloomRenderer implements Runnable {
 	private final float exposureRangeMin = 0.5f;
 	private final float exposureRangeMax = 2.5f;
 	
-	public void render(DeferredRenderer renderer) {
+	public void render() {
 		combineShader.start();
 		GL33.glActiveTexture(GL33.GL_TEXTURE0);
 		GL33.glBindTexture(GL33.GL_TEXTURE_2D, colorTexture1);
-		if (SettingsLoader.GRAPHICS_LEVEL < 1) {
+		if (SettingsLoader.GRAPHICS_LEVEL < 1 && SettingsLoader.enableAutoExposure) {
 			// TODO: compute shader?
 			GL33.glGenerateMipmap(GL33.GL_TEXTURE_2D);
 			float[] vec3 = new float[3];
@@ -140,13 +160,20 @@ public class BloomRenderer implements Runnable {
 			exposure = Maths.clamp(exposure, exposureRangeMin, exposureRangeMax);
 			
 			combineShader.loadExposure(exposure);
-		}
+		} else 
+			combineShader.loadExposure(SettingsLoader.exposureDefault);
 		GL33.glActiveTexture(GL33.GL_TEXTURE1);
 		GL33.glBindTexture(GL33.GL_TEXTURE_2D, blur2Texture);
 		
-		renderer.bindAndRenderQuad();
+		bindAndRenderQuad();
 		
 		combineShader.stop();
+	}
+	
+	public void bindAndRenderQuad() {
+		GL33.glBindVertexArray(quadVAO);
+		GL33.glDrawArrays(GL33.GL_TRIANGLE_STRIP, 0, 4);
+		GL33.glBindVertexArray(0);
 	}
 	
 	public void unbindBloom() {
@@ -166,6 +193,8 @@ public class BloomRenderer implements Runnable {
 	
 	public void cleanup() {
 		destroy();
+		GL33.glDeleteVertexArrays(quadVAO);
+		GL33.glDeleteBuffers(quadVBO);
 		blurShader.cleanUp();
 		combineShader.cleanUp();
 	}

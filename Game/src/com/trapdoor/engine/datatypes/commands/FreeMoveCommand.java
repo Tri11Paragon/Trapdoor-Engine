@@ -15,7 +15,7 @@ public class FreeMoveCommand extends Command {
 	@Override
 	public Object run(CommandLine line, Object lastObject) {
 		c.allowFreeMovement = !c.allowFreeMovement;
-		return "Free move: " + c.allowFreeMovement;
+		return "Noclip: " + (c.allowFreeMovement ? "Enabled" : "Disabled");
 	}
 
 }

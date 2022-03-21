@@ -4,17 +4,21 @@ import java.text.DecimalFormat;
 
 import org.lwjgl.glfw.GLFW;
 
-import com.spinyowl.legui.component.Label;
-import com.spinyowl.legui.component.Layer;
-import com.spinyowl.legui.style.Style.DisplayType;
 import com.trapdoor.Main;
 import com.trapdoor.engine.TextureLoader;
 import com.trapdoor.engine.VAOLoader;
 import com.trapdoor.engine.display.DisplayManager;
+import com.trapdoor.engine.registry.GameRegistry;
 import com.trapdoor.engine.registry.Threading;
 import com.trapdoor.engine.registry.annotations.AnnotationHandler;
+import com.trapdoor.engine.renderer.functions.EntityRenderFunction;
 import com.trapdoor.engine.tools.input.IKeyState;
 import com.trapdoor.engine.world.World;
+
+import imgui.ImGui;
+import imgui.flag.ImGuiCond;
+import imgui.flag.ImGuiWindowFlags;
+import imgui.type.ImBoolean;
 
 /**
  * @author laptop
@@ -24,26 +28,26 @@ import com.trapdoor.engine.world.World;
 public class DebugInfo implements IKeyState {
 	
 	public static float x,y,z;
+	public static ImBoolean enableLines = new ImBoolean();
 	private static DebugInfo th;
 	
-	private Layer layer;
+	private String gameVersion = "";
 	
-	private Label gameVersion;
+	private String mainRenderings = "";
+	private String mainThreadFPS = "";
+	private String entityCount = "";
+	private String entityRenderCount = "";
+	private String renderCount = "";
 	
-	private Label mainRenderings;
-	private Label mainThreadFPS;
-	private Label entityCount;
-	private Label renderCount;
+	private String physics = "";
+	private String physicsThreadFPS = "";
 	
-	private Label physics;
-	private Label physicsThreadFPS;
+	private String playerPosition = "";
 	
-	private Label playerPosition;
+	private String javaMemory = "";
+	private String javaMemoryNon = "";
 	
-	private Label javaMemory;
-	private Label javaMemoryNon;
-	
-	private Label particleCount;
+	private String particleCount = "";
 	
 	private boolean enabled = false;
 	private StringBuilder builder;
@@ -53,113 +57,9 @@ public class DebugInfo implements IKeyState {
 		th = this;
 		builder = new StringBuilder();
 		
-		layer = new Layer();
-		layer.setSize(1200, 512);
-		
-		gameVersion = new Label(DisplayManager.title);
-		
-		mainRenderings = new Label("Renderer Info:");
-		mainThreadFPS = new Label("FPS " + DisplayManager.getFPS() + " Frametime (ms): " + DisplayManager.getFrameTimeMilis());
-		entityCount = new Label("E: 0");
-		renderCount = new Label("VAO: " + VAOLoader.getVAOS() + " VBO: " + VAOLoader.getVBOS() + " Textures: " + TextureLoader.getTextures());
-		
-		physics = new Label("Physics Info:");
-		physicsThreadFPS = new Label("UPS " + Threading.getFPS() + " Updatetime (ms): " + Threading.getFrameTimeMilis());
-		
-		playerPosition = new Label("X: 0 | Y: 0 | Z: 0");
-		
-		
-		javaMemory = new Label("Heap: " + Main.mx.getHeapMemoryUsage().getUsed()  / 1024 / 1024
-									+ "mb / " 
-										+ Main.mx.getHeapMemoryUsage().getCommitted()  / 1024 / 1024 
-									+ "mb [" 
-										+ Main.mx.getHeapMemoryUsage().getMax() / 1024 / 1024
-									+ "mb]");
-		javaMemoryNon = new Label("Non-Heap: " 
-					+ Main.mx.getNonHeapMemoryUsage().getUsed()  / 1024 / 1024
-				+ "mb / " 
-					+ Main.mx.getNonHeapMemoryUsage().getCommitted()  / 1024 / 1024
-				+ "mb");
-		
-		particleCount = new Label("Particle Count: " + 0 + " : " + 0);
-		
-		
-		
-		final float size = 16;
-		final float padding = 5;
-		final float offsetY = 25;
-		
-		gameVersion.setPosition(0, calcPosY(size * 1.3f, padding, 10));
-		gameVersion.getStyle().setFontSize(size * 1.3f);
-		gameVersion.getStyle().setFont("mono");
-		
-		calcPosY(size, padding, offsetY);
-		mainRenderings.setPosition(0, calcPosY(size, padding , offsetY));
-		mainRenderings.getStyle().setFontSize(size * 1.2f);
-		mainRenderings.getStyle().setFont("mono");
-		mainThreadFPS.setPosition(0, calcPosY(size, padding, offsetY));
-		mainThreadFPS.getStyle().setFontSize(size);
-		mainThreadFPS.getStyle().setFont("mono");
-		entityCount.setPosition(0, calcPosY(size, padding, offsetY));
-		entityCount.getStyle().setFontSize(size);
-		entityCount.getStyle().setFont("mono");
-		renderCount.setPosition(0, calcPosY(size, padding, offsetY));
-		renderCount.getStyle().setFontSize(size);
-		renderCount.getStyle().setFont("mono");
-		
-		calcPosY(size, padding, offsetY);
-		physics.setPosition(0, calcPosY(size, padding, offsetY));
-		physics.getStyle().setFontSize(size * 1.2f);
-		physics.getStyle().setFont("mono");
-		physicsThreadFPS.setPosition(0, calcPosY(size, padding, offsetY));
-		physicsThreadFPS.getStyle().setFontSize(size);
-		physicsThreadFPS.getStyle().setFont("mono");
-		
-		calcPosY(size, padding, offsetY);
-		playerPosition.setPosition(0, calcPosY(size, padding, offsetY));
-		playerPosition.getStyle().setFontSize(size);
-		playerPosition.getStyle().setFont("mono");
-		
-		calcPosY(size, padding, offsetY);
-		javaMemory.setPosition(0, calcPosY(size, padding, offsetY));
-		javaMemory.getStyle().setFontSize(size);
-		javaMemory.getStyle().setFont("mono");
-		javaMemoryNon.setPosition(0, calcPosY(size, padding, offsetY));
-		javaMemoryNon.getStyle().setFontSize(size);
-		javaMemoryNon.getStyle().setFont("mono");
-		
-		calcPosY(size, padding, offsetY);
-		particleCount.setPosition(0, calcPosY(size, padding, offsetY));
-		particleCount.getStyle().setFontSize(size);
-		particleCount.getStyle().setFont("mono");
-		
-		layer.add(gameVersion);
-		layer.add(mainRenderings);
-		layer.add(mainThreadFPS);
-		layer.add(entityCount);
-		layer.add(renderCount);
-		layer.add(physics);
-		layer.add(physicsThreadFPS);
-		layer.add(playerPosition);
-		layer.add(javaMemory);
-		layer.add(javaMemoryNon);
-		layer.add(particleCount);
-		
-		UIMaster.getMasterFrame().addLayer(layer);
-		
-		//UIMaster.getMasterFrame().getContainer().add(layer);
-		layer.setEnabled(enabled);
-		layer.getStyle().setDisplay(enabled == true ? DisplayType.MANUAL : DisplayType.NONE);
-	}
-	
-	private int last = 0;
-	private float calcPosY(float size, float padding, float offsetY) {
-		if (last == 0) {
-			last++;
-			return offsetY;
-		}
-		// I AM BIG BRAIN
-		return offsetY + size * last + padding * last++;
+		gameVersion = DisplayManager.gameName + " " + DisplayManager.gameVersion + " // " + DisplayManager.engineName + " " + DisplayManager.engineVersion;
+		mainRenderings = "Renderer:";
+		physics = "Physics:";
 	}
 	
 	private final DecimalFormat df = new DecimalFormat("#.###");
@@ -182,12 +82,7 @@ public class DebugInfo implements IKeyState {
 		builder.append((int)DisplayManager.getFPS());
 		builder.append("  Frametime (ms):  ");
 		builder.append(round(DisplayManager.getFrameTimeMilis()));
-		mainThreadFPS.getTextState().setText(builder.toString());
-		
-		builder = new StringBuilder();
-		builder.append("Entities:  ");
-		builder.append(World.entityCount);
-		entityCount.getTextState().setText(builder.toString());
+		mainThreadFPS = (builder.toString());
 		
 		builder = new StringBuilder();
 		builder.append("VAO:  ");
@@ -196,14 +91,14 @@ public class DebugInfo implements IKeyState {
 		builder.append(VAOLoader.getVBOS());
 		builder.append("  Textures:  ");
 		builder.append(TextureLoader.getTextures());
-		renderCount.getTextState().setText(builder.toString());
+		renderCount = (builder.toString());
 		
 		builder = new StringBuilder();
 		builder.append("UPS  ");
 		builder.append((int)Threading.getFPS());
 		builder.append("  Updatetime (ms):  ");
 		builder.append(round(Threading.getFrameTimeMilis()));
-		physicsThreadFPS.getTextState().setText(builder.toString());
+		physicsThreadFPS = (builder.toString());
 		
 		builder = new StringBuilder();
 		builder.append("Heap: ");
@@ -213,7 +108,7 @@ public class DebugInfo implements IKeyState {
 		builder.append("mb [");
 		builder.append(Main.mx.getHeapMemoryUsage().getMax() / 1024 / 1024);
 		builder.append("mb]");
-		javaMemory.getTextState().setText(builder.toString());
+		javaMemory = (builder.toString());
 		
 		builder = new StringBuilder();
 		builder.append("Non-Heap: ");
@@ -223,7 +118,7 @@ public class DebugInfo implements IKeyState {
 		builder.append("mb [");
 		builder.append(Main.mx.getNonHeapMemoryUsage().getMax() / 1024 / 1024);
 		builder.append("mb]");
-		javaMemoryNon.getTextState().setText(builder.toString());
+		javaMemoryNon = (builder.toString());
 		
 	}
 	
@@ -231,15 +126,7 @@ public class DebugInfo implements IKeyState {
 	 * called every frame
 	 */
 	public void updateFrame() {
-		if (!enabled)
-			return;
-		
-	}
-	
-	/**
-	 * called every 250ms
-	 */
-	public void update() {
+		OptionsMenu.menu.set(enabled);
 		if (!enabled)
 			return;
 		
@@ -250,14 +137,77 @@ public class DebugInfo implements IKeyState {
 		includeSpace(builder, round(y));
 		builder.append(" | Z: ");
 		includeSpace(builder, round(z));
-		playerPosition.getTextState().setText(builder.toString());
+		playerPosition = (builder.toString());
 		
 		builder = new StringBuilder();
 		builder.append("Particle Count: ");
 		builder.append(world.getParticleCount()); 
 		builder.append(" : ");
 		builder.append(world.getParticleSize()); 
-		particleCount.getTextState().setText(builder.toString());
+		particleCount = (builder.toString());
+		
+		builder = new StringBuilder();
+		builder.append("Entities: ");
+		builder.append(World.entityCount);
+		entityCount = (builder.toString());
+		
+		builder = new StringBuilder();
+		builder.append("Rendered Ents: ");
+		builder.append(EntityRenderFunction.getCount());
+		entityRenderCount = builder.toString();
+		
+		ImGui.pushFont(GameRegistry.getFont("roboto-regular"));
+		
+		ImGui.setNextWindowPos(DisplayManager.windowPosX + 5, DisplayManager.windowPosY + 5, ImGuiCond.Appearing);
+		ImGui.begin("Debug", ImGuiWindowFlags.NoResize | ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoCollapse);
+		
+		ImGui.text(gameVersion);
+		
+		ImGui.newLine();
+			ImGui.text(mainRenderings);
+			ImGui.bullet();
+			ImGui.text(mainThreadFPS);
+			ImGui.bullet();
+			ImGui.text(renderCount);
+		
+		ImGui.newLine();
+			ImGui.text(physics);
+			ImGui.bullet();
+			ImGui.text(physicsThreadFPS);
+			ImGui.bullet();
+			ImGui.text(entityCount);
+			ImGui.bullet();
+			ImGui.text(entityRenderCount);
+			ImGui.bullet();
+			ImGui.text(particleCount);
+		
+		ImGui.newLine();
+			ImGui.text(playerPosition);
+		
+		ImGui.newLine();
+			ImGui.text(javaMemory);
+			ImGui.text(javaMemoryNon);
+		
+		ImGui.newLine();
+		ImGui.beginChild("Buttons", 260, 100);
+			ImGui.checkbox("Draw Lines?", enableLines);
+			if (ImGui.button("Force GC", 80, 40)) {
+				System.gc();
+			}
+		ImGui.endChild();
+		
+		ImGui.end();
+		
+		ImGui.popFont();
+	}
+	
+	/**
+	 * called every 250ms
+	 */
+	public void update() {
+		if (!enabled)
+			return;
+		
 	}
 	
 	@Override
@@ -265,8 +215,6 @@ public class DebugInfo implements IKeyState {
 		if (keys == GLFW.GLFW_KEY_F3) {
 			AnnotationHandler.cleanScreen();
 			enabled = !enabled;
-			layer.setEnabled(enabled);
-			layer.getStyle().setDisplay(enabled == true ? DisplayType.MANUAL : DisplayType.NONE);
 		}
 	}
 

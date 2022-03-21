@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.joml.Vector3d;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL33;
 
 import com.jme3.bullet.PhysicsSpace;
@@ -15,22 +16,30 @@ import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.PhysicsRayTestResult;
 import com.jme3.math.Vector3f;
 import com.karl.Engine.skybox.SkyboxRenderer;
+import com.trapdoor.engine.ProjectionMatrix;
+import com.trapdoor.engine.UBOLoader;
 import com.trapdoor.engine.camera.Camera;
 import com.trapdoor.engine.datatypes.DynamicArray;
 import com.trapdoor.engine.datatypes.ogl.assimp.Model;
 import com.trapdoor.engine.display.DisplayManager;
 import com.trapdoor.engine.registry.Threading;
-import com.trapdoor.engine.renderer.DeferredRenderer;
-import com.trapdoor.engine.renderer.EntityRenderer;
+import com.trapdoor.engine.renderer.DepthPassRenderer;
+import com.trapdoor.engine.renderer.MaterialPassRenderer;
+import com.trapdoor.engine.renderer.functions.DepthRenderFunction;
+import com.trapdoor.engine.renderer.functions.EntityRenderFunction;
+import com.trapdoor.engine.renderer.functions.ShadowRenderFunction;
 import com.trapdoor.engine.renderer.particles.ParticleRenderer;
 import com.trapdoor.engine.renderer.particles.ParticleSystem;
 import com.trapdoor.engine.renderer.postprocessing.BloomRenderer;
 import com.trapdoor.engine.renderer.shadows.ShadowMap;
 import com.trapdoor.engine.renderer.shadows.ShadowRenderer;
+import com.trapdoor.engine.renderer.ui.DebugInfo;
+import com.trapdoor.engine.renderer.ui.OptionsMenu;
 import com.trapdoor.engine.tools.Logging;
 import com.trapdoor.engine.tools.RayCasting;
 import com.trapdoor.engine.tools.SettingsLoader;
 import com.trapdoor.engine.world.entities.Entity;
+import com.trapdoor.engine.world.entities.components.Transform;
 
 /**
  * @author brett
@@ -59,26 +68,38 @@ public class World {
 	public static int entityCount;
 	
 	private Camera c;
-	private EntityRenderer renderer;
 	private SkyboxRenderer skyboxRenderer;
-	private DeferredRenderer deferredRenderer;
+	//private DeferredRenderer deferredRenderer;
 	private ShadowRenderer shadowRenderer;
 	private BloomRenderer bloomRenderer;
 	private ParticleRenderer particleRenderer;
+	
+	private DepthPassRenderer depthRenderer;
+	private MaterialPassRenderer materialRenderer;
+	
+	// render functions
+	private DepthRenderFunction depthRenderFunction;
+	private EntityRenderFunction entityRenderFunction;
+	private ShadowRenderFunction shadowRenderFunction;
 
 	@SuppressWarnings("deprecation")
 	public World(Camera c) {
+		UBOLoader.createLightingUBO();
 		// entitiesinworld is shared memory between the renderer and the world object.
-		this.renderer = new EntityRenderer();
-		this.deferredRenderer = new DeferredRenderer(c);
+		//this.deferredRenderer = new DeferredRenderer(c);
+		this.depthRenderer = new DepthPassRenderer();
+		this.materialRenderer = new MaterialPassRenderer(c);
 		this.skyboxRenderer = new SkyboxRenderer();
 		this.c = c;
-		this.entityStorage = new WorldEntityStorage(c, this.renderer);
-		particleRenderer = new ParticleRenderer();
+		this.entityStorage = new WorldEntityStorage(c);
+		this.particleRenderer = new ParticleRenderer();
 		if (SettingsLoader.GRAPHICS_LEVEL < 2) {
 			this.shadowRenderer = new ShadowRenderer(c);
 			this.bloomRenderer = new BloomRenderer();
+			this.shadowRenderFunction = new ShadowRenderFunction(this.shadowRenderer.getShader());
 		}
+		this.depthRenderFunction = new DepthRenderFunction(this.depthRenderer.getShader());
+		this.entityRenderFunction = new EntityRenderFunction(this.materialRenderer.getShader(), this.materialRenderer.getLightingArray());
 		
 		// setup physics
         this.physWorld = new PhysicsSpace(PhysicsSpace.BroadphaseType.DBVT);
@@ -86,7 +107,7 @@ public class World {
         this.physWorld.useDeterministicDispatch(false);
         this.physWorld.useScr(false);
         // this helps/
-        //this.physWorld.setAccuracy(1f/120f);
+        this.physWorld.setAccuracy(1f/120f);
         
         this.physWorld.addCollisionListener((PhysicsCollisionEvent event) -> {
         	Entity e1 = entityPhyiscsMap.get(event.getObjectA());
@@ -113,33 +134,51 @@ public class World {
 	 */
 	public void render() {
 		this.c.render();
+		UBOLoader.updateMatrixUBO();
 		
 		DisplayManager.enableCulling();
 		DisplayManager.disableTransparentcy(); 
 		
 		if (SettingsLoader.GRAPHICS_LEVEL <  2 && DisplayManager.enableShadows) {
-			this.shadowRenderer.renderDepthMap(c, entityStorage);
+			this.shadowRenderer.renderDepthMap(c, entityStorage, this.shadowRenderFunction);
 			
 			GL33.glViewport(0, 0, DisplayManager.WIDTH, DisplayManager.HEIGHT);
 		}
 		
-		this.deferredRenderer.startFirstPass(this);
-		this.deferredRenderer.enableMainShaders();
-		this.deferredRenderer.getShader().loadViewPos(this.c.getPosition());
-		this.entityStorage.render(this.deferredRenderer);
+		// TODO: add bloomy option
+		if (SettingsLoader.GRAPHICS_LEVEL < 1) {
+			this.bloomRenderer.bindBloom();
+		}
+		
+		if (DebugInfo.enableLines.get())
+			GL33.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL33.GL_LINE);
+		
+		// render depth pass
+		this.depthRenderer.start();
+		this.entityStorage.render(this.depthRenderFunction);
+		this.depthRenderer.stop();
+		
+		// render material pass
+		GL33.glDepthFunc(GL33.GL_EQUAL);
+		
+		this.materialRenderer.start();
+		if (SettingsLoader.GRAPHICS_LEVEL < 2) {
+			GL33.glActiveTexture(GL33.GL_TEXTURE5);
+			GL33.glBindTexture(GL33.GL_TEXTURE_2D_ARRAY, this.getShadowMap().getDepthMapTexture());
+		}
+		this.entityStorage.render(this.entityRenderFunction);
 		
 		ArrayList<Entity> ents = this.entityStorage.getAllEntities();
 		for (int i = 0; i < ents.size(); i++)
 			ents.get(i).render();
 		
-		this.deferredRenderer.endFirstPass();
+		if (DebugInfo.enableLines.get())
+			GL33.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL33.GL_FILL);
 		
-		// TODO: add bloomy option
-		if (SettingsLoader.GRAPHICS_LEVEL < 2) {
-			this.bloomRenderer.bindBloom();
-		}
+		this.materialRenderer.end();
 		
-		this.deferredRenderer.runSecondPass();
+		GL33.glDepthFunc(GL33.GL_LEQUAL);
+		
 		this.skyboxRenderer.render(c);
 		for (int i = 0; i < particleSystems.size(); i++) {
 			particleSystems.get(i).update();
@@ -147,14 +186,15 @@ public class World {
 		particleRenderer.update(this, c);
 		this.particleRenderer.render(this, c);
 		
-		if (SettingsLoader.GRAPHICS_LEVEL < 2) {
-			this.bloomRenderer.applyBlur(this.deferredRenderer);
-			this.bloomRenderer.render(this.deferredRenderer);
+		if (SettingsLoader.GRAPHICS_LEVEL < 1) {
+			this.bloomRenderer.applyBlur();
+			this.bloomRenderer.render();
 		}
 		
 		DisplayManager.disableCulling();
+		EntityRenderFunction.reset();
 		
-		
+		OptionsMenu.menu.render();
 	}
 	
 	/**
@@ -166,12 +206,17 @@ public class World {
 		entityCount = allEnts.size();
 		c.move();
 		c.updateViewMatrix();
+		c.calculateFrustum(ProjectionMatrix.projectionMatrix, c.getViewMatrix());
 		// TODO: fix this
 		//c.calculateFrustum(ProjectionMatrix.projectionMatrix, c.getViewMatrix());
 		
 		for (int i = 0; i < allEnts.size(); i++) {
 			Entity a = allEnts.get(i);
 			a.update();
+			Transform t = a.getComponent(Transform.class);
+			if (t == null)
+				continue;
+			t.updateDistanceToCamera(c);
 		}
 		
 		// calcualte the phys, stepped relative to the game speed
@@ -302,7 +347,7 @@ public class World {
 	
 	public void cleanup() {
 		Logging.logger.debug("Destorying world!");
-		this.deferredRenderer.cleanup();
+		//this.deferredRenderer.cleanup();
 		try {
 			this.shadowRenderer.cleanup();
 			this.bloomRenderer.cleanup();

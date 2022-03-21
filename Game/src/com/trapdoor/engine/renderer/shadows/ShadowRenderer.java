@@ -11,6 +11,7 @@ import com.trapdoor.engine.ProjectionMatrix;
 import com.trapdoor.engine.UBOLoader;
 import com.trapdoor.engine.camera.ICamera;
 import com.trapdoor.engine.display.DisplayManager;
+import com.trapdoor.engine.renderer.functions.RenderFunction;
 import com.trapdoor.engine.tools.math.Maths;
 import com.trapdoor.engine.world.WorldEntityStorage;
 
@@ -39,7 +40,7 @@ public class ShadowRenderer {
 		UBOLoader.createShadowUBO();
 	}
 	
-	public void renderDepthMap(ICamera camera, WorldEntityStorage storage) {
+	public void renderDepthMap(ICamera camera, WorldEntityStorage storage, RenderFunction render) {
 		GL33.glBindFramebuffer(GL33.GL_DRAW_FRAMEBUFFER, map.getDepthMapFBO());
 		GL33.glViewport(0, 0, ShadowMap.SHADOW_MAP_WIDTH, ShadowMap.SHADOW_MAP_HEIGHT);
 		
@@ -52,7 +53,7 @@ public class ShadowRenderer {
 		GL33.glDisable(GL33.GL_CULL_FACE);
 		//GL33.glCullFace(GL33.GL_FRONT);
 		// render out the shadows
-		storage.renderShadow(this);
+		storage.render(render);
 		//GL33.glCullFace(GL33.GL_BACK);
 		GL33.glEnable(GL33.GL_CULL_FACE);
 		

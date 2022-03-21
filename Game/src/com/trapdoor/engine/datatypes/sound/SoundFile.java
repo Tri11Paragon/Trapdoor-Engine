@@ -1,5 +1,12 @@
 package com.trapdoor.engine.datatypes.sound;
 
+import static org.lwjgl.stb.STBVorbis.stb_vorbis_close;
+import static org.lwjgl.stb.STBVorbis.stb_vorbis_get_info;
+import static org.lwjgl.stb.STBVorbis.stb_vorbis_get_samples_short_interleaved;
+import static org.lwjgl.stb.STBVorbis.stb_vorbis_open_memory;
+import static org.lwjgl.stb.STBVorbis.stb_vorbis_stream_length_in_samples;
+import static org.lwjgl.system.MemoryUtil.NULL;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -8,17 +15,13 @@ import java.nio.ShortBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.SeekableByteChannel;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.openal.AL11;
-import org.lwjgl.stb.STBVorbis;
 import org.lwjgl.stb.STBVorbisInfo;
-import org.lwjgl.system.MemoryStack;
-import org.lwjgl.system.MemoryUtil;
-
-import java.nio.file.Files;
 
 /**
  * @author laptop
@@ -31,7 +34,6 @@ public class SoundFile {
 
 	private ShortBuffer pcm = null;
 
-	private ByteBuffer vorbis = null;
 	private STBVorbisInfo info;
 	private String file;
 
@@ -39,7 +41,7 @@ public class SoundFile {
 		this.bufferId = AL11.alGenBuffers();
 		this.file = file;
 		try (STBVorbisInfo info = STBVorbisInfo.malloc()) {
-			readVorbis(file, 32 * 1024, info);
+			this.pcm = readVorbis2(file, 32 * 1024, info);
 			this.info = info;
 			// Copy to buffer
 			
@@ -57,30 +59,32 @@ public class SoundFile {
 	public void cleanup() {
 		AL11.alDeleteBuffers(this.bufferId);
 	}
+	
+	private static ShortBuffer readVorbis2(String resource, int bufferSize, STBVorbisInfo info) {
+        ByteBuffer vorbis;
+        try {
+            vorbis = ioResourceToByteBuffer(resource, bufferSize);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
-	private ShortBuffer readVorbis(String resource, int bufferSize, STBVorbisInfo info) throws Exception {
-		try (MemoryStack stack = MemoryStack.stackPush()) {
-			vorbis = ioResourceToByteBuffer(resource, bufferSize);
-			IntBuffer error = stack.mallocInt(1);
-			long decoder = STBVorbis.stb_vorbis_open_memory(vorbis, error, null);
-			if (decoder == MemoryUtil.NULL) {
-				throw new RuntimeException("Failed to open Ogg Vorbis file. Error: " + error.get(0));
-			}
+        IntBuffer error   = BufferUtils.createIntBuffer(1);
+        long      decoder = stb_vorbis_open_memory(vorbis, error, null);
+        if (decoder == NULL) {
+            throw new RuntimeException("Failed to open Ogg Vorbis file. Error: " + error.get(0));
+        }
 
-			STBVorbis.stb_vorbis_get_info(decoder, info);
+        stb_vorbis_get_info(decoder, info);
 
-			int channels = info.channels();
+        int channels = info.channels();
 
-			int lengthSamples = STBVorbis.stb_vorbis_stream_length_in_samples(decoder);
+        ShortBuffer pcm = BufferUtils.createShortBuffer(stb_vorbis_stream_length_in_samples(decoder) * channels);
 
-			pcm = MemoryUtil.memAllocShort(lengthSamples);
+        stb_vorbis_get_samples_short_interleaved(decoder, channels, pcm);
+        stb_vorbis_close(decoder);
 
-			pcm.limit(STBVorbis.stb_vorbis_get_samples_short_interleaved(decoder, channels, pcm) * channels);
-			STBVorbis.stb_vorbis_close(decoder);
-
-			return pcm;
-		}
-	}
+        return pcm;
+    }
 
 	private static ByteBuffer ioResourceToByteBuffer(String resource, int bufferSize) throws IOException {
 		ByteBuffer buffer;
@@ -89,8 +93,7 @@ public class SoundFile {
 		if (Files.isReadable(path)) {
 			try (SeekableByteChannel fc = Files.newByteChannel(path)) {
 				buffer = BufferUtils.createByteBuffer((int) fc.size() + 1);
-				while (fc.read(buffer) != -1)
-					;
+				while (fc.read(buffer) != -1);
 			}
 		} else {
 			try (InputStream source = SoundFile.class.getResourceAsStream(resource);

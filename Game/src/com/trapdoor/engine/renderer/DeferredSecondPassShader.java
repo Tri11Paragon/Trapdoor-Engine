@@ -3,7 +3,6 @@ package com.trapdoor.engine.renderer;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import com.trapdoor.engine.UBOLoader;
 import com.trapdoor.engine.display.DisplayManager;
 
 /**
@@ -31,7 +30,6 @@ public class DeferredSecondPassShader extends WorldShader {
 		this.start();
 		setUniformBlockLocation("Lightings", 2);
 		connectTextureUnits();
-		UBOLoader.createLightingUBO();
 		loadLightDir(DisplayManager.lightDirection);
 		loadLightColor(DisplayManager.lightColor);
 		this.stop();

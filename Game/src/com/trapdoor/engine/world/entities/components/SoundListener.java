@@ -64,6 +64,13 @@ public class SoundListener extends IComponent {
 	public void update() {
 		if (this.entityTransform != null)
 			this.setPosition(this.entityTransform.getX(), this.entityTransform.getY(), this.entityTransform.getZ());
+//		try (MemoryStack stack = MemoryStack.stackPush()){
+//    		FloatBuffer b1 = stack.callocFloat(1);
+//    		FloatBuffer b2 = stack.callocFloat(1);
+//    		FloatBuffer b3 = stack.callocFloat(1);
+//    		AL11.alGetListener3f(AL11.AL_POSITION, b1, b2, b3);
+//    		System.out.println(b1.get() + " " + b2.get() + " " + b3.get());
+//    	}
 	}
 
 	@Override

@@ -29,6 +29,8 @@ import com.trapdoor.engine.tools.input.InputMaster;
 import com.trapdoor.engine.tools.models.ModelLoader;
 import com.trapdoor.engine.world.entities.components.SoundSource;
 
+import imgui.ImFont;
+
 /**
  * @author brett
  * @date Nov. 28, 2021
@@ -54,7 +56,8 @@ public class GameRegistry {
 	 * this is the max number of method callers to be printed during an error
 	 */
 	private static final int MAX_CALLERS_LOG = 5;
-	private static final int PARTICLE_SIZE = 128;
+	// TODO: make this changeable
+	private static final int PARTICLE_SIZE = 256;
 	//private static final HashMap<String, String> allowedFormats = new HashMap<String, String>();
 	//private static final ArrayList<IDisplay> registeredDisplays = new ArrayList<IDisplay>();
 	
@@ -66,7 +69,9 @@ public class GameRegistry {
 	private static final Map<String, Integer> meshLocks = Collections.synchronizedMap(new ConcurrentHashMap<String, Integer>());
 	private static final Map<String, Integer> particleLocks = Collections.synchronizedMap(new ConcurrentHashMap<String, Integer>());
 	private static final Map<String, Integer> fontSizes = Collections.synchronizedMap(new ConcurrentHashMap<String, Integer>());
+	private static final Map<String, ImFont> theFonts = Collections.synchronizedMap(new ConcurrentHashMap<String, ImFont>());
 	private static final ArrayList<String> fonts = new ArrayList<String>();
+	private static final ArrayList<String> fontsNames = new ArrayList<String>();
 	
 	/*
 	 * important entity related storage
@@ -349,6 +354,18 @@ public class GameRegistry {
 		
 	}
 	
+	public static void regsterImFont(ImFont font, String name) {
+		theFonts.put(name, font);
+	}
+	
+	public static ImFont getFont(String name) {
+		return theFonts.get(name);
+	}
+	
+	public static ArrayList<String> getFontNames(){
+		return fontsNames;
+	}
+	
 	/**
 	 * @param file path to the texture
 	 * @return a singular texture which was loaded into memory
@@ -434,6 +451,7 @@ public class GameRegistry {
 		FontRegistry.registerFont(name, path);
 		
 		fonts.add(path);
+		fontsNames.add(name);
 		fontSizes.put(path, size);
 	}
 	

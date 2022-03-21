@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
- <configuration status="warn">
+ <configuration status="warn" packages="com.trapdoor.engine.tools">
   <appenders>
+	<DebugConsoleAppender name="DebugConsoleAppender">
+		<PatternLayout pattern="[%d{HH:mm:ss.SSS}] [%t/%-5p]: (%F:%L): %msg%n"/>
+	</DebugConsoleAppender>
    <Console name="Console" target="SYSTEM_OUT">
     <PatternLayout pattern="%highlight{[%d{HH:mm:ss.SSS}] [%t/%-5p]: (%F:%L): %msg%n}{FATAL=bg_red, ERROR=red, WARN=bright yellow, INFO=bright green, DEBUG=cyan, TRACE=white}"/>
    </Console>

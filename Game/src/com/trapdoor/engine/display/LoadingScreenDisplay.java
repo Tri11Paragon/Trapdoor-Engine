@@ -24,6 +24,7 @@ import com.spinyowl.legui.style.Style.DisplayType;
 import com.trapdoor.engine.registry.GameRegistry;
 import com.trapdoor.engine.registry.Threading;
 import com.trapdoor.engine.registry.annotations.AnnotationHandler;
+import com.trapdoor.engine.registry.annotations.PreRegistrationEventSubscriber;
 import com.trapdoor.engine.renderer.ui.UIMaster;
 import com.trapdoor.engine.tools.Logging;
 
@@ -57,6 +58,30 @@ public class LoadingScreenDisplay extends IDisplay {
 	
 	public static void updateBar() {
 		bar.setValue((PROGRESS.get()/MAX.get()) * 100);
+	}
+	
+	@PreRegistrationEventSubscriber
+	public static void register() {
+//		GameRegistry.registerFont("roboto-black", "resources/fonts/roboto/Roboto-Black.ttf", 18);
+//		GameRegistry.registerFont("roboto-blackitalic", "resources/fonts/roboto/Roboto-BlackItalic.ttf", 18);
+//		GameRegistry.registerFont("roboto-rold", "resources/fonts/roboto/Roboto-Bold.ttf", 18);
+//		
+//		GameRegistry.registerFont("roboto-bolditalic", "resources/fonts/roboto/Roboto-BoldItalic.ttf", 18);
+//		GameRegistry.registerFont("roboto-italic", "resources/fonts/roboto/Roboto-Italic.ttf", 18);
+//		GameRegistry.registerFont("roboto-light", "resources/fonts/roboto/Roboto-Light.ttf", 18);
+//		
+//		GameRegistry.registerFont("roboto-lightitalic", "resources/fonts/roboto/Roboto-LightItalic.ttf", 18);
+//		GameRegistry.registerFont("roboto-medium", "resources/fonts/roboto/Roboto-Medium.ttf", 18);
+//		GameRegistry.registerFont("roboto-mediumitalic", "resources/fonts/roboto/Roboto-MediumItalic.ttf", 18);
+		
+		GameRegistry.registerFont("roboto-regular", "resources/fonts/roboto/Roboto-Regular.ttf", 18);
+//		GameRegistry.registerFont("roboto-thin", "resources/fonts/roboto/Roboto-Thin.ttf", 18);
+//		GameRegistry.registerFont("roboto-thinitalic", "resources/fonts/roboto/Roboto-ThinItalic.ttf", 18);
+		
+		GameRegistry.registerFont("fa-regular", "resources/fonts/fontawesome-free-6.1.0-web/webfonts/fa-regular-400.ttf", 18);
+		GameRegistry.registerFont("fa-brands", "resources/fonts/fontawesome-free-6.1.0-web/webfonts/fa-brands-400.ttf", 18);
+		GameRegistry.registerFont("fa-solid", "resources/fonts/fontawesome-free-6.1.0-web/webfonts/fa-solid-900.ttf", 18);
+//		GameRegistry.registerFont("fa-v4compatibility", "resources/fonts/fontawesome-free-6.1.0-web/webfonts/fa-v4compatibility.ttf", 18);
 	}
 	
 	@Override

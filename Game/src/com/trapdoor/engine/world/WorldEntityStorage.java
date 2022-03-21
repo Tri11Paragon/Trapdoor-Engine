@@ -6,13 +6,12 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 
 import org.joml.Vector3d;
+import org.joml.Vector4f;
 
 import com.trapdoor.engine.camera.Camera;
 import com.trapdoor.engine.datatypes.ogl.assimp.Model;
 import com.trapdoor.engine.datatypes.util.NdHashMap;
-import com.trapdoor.engine.renderer.DeferredRenderer;
-import com.trapdoor.engine.renderer.EntityRenderer;
-import com.trapdoor.engine.renderer.shadows.ShadowRenderer;
+import com.trapdoor.engine.renderer.functions.RenderFunction;
 import com.trapdoor.engine.tools.SettingsLoader;
 import com.trapdoor.engine.world.entities.Entity;
 import com.trapdoor.engine.world.entities.components.Transform;
@@ -35,13 +34,11 @@ public class WorldEntityStorage {
 	/* chunking */
 	private NdHashMap<Integer, WorldChunk> chunks = new NdHashMap<Integer, WorldChunk>();
 	
-	
 	private Camera camera;
-	private EntityRenderer renderer;
+	private Vector4f store = new Vector4f(1.0f);
 	
-	public WorldEntityStorage(Camera camera, EntityRenderer renderer) {
+	public WorldEntityStorage(Camera camera) {
 		this.camera = camera;
-		this.renderer = renderer;
 	}
 	
 	public void changeModel(Entity e, Model old, Model n) {
@@ -72,53 +69,13 @@ public class WorldEntityStorage {
 		}
 	}
 	
-	public void render(DeferredRenderer renderer) {
-		final int f = SettingsLoader.RENDER_DISTANCE;
-		Vector3d pos = camera.getPosition();
-		for (int i = -f; i < f; i++) {
-			for (int j = -f; j < f; j++) {
-				for (int k = -f; k < f; k++) {
-					int x = (int)pos.x;
-					int y = (int)pos.y;
-					int z = (int)pos.z;
-					
-					int cx = (x >> 5) + i;
-					int cy = (y >> 5) + j;
-					int cz = (z >> 5) + k;
-					
-					//int ccx = cx * 32;
-					//int ccy = cy * 32;
-					//int ccz = cz * 32;
-					
-					//final float padding = 16;
-					
-					// TODO:
-					//if (!camera.cubeInFrustum(ccx - padding, ccy - padding, ccz - padding, ccx+32 + padding, ccy+32 + padding, ccz+32 + padding))
-						//continue;
-					
-					WorldChunk c = this.chunks.get(cx, cy, cz);
-					
-					if (c != null)
-						c.render(renderer, i, j, k);
-				}
-			}
-		}
-		
-		Iterator<Entry<Model, ArrayList<Entity>>> iter = mappedEntities.entrySet().iterator();
-		
-		while (iter.hasNext()) {
-			Entry<Model, ArrayList<Entity>> entry = iter.next();
-			ArrayList<Entity> lis = entry.getValue();
-			Model m = entry.getKey();
-			
-			if (m == null)
-				continue;
-			
-			this.renderer.renderChunk(renderer, m, lis);
-		}
+	public void sort() {
+		chunks.iterate((NdHashMap<Integer, WorldChunk> dt, Integer k1, Integer k2, Integer k3, WorldChunk v1) -> {
+			v1.updateDistance(camera);
+		});
 	}
 	
-	public void renderShadow(ShadowRenderer renderer) {
+	public void render(RenderFunction render) {
 		final int f = SettingsLoader.RENDER_DISTANCE;
 		Vector3d pos = camera.getPosition();
 		for (int i = -f; i < f; i++) {
@@ -132,20 +89,14 @@ public class WorldEntityStorage {
 					int cy = (y >> 5) + j;
 					int cz = (z >> 5) + k;
 					
-					//int ccx = cx * 32;
-					//int ccy = cy * 32;
-					//int ccz = cz * 32;
-					
-					//final float padding = 16;
-					
-					// TODO:
-					//if (!camera.cubeInFrustum(ccx - padding, ccy - padding, ccz - padding, ccx+32 + padding, ccy+32 + padding, ccz+32 + padding))
-						//continue;
+					store.x = cx * WorldChunk.CHUNK_SIZE;
+					store.y = cy * WorldChunk.CHUNK_SIZE;
+					store.z = cz * WorldChunk.CHUNK_SIZE;
 					
 					WorldChunk c = this.chunks.get(cx, cy, cz);
 					
 					if (c != null)
-						c.renderShadow(renderer, i, j, k);
+						c.render(render, camera, i, j, k);
 				}
 			}
 		}
@@ -160,7 +111,7 @@ public class WorldEntityStorage {
 			if (m == null)
 				continue;
 			
-			this.renderer.renderShadow(renderer, m, lis);
+			render.render(m, lis, camera);
 		}
 	}
 	
@@ -180,7 +131,7 @@ public class WorldEntityStorage {
 			WorldChunk c = this.chunks.get(cx, cy, cz);
 			
 			if (c == null) {
-				c = new WorldChunk(renderer, cx, cy, cz);
+				c = new WorldChunk(cx, cy, cz);
 				this.chunks.set(cx, cy, cz, c);
 			}
 			
