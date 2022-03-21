@@ -116,6 +116,15 @@ public class TestDisplay extends IDisplay {
 					"resources/textures/skyboxes/lolzplus2/front.png.jpg", 	// front
 					"resources/textures/skyboxes/lolzplus2/back.png.jpg"	// back
 				);
+
+		/*this.setSkyTextures(
+				"resources/textures/skyboxes/mountain-skyboxes/Ryfjallet/posx.jpg", 	// right
+				"resources/textures/skyboxes/mountain-skyboxes/Ryfjallet/negx.jpg", 	// left
+				"resources/textures/skyboxes/mountain-skyboxes/Ryfjallet/posy.jpg", 	// top
+				"resources/textures/skyboxes/mountain-skyboxes/Ryfjallet/negy.jpg", // bottom
+				"resources/textures/skyboxes/mountain-skyboxes/Ryfjallet/posz.jpg", 	// front
+				"resources/textures/skyboxes/mountain-skyboxes/Ryfjallet/negz.jpg"	// back
+			);*/
 		
 		this.camera = new CreativeFirstPerson();
 		this.world = new World(camera);

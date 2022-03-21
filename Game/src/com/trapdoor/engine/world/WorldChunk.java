@@ -46,7 +46,7 @@ public class WorldChunk {
 		ents.add(e);
 	}
 	
-	public void render(RenderFunction render, int i, int j, int k) {
+	public void render(RenderFunction render, Camera camera, int i, int j, int k) {
 		
 		Iterator<Entry<Model, ArrayList<Entity>>> iter = entityMap.entrySet().iterator();
 		
@@ -58,7 +58,7 @@ public class WorldChunk {
 			if (m == null)
 				continue;
 			
-			render.render(m, lis);
+			render.render(m, lis, camera);
 		}
 	}
 	

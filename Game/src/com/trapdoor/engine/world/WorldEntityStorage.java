@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 
 import org.joml.Vector3d;
+import org.joml.Vector4f;
 
 import com.trapdoor.engine.camera.Camera;
 import com.trapdoor.engine.datatypes.ogl.assimp.Model;
@@ -34,6 +35,7 @@ public class WorldEntityStorage {
 	private NdHashMap<Integer, WorldChunk> chunks = new NdHashMap<Integer, WorldChunk>();
 	
 	private Camera camera;
+	private Vector4f store = new Vector4f(1.0f);
 	
 	public WorldEntityStorage(Camera camera) {
 		this.camera = camera;
@@ -87,20 +89,22 @@ public class WorldEntityStorage {
 					int cy = (y >> 5) + j;
 					int cz = (z >> 5) + k;
 					
-					int ccx = cx * WorldChunk.CHUNK_SIZE;
-					int ccy = cy * WorldChunk.CHUNK_SIZE;
-					int ccz = cz * WorldChunk.CHUNK_SIZE;
+					store.x = cx * WorldChunk.CHUNK_SIZE;
+					store.y = cy * WorldChunk.CHUNK_SIZE;
+					store.z = cz * WorldChunk.CHUNK_SIZE;
 					
-					final float padding = 16;
+					//this.camera.getViewMatrix().transform(store);
+					
+					final float padding = 0;
 					
 					// TODO:
-					//if (!camera.cubeInFrustum(ccx - padding, ccy - padding, ccz - padding, ccx+32 + padding, ccy+32 + padding, ccz+32 + padding))
+					//if (!camera.cubeInFrustum(store.x - padding, store.y - padding, store.z - padding, store.x+32 + padding, store.y+32 + padding, store.z+32 + padding))
 					//	continue;
 					
 					WorldChunk c = this.chunks.get(cx, cy, cz);
 					
 					if (c != null)
-						c.render(render, i, j, k);
+						c.render(render, camera, i, j, k);
 				}
 			}
 		}
@@ -115,7 +119,7 @@ public class WorldEntityStorage {
 			if (m == null)
 				continue;
 			
-			render.render(m, lis);
+			render.render(m, lis, camera);
 		}
 	}
 	

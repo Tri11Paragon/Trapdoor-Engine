@@ -146,7 +146,7 @@ public class BloomRenderer implements Runnable {
 		combineShader.start();
 		GL33.glActiveTexture(GL33.GL_TEXTURE0);
 		GL33.glBindTexture(GL33.GL_TEXTURE_2D, colorTexture1);
-		if (SettingsLoader.GRAPHICS_LEVEL < 1) {
+		if (SettingsLoader.GRAPHICS_LEVEL < 1 && SettingsLoader.enableAutoExposure) {
 			// TODO: compute shader?
 			GL33.glGenerateMipmap(GL33.GL_TEXTURE_2D);
 			float[] vec3 = new float[3];
@@ -160,7 +160,8 @@ public class BloomRenderer implements Runnable {
 			exposure = Maths.clamp(exposure, exposureRangeMin, exposureRangeMax);
 			
 			combineShader.loadExposure(exposure);
-		}
+		} else 
+			combineShader.loadExposure(SettingsLoader.exposureDefault);
 		GL33.glActiveTexture(GL33.GL_TEXTURE1);
 		GL33.glBindTexture(GL33.GL_TEXTURE_2D, blur2Texture);
 		

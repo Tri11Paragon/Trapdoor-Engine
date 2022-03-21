@@ -135,7 +135,7 @@ import imgui.glfw.ImGuiImplGlfw;
 public class DisplayManager {
 
 	public static final String gameVersion = "0.0A";
-	public static final String engineVersion = "0.8.1A";
+	public static final String engineVersion = "0.8.2A";
 	public static final String gameName = "Rixie";
 	public static final String engineName = "Trapdoor";
 	public static final String title = gameName + " - V" + gameVersion + " // " + engineName + " V" + engineVersion;
@@ -227,6 +227,7 @@ public class DisplayManager {
 				//UBOLoader.updateMatrixUBO();
 				
 				currentDisplay.render();
+				
 				debugInfoLayer.updateFrame();
 				Console.getInstance().render();
 				

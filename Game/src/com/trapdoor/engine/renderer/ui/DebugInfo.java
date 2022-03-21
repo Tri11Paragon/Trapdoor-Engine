@@ -17,6 +17,7 @@ import com.trapdoor.engine.world.World;
 import imgui.ImGui;
 import imgui.flag.ImGuiCond;
 import imgui.flag.ImGuiWindowFlags;
+import imgui.type.ImBoolean;
 
 /**
  * @author laptop
@@ -26,6 +27,7 @@ import imgui.flag.ImGuiWindowFlags;
 public class DebugInfo implements IKeyState {
 	
 	public static float x,y,z;
+	public static ImBoolean enableLines = new ImBoolean();
 	private static DebugInfo th;
 	
 	private String gameVersion = "";
@@ -122,6 +124,7 @@ public class DebugInfo implements IKeyState {
 	 * called every frame
 	 */
 	public void updateFrame() {
+		OptionsMenu.menu.set(enabled);
 		if (!enabled)
 			return;
 		
@@ -177,7 +180,8 @@ public class DebugInfo implements IKeyState {
 			ImGui.text(javaMemoryNon);
 		
 		ImGui.newLine();
-		ImGui.beginChild("Buttons", 260, 50);
+		ImGui.beginChild("Buttons", 260, 100);
+			ImGui.checkbox("Draw Lines?", enableLines);
 			if (ImGui.button("Force GC", 80, 40)) {
 				System.gc();
 			}

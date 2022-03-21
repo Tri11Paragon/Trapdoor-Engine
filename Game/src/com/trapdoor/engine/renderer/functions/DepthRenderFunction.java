@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
+import com.trapdoor.engine.camera.Camera;
 import com.trapdoor.engine.datatypes.ogl.assimp.Material;
 import com.trapdoor.engine.datatypes.ogl.assimp.Mesh;
 import com.trapdoor.engine.datatypes.ogl.assimp.Model;
@@ -29,7 +30,7 @@ public class DepthRenderFunction extends RenderFunction {
 	}
 
 	@Override
-	public void render(Model m, ArrayList<Entity> lis) {
+	public void render(Model m, ArrayList<Entity> lis, Camera c) {
 		DepthPassShader shader = (DepthPassShader) program;
 		Mesh[] meshes = m.getMeshes();
 		for (int i = 0; i < meshes.length; i++) {
@@ -52,7 +53,13 @@ public class DepthRenderFunction extends RenderFunction {
 			
 			for (int j = 0; j < lis.size(); j++) {
 				Entity entity = lis.get(j);
-				shader.loadMatrix(ShaderProgram.std_TRANSFORM_MATRIX, Maths.createTransformationMatrix((Transform)entity.getComponent(Transform.class)));
+				
+				Transform t = entity.getComponent(Transform.class);
+				
+				if (!checkInFrustum(c, meshes[i].getBoundingBox().translate(t.getX(), t.getY(), t.getZ())))
+					continue;
+				
+				shader.loadMatrix(ShaderProgram.std_TRANSFORM_MATRIX, Maths.createTransformationMatrix(t));
 				
 				GL11.glDrawElements(GL11.GL_TRIANGLES, mod.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
 			}

@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.joml.Vector3d;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL33;
 
 import com.jme3.bullet.PhysicsSpace;
@@ -15,6 +16,7 @@ import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.PhysicsRayTestResult;
 import com.jme3.math.Vector3f;
 import com.karl.Engine.skybox.SkyboxRenderer;
+import com.trapdoor.engine.ProjectionMatrix;
 import com.trapdoor.engine.UBOLoader;
 import com.trapdoor.engine.camera.Camera;
 import com.trapdoor.engine.datatypes.DynamicArray;
@@ -31,6 +33,8 @@ import com.trapdoor.engine.renderer.particles.ParticleSystem;
 import com.trapdoor.engine.renderer.postprocessing.BloomRenderer;
 import com.trapdoor.engine.renderer.shadows.ShadowMap;
 import com.trapdoor.engine.renderer.shadows.ShadowRenderer;
+import com.trapdoor.engine.renderer.ui.DebugInfo;
+import com.trapdoor.engine.renderer.ui.OptionsMenu;
 import com.trapdoor.engine.tools.Logging;
 import com.trapdoor.engine.tools.RayCasting;
 import com.trapdoor.engine.tools.SettingsLoader;
@@ -146,6 +150,9 @@ public class World {
 			this.bloomRenderer.bindBloom();
 		}
 		
+		if (DebugInfo.enableLines.get())
+			GL33.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL33.GL_LINE);
+		
 		// render depth pass
 		this.depthRenderer.start();
 		this.entityStorage.render(this.depthRenderFunction);
@@ -165,9 +172,10 @@ public class World {
 		for (int i = 0; i < ents.size(); i++)
 			ents.get(i).render();
 		
-		this.materialRenderer.end();
+		if (DebugInfo.enableLines.get())
+			GL33.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL33.GL_FILL);
 		
-		//this.deferredRenderer.runSecondPass();
+		this.materialRenderer.end();
 		
 		GL33.glDepthFunc(GL33.GL_LEQUAL);
 		
@@ -185,7 +193,7 @@ public class World {
 		
 		DisplayManager.disableCulling();
 		
-		
+		OptionsMenu.menu.render();
 	}
 	
 	/**
@@ -197,6 +205,7 @@ public class World {
 		entityCount = allEnts.size();
 		c.move();
 		c.updateViewMatrix();
+		c.calculateFrustum(ProjectionMatrix.projectionMatrix, c.getViewMatrix());
 		// TODO: fix this
 		//c.calculateFrustum(ProjectionMatrix.projectionMatrix, c.getViewMatrix());
 		

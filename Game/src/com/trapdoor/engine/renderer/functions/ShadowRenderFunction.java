@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL33;
 
+import com.trapdoor.engine.camera.Camera;
 import com.trapdoor.engine.datatypes.ogl.assimp.Material;
 import com.trapdoor.engine.datatypes.ogl.assimp.Mesh;
 import com.trapdoor.engine.datatypes.ogl.assimp.Model;
@@ -29,7 +30,7 @@ public class ShadowRenderFunction extends RenderFunction {
 	}
 
 	@Override
-	public void render(Model m, ArrayList<Entity> lis) {
+	public void render(Model m, ArrayList<Entity> lis, Camera c) {
 		ShadowShader shader = (ShadowShader) program;
 		Mesh[] meshes = m.getMeshes();
 		for (int i = 0; i < meshes.length; i++) {

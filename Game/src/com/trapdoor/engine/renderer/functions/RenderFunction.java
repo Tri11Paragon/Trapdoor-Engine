@@ -2,6 +2,8 @@ package com.trapdoor.engine.renderer.functions;
 
 import java.util.ArrayList;
 
+import com.trapdoor.engine.camera.Camera;
+import com.trapdoor.engine.datatypes.collision.AxisAlignedBoundingBox;
 import com.trapdoor.engine.datatypes.lighting.ExtensibleLightingArray;
 import com.trapdoor.engine.datatypes.ogl.assimp.Model;
 import com.trapdoor.engine.renderer.ShaderProgram;
@@ -22,6 +24,15 @@ public abstract class RenderFunction {
 		this.frameLights = frameLights;
 	}
 	
-	public abstract void render(Model m, ArrayList<Entity> lis);
+	/**
+	 * check if bounding box is in camera frustum
+	 * @param bb must be in world space
+	 * @return
+	 */
+	public boolean checkInFrustum(Camera camera, AxisAlignedBoundingBox bb) {
+		return camera.cubeInFrustum(bb.getMinX(), bb.getMinY(), bb.getMinZ(), bb.getMaxX(), bb.getMaxY(), bb.getMaxZ());
+	}
+	
+	public abstract void render(Model m, ArrayList<Entity> lis, Camera camera);
 	
 }

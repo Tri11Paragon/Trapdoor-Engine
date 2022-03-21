@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
+import com.trapdoor.engine.camera.Camera;
 import com.trapdoor.engine.datatypes.lighting.ExtensibleLightingArray;
 import com.trapdoor.engine.datatypes.lighting.Light;
 import com.trapdoor.engine.datatypes.ogl.assimp.Material;
@@ -35,7 +36,7 @@ public class EntityRenderFunction extends RenderFunction {
 	private static final Vector3f nodiffuse = new Vector3f(-1);
 	
 	@Override
-	public void render(Model m, ArrayList<Entity> lis) {
+	public void render(Model m, ArrayList<Entity> lis, Camera c) {
 		MaterialPassShader shader = (MaterialPassShader) program;
 		Mesh[] meshes = m.getMeshes();
 		// don't want to add all lights for each submesh
@@ -78,7 +79,13 @@ public class EntityRenderFunction extends RenderFunction {
 			
 			for (int j = 0; j < lis.size(); j++) {
 				Entity entity = lis.get(j);
-				shader.loadMatrix("transformMatrix", Maths.createTransformationMatrix((Transform)entity.getComponent(Transform.class)));
+				
+				Transform t = entity.getComponent(Transform.class);
+				
+				if (!checkInFrustum(c, meshes[i].getBoundingBox().translate(t.getX(), t.getY(), t.getZ())))
+					continue;
+				
+				shader.loadMatrix("transformMatrix", Maths.createTransformationMatrix(t));
 				
 				ArrayList<Light> lights = entity.getLights();
 				if (first && lights.size() > 0)
