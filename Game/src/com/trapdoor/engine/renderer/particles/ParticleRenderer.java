@@ -58,7 +58,7 @@ public class ParticleRenderer {
 		shader.start();
 		GL33.glBindVertexArray(quad.getVaoID());
 		
-		GL33.glDepthMask(false);
+		GL33.glDepthMask(true);
 		GL33.glEnable(GL33.GL_BLEND);
 		GL33.glBlendFunc(GL33.GL_SRC_ALPHA, GL33.GL_ONE_MINUS_SRC_ALPHA);
 		GL33.glActiveTexture(GL33.GL_TEXTURE0);

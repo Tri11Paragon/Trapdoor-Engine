@@ -11,6 +11,7 @@ import com.trapdoor.engine.display.DisplayManager;
 import com.trapdoor.engine.registry.GameRegistry;
 import com.trapdoor.engine.registry.Threading;
 import com.trapdoor.engine.registry.annotations.AnnotationHandler;
+import com.trapdoor.engine.renderer.functions.EntityRenderFunction;
 import com.trapdoor.engine.tools.input.IKeyState;
 import com.trapdoor.engine.world.World;
 
@@ -35,6 +36,7 @@ public class DebugInfo implements IKeyState {
 	private String mainRenderings = "";
 	private String mainThreadFPS = "";
 	private String entityCount = "";
+	private String entityRenderCount = "";
 	private String renderCount = "";
 	
 	private String physics = "";
@@ -145,9 +147,14 @@ public class DebugInfo implements IKeyState {
 		particleCount = (builder.toString());
 		
 		builder = new StringBuilder();
-		builder.append("Entities:  ");
+		builder.append("Entities: ");
 		builder.append(World.entityCount);
 		entityCount = (builder.toString());
+		
+		builder = new StringBuilder();
+		builder.append("Rendered Ents: ");
+		builder.append(EntityRenderFunction.getCount());
+		entityRenderCount = builder.toString();
 		
 		ImGui.pushFont(GameRegistry.getFont("roboto-regular"));
 		
@@ -169,6 +176,8 @@ public class DebugInfo implements IKeyState {
 			ImGui.text(physicsThreadFPS);
 			ImGui.bullet();
 			ImGui.text(entityCount);
+			ImGui.bullet();
+			ImGui.text(entityRenderCount);
 			ImGui.bullet();
 			ImGui.text(particleCount);
 		

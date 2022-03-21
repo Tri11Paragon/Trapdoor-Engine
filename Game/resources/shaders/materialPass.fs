@@ -1,5 +1,6 @@
 #version 420 core
 
+layout(early_fragment_tests) in;
 in vec2 textureCoords;
 in vec3 normalo;
 in vec3 fragpos;

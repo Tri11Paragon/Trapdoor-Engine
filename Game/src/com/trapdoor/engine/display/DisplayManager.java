@@ -387,7 +387,7 @@ public class DisplayManager {
 		}
 		SoundSystem.init();
 		
-		AL11.alDistanceModel(AL11.AL_EXPONENT_DISTANCE);
+		AL11.alDistanceModel(AL11.AL_LINEAR_DISTANCE_CLAMPED);
 		
 		glfwWindowHint(GLFW.GLFW_DOUBLEBUFFER, GLFW_TRUE);
 		

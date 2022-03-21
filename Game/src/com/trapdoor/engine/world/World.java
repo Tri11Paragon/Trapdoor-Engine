@@ -192,6 +192,7 @@ public class World {
 		}
 		
 		DisplayManager.disableCulling();
+		EntityRenderFunction.reset();
 		
 		OptionsMenu.menu.render();
 	}

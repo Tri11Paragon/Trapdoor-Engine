@@ -93,14 +93,6 @@ public class WorldEntityStorage {
 					store.y = cy * WorldChunk.CHUNK_SIZE;
 					store.z = cz * WorldChunk.CHUNK_SIZE;
 					
-					//this.camera.getViewMatrix().transform(store);
-					
-					final float padding = 0;
-					
-					// TODO:
-					//if (!camera.cubeInFrustum(store.x - padding, store.y - padding, store.z - padding, store.x+32 + padding, store.y+32 + padding, store.z+32 + padding))
-					//	continue;
-					
 					WorldChunk c = this.chunks.get(cx, cy, cz);
 					
 					if (c != null)

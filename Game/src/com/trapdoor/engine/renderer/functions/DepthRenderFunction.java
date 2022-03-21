@@ -30,7 +30,7 @@ public class DepthRenderFunction extends RenderFunction {
 	}
 
 	@Override
-	public void render(Model m, ArrayList<Entity> lis, Camera c) {
+	public void doRender(Model m, Entity[] ents, Camera c) {
 		DepthPassShader shader = (DepthPassShader) program;
 		Mesh[] meshes = m.getMeshes();
 		for (int i = 0; i < meshes.length; i++) {
@@ -51,8 +51,8 @@ public class DepthRenderFunction extends RenderFunction {
 			GL13.glActiveTexture(GL13.GL_TEXTURE0);	
 			GL11.glBindTexture(GL11.GL_TEXTURE_2D, mat.getDiffuseTexture().getID());
 			
-			for (int j = 0; j < lis.size(); j++) {
-				Entity entity = lis.get(j);
+			for (int j = 0; j < ents.length; j++) {
+				Entity entity = ents[j];
 				
 				Transform t = entity.getComponent(Transform.class);
 				
@@ -68,6 +68,11 @@ public class DepthRenderFunction extends RenderFunction {
 			GL20.glDisableVertexAttribArray(1);
 			GL30.glBindVertexArray(0);
 		}
+	}
+	
+	@Override
+	public void render(Model m, ArrayList<Entity> lis, Camera c) {
+		doRender(m, sortEntities(lis), c);
 	}
 
 }

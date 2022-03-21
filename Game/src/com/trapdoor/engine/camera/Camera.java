@@ -173,6 +173,13 @@ public class Camera extends ICamera {
 		}
 		return true;
 	}
+	
+	public float fastDistance(float x, float y, float z) {
+		double dx = this.position.x - x;
+		double dy = this.position.y - y;
+		double dz = this.position.z - z;
+		return (float)( dx * dx + dy * dy + dz * dz );
+	}
 
 	@Override
 	public void render() {

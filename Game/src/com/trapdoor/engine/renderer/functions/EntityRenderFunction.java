@@ -29,6 +29,9 @@ import com.trapdoor.engine.world.entities.components.Transform;
  */
 public class EntityRenderFunction extends RenderFunction {
 
+	private static int count = 0;
+	private static int lastCount = 0;
+	
 	public EntityRenderFunction(ShaderProgram program, ExtensibleLightingArray frameLights) {
 		super(program, frameLights);
 	}
@@ -36,7 +39,7 @@ public class EntityRenderFunction extends RenderFunction {
 	private static final Vector3f nodiffuse = new Vector3f(-1);
 	
 	@Override
-	public void render(Model m, ArrayList<Entity> lis, Camera c) {
+	public void doRender(Model m, Entity[] ents, Camera c) {
 		MaterialPassShader shader = (MaterialPassShader) program;
 		Mesh[] meshes = m.getMeshes();
 		// don't want to add all lights for each submesh
@@ -77,21 +80,22 @@ public class EntityRenderFunction extends RenderFunction {
 			
 			shader.loadFloat("specAmount", mat.getSpecular().y);
 			
-			for (int j = 0; j < lis.size(); j++) {
-				Entity entity = lis.get(j);
+			for (int j = 0; j < ents.length; j++) {
+				Entity entity = ents[j];
 				
 				Transform t = entity.getComponent(Transform.class);
+				
+				ArrayList<Light> lights = entity.getLights();
+				if (first && lights.size() > 0)
+					frameLights.add(lights, entity);
 				
 				if (!checkInFrustum(c, meshes[i].getBoundingBox().translate(t.getX(), t.getY(), t.getZ())))
 					continue;
 				
 				shader.loadMatrix("transformMatrix", Maths.createTransformationMatrix(t));
 				
-				ArrayList<Light> lights = entity.getLights();
-				if (first && lights.size() > 0)
-					frameLights.add(lights, entity);
-				
 				GL11.glDrawElements(GL11.GL_TRIANGLES, mod.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+				count++;
 			}
 			
 			first = false;
@@ -102,6 +106,20 @@ public class EntityRenderFunction extends RenderFunction {
 			GL20.glDisableVertexAttribArray(4);
 			GL30.glBindVertexArray(0);
 		}
+	}
+	
+	@Override
+	public void render(Model m, ArrayList<Entity> lis, Camera c) {
+		doRender(m, sortEntities(lis), c);
+	}
+	
+	public static int getCount() {
+		return lastCount;
+	}
+	
+	public static void reset() {
+		lastCount = count;
+		count = 0;
 	}
 	
 }

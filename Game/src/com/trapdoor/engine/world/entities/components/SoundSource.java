@@ -31,7 +31,8 @@ public class SoundSource extends IComponent {
         	AL10.alSourcei(sourceId, AL10.AL_SOURCE_RELATIVE, AL10.AL_TRUE);
         }
         AL10.alSourcef(sourceId, AL10.AL_ROLLOFF_FACTOR, 1.0f);
-        AL10.alSourcef(sourceId, AL10.AL_REFERENCE_DISTANCE, 10.0f);
+        AL10.alSourcef(sourceId, AL10.AL_REFERENCE_DISTANCE, 0.0f);
+        AL10.alSourcef(sourceId, AL10.AL_MAX_DISTANCE, 25.0f);
     }
 
     public SoundSource setSound(SoundFile file) {
