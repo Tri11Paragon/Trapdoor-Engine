@@ -16,6 +16,8 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL32;
 import org.lwjgl.opengl.GL33;
 
+import com.trapdoor.engine.tools.Logging;
+
 /**
 * @author Brett
 * @date Jun. 20, 2020
@@ -306,11 +308,11 @@ public abstract class ShaderProgram {
 		GL20.glCompileShader(shaderID);
 		// make sure there is no errors
 		if (GL20.glGetShaderi(shaderID, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
-			System.out.println(GL20.glGetShaderInfoLog(shaderID, 500));
-			System.err.println("Could not compile shader! (Shader type: " 
+			Logging.logger.fatal(GL20.glGetShaderInfoLog(shaderID, 500));
+			Logging.logger.fatal("Could not compile shader! (Shader type: " 
 								+ (type == GL20.GL_VERTEX_SHADER ? "vertex" : type == GL33.GL_GEOMETRY_SHADER ? "geometry" : "fragment")
 								+ ")");
-			System.err.println("Shader File: " + file);
+			Logging.logger.fatal("Shader File: " + file);
 			System.exit(-1);
 		}
 		return shaderID;

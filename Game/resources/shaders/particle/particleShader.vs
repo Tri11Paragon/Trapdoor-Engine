@@ -27,5 +27,4 @@ void main(void){
 	worldPos = modelMatrix * vec4(position, 0.0, 1.0);
 	gl_Position = projectionMatrix * worldPos;
 	normal = vec3(0.0f, 0.0f, -1.0f);
-
 }

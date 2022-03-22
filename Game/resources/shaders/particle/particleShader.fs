@@ -7,12 +7,17 @@ in vec2 textureCoords;
 in vec3 textureInfo;
 in vec4 worldPos;
 in vec3 normal;
+in float distance;
 
 uniform sampler2DArray tex;
 
 void main(void){
 	vec4 t1 = texture(tex, vec3(textureCoords, textureInfo.x));
 	vec4 t2 = texture(tex, vec3(textureCoords, textureInfo.y));
+
+	//vec4 t1 = vec4(vec3(distance / 100000f, order, 0.0f), 1.0f);
+	//vec4 t2 = t1;
+	//vec4 t2 = vec4(vec3(distance / 100000f), 1.0f);
 
 	out_Color = mix(
 		t1, 
