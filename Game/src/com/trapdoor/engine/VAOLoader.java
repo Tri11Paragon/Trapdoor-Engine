@@ -15,6 +15,7 @@ import com.trapdoor.engine.datatypes.ogl.assimp.Mesh;
 import com.trapdoor.engine.datatypes.ogl.assimp.Model;
 import com.trapdoor.engine.datatypes.ogl.obj.ModelData;
 import com.trapdoor.engine.datatypes.ogl.obj.VAO;
+import com.trapdoor.engine.renderer.functions.EntityRenderFunction;
 import com.trapdoor.engine.tools.Logging;
 
 /*
@@ -166,12 +167,15 @@ public class VAOLoader {
 			 * you still need to enable the VBO when rendering.
 			 */
 			// store data into the vao
-			int[] vbos = new int[5];
+			int[] vbos = new int[4];
 			vbos[0] = storeDataInAttributeList(0,3,mesh.getVertices(), bufferMode);
 			vbos[1] = storeDataInAttributeList(1,2,mesh.getTextures(), bufferMode);
 			vbos[2] = storeDataInAttributeList(2,3,mesh.getNormals(), bufferMode);
 			vbos[3] = storeDataInAttributeList(3,3,mesh.getTangents(), bufferMode);
-			vbos[4] = storeDataInAttributeList(4,3,mesh.getBitangents(), bufferMode);
+			addInstancedAttribute(vaoID, EntityRenderFunction.vbo, 4, 4, EntityRenderFunction.DATA_SIZE_BYTES, 0);
+			addInstancedAttribute(vaoID, EntityRenderFunction.vbo, 5, 4, EntityRenderFunction.DATA_SIZE_BYTES, 4 * 4);
+			addInstancedAttribute(vaoID, EntityRenderFunction.vbo, 6, 4, EntityRenderFunction.DATA_SIZE_BYTES, 8 * 4);
+			addInstancedAttribute(vaoID, EntityRenderFunction.vbo, 7, 4, EntityRenderFunction.DATA_SIZE_BYTES, 12 * 4);
 			// unbind the VAO
 			unbindVAO();
 			// return the model
@@ -296,6 +300,18 @@ public class VAOLoader {
 		buffer.flip();
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
 		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer.capacity(), GL15.GL_STREAM_DRAW);
+		GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, 0, buffer);
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+	}
+	
+	/**
+	 * loads buffer data to a vbo without reallocating the memory.
+	 * @param vbo
+	 * @param buffer
+	 */
+	public static void updateVBOSub(int vbo, FloatBuffer buffer) {
+		buffer.flip();
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
 		GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, 0, buffer);
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 	}

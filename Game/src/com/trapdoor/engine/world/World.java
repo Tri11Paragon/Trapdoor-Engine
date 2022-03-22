@@ -348,6 +348,7 @@ public class World {
 	public void cleanup() {
 		Logging.logger.debug("Destorying world!");
 		//this.deferredRenderer.cleanup();
+		this.entityRenderFunction.cleanup();
 		try {
 			this.shadowRenderer.cleanup();
 			this.bloomRenderer.cleanup();

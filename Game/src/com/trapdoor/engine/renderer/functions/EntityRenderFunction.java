@@ -1,5 +1,6 @@
 package com.trapdoor.engine.renderer.functions;
 
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 import org.joml.Vector3f;
@@ -7,7 +8,11 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL33;
+import org.lwjgl.opengl.GL44;
+import org.lwjgl.system.MemoryUtil;
 
+import com.trapdoor.engine.VAOLoader;
 import com.trapdoor.engine.camera.Camera;
 import com.trapdoor.engine.datatypes.lighting.ExtensibleLightingArray;
 import com.trapdoor.engine.datatypes.lighting.Light;
@@ -32,8 +37,20 @@ public class EntityRenderFunction extends RenderFunction {
 	private static int count = 0;
 	private static int lastCount = 0;
 	
+	public static final int MAX_INSTANCING_ELEMENTS = 10000;
+	public static final int DATA_SIZE_FLOAT = 16 + 3 + 3 + 2;
+	public static final int DATA_SIZE_BYTES = DATA_SIZE_FLOAT * 4;
+	
+	private static FloatBuffer dataStorage;
+	public static int vbo;
+	
 	public EntityRenderFunction(ShaderProgram program, ExtensibleLightingArray frameLights) {
 		super(program, frameLights);
+		if (vbo != 0)
+			return;
+		vbo = VAOLoader.createEmptyVBO(MAX_INSTANCING_ELEMENTS * DATA_SIZE_BYTES);
+		dataStorage = MemoryUtil.memAllocFloat(MAX_INSTANCING_ELEMENTS * DATA_SIZE_FLOAT);
+		GL44.glMapBuffer(GL33.GL_ARRAY_BUFFER, GL33.GL_WRITE_ONLY, MAX_INSTANCING_ELEMENTS * DATA_SIZE_BYTES, null);
 	}
 
 	private static final Vector3f nodiffuse = new Vector3f(-1);
@@ -60,7 +77,7 @@ public class EntityRenderFunction extends RenderFunction {
 			GL20.glEnableVertexAttribArray(1);
 			GL20.glEnableVertexAttribArray(2);
 			GL20.glEnableVertexAttribArray(3);
-			GL20.glEnableVertexAttribArray(4);
+			//GL20.glEnableVertexAttribArray(4);
 			
 			GL13.glActiveTexture(GL13.GL_TEXTURE0);	
 			if (mat.getDiffuseTexture() == GameRegistry.getErrorMaterial().getDiffuseTexture())
@@ -103,7 +120,7 @@ public class EntityRenderFunction extends RenderFunction {
 			GL20.glDisableVertexAttribArray(1);
 			GL20.glDisableVertexAttribArray(2);
 			GL20.glDisableVertexAttribArray(3);
-			GL20.glDisableVertexAttribArray(4);
+			//GL20.glDisableVertexAttribArray(4);
 			GL30.glBindVertexArray(0);
 		}
 	}
@@ -111,6 +128,11 @@ public class EntityRenderFunction extends RenderFunction {
 	@Override
 	public void render(Model m, ArrayList<Entity> lis, Camera c) {
 		doRender(m, sortEntities(lis), c);
+	}
+	
+	public void cleanup() {
+		GL44.glUnmapBuffer(GL44.GL_ARRAY_BUFFER);
+		MemoryUtil.memFree(dataStorage);
 	}
 	
 	public static int getCount() {

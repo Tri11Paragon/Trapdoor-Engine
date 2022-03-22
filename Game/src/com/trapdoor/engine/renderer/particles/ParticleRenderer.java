@@ -8,6 +8,7 @@ import java.util.List;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL33;
+import org.lwjgl.opengl.GL45;
 
 import com.trapdoor.engine.VAOLoader;
 import com.trapdoor.engine.camera.Camera;
@@ -98,9 +99,11 @@ public class ParticleRenderer {
 			dataStorage.put(p.getNextTexture());
 			dataStorage.put(p.getBlend());
 		}
-		VAOLoader.updateVBO(vbo, dataStorage);
+		VAOLoader.updateVBOSub(vbo, dataStorage);
 		
-		GL33.glDrawArraysInstanced(GL33.GL_TRIANGLE_STRIP, 0, quad.getVertexCount(), storage.size() - nulls);
+		//GL33.glDrawArraysInstanced(GL33.GL_TRIANGLE_STRIP, 0, quad.getVertexCount(), storage.size() - nulls);
+//		GL33.glDrawElementsInstancedBaseVertex(GL33.GL_TRIANGLE_STRIP, GL33.GL_UNSIGNED_INT, null, storage.size() - nulls, 0);
+		GL45.glDrawArraysInstancedBaseInstance(GL33.GL_TRIANGLE_STRIP, 0, quad.getVertexCount(), storage.size()-nulls, 0);
 		
 		GL33.glDepthMask(true);
 		GL33.glDisable(GL33.GL_BLEND);
