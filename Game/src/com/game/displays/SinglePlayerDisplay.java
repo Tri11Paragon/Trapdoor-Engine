@@ -4,8 +4,8 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import com.game.entities.EntityBall;
-import com.game.entities.EntityGrid;
 import com.game.entities.EntityKevin;
+import com.game.entities.EntityStatic;
 import com.game.entities.SloshyEntityCamera;
 import com.spinyowl.legui.component.Layer;
 import com.spinyowl.legui.style.Background;
@@ -38,7 +38,6 @@ public class SinglePlayerDisplay extends IDisplay{
 		GameRegistry.registerModel("resources/models/simple/ball.dae");
 		GameRegistry.registerModel("resources/models/simple/ball_b.dae");
 		GameRegistry.registerModel("resources/models/kevin.dae");
-		GameRegistry.registerModel("resources/models/Table.dae");
 	}
 	
 	@Override
@@ -62,46 +61,76 @@ public class SinglePlayerDisplay extends IDisplay{
 //		s = new EntityCamera(this.camera);
 //		this.world.addEntityToWorld(s);
 		
-		a = new Entity().setModel(GameRegistry.getModel("resources/models/simple/grid.dae"))
+		/* Grids and Net */
+		
+		a = new EntityStatic().setModel(GameRegistry.getModel("resources/models/simple/grid.dae"))
 				.setPosition(0, -5, 0);
 		this.world.addEntityToWorld(a);
 		
-		Entity b = new EntityGrid().setModel(GameRegistry.getModel("resources/models/simple/grid.dae"))
+		a = new EntityStatic().setModel(GameRegistry.getModel("resources/models/simple/grid.dae"))
+				.setPosition(30, -5, 0);
+		t = (Transform) a.getComponent(Transform.class);
+		t.setRoll((float) Math.PI / 2);
+		this.world.addEntityToWorld(a);
+		
+		a = new EntityStatic().setModel(GameRegistry.getModel("resources/models/simple/grid.dae"))
+				.setPosition(-30, -5, 0);
+		t = (Transform) a.getComponent(Transform.class);
+		t.setRoll((float) -Math.PI / 2);
+		this.world.addEntityToWorld(a);
+		
+		a = new EntityStatic().setModel(GameRegistry.getModel("resources/models/simple/grid.dae"))
+				.setPosition(0, -5, 30);
+		t = (Transform) a.getComponent(Transform.class);
+		t.setRoll((float) -Math.PI / 2);
+		t.setYaw((float) Math.PI / 2);
+		this.world.addEntityToWorld(a);
+		
+		a = new EntityStatic().setModel(GameRegistry.getModel("resources/models/simple/grid.dae"))
+				.setPosition(0, -5, -30);
+		t = (Transform) a.getComponent(Transform.class);
+		t.setRoll((float) -Math.PI / 2);
+		t.setYaw((float) -Math.PI / 2);
+		this.world.addEntityToWorld(a);
+		
+		Entity b = new EntityStatic().setModel(GameRegistry.getModel("resources/models/simple/grid.dae"))
 				.setPosition(0, 2, 0);
 		t = (Transform) b.getComponent(Transform.class);
 		t.setScale(0.01f, 0, 1);
 		this.world.addEntityToWorld(b);
+		
+		/* Ball */
+		
+		for (int j = -9; j <= 9; j+=2) {
+			for (int i = -9; i <= 9; i+=2 ) {
+				ball = new EntityBall().setModel(GameRegistry.getModel("resources/models/simple/" + 
+						( (Math.random() >= 0.5) ? "ball.dae" : "ball_b.dae" ) ) )
+						.setPosition(i, 10, 0);
+				t = (Transform) ball.getComponent(Transform.class);
+//				t.setScale((float) Math.random() * 1.5f + 0.5f, 
+//						   (float) Math.random() * 1.5f + 0.5f, 
+//						   (float) Math.random() * 1.5f + 0.5f
+//						   );
+				this.world.addEntityToWorld(ball);
+			}
+		}
+		
+		/* Kevin */
 				
-		ball = new EntityBall().setModel(GameRegistry.getModel("resources/models/simple/ball.dae"));
-		this.world.addEntityToWorld(ball);
-		
-		a = new EntityBall(-2).setModel(GameRegistry.getModel("resources/models/simple/ball_b.dae"));
-		this.world.addEntityToWorld(a);
-		
-		a = new EntityKevin().setModel(GameRegistry.getModel("resources/models/kevin.dae"))
-				.setPosition(5, 0, -5);
+		a = new EntityKevin(5, -1, -5).setModel(GameRegistry.getModel("resources/models/kevin.dae"));
 		t = (Transform) a.getComponent(Transform.class);
 		t.setScale(2, 2, 2);
 		t.setYaw(-45);
 		this.world.addEntityToWorld(a);
 		
-		for (int j = -10; j <= 10; j += 5) {
-			for (int i = -10; i <= 10; i += 5) {
-				a = new Entity().setModel(GameRegistry.getModel("resources/models/Table.dae")).setPosition(j, 0, i);
-				t = (Transform) a.getComponent(Transform.class);
-				t.setScale(4, 4, 4);
-				this.world.addEntityToWorld(a);
-			}
-		}
-		
-		doGUI();
+//		doGUI();
 	}
 
 	@Override
 	public void onSwitch() {
 		// TODO Auto-generated method stub
-		layers.setEnabled(true);
-		layers.getStyle().setDisplay(layers.isEnabled() == true ? DisplayType.MANUAL : DisplayType.NONE);
+//		layers.setEnabled(true);
+//		layers.getStyle().setDisplay(layers.isEnabled() == true ? DisplayType.MANUAL : DisplayType.NONE);
 	}
 
 	@Override
@@ -109,9 +138,9 @@ public class SinglePlayerDisplay extends IDisplay{
 		// TODO Auto-generated method stub
 		this.world.render();
 //		Transform t = s.getComponent(Transform.class);
-		Transform u = ball.getComponent(Transform.class);
+//		Transform u = ball.getComponent(Transform.class);
 //		cameraIcon.setPosition(150 + 6*t.getX(), 150 + 6*t.getZ());
-		ballIcon.setPosition(150 + 6*u.getX(), 150 + 6*u.getZ());
+//		ballIcon.setPosition(150 + 6*u.getX(), 150 + 6*u.getZ());
 	}
 	
 	@Override
