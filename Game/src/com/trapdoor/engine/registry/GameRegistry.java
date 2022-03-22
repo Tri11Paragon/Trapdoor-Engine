@@ -257,7 +257,10 @@ public class GameRegistry {
 	}
 	
 	public static void registerMaterialTextures(String diffuse, String normal, String displacement, String spec) {
-		
+		registerTexture(diffuse);
+		registerTexture(normal);
+		registerTexture(displacement);
+		registerTexture(spec);
 	}
 	
 	public static void registerParticleTexture(String texture) {

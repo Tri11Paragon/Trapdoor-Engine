@@ -169,8 +169,10 @@ public class ModelLoader {
 					AOTexturePath == GameRegistry.DEFAULT_EMPTY_AO_MAP && SpecTexturePath == GameRegistry.DEFAULT_EMPTY_SPEC_MAP && bumbTexturePath == GameRegistry.DEFAULT_EMPTY_SPEC_MAP)
 				Logging.logger.warn("Failed to load extra texture maps after checking possible resource locations! :(");
 			
+			String diffuseTexture = (texturesDir + "/" + materialTexturePath).replace("//", "/");
+			
 			if (!materialTexturePath.contains("NORENDER"))
-				GameRegistry.registerMaterialTextures(materialTexturePath, normalTexturePath, displacementTexturePath, SpecTexturePath);
+				GameRegistry.registerMaterialTextures(diffuseTexture, normalTexturePath, displacementTexturePath, SpecTexturePath);
 			
 			return GameRegistry.registerMaterial2(
 					new Material(
