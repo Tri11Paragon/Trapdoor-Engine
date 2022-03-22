@@ -1,6 +1,5 @@
 package com.trapdoor.engine.renderer.particles;
 
-import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import com.trapdoor.engine.camera.Camera;
@@ -25,8 +24,6 @@ public class Particle {
 	protected int nextTexture;
 	protected float blend;
 	
-	private final Vector3d store = new Vector3d();
-	
 	public Particle(Vector3f position, Vector3f velocity, float gravityEffect, float lifeLength, float rotation,
 			float scale) {
 		this.position = position;
@@ -42,11 +39,10 @@ public class Particle {
 		position.x += (float) (velocity.x * DisplayManager.getFrameTimeSeconds());
 		position.y += (float) (velocity.y * DisplayManager.getFrameTimeSeconds());
 		position.z += (float) (velocity.z * DisplayManager.getFrameTimeSeconds());
-		store.x = position.x;
-		store.y = position.y;
-		store.z = position.z;
-		store.sub(camera.getPosition());
-		distance = (float) (store.x * store.x + store.y + store.y + store.z + store.z);
+		double dx = camera.getPosition().x - position.x;
+		double dy = camera.getPosition().y - position.y;
+		double dz = camera.getPosition().z - position.z;
+		distance = (float) (dx * dx + dy * dy + dz * dz);
 		elapsedTime += DisplayManager.getFrameTimeSeconds();
 		updateTextureBlend();
 		return elapsedTime < lifeLength;

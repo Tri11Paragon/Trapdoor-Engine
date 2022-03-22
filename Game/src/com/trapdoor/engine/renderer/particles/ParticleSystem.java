@@ -156,7 +156,9 @@ public class ParticleSystem {
 	 * @param deviation - A value between 0 and 1 indicating how far from the chosen direction particles can deviate.
 	 */
 	public ParticleSystem setDirection(Vector3f direction, float deviation) {
-		this.direction = new Vector3f(direction);
+		try {
+			this.direction = new Vector3f(direction);
+		} catch (Exception e) {this.direction = null;}
 		this.directionDeviation = (float) (deviation * Math.PI);
 		return this;
 	}

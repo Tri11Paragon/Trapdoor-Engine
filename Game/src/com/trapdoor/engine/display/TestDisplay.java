@@ -309,6 +309,15 @@ public class TestDisplay extends IDisplay {
 		
 		
 		this.ps.generateParticles(new Vector3f(0, 0, 0));
+		
+		this.ps.setDirection(new Vector3f(0.0f, 0.0f, -1.0f), 0.1f);
+		
+		this.ps.saveState(25, 5, this.ps.getGravityComplient(), 20, this.ps.getAverageScale());
+		this.ps.generateParticles(new Vector3f(130, -10, 10));
+		this.ps.restoreState();
+		
+		this.ps.setDirection(null, 0);
+		
 		this.smokey.generateParticles(new Vector3f(50, -8, 10));
 	}
 
