@@ -96,8 +96,6 @@ public class ModelLoader {
 			}
 			
 			String texturePath = (texturesDir + "/" + materialTexturePath).replace("//", "/");
-			if (!materialTexturePath.contains("NORENDER"))
-				GameRegistry.registerTexture(texturePath);
 			
 			Vector3f ambient = Material.DEFAULT_COLOUR;
 		    int result = Assimp.aiGetMaterialColor(material, Assimp.AI_MATKEY_COLOR_AMBIENT, Assimp.aiTextureType_NONE, 0, colour);
@@ -123,7 +121,6 @@ public class ModelLoader {
 			String normalTexturePath = (texturesDir + "/" + normalTexture).replace("//", "/");
 			
 			if (normalTexture != null && normalTexture.length() > 0) {
-				GameRegistry.registerTexture(normalTexturePath);
 				Logging.logger.error(normalTexture);
 			} else
 				normalTexturePath = findNormalMap(texturePath);
@@ -134,7 +131,6 @@ public class ModelLoader {
 			String displacementTexturePath = (texturesDir + "/" + displacementTexture).replace("//", "/");
 			
 			if (displacementTexture != null && displacementTexture.length() > 0) {
-				GameRegistry.registerTexture(displacementTexturePath);
 				Logging.logger.error(displacementTexturePath);
 			} else
 				displacementTexturePath = findDisplacementMap(texturePath);
@@ -145,7 +141,6 @@ public class ModelLoader {
 			String AOTexturePath = (texturesDir + "/" + AOTexture).replace("//", "/");
 			
 			if (AOTexture != null && AOTexture.length() > 0) {
-				GameRegistry.registerTexture(AOTexturePath);
 				Logging.logger.error(AOTexturePath);
 			} else
 				AOTexturePath = findAOMap(texturePath);
@@ -156,7 +151,6 @@ public class ModelLoader {
 			String SpecTexturePath = (texturesDir + "/" + SpecTexture).replace("//", "/");
 			
 			if (SpecTexture != null && SpecTexture.length() > 0) {
-				GameRegistry.registerTexture(SpecTexturePath);
 				Logging.logger.error(SpecTexturePath);
 			} else
 				SpecTexturePath = findSpecMap(texturePath);
@@ -167,7 +161,6 @@ public class ModelLoader {
 			String bumbTexturePath = (texturesDir + "/" + bumpTexture).replace("//", "/");
 			
 			if (bumpTexture != null && bumpTexture.length() > 0) {
-				GameRegistry.registerTexture(bumbTexturePath);
 				Logging.logger.error(bumbTexturePath);
 			} else
 				bumbTexturePath = findSpecMap(texturePath);
@@ -176,13 +169,16 @@ public class ModelLoader {
 					AOTexturePath == GameRegistry.DEFAULT_EMPTY_AO_MAP && SpecTexturePath == GameRegistry.DEFAULT_EMPTY_SPEC_MAP && bumbTexturePath == GameRegistry.DEFAULT_EMPTY_SPEC_MAP)
 				Logging.logger.warn("Failed to load extra texture maps after checking possible resource locations! :(");
 			
+			if (!materialTexturePath.contains("NORENDER"))
+				GameRegistry.registerMaterialTextures(materialTexturePath, normalTexturePath, displacementTexturePath, SpecTexturePath);
+			
 			return GameRegistry.registerMaterial2(
 					new Material(
 							texturePath, 
 							normalTexturePath, 
 							displacementTexturePath, 
 							AOTexturePath, 
-							bumbTexturePath, 
+							SpecTexturePath, 
 							diffuse, 
 							ambient, 
 							specular
@@ -335,7 +331,6 @@ public class ModelLoader {
 		if (newPath == null)
 			return returnval;
 		else {
-			GameRegistry.registerTexture(newPath);
 			return newPath;
 		}
 	}
@@ -353,7 +348,6 @@ public class ModelLoader {
 		if (newPath == null)
 			return returnval;
 		else {
-			GameRegistry.registerTexture(newPath);
 			return newPath;
 		}
 	}
@@ -371,7 +365,6 @@ public class ModelLoader {
 		if (newPath == null)
 			return returnval;
 		else {
-			GameRegistry.registerTexture(newPath);
 			return newPath;
 		}
 	}
@@ -389,7 +382,6 @@ public class ModelLoader {
 		if (newPath == null)
 			return returnval;
 		else {
-			GameRegistry.registerTexture(newPath);
 			return newPath;
 		}
 	}

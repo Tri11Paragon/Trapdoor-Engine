@@ -45,6 +45,8 @@ public class SettingsLoader {
 	public static float GAMMA = 2.2f;
 	public static float MUSIC_GAIN = 0.5f;
 	public static int GRAPHICS_LEVEL = 0;
+	public static int PARTICLE_SIZE = 256;
+	public static int TEXTURE_SIZE = 128;
 	
 	/**
 	 * renderer variables
@@ -116,6 +118,10 @@ public class SettingsLoader {
 					enableAutoExposure = Boolean.parseBoolean(name[1]);
 				if (name[0].equals("exposure"))
 					exposureDefault = Float.parseFloat(name[1]);
+				if (name[0].equals("tsize"))
+					TEXTURE_SIZE = (int)Float.parseFloat(name[1]);
+				if (name[0].equals("psize"))
+					PARTICLE_SIZE = (int)Float.parseFloat(name[1]);
 			}
 			reader.close();
 		} catch (FileNotFoundException e) {
@@ -150,6 +156,8 @@ public class SettingsLoader {
 			writeLine(writer, "shadowmap: " + ShadowMap.SHADOW_MAP_WIDTH);
 			writeLine(writer, "enableExposure: " + enableAutoExposure);
 			writeLine(writer, "exposure: " + exposureDefault);
+			writeLine(writer, "tsize: " + TEXTURE_SIZE);
+			writeLine(writer, "psize: " + PARTICLE_SIZE);
 			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();

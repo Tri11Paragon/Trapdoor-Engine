@@ -167,6 +167,52 @@ public class TextureLoader {
 		}
 	}
 	
+	public static int loadMaterialTextureArray(List<TextureData> textures, Map<String, Integer> map) {
+		try {
+			float anisf = Math.min(SettingsLoader.AF, GL11.glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
+			int id = GL11.glGenTextures();
+			
+			GL13.glActiveTexture(GL13.GL_TEXTURE0);
+			GL11.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, id); 
+			// allocate texture memory
+	        GL42.glTexStorage3D(GL30.GL_TEXTURE_2D_ARRAY, 4, GL11.GL_RGBA8, SettingsLoader.TEXTURE_SIZE, SettingsLoader.TEXTURE_SIZE, textures.size());
+	        
+	        for (int i = 0; i < textures.size(); i++) {
+	        	TextureData data = textures.get(i);
+	        	GL12.glTexSubImage3D(GL30.GL_TEXTURE_2D_ARRAY,
+	        			// level
+	        			0, 
+	        			// x,y,z offsets using the texture # as the position in the array
+	        			0, 0, i,
+	        			// width, height depth
+	        			SettingsLoader.TEXTURE_SIZE, SettingsLoader.TEXTURE_SIZE, 1, 
+	        			// format, format
+	        			GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, 
+	        			// decode the image texture
+	        			data.getBuffer());
+	        	// AF
+	        	GL11.glTexParameterf(GL30.GL_TEXTURE_2D_ARRAY, EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT, anisf);
+	        	map.put(textures.get(i).getName(), i);
+	        }
+	        
+	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST); 
+	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
+	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT);
+	        
+	        GL30.glGenerateMipmap(GL30.GL_TEXTURE_2D_ARRAY);
+			// > 0 = less detail
+			GL11.glTexParameterf(GL30.GL_TEXTURE_2D_ARRAY, GL14.GL_TEXTURE_LOD_BIAS, 0.2f);
+	        
+			// add texture for later deletion.
+			TextureLoader.textures.add(id);
+			return id;
+		} catch (Exception e) {
+			Logging.logger.fatal(e.getMessage(), e);
+		}
+		return 0;
+	}
+	
 	public static int loadSpecialTextureATLAS(int width, int height, List<TextureData> textures, Map<String, Integer> map) {
 		try {
 			//for more detail on array textures
@@ -288,6 +334,61 @@ public class TextureLoader {
 		newBuff.flip();
 		
 		return new TextureData(newBuff, t1.getWidth(), t1.getHeight(), 4, file1 + file2 + file3 + file4);
+	}
+	
+	public static TextureData decodeTextureToMaterialArray(String fileName, boolean flip) {
+		// image data storage.
+		int wd = 0;
+		int hd = 0;
+		int channels = 0;
+		ByteBuffer buffer = null;
+		try {
+			// decoder for the image files
+			int[] w = new int[1];
+			int[] h = new int[1];
+			int[] ch = new int[1];
+			
+			buffer = STBImage.stbi_load(fileName, w, h, ch, 4);
+			
+			// assigns the width and height of the texture data
+			wd = w[0];
+			hd = h[0];
+			channels = ch[0];
+			// loaded in to 4
+			channels = 4;
+			
+			int alpha;
+			if (channels == 4) 
+				alpha = channels-1;
+			else 
+				alpha = STBImageResize.STBIR_ALPHA_CHANNEL_NONE;
+			// not sure why *4 is needed, but without it the JVM crashes.
+			ByteBuffer newImage = BufferUtils.createByteBuffer(SettingsLoader.TEXTURE_SIZE * SettingsLoader.TEXTURE_SIZE * channels * 4);
+			STBImageResize.stbir_resize(buffer, wd, hd, wd * channels, 
+					newImage, SettingsLoader.TEXTURE_SIZE, SettingsLoader.TEXTURE_SIZE, SettingsLoader.TEXTURE_SIZE * channels, 
+					STBImageResize.STBIR_TYPE_UINT8,
+					channels,
+					alpha,
+					0,
+					STBImageResize.STBIR_EDGE_ZERO,
+					STBImageResize.STBIR_EDGE_ZERO,
+					STBImageResize.STBIR_FILTER_CUBICBSPLINE,
+					STBImageResize.STBIR_FILTER_CUBICBSPLINE,
+					STBImageResize.STBIR_COLORSPACE_SRGB
+					);
+			
+			STBImage.stbi_image_free(buffer);
+			buffer = newImage;
+			if (buffer.position() != 0)
+				buffer.flip();
+		} catch (Exception e) {
+			// we had issue loading texture. exit the game.
+			Logging.logger.fatal(e.getMessage(), e);
+			Logging.logger.fatal("Tried to load material texture " + fileName + ", didn't work!");
+			System.exit(-1);
+		}
+		// return the texture data.
+		return new TextureData(buffer, SettingsLoader.TEXTURE_SIZE, SettingsLoader.TEXTURE_SIZE, channels, fileName);
 	}
 	
 	public static TextureData decodeTextureToSize(String fileName, boolean flip, boolean scale, int width, int height) {

@@ -4,6 +4,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
@@ -15,7 +16,6 @@ import com.trapdoor.engine.datatypes.ogl.assimp.Mesh;
 import com.trapdoor.engine.datatypes.ogl.assimp.Model;
 import com.trapdoor.engine.datatypes.ogl.obj.ModelData;
 import com.trapdoor.engine.datatypes.ogl.obj.VAO;
-import com.trapdoor.engine.renderer.functions.EntityRenderFunction;
 import com.trapdoor.engine.tools.Logging;
 
 /*
@@ -172,10 +172,10 @@ public class VAOLoader {
 			vbos[1] = storeDataInAttributeList(1,2,mesh.getTextures(), bufferMode);
 			vbos[2] = storeDataInAttributeList(2,3,mesh.getNormals(), bufferMode);
 			vbos[3] = storeDataInAttributeList(3,3,mesh.getTangents(), bufferMode);
-			addInstancedAttribute(vaoID, EntityRenderFunction.vbo, 4, 4, EntityRenderFunction.DATA_SIZE_BYTES, 0);
-			addInstancedAttribute(vaoID, EntityRenderFunction.vbo, 5, 4, EntityRenderFunction.DATA_SIZE_BYTES, 4 * 4);
-			addInstancedAttribute(vaoID, EntityRenderFunction.vbo, 6, 4, EntityRenderFunction.DATA_SIZE_BYTES, 8 * 4);
-			addInstancedAttribute(vaoID, EntityRenderFunction.vbo, 7, 4, EntityRenderFunction.DATA_SIZE_BYTES, 12 * 4);
+//			addInstancedAttribute(vaoID, EntityRenderFunction.vbo, 4, 4, EntityRenderFunction.DATA_SIZE_BYTES, 0);
+//			addInstancedAttribute(vaoID, EntityRenderFunction.vbo, 5, 4, EntityRenderFunction.DATA_SIZE_BYTES, 4 * 4);
+//			addInstancedAttribute(vaoID, EntityRenderFunction.vbo, 6, 4, EntityRenderFunction.DATA_SIZE_BYTES, 8 * 4);
+//			addInstancedAttribute(vaoID, EntityRenderFunction.vbo, 7, 4, EntityRenderFunction.DATA_SIZE_BYTES, 12 * 4);
 			// unbind the VAO
 			unbindVAO();
 			// return the model

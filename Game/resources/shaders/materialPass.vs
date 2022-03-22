@@ -4,7 +4,7 @@ in vec3 position;
 in vec2 textureCoordinates;
 in vec3 normal;
 in vec3 tangent;
-in mat4 transformMatrix;
+//in mat4 transformMatrix;
 
 out vec2 textureCoords;
 out vec3 normalo;
@@ -22,7 +22,7 @@ layout (std140) uniform Matricies {
    	mat4 shadowMatrix;
 };
 
-//uniform mat4 transformMatrix;
+uniform mat4 transformMatrix;
 uniform vec3 viewPos;
 
 void main(void){

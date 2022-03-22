@@ -25,6 +25,7 @@ import com.trapdoor.engine.display.LoadingScreenDisplay;
 import com.trapdoor.engine.registry.helpers.DualExecution;
 import com.trapdoor.engine.tools.Logging;
 import com.trapdoor.engine.tools.ScreenShot;
+import com.trapdoor.engine.tools.SettingsLoader;
 import com.trapdoor.engine.tools.input.InputMaster;
 import com.trapdoor.engine.tools.models.ModelLoader;
 import com.trapdoor.engine.world.entities.components.SoundSource;
@@ -56,8 +57,6 @@ public class GameRegistry {
 	 * this is the max number of method callers to be printed during an error
 	 */
 	private static final int MAX_CALLERS_LOG = 5;
-	// TODO: make this changeable
-	private static final int PARTICLE_SIZE = 256;
 	//private static final HashMap<String, String> allowedFormats = new HashMap<String, String>();
 	//private static final ArrayList<IDisplay> registeredDisplays = new ArrayList<IDisplay>();
 	
@@ -80,6 +79,10 @@ public class GameRegistry {
 	private static final Map<String, Material> materials = Collections.synchronizedMap(new ConcurrentHashMap<String, Material>());
 	private static final ArrayList<Material> registeredMaterials = new ArrayList<Material>();
 	private static final Map<String, Model> meshes = Collections.synchronizedMap(new ConcurrentHashMap<String, Model>());
+	
+	private static final List<TextureData> materialTextureData = Collections.synchronizedList(new ArrayList<TextureData>());
+	private static final Map<String, Integer> materialTextureDataAtlas = Collections.synchronizedMap(new ConcurrentHashMap<String, Integer>());
+	private static int materialTextueAtlas;
 	
 	/*
 	 * texture atlases
@@ -128,7 +131,7 @@ public class GameRegistry {
 		GameRegistry.materials.put("resources/textures/error/error3.png", errorMaterial);
 		GameRegistry.materials.put("error/error3.png", errorMaterial);
 		
-		particleTextureData.add(TextureLoader.decodeTextureToSize("resources/textures/error/tp.png", false, false, PARTICLE_SIZE, PARTICLE_SIZE));
+		particleTextureData.add(TextureLoader.decodeTextureToSize("resources/textures/error/tp.png", false, false, SettingsLoader.PARTICLE_SIZE, SettingsLoader.PARTICLE_SIZE));
 		
 		InputMaster.registerKeyListener(new ScreenShot());
 	}
@@ -137,7 +140,8 @@ public class GameRegistry {
 		for (Material m : registeredMaterials) {
 			m.loadTexturesFromGameRegistry();
 		}
-		particleTextueAtlas = TextureLoader.loadSpecialTextureATLAS(PARTICLE_SIZE, PARTICLE_SIZE, particleTextureData, particleTextureDataAtlas);
+		particleTextueAtlas = TextureLoader.loadSpecialTextureATLAS(SettingsLoader.PARTICLE_SIZE, SettingsLoader.PARTICLE_SIZE, particleTextureData, particleTextureDataAtlas);
+		materialTextueAtlas = TextureLoader.loadMaterialTextureArray(materialTextureData, materialTextureDataAtlas);
 	}
 	
 	public static Material registerMaterial2(Material m) {
@@ -146,10 +150,6 @@ public class GameRegistry {
 	}
 	
 	public static void registerModel(String file) {
-		registerModel(file, "resources/textures");
-	}
-	
-	public static void registerModel(String file, String texturesDir) {
 		LoadingScreenDisplay.max();
 		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
 		
@@ -162,12 +162,6 @@ public class GameRegistry {
 					return;
 				}
 				GameRegistry.meshLocks.put(fd, 1);
-				
-				String textureLocation = texturesDir;
-				
-				char[] tc = textureLocation.toCharArray();
-				if (tc[tc.length-1] == '/')
-					textureLocation = textureLocation.substring(0, tc.length-1);
 				
 				String rt = "Loading model: " + fd;
 				if (LoadingScreenDisplay.info != null)
@@ -262,6 +256,10 @@ public class GameRegistry {
 		}));
 	}
 	
+	public static void registerMaterialTextures(String diffuse, String normal, String displacement, String spec) {
+		
+	}
+	
 	public static void registerParticleTexture(String texture) {
 		if (!texture.contains("."))
 			return;
@@ -286,7 +284,7 @@ public class GameRegistry {
 					LoadingScreenDisplay.info.getTextState().setText(rt);
 				Logging.logger.debug(rt);
 				
-				TextureData da = TextureLoader.decodeTextureToSize(texture, false, false, PARTICLE_SIZE, PARTICLE_SIZE);
+				TextureData da = TextureLoader.decodeTextureToSize(texture, false, false, SettingsLoader.PARTICLE_SIZE, SettingsLoader.PARTICLE_SIZE);
 				particleTextureData.add(da);
 			} catch (Exception e) {
 				Logging.logger.fatal(e.getMessage(), e);

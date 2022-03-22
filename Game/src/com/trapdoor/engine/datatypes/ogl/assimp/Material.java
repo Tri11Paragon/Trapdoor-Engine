@@ -50,13 +50,14 @@ public class Material {
 	}
 	
 	public void loadTexturesFromGameRegistry() {
-		if (!this.diffuseTexturePath.contains("NORENDER"))
+		if (!this.diffuseTexturePath.contains("NORENDER")) {
 			this.diffuseTexture = GameRegistry.getTexture(this.diffuseTexturePath);
-		if (usingSpecialMaterial) {
-			this.normalTexture = GameRegistry.getTexture(this.normalTexturePath);
-			this.displacementTexture = GameRegistry.getTexture(this.displacementTexturePath);
-			this.ambientOcclusionTexture = GameRegistry.getTexture(this.ambientOcclusionTexturePath);
-			this.specularTexture = GameRegistry.getTexture(this.specularTexturePath);
+			if (usingSpecialMaterial) {
+				this.normalTexture = GameRegistry.getTexture(this.normalTexturePath);
+				this.displacementTexture = GameRegistry.getTexture(this.displacementTexturePath);
+				this.ambientOcclusionTexture = GameRegistry.getTexture(this.ambientOcclusionTexturePath);
+				this.specularTexture = GameRegistry.getTexture(this.specularTexturePath);
+			}
 		}
 	}
 	
