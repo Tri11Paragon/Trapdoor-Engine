@@ -81,6 +81,7 @@ public class GameRegistry {
 	private static final Map<String, Model> meshes = Collections.synchronizedMap(new ConcurrentHashMap<String, Model>());
 	
 	private static final List<TextureData> materialTextureData = Collections.synchronizedList(new ArrayList<TextureData>());
+	private static final Map<String, Integer> materialTextureLocks = Collections.synchronizedMap(new ConcurrentHashMap<String, Integer>());
 	private static final Map<String, Integer> materialTextureDataAtlas = Collections.synchronizedMap(new ConcurrentHashMap<String, Integer>());
 	private static int materialTextueAtlas;
 	
@@ -137,9 +138,9 @@ public class GameRegistry {
 	}
 	
 	public static void onLoadingComplete() {
-		for (Material m : registeredMaterials) {
-			m.loadTexturesFromGameRegistry();
-		}
+		//for (Material m : registeredMaterials) {
+		//	m.loadTexturesFromGameRegistry();
+		//}
 		particleTextueAtlas = TextureLoader.loadSpecialTextureATLAS(SettingsLoader.PARTICLE_SIZE, SettingsLoader.PARTICLE_SIZE, particleTextureData, particleTextureDataAtlas);
 		materialTextueAtlas = TextureLoader.loadMaterialTextureArray(materialTextureData, materialTextureDataAtlas);
 	}
@@ -257,10 +258,55 @@ public class GameRegistry {
 	}
 	
 	public static void registerMaterialTextures(String diffuse, String normal, String displacement, String spec) {
-		registerTexture(diffuse);
-		registerTexture(normal);
-		registerTexture(displacement);
-		registerTexture(spec);
+		registerMaterialTextures(new String[] {diffuse, normal, displacement, spec});
+	}
+	
+	public static void registerMaterialTextures(String[] paths) {
+		for (String file : paths) {
+			if (!file.contains("."))
+				return;
+			if (!new File(file).exists()) {
+				Logging.logger.error("File: " + file + " does not exist!");
+				return;
+			}
+			LoadingScreenDisplay.max();
+			StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+			
+			Threading.execute(new DualExecution(() -> {
+				try {
+					String fd = file;
+					// we already loaded the file
+					if (GameRegistry.materialTextureLocks.get(fd) != null) {
+						LoadingScreenDisplay.progress();
+						return;
+					}
+					GameRegistry.materialTextureLocks.put(fd, 1);
+					
+					String rt = "Loading material texture: " + fd;
+					if (LoadingScreenDisplay.info != null)
+						LoadingScreenDisplay.info.getTextState().setText(rt);
+					Logging.logger.debug(rt);
+					
+					GameRegistry.materialTextureData.add(TextureLoader.decodeTextureToMaterialArray(fd, false));
+					
+				} catch (Exception e) {
+					Logging.logger.fatal(e.getMessage(), e);
+					Logging.logger.error("Tried to load material texture " + file + ", didn't work!");
+					printFatalMethodCallers(stackTraceElements);
+					System.exit(-1);
+				}
+			}, () -> {
+				try {
+					
+				} catch (Exception e) {
+					Logging.logger.fatal(e.getMessage(), e);
+					Logging.logger.fatal("Tried to load texture " + file + " to GPU, didn't work!");
+					printFatalMethodCallers(stackTraceElements);
+					System.exit(-1);
+				}
+				LoadingScreenDisplay.progress();
+			}));
+		}
 	}
 	
 	public static void registerParticleTexture(String texture) {
