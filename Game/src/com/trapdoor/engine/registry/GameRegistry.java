@@ -83,7 +83,7 @@ public class GameRegistry {
 	private static final List<TextureData> materialTextureData = Collections.synchronizedList(new ArrayList<TextureData>());
 	private static final Map<String, Integer> materialTextureLocks = Collections.synchronizedMap(new ConcurrentHashMap<String, Integer>());
 	private static final Map<String, Integer> materialTextureDataAtlas = Collections.synchronizedMap(new ConcurrentHashMap<String, Integer>());
-	private static int materialTextueAtlas;
+	public static int materialTextueAtlas;
 	
 	/*
 	 * texture atlases
