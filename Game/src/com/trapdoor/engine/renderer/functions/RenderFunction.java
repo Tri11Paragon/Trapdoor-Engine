@@ -46,11 +46,13 @@ public abstract class RenderFunction {
 		for (int i = 1; i < lis.size(); i++) {
 			Entity e = lis.get(i);
 			Transform t = e.getComponent(Transform.class);
-			sorted[i] = e;
-			if (t.getDistanceToCamera() < sorted[i-1].getComponent(Transform.class).getDistanceToCamera()) {
-				sorted[i] = sorted[i-1];
-				sorted[i-1] = e;
-			}
+			try {
+				sorted[i] = e;
+				if (t.getDistanceToCamera() < sorted[i-1].getComponent(Transform.class).getDistanceToCamera()) {
+					sorted[i] = sorted[i-1];
+					sorted[i-1] = e;
+				}
+			} catch (Exception err) {}
 		}
 		return insertionSort(sorted);
 	}

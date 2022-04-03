@@ -25,6 +25,7 @@ public class AnnotationHandler {
 	private static final ArrayList<Method> postRegistrationEventSubscribers = new ArrayList<Method>();
 	private static final ArrayList<Method> rescaleEventSubscribers = new ArrayList<Method>();
 	private static final ArrayList<Method> clearScreenEventSubscribers = new ArrayList<Method>();
+	private static Method mainMenuLoadEvent = null;
 	
 	public static void init() {
 		Logging.logger.debug("Loading event subscribers");
@@ -61,6 +62,8 @@ public class AnnotationHandler {
 						rescaleEventSubscribers.add(m);
 					else if (a instanceof ClearScreenEventSubscriber)
 						clearScreenEventSubscribers.add(m);
+					else if (a instanceof MainMenuLoadEvent)
+						mainMenuLoadEvent = m;
 				}
 			}
 		});
@@ -110,6 +113,10 @@ public class AnnotationHandler {
 			Logging.logger.trace("Running post-registration on class: " + m.getDeclaringClass().getSimpleName() + " Method: " + m.getName());
 			invokeMethod(m);
 		}
+	}
+	
+	public static void runMainMenu() {
+		invokeMethod(mainMenuLoadEvent);
 	}
 	
 	private static void invokeMethod(Method m) {

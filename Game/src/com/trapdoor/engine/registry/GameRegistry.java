@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
@@ -41,10 +43,15 @@ import imgui.ImFont;
  */
 public class GameRegistry {
 
-	public static final String DEFAULT_EMPTY_NORMAL_MAP = "resources/textures/error/default_normal.png";
-	public static final String DEFAULT_EMPTY_DISPLACEMENT_MAP = "resources/textures/error/default_disp.png";
-	public static final String DEFAULT_EMPTY_AO_MAP = "resources/textures/error/default_ao.png";
-	public static final String DEFAULT_EMPTY_SPEC_MAP = "resources/textures/error/default_spec.png";
+	private static final String DEFAULT_ERROR = "error/error3.png";
+	public static final String DEFAULT_EMPTY_NORMAL_MAP = "resources/textures/" + DEFAULT_ERROR;
+	public static final String DEFAULT_EMPTY_DISPLACEMENT_MAP = "resources/textures/" + DEFAULT_ERROR;
+	public static final String DEFAULT_EMPTY_AO_MAP = "resources/textures/" + DEFAULT_ERROR;
+	public static final String DEFAULT_EMPTY_SPEC_MAP = "resources/textures/" + DEFAULT_ERROR;
+//	public static final String DEFAULT_EMPTY_NORMAL_MAP = "resources/textures/error/default_normal.png";
+//	public static final String DEFAULT_EMPTY_DISPLACEMENT_MAP = "resources/textures/error/default_disp.png";
+//	public static final String DEFAULT_EMPTY_AO_MAP = "resources/textures/error/default_ao.png";
+//	public static final String DEFAULT_EMPTY_SPEC_MAP = "resources/textures/error/default_spec.png";
 	private static Texture errorTexture;
 	private static Texture defaultNormalTexture;
 	private static Texture defaultDisplacementTexture;
@@ -82,6 +89,7 @@ public class GameRegistry {
 	
 	private static final List<TextureData> materialTextureData = Collections.synchronizedList(new ArrayList<TextureData>());
 	private static final Map<String, Integer> materialTextureLocks = Collections.synchronizedMap(new ConcurrentHashMap<String, Integer>());
+	private static final Lock materialLoadingLock = new ReentrantLock();
 	private static final Map<String, Integer> materialTextureDataAtlas = Collections.synchronizedMap(new ConcurrentHashMap<String, Integer>());
 	public static int materialTextueAtlas;
 	
@@ -107,7 +115,7 @@ public class GameRegistry {
 	public static void init() {
 		Logging.logger.info("GameRegistry Init!");
 		
-		errorTexture = TextureLoader.loadTexture("error/error3.png");
+		errorTexture = TextureLoader.loadTexture(DEFAULT_ERROR);
 		defaultNormalTexture = TextureLoader.loadTexture("error/default_normal.png");
 		defaultDisplacementTexture = TextureLoader.loadTexture("error/default_disp.png");
 		defaultAOTexture = TextureLoader.loadTexture("error/default_ao.png");
@@ -138,9 +146,9 @@ public class GameRegistry {
 	}
 	
 	public static void onLoadingComplete() {
-		//for (Material m : registeredMaterials) {
-		//	m.loadTexturesFromGameRegistry();
-		//}
+		for (Material m : registeredMaterials) {
+			m.loadTexturesFromGameRegistry();
+		}
 		particleTextueAtlas = TextureLoader.loadSpecialTextureATLAS(SettingsLoader.PARTICLE_SIZE, SettingsLoader.PARTICLE_SIZE, particleTextureData, particleTextureDataAtlas);
 		materialTextueAtlas = TextureLoader.loadMaterialTextureArray(materialTextureData, materialTextureDataAtlas);
 	}
@@ -258,54 +266,78 @@ public class GameRegistry {
 	}
 	
 	public static void registerMaterialTextures(String diffuse, String normal, String displacement, String spec) {
-		registerMaterialTextures(new String[] {diffuse, normal, displacement, spec});
+		registerMaterialTextures(new String[] {diffuse, spec, normal, displacement});
 	}
 	
 	public static void registerMaterialTextures(String[] paths) {
-		for (String file : paths) {
-			if (!file.contains("."))
-				return;
-			if (!new File(file).exists()) {
-				Logging.logger.error("File: " + file + " does not exist!");
-				return;
-			}
-			LoadingScreenDisplay.max();
-			StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-			
-			Threading.execute(new DualExecution(() -> {
-				try {
-					String fd = file;
-					// we already loaded the file
-					if (GameRegistry.materialTextureLocks.get(fd) != null) {
-						LoadingScreenDisplay.progress();
-						return;
+		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+		//LoadingScreenDisplay.max(paths.length);
+		
+		Threading.execute(new DualExecution(() -> {
+			try {
+				ArrayList<TextureData> datas = new ArrayList<TextureData>();
+				//LoadingScreenDisplay.max();
+				
+				if (!checkPathForValidString(paths[0]))
+					return;
+				
+				int count = 0;
+				for (String file : paths) {
+					if (checkForNonTexture(file))
+						count++;
+				}
+				// if there is more than 1 file which will require filling in with error textures then maybe
+				// we should consider only loading the diffuse texture
+				if (count > 1) {
+					runLoadingMaterialTexture(datas, stackTraceElements, paths[0]);
+				} else {
+					for (String file : paths) {
+						//LoadingScreenDisplay.max();
+						if (!checkPathForValidString(file) || checkForNonTexture(file)) {
+							file = "resources/textures/error/error3.png";
+						}
+						
+						runLoadingMaterialTexture(datas, stackTraceElements, file);
 					}
-					GameRegistry.materialTextureLocks.put(fd, 1);
-					
-					String rt = "Loading material texture: " + fd;
-					if (LoadingScreenDisplay.info != null)
-						LoadingScreenDisplay.info.getTextState().setText(rt);
-					Logging.logger.debug(rt);
-					
-					GameRegistry.materialTextureData.add(TextureLoader.decodeTextureToMaterialArray(fd, false));
-					
-				} catch (Exception e) {
-					Logging.logger.fatal(e.getMessage(), e);
-					Logging.logger.error("Tried to load material texture " + file + ", didn't work!");
-					printFatalMethodCallers(stackTraceElements);
-					System.exit(-1);
 				}
-			}, () -> {
+				materialLoadingLock.lock();
 				try {
-					
-				} catch (Exception e) {
-					Logging.logger.fatal(e.getMessage(), e);
-					Logging.logger.fatal("Tried to load texture " + file + " to GPU, didn't work!");
-					printFatalMethodCallers(stackTraceElements);
-					System.exit(-1);
+					System.out.println(datas.size());
+					GameRegistry.materialTextureData.addAll(datas);
+				} finally {
+					materialLoadingLock.unlock();
 				}
+			} finally {
 				LoadingScreenDisplay.progress();
-			}));
+			}
+		}, () -> {
+			
+		}));
+		
+	}
+	
+	private static void runLoadingMaterialTexture(ArrayList<TextureData> datas, StackTraceElement[] stackTraceElements, String file) {
+		try {
+			String fd = file;
+			// we already loaded the file
+			if (GameRegistry.materialTextureLocks.get(fd) != null) {
+				//LoadingScreenDisplay.progress();
+				//continue;
+			}
+			GameRegistry.materialTextureLocks.put(fd, 1);
+
+			String rt = "Loading material texture: " + fd;
+			if (LoadingScreenDisplay.info != null)
+				LoadingScreenDisplay.info.getTextState().setText(rt);
+			Logging.logger.debug(rt);
+
+			datas.add(TextureLoader.decodeTextureToMaterialArray(fd, false));
+
+		} catch (Exception e) {
+			Logging.logger.fatal(e.getMessage(), e);
+			Logging.logger.error("Tried to load material texture " + file + ", didn't work!");
+			printFatalMethodCallers(stackTraceElements);
+			System.exit(-1);
 		}
 	}
 	
@@ -401,6 +433,14 @@ public class GameRegistry {
 		
 	}
 	
+	public static boolean checkPathForValidString(String path) {
+		return path.contains(".") || new File(path).exists();
+	}
+	
+	public static boolean checkForNonTexture(String path) {
+		return path.contains("error3.png");
+	}
+	
 	public static void regsterImFont(ImFont font, String name) {
 		theFonts.put(name, font);
 	}
@@ -457,6 +497,14 @@ public class GameRegistry {
 		if (i == null)
 			return 0;
 		return i;
+	}
+	
+	public static int getTextureBaseOffset(String path) {
+		try {
+			return materialTextureDataAtlas.get(path);
+		} catch (Exception e) {
+			return 0;
+		}
 	}
 	
 	/**

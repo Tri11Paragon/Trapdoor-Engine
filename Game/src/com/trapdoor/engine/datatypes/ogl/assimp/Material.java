@@ -21,6 +21,8 @@ public class Material {
 	private String specularTexturePath;
 	
 	private boolean usingSpecialMaterial = false;
+	private boolean usingNormalMap = false;
+	private boolean usingSpecMap = false;
 	
 	private Vector3f diffuse;
 	private Vector3f ambient;
@@ -38,8 +40,13 @@ public class Material {
 		//if (normalMapTexture == GameRegistry.DEFAULT_EMPTY_NORMAL_MAP)
 		//	normalMapTexture = null;
 		
-		if (normalMapTexture != null || displacementTexturePath != null || ambientOcclusionTexturePath != null)
+		if (!normalMapTexture.contains("default_normal.png"))
+			usingNormalMap = true;
+		if (!specularTexturePath.contains("default_spec.png"))
+			usingSpecMap = true;
+		if (!displacementTexturePath.contains("default_disp.png") && !ambientOcclusionTexturePath.contains("default_ao.png"))
 			usingSpecialMaterial = true;
+		
 		this.normalTexturePath = normalMapTexture;
 		this.diffuse = diffuse;
 		this.ambient = ambient;
@@ -157,6 +164,18 @@ public class Material {
 
 	public Vector3f getSpecular() {
 		return specular;
+	}
+
+	public boolean isUsingSpecialMaterial() {
+		return usingSpecialMaterial;
+	}
+
+	public boolean isUsingNormalMap() {
+		return usingNormalMap;
+	}
+
+	public boolean isUsingSpecMap() {
+		return usingSpecMap;
 	}
 	
 }

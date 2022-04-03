@@ -32,15 +32,17 @@ public class MaterialPassShader extends ShaderProgram {
 		super.getUniformLocation("diffuseValue");
 		super.getUniformLocation("specAmount");
 		super.getUniformLocation("viewPos");
-		super.getUniformLocation("diffuseTexture");
-		super.getUniformLocation("normalMap");
-		super.getUniformLocation("displacementMap");
-		super.getUniformLocation("specMap");
+		super.getUniformLocation("textures");
+		//super.getUniformLocation("diffuseTexture");
+		//super.getUniformLocation("normalMap");
+		//super.getUniformLocation("displacementMap");
+		//super.getUniformLocation("specMap");
 		super.getUniformLocation("shadowMap");
 		super.getUniformLocation("emissionMap");
 		super.getUniformLocation("farPlane");
 		super.getUniformLocation("lightDir");
 		super.getUniformLocation("cascadeCount");
+		super.getUniformLocation("flags");
 		for (int i = 0; i < 5; i++)
 			super.getUniformLocation("cascadePlaneDistances[" + i + "]");
 		super.getUniformLocation("transformMatrix");
@@ -56,11 +58,11 @@ public class MaterialPassShader extends ShaderProgram {
 	}
 	
 	public void connectTextureUnits() {
-		super.loadInt(super.getStoredLocation("diffuseTexture"), 0);
-		super.loadInt(super.getStoredLocation("normalMap"), 1);
-		super.loadInt(super.getStoredLocation("displacementMap"), 2);
-		super.loadInt(super.getStoredLocation("specMap"), 3);
-		super.loadInt(super.getStoredLocation("emissionMap"), 4);
+		super.loadInt(super.getStoredLocation("textures"), 0);
+//		super.loadInt(super.getStoredLocation("normalMap"), 1);
+//		super.loadInt(super.getStoredLocation("displacementMap"), 2);
+//		super.loadInt(super.getStoredLocation("specMap"), 3);
+//		super.loadInt(super.getStoredLocation("emissionMap"), 4);
 		super.loadInt(super.getStoredLocation("shadowMap"), 5);
 	}
 	

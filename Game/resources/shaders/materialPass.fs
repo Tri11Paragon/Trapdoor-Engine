@@ -38,12 +38,9 @@ uniform int cascadeCount;
 uniform vec3 lightDir;
 uniform float farPlane;
 
-uniform sampler2D diffuseTexture;
-uniform sampler2D normalMap;
-uniform sampler2D displacementMap;
-uniform sampler2D specMap;
-uniform sampler2D emissionMap;
+uniform sampler2DArray textures;
 uniform sampler2DArray shadowMap;
+uniform float flags;
 
 uniform vec3 viewPos;
 
@@ -150,7 +147,7 @@ vec3 calculateLighting(vec3 FragPos, vec3 Normal, vec3 Diffuse, vec3 directlight
 
 const float heightScale = 0.05f;
 
-vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir)
+vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir, int base)
 { 
     // number of depth layers
     const float minLayers = 8;
@@ -166,14 +163,14 @@ vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir)
   
     // get initial values
     vec2  currentTexCoords     = texCoords;
-    float currentDepthMapValue = texture(displacementMap, currentTexCoords).r;
+    float currentDepthMapValue = texture(textures, vec3(currentTexCoords, base + 3)).r;
       
     while(currentLayerDepth < currentDepthMapValue)
     {
         // shift texture coordinates along direction of P
         currentTexCoords -= deltaTexCoords;
         // get depthmap value at current texture coordinates
-        currentDepthMapValue = texture(displacementMap, currentTexCoords).r;  
+        currentDepthMapValue = texture(textures, vec3(currentTexCoords, base + 3)).r;  
         // get depth of next layer
         currentLayerDepth += layerDepth;  
     }
@@ -183,7 +180,7 @@ vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir)
 
     // get depth after and before collision for linear interpolation
     float afterDepth  = currentDepthMapValue - currentLayerDepth;
-    float beforeDepth = texture(displacementMap, prevTexCoords).r - currentLayerDepth + layerDepth;
+    float beforeDepth = texture(textures, vec3(prevTexCoords, base + 3)).r - currentLayerDepth + layerDepth;
  
     // interpolation of texture coordinates
     float weight = afterDepth / (afterDepth - beforeDepth);
@@ -193,6 +190,16 @@ vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir)
 }
 
 void main(){
+    // uses |  base
+    // 0000 |  28 bits
+    int f = int(flags);
+
+    int base = (f << 4) >> 4;
+
+    int flag = f >> 28;
+    int useNormal = flag & 0x2;
+    int useSpec = flag & 0x4;
+    int specialMat = flag & 0x1;
 
     vec3 viewDir = normalize(TangentViewPos - TangentFragPos);
     
@@ -200,18 +207,24 @@ void main(){
     
     vec2 texCoords = textureCoords;
 
-    vec3 normaltbn = normalize(texture(normalMap, texCoords).rgb);
-    vec3 normali = normalize(tbnMat * normaltbn);
+    vec3 normali = normalo;
+    if (useNormal != 0){
+        vec3 normaltbn = normalize(texture(textures, vec3(texCoords, base + 2)).rgb);
+        normali = normalize(tbnMat * normaltbn);
+    }
 
-    vec4 diffuseT = texture(diffuseTexture, texCoords);
-    vec4 specT = texture(specMap, texCoords);
+    vec4 diffuseT = texture(textures, vec3(texCoords, base));
+
+    float specA = specAmount;
+    if (useSpec != 0) 
+        specA = texture(textures, vec3(texCoords, base + 1)).r;
 
     // tbnMat * normaltbn
 
 	float shadower = shadowCalc(normali);
 	float lightFactor = 1.0 - (0.8 * shadower);
 
-    out_Color = vec4(calculateLighting(fragPosWorldSpace, normalo, diffuseT.rgb, lightDir, specT.r, lightFactor), 1.0);
+    out_Color = vec4(calculateLighting(fragPosWorldSpace, normalo, diffuseT.rgb, lightDir, specA, lightFactor), 1.0);
 
     float brightness = dot(out_Color.rgb, vec3(0.2126, 0.7152, 0.0722));
     bright_Color = vec4(out_Color.rgb, 1.0) * brightness * brightness;

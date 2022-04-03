@@ -22,6 +22,7 @@ import com.trapdoor.engine.camera.Camera;
 import com.trapdoor.engine.datatypes.DynamicArray;
 import com.trapdoor.engine.datatypes.ogl.assimp.Model;
 import com.trapdoor.engine.display.DisplayManager;
+import com.trapdoor.engine.registry.GameRegistry;
 import com.trapdoor.engine.registry.Threading;
 import com.trapdoor.engine.renderer.DepthPassRenderer;
 import com.trapdoor.engine.renderer.MaterialPassRenderer;
@@ -154,6 +155,8 @@ public class World {
 			GL33.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL33.GL_LINE);
 		
 		// render depth pass
+		GL33.glActiveTexture(GL33.GL_TEXTURE0);
+		GL33.glBindTexture(GL33.GL_TEXTURE_2D_ARRAY, GameRegistry.materialTextueAtlas);
 		this.depthRenderer.start();
 		this.entityStorage.render(this.depthRenderFunction);
 		this.depthRenderer.stop();

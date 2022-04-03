@@ -1,10 +1,8 @@
 package com.trapdoor.engine.display;
 
 import java.util.concurrent.atomic.AtomicInteger;
-
 import org.joml.Vector2f;
 
-import com.game.displays.MainMenuDisplay;
 import com.spinyowl.legui.component.Label;
 import com.spinyowl.legui.component.Layer;
 import com.spinyowl.legui.component.ProgressBar;
@@ -42,12 +40,16 @@ public class LoadingScreenDisplay extends IDisplay {
 	public static synchronized void progress() {
 		PROGRESS.incrementAndGet();
 	}
+	public static synchronized void progress(int d) {
+		PROGRESS.addAndGet(d);
+	}
 	
 	public static synchronized void max() {
 		MAX.incrementAndGet();
 	}
-	
-	public IDisplay mainMenu;
+	public static synchronized void max(int d) {
+		MAX.addAndGet(d);
+	}
 	
 	private long time;
 	
@@ -88,7 +90,6 @@ public class LoadingScreenDisplay extends IDisplay {
 	public void onCreate() {
 		createUI();
 		
-		mainMenu = new MainMenuDisplay();
 		time = System.currentTimeMillis();
 		
 		AnnotationHandler.runRegistration();
@@ -118,8 +119,7 @@ public class LoadingScreenDisplay extends IDisplay {
 				
 				AnnotationHandler.runPostRegistration();
 				
-				DisplayManager.createDisplay(mainMenu);
-				DisplayManager.changeDisplay(mainMenu);
+				AnnotationHandler.runMainMenu();
 			} else {
 				//LoadingScreenDisplay.progress();
 			}
@@ -151,6 +151,7 @@ public class LoadingScreenDisplay extends IDisplay {
 		//	trapdoor.setSize(720, 720);
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void createUI() {
 		layer = new Layer();
 		layer.setSize(DisplayManager.WIDTH, DisplayManager.HEIGHT);

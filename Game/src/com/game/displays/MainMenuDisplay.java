@@ -29,14 +29,29 @@ import com.trapdoor.engine.display.IDisplay;
 import com.trapdoor.engine.display.ModelEditorDisplay;
 import com.trapdoor.engine.display.OptionsDisplay;
 import com.trapdoor.engine.display.TestDisplay;
+import com.trapdoor.engine.registry.GameRegistry;
+import com.trapdoor.engine.registry.annotations.MainMenuLoadEvent;
 import com.trapdoor.engine.renderer.ui.UIMaster;
+
+import imgui.ImGui;
+import imgui.flag.ImGuiCond;
+import imgui.flag.ImGuiWindowFlags;
 
 public class MainMenuDisplay extends IDisplay {
 
 	private Layer layers;
 	public static Icon rixie;
 	public static Background rixieBackground;
+	public static SinglePlayerDisplay sp;
 
+	@MainMenuLoadEvent
+	public static void onMenu() {
+		MainMenuDisplay theDisplay;
+		DisplayManager.createDisplay((theDisplay = new MainMenuDisplay()));
+		DisplayManager.changeDisplay(theDisplay);
+	}
+	
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate() {
 
@@ -90,11 +105,11 @@ public class MainMenuDisplay extends IDisplay {
 		title.setPosition(left, 25);
 		layer.add(title);
 
-		IDisplay display = new SinglePlayerDisplay();
+		IDisplay display = new JacobDisplay();
 //		IDisplay display = new TheAmazingWorldOfHentaiDisplay();
 		DisplayManager.createDisplay(display);
 
-		Button sp = new XButton("Start Game", false, false, 1.02f, left, 210, 456, 48);
+		Button sp = new XButton("Jacob's Fun Land", false, false, 1.02f, left, 210, 456, 48);
 		//sp.getStyle().setBorder(new SimpleLineBorder(ColorConstants.red(), 5));
 		sp.getListenerMap().addListener(MouseClickEvent.class, (MouseClickEventListener) event -> {
 			if (event.getAction() != MouseClickEvent.MouseClickAction.RELEASE)
@@ -160,6 +175,9 @@ public class MainMenuDisplay extends IDisplay {
 				(e) -> shadowWidget.getStyle().getShadow().setBlur(blurSlider.getValue()));
 		//layer.add(shadowWidget);
 
+		MainMenuDisplay.sp = new SinglePlayerDisplay();
+		DisplayManager.createDisplay(MainMenuDisplay.sp);
+		
 		// make sure the layer is disabled until this screen is switched it
 		layers.setEnabled(false);
 		layers.getStyle().setDisplay(layer.isEnabled() == true ? DisplayType.MANUAL : DisplayType.NONE);
@@ -184,7 +202,24 @@ public class MainMenuDisplay extends IDisplay {
 	@Override
 	public void render() {
 		// TODO Auto-generated method stub
-
+		ImGui.pushFont(GameRegistry.getFont("roboto-regular"));
+		
+		final int childWidth = 512;
+		final int childHeight = 512;
+		
+		ImGui.setNextWindowPos(DisplayManager.windowPosX + (DisplayManager.WIDTH/2 - childWidth/2), DisplayManager.windowPosY + (DisplayManager.HEIGHT/2 - childHeight/2), ImGuiCond.Appearing);
+		ImGui.begin("Debug", ImGuiWindowFlags.NoResize | ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoTitleBar 
+				| ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.NoBringToFrontOnFocus 
+				| ImGuiWindowFlags.NoDocking | ImGuiWindowFlags.NoDecoration);
+		
+		ImGui.beginChild("Buttons", childWidth, childHeight);
+			if (ImGui.button("Start Game", 512, 100)) {
+				DisplayManager.changeDisplay(sp);
+			}
+		ImGui.endChild();
+		
+		ImGui.end();
+		ImGui.popFont();
 	}
 	
 	@Override

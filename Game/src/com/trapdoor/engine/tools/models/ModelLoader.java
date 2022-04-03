@@ -174,6 +174,11 @@ public class ModelLoader {
 			if (!materialTexturePath.contains("NORENDER"))
 				GameRegistry.registerMaterialTextures(diffuseTexture, normalTexturePath, displacementTexturePath, SpecTexturePath);
 			
+			Logging.logger.fatal("\n\t " +
+					texturePath + " \n\t " + normalTexturePath + " \n\t " 
+								+ displacementTexturePath + " \n\t " + AOTexturePath + " \n\t " + SpecTexturePath + " \n\t " 
+								+ diffuse + "\n\t " + ambient + " \n\t " + specular);
+			
 			return GameRegistry.registerMaterial2(
 					new Material(
 							texturePath, 

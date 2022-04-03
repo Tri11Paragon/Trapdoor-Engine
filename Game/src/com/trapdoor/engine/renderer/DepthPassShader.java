@@ -17,6 +17,8 @@ public class DepthPassShader extends ShaderProgram {
 	@Override
 	protected void getAllUniformLocations() {
 		super.getUniformLocation("transformMatrix");
+		super.getUniformLocation("textures");
+		super.getUniformLocation("flags");
 	}
 
 	@Override

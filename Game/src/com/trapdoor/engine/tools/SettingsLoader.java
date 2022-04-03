@@ -46,7 +46,7 @@ public class SettingsLoader {
 	public static float MUSIC_GAIN = 0.5f;
 	public static int GRAPHICS_LEVEL = 0;
 	public static int PARTICLE_SIZE = 256;
-	public static int TEXTURE_SIZE = 128;
+	public static int TEXTURE_SIZE = 1024;
 	
 	/**
 	 * renderer variables

@@ -85,17 +85,22 @@ public class EntityRenderFunction extends RenderFunction {
 			else {
 				shader.loadVector("diffuseValue", nodiffuse);
 			}
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, mat.getDiffuseTexture().getID());
-			GL13.glActiveTexture(GL13.GL_TEXTURE1);	
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, mat.getNormalTexture().getID());
-			GL13.glActiveTexture(GL13.GL_TEXTURE2);	
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, mat.getDisplacementTexture().getID());
-			GL13.glActiveTexture(GL13.GL_TEXTURE3);	
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, mat.getSpecularTexture().getID());
-			GL13.glActiveTexture(GL13.GL_TEXTURE4);	
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, mat.getAmbientOcclusionTexture().getID());
 			
 			shader.loadFloat("specAmount", mat.getSpecular().y);
+			int flag = 0;
+			if (mat.isUsingSpecialMaterial())
+				flag |= 0b1;
+			if (mat.isUsingNormalMap())
+				flag |= 0b10;
+			if (mat.isUsingSpecMap())
+				flag |= 0b100;
+			
+			flag = flag << 28;
+			int pos = GameRegistry.getTextureBaseOffset(mat.getDiffuseTexturePath());
+			pos = (pos << 4) >> 4;
+			flag |= pos;
+			
+			shader.loadFloat("flags", flag);
 			
 			for (int j = 0; j < ents.length; j++) {
 				Entity entity = ents[j];

@@ -19,7 +19,6 @@ import com.trapdoor.engine.renderer.particles.ParticleSystem;
 import com.trapdoor.engine.renderer.particles.systems.AnimatedParticleSystem;
 import com.trapdoor.engine.renderer.ui.Console;
 import com.trapdoor.engine.renderer.ui.DebugInfo;
-import com.trapdoor.engine.renderer.ui.FontAwesomeIcons;
 import com.trapdoor.engine.renderer.ui.themes.AppleTheme;
 import com.trapdoor.engine.tools.input.Mouse;
 import com.trapdoor.engine.world.World;
@@ -33,7 +32,6 @@ import com.trapdoor.engine.world.sound.SoundSystem;
 import com.trapdoor.engine.world.sound.SoundSystemType;
 
 import imgui.ImGui;
-import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.ImString;
 
 /**
@@ -216,7 +214,6 @@ public class TestDisplay extends IDisplay {
 					.setPosition(75, -8, -25));
 		
 		this.world.addEntityToWorld(new Entity().setModel(GameRegistry.getModel("resources/models/greg.dae")).setPosition(-5, -18, 20));
-		
 	}
 
 	@Override

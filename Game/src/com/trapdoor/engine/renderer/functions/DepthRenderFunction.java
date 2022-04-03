@@ -3,7 +3,6 @@ package com.trapdoor.engine.renderer.functions;
 import java.util.ArrayList;
 
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
@@ -12,6 +11,7 @@ import com.trapdoor.engine.datatypes.ogl.assimp.Material;
 import com.trapdoor.engine.datatypes.ogl.assimp.Mesh;
 import com.trapdoor.engine.datatypes.ogl.assimp.Model;
 import com.trapdoor.engine.datatypes.ogl.obj.VAO;
+import com.trapdoor.engine.registry.GameRegistry;
 import com.trapdoor.engine.renderer.DepthPassShader;
 import com.trapdoor.engine.renderer.ShaderProgram;
 import com.trapdoor.engine.tools.math.Maths;
@@ -47,9 +47,21 @@ public class DepthRenderFunction extends RenderFunction {
 			GL30.glBindVertexArray(mod.getVaoID());
 			GL20.glEnableVertexAttribArray(0);
 			GL20.glEnableVertexAttribArray(1);
+
+			int flag = 0;
+			if (mat.isUsingSpecialMaterial())
+				flag |= 0b1;
+			if (mat.isUsingNormalMap())
+				flag |= 0b10;
+			if (mat.isUsingSpecMap())
+				flag |= 0b100;
 			
-			GL13.glActiveTexture(GL13.GL_TEXTURE0);	
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, mat.getDiffuseTexture().getID());
+			flag = flag << 28;
+			int pos = GameRegistry.getTextureBaseOffset(mat.getDiffuseTexturePath());
+			pos = (pos << 4) >> 4;
+			flag |= pos;
+			
+			shader.loadFloat("flags", flag);
 			
 			for (int j = 0; j < ents.length; j++) {
 				Entity entity = ents[j];
