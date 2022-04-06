@@ -40,10 +40,16 @@ public class Material {
 		//if (normalMapTexture == GameRegistry.DEFAULT_EMPTY_NORMAL_MAP)
 		//	normalMapTexture = null;
 		
-		if (!normalMapTexture.contains("default_normal.png"))
+		if (!normalMapTexture.contains("default_normal.png")) {
 			usingNormalMap = true;
-		if (!specularTexturePath.contains("default_spec.png"))
+			usingSpecialMaterial = true;
+		}
+			
+		if (!specularTexturePath.contains("default_spec.png")) {
 			usingSpecMap = true;
+			usingSpecialMaterial = true;
+		}
+			
 		if (!displacementTexturePath.contains("default_disp.png") && !ambientOcclusionTexturePath.contains("default_ao.png"))
 			usingSpecialMaterial = true;
 		

@@ -13,6 +13,7 @@ import com.trapdoor.engine.registry.Threading;
 import com.trapdoor.engine.registry.annotations.AnnotationHandler;
 import com.trapdoor.engine.renderer.functions.EntityRenderFunction;
 import com.trapdoor.engine.tools.input.IKeyState;
+import com.trapdoor.engine.tools.input.Keyboard;
 import com.trapdoor.engine.world.World;
 
 import imgui.ImGui;
@@ -50,8 +51,10 @@ public class DebugInfo implements IKeyState {
 	private String particleCount = "";
 	
 	private boolean enabled = false;
+	private boolean frametimes = false;
 	private StringBuilder builder;
 	private World world;
+	private DataAnalysis fpsData;
 	
 	public DebugInfo() {
 		th = this;
@@ -60,6 +63,8 @@ public class DebugInfo implements IKeyState {
 		gameVersion = DisplayManager.gameName + " " + DisplayManager.gameVersion + " // " + DisplayManager.engineName + " " + DisplayManager.engineVersion;
 		mainRenderings = "Renderer:";
 		physics = "Physics:";
+		fpsData = new DataAnalysis("Frametimes", 64512);
+		fpsData.setAutoClear(64000);
 	}
 	
 	private final DecimalFormat df = new DecimalFormat("#.###");
@@ -126,6 +131,7 @@ public class DebugInfo implements IKeyState {
 	 * called every frame
 	 */
 	public void updateFrame() {
+		fpsData.add(DisplayManager.getFrameTimeMilisR());
 		OptionsMenu.menu.set(enabled);
 		if (!enabled)
 			return;
@@ -199,6 +205,8 @@ public class DebugInfo implements IKeyState {
 		ImGui.end();
 		
 		ImGui.popFont();
+		if (frametimes)
+			fpsData.drawWindow();
 	}
 	
 	/**
@@ -210,17 +218,24 @@ public class DebugInfo implements IKeyState {
 		
 	}
 	
+	private boolean allow = true;
+	
 	@Override
 	public void onKeyPressed(int keys) {
-		if (keys == GLFW.GLFW_KEY_F3) {
-			AnnotationHandler.cleanScreen();
-			enabled = !enabled;
+		if (keys == GLFW.GLFW_KEY_F && enabled && Keyboard.isKeyDown(GLFW.GLFW_KEY_F3)) {
+			frametimes = !frametimes;
+			allow = false;
 		}
 	}
 
 	@Override
 	public void onKeyReleased(int keys) {
-		
+		if (keys == GLFW.GLFW_KEY_F3 && allow) {
+			AnnotationHandler.cleanScreen();
+			enabled = !enabled;
+		} 
+		if (keys == GLFW.GLFW_KEY_F3 && !allow)
+			allow = true;
 	}
 
 	public boolean isEnabled() {

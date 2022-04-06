@@ -175,7 +175,8 @@ public class TextureLoader {
 			GL13.glActiveTexture(GL13.GL_TEXTURE0);
 			GL11.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, id); 
 			// allocate texture memory
-	        GL42.glTexStorage3D(GL30.GL_TEXTURE_2D_ARRAY, 4, GL11.GL_RGBA8, SettingsLoader.TEXTURE_SIZE, SettingsLoader.TEXTURE_SIZE, textures.size());
+			int GL_RGBI = SettingsLoader.GAMMA != 0.0 ? GL33.GL_SRGB8_ALPHA8 : GL33.GL_RGBA8;
+	        GL42.glTexStorage3D(GL30.GL_TEXTURE_2D_ARRAY, 4, GL_RGBI, SettingsLoader.TEXTURE_SIZE, SettingsLoader.TEXTURE_SIZE, textures.size());
 	        
 	        for (int i = 0; i < textures.size(); i++) {
 	        	TextureData data = textures.get(i);
@@ -187,7 +188,7 @@ public class TextureLoader {
 	        			// width, height depth
 	        			SettingsLoader.TEXTURE_SIZE, SettingsLoader.TEXTURE_SIZE, 1, 
 	        			// format, format
-	        			GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, 
+	        			GL33.GL_RGBA, GL11.GL_UNSIGNED_BYTE, 
 	        			// decode the image texture
 	        			data.getBuffer());
 	        	// AF
@@ -195,15 +196,15 @@ public class TextureLoader {
 	        	map.put(textures.get(i).getName(), i);
 	        }
 	        
-	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST); 
-	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR); 
+	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
 	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
 	        GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT);
 	        
 	        GL30.glGenerateMipmap(GL30.GL_TEXTURE_2D_ARRAY);
 			// > 0 = less detail
 			GL11.glTexParameterf(GL30.GL_TEXTURE_2D_ARRAY, GL14.GL_TEXTURE_LOD_BIAS, 0.2f);
-	        
+			
 			// add texture for later deletion.
 			TextureLoader.textures.add(id);
 			return id;

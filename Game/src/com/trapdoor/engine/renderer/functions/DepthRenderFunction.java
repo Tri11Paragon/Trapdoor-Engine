@@ -66,14 +66,16 @@ public class DepthRenderFunction extends RenderFunction {
 			for (int j = 0; j < ents.length; j++) {
 				Entity entity = ents[j];
 				
-				Transform t = entity.getComponent(Transform.class);
-				
-				if (!checkInFrustum(c, meshes[i].getBoundingBox().translate(t.getX(), t.getY(), t.getZ())))
-					continue;
-				
-				shader.loadMatrix(ShaderProgram.std_TRANSFORM_MATRIX, Maths.createTransformationMatrix(t));
-				
-				GL11.glDrawElements(GL11.GL_TRIANGLES, mod.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+				try {
+					Transform t = entity.getComponent(Transform.class);
+					
+					if (!checkInFrustum(c, meshes[i].getBoundingBox().translate(t.getX(), t.getY(), t.getZ())))
+						continue;
+					
+					shader.loadMatrix(ShaderProgram.std_TRANSFORM_MATRIX, Maths.createTransformationMatrix(t));
+					
+					GL11.glDrawElements(GL11.GL_TRIANGLES, mod.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+				} catch (Exception e) {}
 			}
 			
 			GL20.glDisableVertexAttribArray(0);

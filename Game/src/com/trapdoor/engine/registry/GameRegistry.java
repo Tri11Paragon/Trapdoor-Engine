@@ -44,14 +44,10 @@ import imgui.ImFont;
 public class GameRegistry {
 
 	private static final String DEFAULT_ERROR = "error/error3.png";
-	public static final String DEFAULT_EMPTY_NORMAL_MAP = "resources/textures/" + DEFAULT_ERROR;
-	public static final String DEFAULT_EMPTY_DISPLACEMENT_MAP = "resources/textures/" + DEFAULT_ERROR;
-	public static final String DEFAULT_EMPTY_AO_MAP = "resources/textures/" + DEFAULT_ERROR;
-	public static final String DEFAULT_EMPTY_SPEC_MAP = "resources/textures/" + DEFAULT_ERROR;
-//	public static final String DEFAULT_EMPTY_NORMAL_MAP = "resources/textures/error/default_normal.png";
-//	public static final String DEFAULT_EMPTY_DISPLACEMENT_MAP = "resources/textures/error/default_disp.png";
-//	public static final String DEFAULT_EMPTY_AO_MAP = "resources/textures/error/default_ao.png";
-//	public static final String DEFAULT_EMPTY_SPEC_MAP = "resources/textures/error/default_spec.png";
+	public static final String DEFAULT_EMPTY_NORMAL_MAP = "resources/textures/error/default_normal.png";
+	public static final String DEFAULT_EMPTY_DISPLACEMENT_MAP = "resources/textures/error/default_disp.png";
+	public static final String DEFAULT_EMPTY_AO_MAP = "resources/textures/error/default_ao.png";
+	public static final String DEFAULT_EMPTY_SPEC_MAP = "resources/textures/error/default_spec.png";
 	private static Texture errorTexture;
 	private static Texture defaultNormalTexture;
 	private static Texture defaultDisplacementTexture;
@@ -91,6 +87,7 @@ public class GameRegistry {
 	private static final Map<String, Integer> materialTextureLocks = Collections.synchronizedMap(new ConcurrentHashMap<String, Integer>());
 	private static final Lock materialLoadingLock = new ReentrantLock();
 	private static final Map<String, Integer> materialTextureDataAtlas = Collections.synchronizedMap(new ConcurrentHashMap<String, Integer>());
+	private static final Map<String, Integer> materialTextureDataAtlasTest = Collections.synchronizedMap(new ConcurrentHashMap<String, Integer>());
 	public static int materialTextueAtlas;
 	
 	/*
@@ -122,6 +119,20 @@ public class GameRegistry {
 		defaultSpecTexture = TextureLoader.loadTexture("error/default_spec.png");
 		errorMaterial = new Material("resources/textures/error/error3.png", DEFAULT_EMPTY_NORMAL_MAP, 
 				DEFAULT_EMPTY_DISPLACEMENT_MAP, DEFAULT_EMPTY_AO_MAP, DEFAULT_EMPTY_SPEC_MAP, new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(), new Vector3f());
+		
+		materialLoadingLock.lock();
+		try {	
+			materialTextureDataAtlasTest.put("resources/textures/" + DEFAULT_ERROR, 0);
+			materialTextureDataAtlasTest.put("resources/textures/error/default_normal.png", 1);
+			materialTextureDataAtlasTest.put("resources/textures/error/default_disp.png", 2);
+			materialTextureDataAtlasTest.put("resources/textures/error/default_spec.png", 3);
+			GameRegistry.materialTextureData.add(TextureLoader.decodeTextureToMaterialArray("resources/textures/" + DEFAULT_ERROR, false));
+			GameRegistry.materialTextureData.add(TextureLoader.decodeTextureToMaterialArray("resources/textures/error/default_normal.png", false));
+			GameRegistry.materialTextureData.add(TextureLoader.decodeTextureToMaterialArray("resources/textures/error/default_disp.png", false));
+			GameRegistry.materialTextureData.add(TextureLoader.decodeTextureToMaterialArray("resources/textures/error/default_spec.png", false));
+		} finally {
+			materialLoadingLock.unlock();
+		}
 		
 		errorMaterial.setDiffuseTexture(errorTexture);
 		errorMaterial.setNormalTexture(defaultNormalTexture);
@@ -281,28 +292,18 @@ public class GameRegistry {
 				if (!checkPathForValidString(paths[0]))
 					return;
 				
-				int count = 0;
-				for (String file : paths) {
-					if (checkForNonTexture(file))
-						count++;
-				}
 				// if there is more than 1 file which will require filling in with error textures then maybe
 				// we should consider only loading the diffuse texture
-				if (count > 1) {
-					runLoadingMaterialTexture(datas, stackTraceElements, paths[0]);
-				} else {
-					for (String file : paths) {
-						//LoadingScreenDisplay.max();
-						if (!checkPathForValidString(file) || checkForNonTexture(file)) {
-							file = "resources/textures/error/error3.png";
-						}
-						
-						runLoadingMaterialTexture(datas, stackTraceElements, file);
+				for (String file : paths) {
+					// LoadingScreenDisplay.max();
+					if (!checkPathForValidString(file) || checkForNonTexture(file)) {
+						file = "resources/textures/error/error3.png";
 					}
+					runLoadingMaterialTexture(datas, stackTraceElements, file);
 				}
 				materialLoadingLock.lock();
 				try {
-					System.out.println(datas.size());
+					materialTextureDataAtlasTest.put(paths[0], GameRegistry.materialTextureData.size());
 					GameRegistry.materialTextureData.addAll(datas);
 				} finally {
 					materialLoadingLock.unlock();
@@ -501,7 +502,7 @@ public class GameRegistry {
 	
 	public static int getTextureBaseOffset(String path) {
 		try {
-			return materialTextureDataAtlas.get(path);
+			return materialTextureDataAtlasTest.get(path);
 		} catch (Exception e) {
 			return 0;
 		}
