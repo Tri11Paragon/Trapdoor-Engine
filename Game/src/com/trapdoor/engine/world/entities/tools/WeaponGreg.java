@@ -110,33 +110,43 @@ public class WeaponGreg extends Weapon {
 	@Override
 	public void render() {
 		if (!pendingDestruction && uploadingDestruction) {
+			// Uploads newModelStore's Vertices and Mesh Data to the GPU, creating a vertex buffer for future use
 			VAOLoader.loadToVAO(newModelStore, GL33.GL_DYNAMIC_DRAW);
 			
+			// Takes the old entity's position and rotation and sets it the new entity's position and rotation
 			Transform tra = heldEntity.getComponent(Transform.class);
 			Entity he = new Entity(heldEntity.getRigidbody().getMass()).setModel(newModelStore).setPosition(tra.getX(), tra.getY(), tra.getZ());
 			Transform trhe = he.getComponent(Transform.class);
 			trhe.setScale(tra.getScaleX(), tra.getScaleY(), tra.getScaleZ());
 			trhe.setRotation(tra.getYaw(), tra.getPitch(), tra.getRoll());
-			
+
+			// Removes the old entity from the world and adds the new one
 			world.removeEntityFromWorld(heldEntity);
 			world.addEntityToWorld(he);
 			
+			// Sets the heldEntity to the newly created entity
 			heldEntity = he;
 			
+			// Signals the physics thread to apply destruction
 			uploadingDestruction = false;
 			applyingDestruction = true;
 		}
+
+		// the Actual modification of the vertices starts here
 		if (applyingDestruction) {
-			for (int p = 0; p < newModelStore.getMeshes().length; p++) {
-				FloatBuffer verts = newModelStore.getMeshes()[p].getVertices();
-				FloatBuffer newVerts = MemoryUtil.memAllocFloat(verts.capacity());
-				AxisAlignedBoundingBox aabb = newModelStore.getMeshes()[p].getBoundingBox();
-				Vector3d center = aabb.getCenter();
-				for (int i = 0; i < verts.capacity() / 3; i++) {
+			for (int p = 0; p < newModelStore.getMeshes().length; p++) { // For every mesh in the model (The engine treats each material as a mesh of its own)
+				FloatBuffer verts = newModelStore.getMeshes()[p].getVertices(); // Gets the vertices from the model
+				FloatBuffer newVerts = MemoryUtil.memAllocFloat(verts.capacity()); // Allocates a new vertex array to store the modified vertices
+				AxisAlignedBoundingBox aabb = newModelStore.getMeshes()[p].getBoundingBox(); // The bounding box of the mesh is computed (it's computed for every mesh)
+				Vector3d center = aabb.getCenter(); // Gets the center from the AABoundingBox
+				for (int i = 0; i < verts.capacity() / 3; i++) { // For each vertex index 
+					// Gets the vertex position
 					float oldX = verts.get();
 					float oldY = verts.get();
 					float oldZ = verts.get();
 					
+					/* START GREG-SPECIFIC STUFF (change this block to edit the vertices in your own way) */
+
 					float vectorScale = 1.4234f;
 					
 					float tdx = distanceX(center, oldX, oldY, oldZ);
@@ -166,17 +176,26 @@ public class WeaponGreg extends Weapon {
 					
 					Vector4f trans = mat4.transform(new Vector4f(oldX, oldY, oldZ, 1.0f));
 					
+					/* END GREG-SPECIFIC STUFF */
+					
+					// Change 'trans' here to your own new vertex positions
 					newVerts.put(trans.x);
 					newVerts.put(trans.y);
 					newVerts.put(trans.z);
 				}
+				
+				// Resets the positions of the buffer to zero
 				verts.flip();
 				newVerts.flip();
 				
+				// Binds the vertex Array of the new mesh
 				GL33.glBindVertexArray(newModelStore.getMeshes()[p].getVAO().getVaoID());
-				VAOLoader.updateVBOGreg(newModelStore.getMeshes()[p].getVAO().getVbos()[0], newVerts);
+				// Updates the vertices
+				VAOLoader.updateVBOGreg(newModelStore.getMeshes()[p].getVAO().getVbos()[0], newVerts); 
+				// Only uploads vertices (doesn't change any index tables)
 				GL33.glBindVertexArray(0);
 				
+				// Manual Garbage collection
 				MemoryUtil.memFree(newVerts);
 			}
 			
