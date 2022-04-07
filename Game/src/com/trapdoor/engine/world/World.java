@@ -210,8 +210,6 @@ public class World {
 		c.move();
 		c.updateViewMatrix();
 		c.calculateFrustum(ProjectionMatrix.projectionMatrix, c.getViewMatrix());
-		// TODO: fix this
-		//c.calculateFrustum(ProjectionMatrix.projectionMatrix, c.getViewMatrix());
 		
 		for (int i = 0; i < allEnts.size(); i++) {
 			Entity a = allEnts.get(i);

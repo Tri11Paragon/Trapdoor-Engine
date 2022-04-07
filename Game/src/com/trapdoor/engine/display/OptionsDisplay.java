@@ -31,7 +31,7 @@ public class OptionsDisplay extends IDisplay {
 		this.mainMenu = mainMenu;
 	}
 	
-	@SuppressWarnings("unused")
+	@SuppressWarnings({ "unused", "deprecation" })
 	@Override
 	public void onCreate() {
 		layer = new Layer();

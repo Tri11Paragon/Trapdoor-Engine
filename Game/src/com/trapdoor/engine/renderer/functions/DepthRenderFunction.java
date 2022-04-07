@@ -47,21 +47,10 @@ public class DepthRenderFunction extends RenderFunction {
 			GL30.glBindVertexArray(mod.getVaoID());
 			GL20.glEnableVertexAttribArray(0);
 			GL20.glEnableVertexAttribArray(1);
-
-			int flag = 0;
-			if (mat.isUsingSpecialMaterial())
-				flag |= 0b1;
-			if (mat.isUsingNormalMap())
-				flag |= 0b10;
-			if (mat.isUsingSpecMap())
-				flag |= 0b100;
 			
-			flag = flag << 28;
 			int pos = GameRegistry.getTextureBaseOffset(mat.getDiffuseTexturePath());
-			pos = (pos << 4) >> 4;
-			flag |= pos;
 			
-			shader.loadFloat("flags", flag);
+			shader.loadFloat("flags", pos);
 			
 			for (int j = 0; j < ents.length; j++) {
 				Entity entity = ents[j];

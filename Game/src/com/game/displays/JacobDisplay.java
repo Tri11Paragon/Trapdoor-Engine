@@ -21,12 +21,14 @@ import com.trapdoor.engine.world.World;
 import com.trapdoor.engine.world.entities.Entity;
 import com.trapdoor.engine.world.entities.components.Transform;
 
+@SuppressWarnings("unused")
 public class JacobDisplay extends IDisplay{
 	
 	public CreativeFirstPerson camera;
 	public World world;
 	private Layer layers, cameraIcon, ballIcon;
 	private Entity a, ball;
+	
 	private SloshyEntityCamera s;
 	private Transform t;
 //	private SmoothEntityCamera s;
@@ -161,6 +163,7 @@ public class JacobDisplay extends IDisplay{
 		this.world.cleanup();
 	}
 	
+	@SuppressWarnings("deprecation")
 	private void doGUI() {
 		// GUI
 		Layer layer = new Layer();
