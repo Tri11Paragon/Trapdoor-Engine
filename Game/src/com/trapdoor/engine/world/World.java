@@ -15,7 +15,14 @@ import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.PhysicsRayTestResult;
 import com.jme3.math.Vector3f;
+import com.karl.Animation.animatedModel.AnimatedModel;
+import com.karl.Animation.animation.Animation;
+import com.karl.Animation.animation.Animator;
+import com.karl.Animation.loaders.AnimatedModelLoader;
+import com.karl.Animation.loaders.AnimationLoader;
+import com.karl.Animation.renderer.AnimatedModelRenderer;
 import com.karl.Engine.skybox.SkyboxRenderer;
+import com.karl.Engine.utils.MyFile;
 import com.trapdoor.engine.ProjectionMatrix;
 import com.trapdoor.engine.UBOLoader;
 import com.trapdoor.engine.camera.Camera;
@@ -82,6 +89,11 @@ public class World {
 	private DepthRenderFunction depthRenderFunction;
 	private EntityRenderFunction entityRenderFunction;
 	private ShadowRenderFunction shadowRenderFunction;
+	
+	private AnimatedModelRenderer animationRenderer;
+	private Animation anim;
+	private AnimatedModel model;
+	private Animator animator;
 
 	@SuppressWarnings("deprecation")
 	public World(Camera c) {
@@ -128,6 +140,11 @@ public class World {
         });
 		//this.physWorld.setGravity(new Vector3f(0.0f, 0.0f, 0.0f));
         raycast = new RayCasting(c, this);
+        animationRenderer = new AnimatedModelRenderer();
+        anim = AnimationLoader.loadAnimation(new MyFile("resources/models/model.dae"));
+        model = AnimatedModelLoader.loadEntity(new MyFile("resources/models/model.dae"), new MyFile("resources/textures/kent.png"));
+        animator = new Animator(model);
+        animator.doAnimation(anim);
 	}
 	
 	/**
@@ -188,6 +205,9 @@ public class World {
 		}
 		particleRenderer.update(this, c);
 		this.particleRenderer.render(this, c);
+		
+		animator.update();
+		animationRenderer.render(model, c, DisplayManager.lightDirection);
 		
 		if (SettingsLoader.GRAPHICS_LEVEL < 1) {
 			this.bloomRenderer.applyBlur();

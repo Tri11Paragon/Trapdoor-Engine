@@ -1,7 +1,7 @@
 package com.karl.Engine.utils;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
+import java.io.FileInputStream;
 import java.io.InputStreamReader;
 
 /**
@@ -19,7 +19,7 @@ public class MyFile {
 	private String name;
 
 	public MyFile(String path) {
-		this.path = FILE_SEPARATOR + path;
+		this.path = path;
 		String[] dirs = path.split(FILE_SEPARATOR);
 		this.name = dirs[dirs.length - 1];
 	}
@@ -56,13 +56,9 @@ public class MyFile {
 		return getPath();
 	}
 
-	public InputStream getInputStream() {
-		return Class.class.getResourceAsStream(path);
-	}
-
 	public BufferedReader getReader() throws Exception {
 		try {
-			InputStreamReader isr = new InputStreamReader(getInputStream());
+			InputStreamReader isr = new InputStreamReader(new FileInputStream(path));
 			BufferedReader reader = new BufferedReader(isr);
 			return reader;
 		} catch (Exception e) {

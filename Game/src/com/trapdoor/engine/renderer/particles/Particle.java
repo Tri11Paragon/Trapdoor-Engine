@@ -43,6 +43,7 @@ public class Particle {
 		double dy = camera.getPosition().y - position.y;
 		double dz = camera.getPosition().z - position.z;
 		distance = (float) (dx * dx + dy * dy + dz * dz);
+		System.out.println(distance);
 		elapsedTime += DisplayManager.getFrameTimeSeconds();
 		updateTextureBlend();
 		return elapsedTime < lifeLength;
