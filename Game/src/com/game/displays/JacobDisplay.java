@@ -29,6 +29,7 @@ public class JacobDisplay extends IDisplay{
 	private Entity a, ball;
 	private SloshyEntityCamera s;
 	private Transform t;
+	private Transform[][] t2;
 //	private SmoothEntityCamera s;
 //	private EntityCamera s;
 	
@@ -100,13 +101,15 @@ public class JacobDisplay extends IDisplay{
 		this.world.addEntityToWorld(b);
 		
 		/* Ball */
+
+		t2 = new Transform[9][9];
 		
 		for (int j = -9; j <= 9; j+=2) {
 			for (int i = -9; i <= 9; i+=2 ) {
-				ball = new EntityBall().setModel(GameRegistry.getModel("resources/models/simple/" + 
+				ball = new EntityStatic().setModel(GameRegistry.getModel("resources/models/simple/" +
 						( (Math.random() >= 0.5) ? "ball.dae" : "ball_b.dae" ) ) )
-						.setPosition(i, 10, 0);
-				t = (Transform) ball.getComponent(Transform.class);
+						.setPosition(i, 10, j);
+				t2[j][i] = (Transform) ball.getComponent(Transform.class);
 //				t.setScale((float) Math.random() * 1.5f + 0.5f, 
 //						   (float) Math.random() * 1.5f + 0.5f, 
 //						   (float) Math.random() * 1.5f + 0.5f
@@ -122,7 +125,7 @@ public class JacobDisplay extends IDisplay{
 		t.setScale(2, 2, 2);
 		t.setYaw(-45);
 		this.world.addEntityToWorld(a);
-		
+
 //		doGUI();
 	}
 
@@ -142,10 +145,20 @@ public class JacobDisplay extends IDisplay{
 //		cameraIcon.setPosition(150 + 6*t.getX(), 150 + 6*t.getZ());
 //		ballIcon.setPosition(150 + 6*u.getX(), 150 + 6*u.getZ());
 	}
+
+	int count = 0;
 	
 	@Override
 	public void update() {
 		this.world.update();
+
+		count++;
+
+		for (Transform[] row : t2) {
+			for (Transform ball : row) {
+				ball.setY(ball.getY() + (float) Math.sin(count));
+			}
+		}
 	}
 
 	@Override
