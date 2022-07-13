@@ -11,8 +11,8 @@ public class AnimatedModelShader extends WorldShader {
 	private static final int MAX_JOINTS = 50;// max number of joints in a skeleton
 	private static final int DIFFUSE_TEX_UNIT = 0;
 
-	private static final MyFile VERTEX_SHADER = new MyFile("renderer", "animatedEntityVertex.glsl");
-	private static final MyFile FRAGMENT_SHADER = new MyFile("renderer", "animatedEntityFragment.glsl");
+	private static final MyFile VERTEX_SHADER = new MyFile("animatedEntityVertex.glsl");
+	private static final MyFile FRAGMENT_SHADER = new MyFile("animatedEntityFragment.glsl");
 
 	private int location_lightDirection;
 	private int[] location_jointTransforms;
@@ -62,6 +62,7 @@ public class AnimatedModelShader extends WorldShader {
 	private void connectTextureUnits() {
 		super.start();
 		super.loadInt(super.getUniformLocation("diffuseMap"), DIFFUSE_TEX_UNIT);
+		setUniformBlockLocation("Matricies", 1);
 		super.stop();
 	}
 
