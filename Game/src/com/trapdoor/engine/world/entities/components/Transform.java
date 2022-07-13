@@ -330,4 +330,14 @@ public class Transform extends IComponent {
 		return super.clone();
 	}
 	
+	public void print() {
+		System.out.println("X: " + this.x);
+		System.out.println("Y: " + this.y);
+		System.out.println("Z: " + this.z);
+		//System.out.println("-----");
+		//System.out.println("pX: " + this.positionStore.x);
+		//System.out.println("pY: " + this.positionStore.y);
+		//WsSystem.out.println("pZ: " + this.positionStore.z);
+	}
+	
 }

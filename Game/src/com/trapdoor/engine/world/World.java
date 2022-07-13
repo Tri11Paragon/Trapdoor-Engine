@@ -135,7 +135,6 @@ public class World {
 	 */
 	public void render() {
 		this.c.render();
-		UBOLoader.updateMatrixUBO();
 		
 		DisplayManager.enableCulling();
 		DisplayManager.disableTransparentcy(); 

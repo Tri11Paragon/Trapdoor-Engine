@@ -9,11 +9,13 @@ import org.lwjgl.glfw.GLFW;
 import com.jme3.bullet.collision.PhysicsRayTestResult;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.objects.PhysicsCharacter;
+import com.trapdoor.engine.UBOLoader;
 import com.trapdoor.engine.camera.Camera;
 import com.trapdoor.engine.camera.CreativeFirstPerson;
 import com.trapdoor.engine.datatypes.collision.AxisAlignedBoundingBox;
 import com.trapdoor.engine.registry.GameRegistry;
 import com.trapdoor.engine.registry.Threading;
+import com.trapdoor.engine.renderer.functions.INoRenderEntity;
 import com.trapdoor.engine.renderer.ui.DebugInfo;
 import com.trapdoor.engine.tools.input.InputMaster;
 import com.trapdoor.engine.tools.input.Keyboard;
@@ -28,7 +30,7 @@ import com.trapdoor.engine.world.entities.tools.WeaponGreg;
  * @date Dec. 20, 2021
  * 
  */
-public class EntityCamera extends Entity {
+public class EntityCamera extends Entity implements INoRenderEntity {
 	
 	protected static float speed = 0.001f;
 	@SuppressWarnings("unused")
@@ -65,6 +67,12 @@ public class EntityCamera extends Entity {
 		this.sl = new SoundListener();
 		this.addComponent(sl);
 		
+	}
+	
+	@Override
+	public void render() {
+		super.render();
+		UBOLoader.updateMatrixUBO();
 	}
 	
 	@Override

@@ -54,6 +54,8 @@ public class DepthRenderFunction extends RenderFunction {
 			
 			for (int j = 0; j < ents.length; j++) {
 				Entity entity = ents[j];
+				if (entity instanceof INoRenderEntity)
+					continue;
 				
 				try {
 					Transform t = entity.getComponent(Transform.class);

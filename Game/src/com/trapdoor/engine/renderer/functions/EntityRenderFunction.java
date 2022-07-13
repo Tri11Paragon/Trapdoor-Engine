@@ -90,6 +90,8 @@ public class EntityRenderFunction extends RenderFunction {
 			for (int j = 0; j < ents.length; j++) {
 				try {
 					Entity entity = ents[j];
+					if (entity instanceof INoRenderEntity)
+						continue;
 					
 					Transform t = entity.getComponent(Transform.class);
 					

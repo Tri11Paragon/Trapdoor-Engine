@@ -1,4 +1,4 @@
-#version 330 core
+#version 420 core
 
 out vec4 out_Color;
 
@@ -8,8 +8,10 @@ uniform sampler2D tex;
 
 void main() {
 	#ifndef $intel
-		if (texture(tex, textureCoord).a < 0.1f)
-			discard;
+		#ifndef $amd
+			if (texture(tex, textureCoord).a < 0.1f)
+				discard;
+		#endif
 	#endif
 	out_Color = vec4(1.0f);
     gl_FragDepth = gl_FragCoord.z;

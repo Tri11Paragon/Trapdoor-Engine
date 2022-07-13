@@ -18,6 +18,7 @@ import com.trapdoor.engine.datatypes.lighting.Light;
 import com.trapdoor.engine.datatypes.ogl.assimp.Mesh;
 import com.trapdoor.engine.datatypes.ogl.assimp.Model;
 import com.trapdoor.engine.tools.Logging;
+import com.trapdoor.engine.tools.input.Keyboard;
 import com.trapdoor.engine.world.World;
 import com.trapdoor.engine.world.entities.components.ComponentStore;
 import com.trapdoor.engine.world.entities.components.IComponent;
@@ -109,6 +110,18 @@ public class Entity implements Comparable<Entity>,Cloneable {
 	public void update() {
 		((Transform) components.getCompoent(Transform.class)).commit(collisionObject);
 		components.update();
+	}
+	
+	public void updatePrint() {
+		Transform t = (Transform) components.getCompoent(Transform.class);
+		System.out.println("-----{PreCommit}-----");
+		t.print();
+		t.commit(collisionObject);
+		System.out.println("-----{PostCommit}-----");
+		t.print();
+		components.update();
+		if (Keyboard.isKeyDown(Keyboard.Q))
+			System.exit(0);
 	}
 	
 	/**

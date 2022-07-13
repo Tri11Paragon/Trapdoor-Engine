@@ -204,6 +204,10 @@ public class WeaponGreg extends Weapon {
 		}
 	}
 	
+	public void syncPosition() {
+		
+	}
+	
 	@Override
 	public void alt() {
 		if (heldEntity == null) {
