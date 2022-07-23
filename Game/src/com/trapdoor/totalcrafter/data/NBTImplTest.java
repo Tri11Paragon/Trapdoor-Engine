@@ -28,7 +28,7 @@ import dev.dewy.nbt.io.CompressionType;
  */
 public class NBTImplTest {
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "unused" })
 	public static void main(String[] args) throws Exception {
 		
 		int timer = 5000;
@@ -154,5 +154,7 @@ public class NBTImplTest {
 		System.out.println("Their Reader took " + (rend-rstart) + "ms to run.");
 		
 	}
+	
+	
 
 }
