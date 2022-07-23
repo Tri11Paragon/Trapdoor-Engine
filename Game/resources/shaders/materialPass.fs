@@ -145,9 +145,9 @@ vec3 calculateLighting(vec3 FragPos, vec3 Normal, vec3 Diffuse, vec3 directlight
     return lighting;
 }
 
-const float heightScale = 0.05f;
+const float heightScale = 0.01f;
 
-vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir, int base)
+vec2 ParallaxMapping4(vec2 texCoords, vec3 viewDir, int base)
 { 
     // number of depth layers
     const float minLayers = 8;
@@ -163,14 +163,14 @@ vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir, int base)
   
     // get initial values
     vec2  currentTexCoords     = texCoords;
-    float currentDepthMapValue = texture(textures, vec3(currentTexCoords, base + 3)).r;
+    float currentDepthMapValue = texture(textures, vec3(currentTexCoords, base+3)).r;
       
     while(currentLayerDepth < currentDepthMapValue)
     {
         // shift texture coordinates along direction of P
         currentTexCoords -= deltaTexCoords;
         // get depthmap value at current texture coordinates
-        currentDepthMapValue = texture(textures, vec3(currentTexCoords, base + 3)).r;  
+        currentDepthMapValue = texture(textures, vec3(currentTexCoords, base+3)).r;  
         // get depth of next layer
         currentLayerDepth += layerDepth;  
     }
@@ -189,42 +189,36 @@ vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir, int base)
     return finalTexCoords;
 }
 
+
 void main(){
     // uses |  base
     // 0000 |  28 bits
     int f = int(flags);
 
-    int base = (f << 4) >> 4;
-
-    int flag = f >> 28;
-    int useNormal = flag & 0x2;
-    int useSpec = flag & 0x4;
-    int specialMat = flag & 0x1;
+    int base = f;
 
     vec3 viewDir = normalize(TangentViewPos - TangentFragPos);
     
-    //vec2 texCoords = ParallaxMapping(textureCoords,  viewDir);
+    //vec2 texCoords = ParallaxMapping4(textureCoords,  viewDir, base);
     
     vec2 texCoords = textureCoords;
+    texCoords = ParallaxMapping4(textureCoords,  viewDir, base);
 
-    vec3 normali = normalo;
-    if (useNormal != 0){
-        vec3 normaltbn = normalize(texture(textures, vec3(texCoords, base + 2)).rgb);
-        normali = normalize(tbnMat * normaltbn);
-    }
+    vec3 normali = texture(textures, vec3(texCoords, base + 2)).rgb;
+    normali = normali * 2 - 1.0;
+    normali = normalize(tbnMat * normali);
 
+    float specA = texture(textures, vec3(texCoords, base + 1)).r;
+
+    
     vec4 diffuseT = texture(textures, vec3(texCoords, base));
-
-    float specA = specAmount;
-    if (useSpec != 0) 
-        specA = texture(textures, vec3(texCoords, base + 1)).r;
 
     // tbnMat * normaltbn
 
 	float shadower = shadowCalc(normali);
 	float lightFactor = 1.0 - (0.8 * shadower);
 
-    out_Color = vec4(calculateLighting(fragPosWorldSpace, normalo, diffuseT.rgb, lightDir, specA, lightFactor), 1.0);
+    out_Color = vec4(calculateLighting(fragPosWorldSpace, normali, diffuseT.rgb, lightDir, specA, lightFactor), 1.0);
 
     float brightness = dot(out_Color.rgb, vec3(0.2126, 0.7152, 0.0722));
     bright_Color = vec4(out_Color.rgb, 1.0) * brightness * brightness;

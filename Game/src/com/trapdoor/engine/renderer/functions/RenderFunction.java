@@ -40,21 +40,27 @@ public abstract class RenderFunction {
 	}
 	
 	public Entity[] sortEntities(ArrayList<Entity> lis) {
-		// TODO: reuse entity buffer
-		Entity[] sorted = new Entity[lis.size()];
-		sorted[0] = lis.get(0);
-		for (int i = 1; i < lis.size(); i++) {
-			Entity e = lis.get(i);
-			Transform t = e.getComponent(Transform.class);
-			try {
-				sorted[i] = e;
-				if (t.getDistanceToCamera() < sorted[i-1].getComponent(Transform.class).getDistanceToCamera()) {
-					sorted[i] = sorted[i-1];
-					sorted[i-1] = e;
-				}
-			} catch (Exception err) {}
-		}
-		return insertionSort(sorted);
+		try {
+			// TODO: reuse entity buffer
+			Entity[] sorted = new Entity[lis.size()];
+			sorted[0] = lis.get(0);
+			for (int i = 1; i < lis.size(); i++) {
+				Entity e = lis.get(i);
+				Transform t = e.getComponent(Transform.class);
+				try {
+					sorted[i] = e;
+					if (t.getDistanceToCamera() < sorted[i-1].getComponent(Transform.class).getDistanceToCamera()) {
+						sorted[i] = sorted[i-1];
+						sorted[i-1] = e;
+					}
+				} catch (Exception err) {}
+			}
+			return insertionSort(sorted);
+		} catch (Exception e) {}
+		Entity[] ents = new Entity[lis.size()];
+		for (int i = 0; i < lis.size(); i++)
+			ents[i] = lis.get(i);
+		return ents;
 	}
 	
 	public Entity[] insertionSort(Entity[] ents) {  

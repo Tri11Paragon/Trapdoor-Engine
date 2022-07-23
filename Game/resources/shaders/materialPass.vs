@@ -38,19 +38,20 @@ void main(void){
 
 	fragpos = viewSpacePos.xyz;
 
-	mat3 tangMat = mat3(transformMatrix);
+	//mat3 tangMat = mat3(transformMatrix);
 
-	//vec3 T = normalize(tangMat * tangent);
-	//vec3 B = normalize(tangMat * bitangent);
-   	//vec3 N = normalize(tangMat * normal);
-	//T = normalize(T - dot(T, N) * N);
-	//vec3 B = cross(T, N);
-   	//tbnMat = mat3(T, B, N);
+	vec3 T = normalize(vec3(transformMatrix * vec4(tangent, 0.0)));
+	//vec3 B = normalize(vec3(transformMatrix * vec4(bitangent, 0.0)));
+   	vec3 N = normalize(vec3(transformMatrix * vec4(normal, 0.0)));
+	T = normalize(T - dot(T, N) * N);
+	vec3 B = cross(T, N);
+	// TODO: option 2 normal mapping
+   	tbnMat = mat3(T, B, N);
 
-	//mat3 TBN = transpose(tbnMat);
+	mat3 TBN = transpose(tbnMat);
 
-    //TangentViewPos  = TBN * viewPos;
-    //TangentFragPos  = TBN * fragPosWorldSpace;
+    TangentViewPos  = TBN * viewPos;
+    TangentFragPos  = TBN * fragPosWorldSpace;
 
     gl_Position = positionRelativeToCam;
 	textureCoords = textureCoordinates;

@@ -1,6 +1,5 @@
 package com.trapdoor.engine.renderer.functions;
 
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 import org.joml.Vector3f;
@@ -8,9 +7,6 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
-import org.lwjgl.opengl.GL33;
-import org.lwjgl.opengl.GL44;
-import org.lwjgl.system.MemoryUtil;
 
 import com.trapdoor.engine.VAOLoader;
 import com.trapdoor.engine.camera.Camera;
@@ -41,7 +37,6 @@ public class EntityRenderFunction extends RenderFunction {
 	public static final int DATA_SIZE_FLOAT = 16 + 3 + 3 + 2;
 	public static final int DATA_SIZE_BYTES = DATA_SIZE_FLOAT * 4;
 	
-	private static FloatBuffer dataStorage;
 	public static int vbo;
 	
 	public EntityRenderFunction(ShaderProgram program, ExtensibleLightingArray frameLights) {
@@ -49,8 +44,8 @@ public class EntityRenderFunction extends RenderFunction {
 		if (vbo != 0)
 			return;
 		vbo = VAOLoader.createEmptyVBO(MAX_INSTANCING_ELEMENTS * DATA_SIZE_BYTES);
-		dataStorage = MemoryUtil.memAllocFloat(MAX_INSTANCING_ELEMENTS * DATA_SIZE_FLOAT);
-		GL44.glMapBuffer(GL33.GL_ARRAY_BUFFER, GL33.GL_WRITE_ONLY, MAX_INSTANCING_ELEMENTS * DATA_SIZE_BYTES, null);
+		//dataStorage = MemoryUtil.memAllocFloat(MAX_INSTANCING_ELEMENTS * DATA_SIZE_FLOAT);
+		//GL44.glMapBuffer(GL33.GL_ARRAY_BUFFER, GL33.GL_WRITE_ONLY, MAX_INSTANCING_ELEMENTS * DATA_SIZE_BYTES, null);
 	}
 
 	private static final Vector3f nodiffuse = new Vector3f(-1);
@@ -87,37 +82,31 @@ public class EntityRenderFunction extends RenderFunction {
 			}
 			
 			shader.loadFloat("specAmount", mat.getSpecular().y);
-			//int flag = 0;
-			//if (mat.isUsingSpecialMaterial())
-			//	flag |= 0b1;
-//			if (mat.isUsingNormalMap())
-//				flag |= 0b10;
-//			if (mat.isUsingSpecMap())
-//				flag |= 0b100;
-			
-			//flag = flag << 31;
+
 			int pos = GameRegistry.getTextureBaseOffset(mat.getDiffuseTexturePath());
-			//pos = (pos << 1) >> 1;
-			//flag |= pos;
 			
 			shader.loadFloat("flags", pos);
 			
 			for (int j = 0; j < ents.length; j++) {
-				Entity entity = ents[j];
-				
-				Transform t = entity.getComponent(Transform.class);
-				
-				ArrayList<Light> lights = entity.getLights();
-				if (first && lights.size() > 0)
-					frameLights.add(lights, entity);
-				
-				if (!checkInFrustum(c, meshes[i].getBoundingBox().translate(t.getX(), t.getY(), t.getZ())))
-					continue;
-				
-				shader.loadMatrix("transformMatrix", Maths.createTransformationMatrix(t));
-				
-				GL11.glDrawElements(GL11.GL_TRIANGLES, mod.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
-				count++;
+				try {
+					Entity entity = ents[j];
+					if (entity instanceof INoRenderEntity)
+						continue;
+					
+					Transform t = entity.getComponent(Transform.class);
+					
+					ArrayList<Light> lights = entity.getLights();
+					if (first && lights.size() > 0)
+						frameLights.add(lights, entity);
+					
+					if (!checkInFrustum(c, meshes[i].getBoundingBox().translate(t.getX(), t.getY(), t.getZ())))
+						continue;
+					
+					shader.loadMatrix("transformMatrix", Maths.createTransformationMatrix(t));
+					
+					GL11.glDrawElements(GL11.GL_TRIANGLES, mod.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+					count++;
+				} catch (Exception e) {}
 			}
 			
 			first = false;
@@ -136,8 +125,8 @@ public class EntityRenderFunction extends RenderFunction {
 	}
 	
 	public void cleanup() {
-		GL44.glUnmapBuffer(GL44.GL_ARRAY_BUFFER);
-		MemoryUtil.memFree(dataStorage);
+		//GL44.glUnmapBuffer(GL44.GL_ARRAY_BUFFER);
+		//MemoryUtil.memFree(dataStorage);
 	}
 	
 	public static int getCount() {

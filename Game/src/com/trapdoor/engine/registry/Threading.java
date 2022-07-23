@@ -52,20 +52,7 @@ public class Threading {
 			}
 			try {
 				while (DisplayManager.displayOpen) {
-					
-					IDisplay dis = DisplayManager.getCurrentDisplay();
-					if (dis != null)
-						dis.update();
-					
-					// always 60!
-					SyncSave.syncPhy(60);
-					
-					long currentFrameTime = System.nanoTime();
-					delta = currentFrameTime - lastFrameTime;
-					lastFrameTime = currentFrameTime;
-					frameTimeMs = delta / 1000000d;
-					frameTimeS = delta / 1000000000d;
-					fps = 1000d/frameTimeMs;
+					doUpdate();
 				}
 				Logging.logger.info("Physics thread exiting! ");
 				DisplayManager.exited++;
@@ -78,6 +65,22 @@ public class Threading {
 		physics.start();
 		physics.setName("Phys&. Thread");
 		DisplayManager.createdThreads++;
+	}
+	
+	public static void doUpdate() {
+		IDisplay dis = DisplayManager.getCurrentDisplay();
+		if (dis != null)
+			dis.update();
+		
+		// always 60!
+		SyncSave.syncPhy(60);
+		
+		long currentFrameTime = System.nanoTime();
+		delta = currentFrameTime - lastFrameTime;
+		lastFrameTime = currentFrameTime;
+		frameTimeMs = delta / 1000000d;
+		frameTimeS = delta / 1000000000d;
+		fps = 1000d/frameTimeMs;
 	}
 	
 	public static void cleanup() {

@@ -1,0 +1,139 @@
+//
+// Created by brett on 22/07/22.
+//
+
+#include "shader.h"
+#include <boost/filesystem.hpp>
+#include "gl.h"
+#include "../logging.h"
+#include <fstream>
+
+using namespace std;
+using namespace boost::filesystem;
+
+namespace TD {
+
+    shader::shader(string vertex, string fragment) {
+        vertexShaderID = loadShader(vertex, GL_VERTEX_SHADER);
+        fragmentShaderID = loadShader(fragment, GL_FRAGMENT_SHADER);
+        if (vertexShaderID <= 0 || fragmentShaderID <= 0) {
+            flog << "Failed to load shaders!";
+            throw SHADER_LOAD_FAILURE;
+        }
+        programID = glCreateProgram();
+        // attach the loaded shaders to the shader program
+        glAttachShader(programID, vertexShaderID);
+        glAttachShader(programID, fragmentShaderID);
+        // link and make sure that our program is valid.
+        glLinkProgram(programID);
+        glValidateProgram(programID);
+    }
+
+    unsigned int shader::loadShader(string file, int type) {
+        if (!exists(file)){
+            flog << "Shader file not found.\n";
+            return -1;
+        }
+
+        // 1. retrieve the vertex/fragment source code from filePath
+        string shaderSource;
+        ifstream vShaderFile;
+        // ensure ifstream objects can throw exceptions:
+        vShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
+        try {
+            // open files
+            vShaderFile.open(file);
+            stringstream shaderStream;
+            // read file's buffer contents into streams
+            shaderStream << vShaderFile.rdbuf();
+            // close file handlers
+            vShaderFile.close();
+            // convert stream into string
+            shaderSource = shaderStream.str();
+        } catch(std::ifstream::failure e) {
+            fout << "Unable to read shader file! " << file << endl;
+            return -1;
+        }
+
+        const char* shaderCode = shaderSource.c_str();
+        // creates a shader
+        unsigned int shaderID = glCreateShader(type);
+        // puts the loaded shader code into the graphics card
+        glShaderSource(shaderID, 1, &shaderCode, NULL);
+        // Compile it
+        glCompileShader(shaderID);
+        // make sure there is no errors
+        int status = 0;
+        glGetShaderiv(shaderID, GL_COMPILE_STATUS, &status);
+        if (!status) {
+            char* log;
+            int length = 0;
+            glGetShaderInfoLog(shaderID, 512, &length, log);
+            flog << "Error long length: " << length << "\n";
+            flog << (log) << "\n";
+            flog << "Could not compile shader! (Shader type: "
+                                 << (type == GL_VERTEX_SHADER ? "vertex" : type == GL_GEOMETRY_SHADER ? "geometry" : "fragment") << ")\n";
+            flog << "Shader File: " << file << "\n";
+            return -1;
+        }
+        return shaderID;
+    }
+
+    void shader::use() {
+        glUseProgram(programID);
+    }
+
+    void shader::bindAttribute(int attribute, std::string name) {
+        use();
+        glBindAttribLocation(programID, attribute, name.c_str());
+    }
+
+    void shader::setUniformBlockLocation(std::string name, int location) {
+        use();
+        glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, name.c_str()), location);
+    }
+
+    unsigned int shader::getUniformLocation(std::string name) {
+        tlog << uniformVars[name] << "\n";
+        if (uniformVars[name])
+            return uniformVars[name];
+        int loc = glGetUniformLocation(programID, name.c_str());
+        uniformVars[name] = loc;
+        return loc;
+    }
+
+    shader::~shader() {
+        glUseProgram(0);
+        // remove all the shaders from the program
+        glDetachShader(programID, vertexShaderID);
+        if (geometryShaderID)
+            glDetachShader(programID, geometryShaderID);
+        if (tessalationShaderID)
+            glDetachShader(programID, tessalationShaderID);
+        glDetachShader(programID, fragmentShaderID);
+
+        // delete the shaders
+        glDeleteShader(vertexShaderID);
+        if (geometryShaderID)
+            glDeleteShader(geometryShaderID);
+        if (tessalationShaderID)
+            glDeleteShader(tessalationShaderID);
+        glDeleteShader(fragmentShaderID);
+
+        // delete the shader program
+        glDeleteProgram(programID);
+    }
+
+    void shader::setBool(const string &name, bool value) {
+        glUniform1i(getUniformLocation(name), (int)value);
+    }
+
+    void shader::setInt(const string &name, int value) {
+        glUniform1i(getUniformLocation(name), value);
+    }
+
+    void shader::setFloat(const string &name, float value) {
+        glUniform1f(getUniformLocation(name), value);
+    }
+
+} // TD

@@ -32,6 +32,7 @@ import com.trapdoor.engine.display.TestDisplay;
 import com.trapdoor.engine.registry.GameRegistry;
 import com.trapdoor.engine.registry.annotations.MainMenuLoadEvent;
 import com.trapdoor.engine.renderer.ui.UIMaster;
+import com.trapdoor.totalcrafter.displays.TotalCrafterGamemodeDisplay;
 
 import imgui.ImGui;
 import imgui.flag.ImGuiCond;
@@ -42,7 +43,7 @@ public class MainMenuDisplay extends IDisplay {
 	private Layer layers;
 	public static Icon rixie;
 	public static Background rixieBackground;
-	public static SinglePlayerDisplay sp;
+	public static TotalCrafterGamemodeDisplay sp;
 
 	@MainMenuLoadEvent
 	public static void onMenu() {
@@ -175,7 +176,7 @@ public class MainMenuDisplay extends IDisplay {
 				(e) -> shadowWidget.getStyle().getShadow().setBlur(blurSlider.getValue()));
 		//layer.add(shadowWidget);
 
-		MainMenuDisplay.sp = new SinglePlayerDisplay();
+		MainMenuDisplay.sp = new TotalCrafterGamemodeDisplay();
 		DisplayManager.createDisplay(MainMenuDisplay.sp);
 		
 		// make sure the layer is disabled until this screen is switched it

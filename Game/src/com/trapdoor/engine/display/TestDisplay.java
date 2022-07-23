@@ -205,14 +205,14 @@ public class TestDisplay extends IDisplay {
 		smokey = new AnimatedParticleSystem("resources/textures/particles/smoke/", 100, 3, 0, 5, 10);
 		this.world.addParticleSystemToWorld(smokey);
 		
-		this.world.addEntityToWorld(new EntitySpawner(
+		/*this.world.addEntityToWorld(new EntitySpawner(
 				new EntityKentSpawnType(rixie), 
 				smokey,
 				ps,
 				12000, 15, 6)
 					.setModel(GameRegistry.getModel("resources/models/spawner.dae"))
 					.setPosition(75, -8, -25));
-		
+		*/
 		this.world.addEntityToWorld(new Entity().setModel(GameRegistry.getModel("resources/models/greg.dae")).setPosition(-5, -18, 20));
 	}
 
@@ -305,15 +305,16 @@ public class TestDisplay extends IDisplay {
 		greg.update();
 		
 		
-		this.ps.generateParticles(new Vector3f(0, 0, 0));
+		//this.ps.generateParticles(new Vector3f(0, 0, 0));
 		
-		this.ps.setDirection(new Vector3f(0.0f, 0.0f, -1.0f), 0.1f);
+		/*this.ps.setDirection(new Vector3f(0.0f, 0.0f, -1.0f), 0.1f);
 		
 		this.ps.saveState(25, 5, this.ps.getGravityComplient(), 20, this.ps.getAverageScale());
 		this.ps.generateParticles(new Vector3f(130, -10, 10));
 		this.ps.restoreState();
 		
 		this.ps.setDirection(null, 0);
+		*/
 		
 		this.smokey.generateParticles(new Vector3f(50, -8, 10));
 	}
