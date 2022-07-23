@@ -32,9 +32,16 @@ namespace TD {
 
     class texture {
     private:
-        unsigned int textureID, width, height, channels;
+        unsigned int textureID;
+        int width, height, channels;
+        unsigned char* loadTexture(std::string path);
+        void loadGLTexture(unsigned char* data);
     public:
-        
+        texture(std::string path);
+        ~texture();
+        void bind();
+        void unbind();
+        void enableGlTextures(int textureCount);
     };
 
 }

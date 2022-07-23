@@ -30,9 +30,10 @@ vector<unsigned int> indices = {
 };
 
 vector<float> texCoords = {
-        0.0f, 0.0f,  // lower-left corner
-        1.0f, 0.0f,  // lower-right corner
-        0.5f, 1.0f   // top-center corner
+        1.0f, 1.0f,   // top right
+        1.0f, 0.0f,   // bottom right
+        0.0f, 0.0f,   // bottom left
+        0.0f, 1.0f    // top left
 };
 
 int main(int, char**){
@@ -49,7 +50,8 @@ int main(int, char**){
     TD::IM_RegisterKeyListener(&keyCallBack);
 
     TD::shader triangleShader("../assets/shaders/triangle.vert", "../assets/shaders/triangle.frag");
-    TD::vao triangleVAO(vertices, indices, 1);
+    TD::vao triangleVAO(vertices, texCoords, indices, 1);
+    TD::texture benTexture("../assets/textures/ben.jpg");
 
     // Main loop
     while (!appWindow.isCloseRequested()) {
@@ -58,6 +60,8 @@ int main(int, char**){
         debugUITool.render(fontContext);
 
         triangleShader.use();
+        benTexture.enableGlTextures(1);
+        benTexture.bind();
         triangleVAO.bind();
         //glEnableVertexAttribArray(0);
         //glDrawArrays(GL_TRIANGLES, 0, 3);
