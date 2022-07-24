@@ -2,13 +2,15 @@
 // Created by brett on 21/07/22.
 //
 #include "input.h"
+#include "window.h"
 
 namespace TD {
 
-    static std::vector<pkeyfunc_t> keyListeners;
-    static std::vector<pmousefunc_t> mouseListeners;
-    static bool keyDown[1024];
-    static bool mouseDown[512];
+    extern std::vector<pkeyfunc_t> keyListeners;
+    extern std::vector<pmousefunc_t> mouseListeners;
+    extern bool keyDown[1024];
+    extern bool mouseDown[512];
+    extern window* _window;
 
     void IM_KeyPressed(int keycode){
         keyDown[keycode] = true;
@@ -52,6 +54,34 @@ namespace TD {
 
     bool isKeyDown(int code){
         return keyDown[code];
+    }
+
+    void updateWindow(void* theWindow) {
+        _window = (TD::window*) theWindow;
+    }
+
+    bool isMouseGrabbed() {
+        return _window->isMouseGrabbed();
+    }
+
+    void setMouseGrabbed(bool grabbed) {
+        _window->setMouseGrabbed(grabbed);
+    }
+
+    double getMouseDX() {
+        return _window->getMouseDX();
+    }
+
+    double getMouseDY() {
+        return _window->getMouseDY();
+    }
+
+    double getMouseX() {
+        return _window->getMouseX();
+    }
+
+    double getMouseY() {
+        return _window->getMouseY();
     }
 
 }

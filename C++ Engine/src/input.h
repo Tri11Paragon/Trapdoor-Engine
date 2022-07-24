@@ -25,6 +25,15 @@ namespace TD {
     bool isMouseDown(int code);
     bool isKeyDown(int code);
 
+    // for static versions
+    void updateWindow(void* theWindow);
+    bool isMouseGrabbed();
+    void setMouseGrabbed(bool grabbed);
+    double getMouseDX();
+    double getMouseDY();
+    double getMouseX();
+    double getMouseY();
+
 }
 
 #endif //ENGINE_INPUT_H

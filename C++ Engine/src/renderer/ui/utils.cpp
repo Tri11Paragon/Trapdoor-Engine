@@ -4,4 +4,6 @@
 
 #include "utils.h"
 
-
+TD::debugUI::debugUI(TD::camera* camera) {
+    this->camera = camera;
+}

@@ -9,6 +9,7 @@
 #include <vector>
 #include <map>
 #include "logging.h"
+#include "imgui/imgui.h"
 
 using namespace std;
 class font{

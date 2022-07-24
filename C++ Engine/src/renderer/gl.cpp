@@ -154,4 +154,26 @@ namespace TD {
         for (int i = 0; i < textureCount; i++)
             glActiveTexture(GL_TEXTURE0 + i);
     }
+
+    static unsigned int matrixUBO;
+    static const unsigned int MATRIX_COUNT = 2;
+    static float matrixData[MATRIX_COUNT * 16];
+
+    void createMatrixUBO() {
+        glGenBuffers(1, &matrixUBO);
+        glBindBuffer(GL_UNIFORM_BUFFER, matrixUBO);
+        glBufferData(GL_UNIFORM_BUFFER, MATRIX_COUNT * 16 * sizeof(float), matrixData, GL_STATIC_DRAW);
+        glBindBufferBase(GL_UNIFORM_BUFFER, 1, matrixUBO);
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    }
+    void updateProjectionMatrixUBO(glm::mat4 matrix) {
+        glBindBuffer(GL_UNIFORM_BUFFER, matrixUBO);
+        glBufferSubData(GL_UNIFORM_BUFFER, (long) 0, 16 * sizeof(float), glm::value_ptr(matrix));
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    }
+    void updateViewMatrixUBO(glm::mat4 matrix) {
+        glBindBuffer(GL_UNIFORM_BUFFER, matrixUBO);
+        glBufferSubData(GL_UNIFORM_BUFFER, (long) (16 * sizeof(float)), 16 * sizeof(float), glm::value_ptr(matrix));
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    }
 }

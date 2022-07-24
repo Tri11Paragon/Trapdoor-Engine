@@ -11,6 +11,7 @@
 #include "gladsources/glad_gl_core/include/glad/gl.h"
 #include <GLFW/glfw3.h>
 #include "../logging.h"
+#include "../glm.h"
 
 namespace TD {
 
@@ -43,6 +44,10 @@ namespace TD {
         void unbind();
         void enableGlTextures(int textureCount);
     };
+
+    void createMatrixUBO();
+    void updateProjectionMatrixUBO(glm::mat4 matrix);
+    void updateViewMatrixUBO(glm::mat4 matrix);
 
 }
 

@@ -4,7 +4,14 @@ layout (location = 1) in vec2 aTexCoord;
 
 out vec2 TexCoord;
 
+uniform mat4 transform;
+
+layout (std140) uniform Matrices {
+    mat4 projectionMatrix;
+    mat4 viewMatrix;
+};
+
 void main() {
-    gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
+    gl_Position = projectionMatrix * viewMatrix * transform * vec4(aPos, 1.0);
     TexCoord = aTexCoord;
 }

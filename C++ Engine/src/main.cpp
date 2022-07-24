@@ -9,12 +9,15 @@
 #include "input.h"
 #include "renderer/ui/utils.h"
 #include "renderer/shader.h"
+#include "renderer/camera.h"
 
-TD::debugUI debugUITool;
+static TD::debugUI* debugUIToolPtr;
 
 static void keyCallBack(bool pressed, int code){
     if (code == GLFW_KEY_F3 && pressed)
-        debugUITool.toggle();
+        debugUIToolPtr->toggle();
+    if (code == GLFW_KEY_ESCAPE && pressed)
+        TD::setMouseGrabbed(!TD::isMouseGrabbed());
 }
 
 vector<float> vertices = {
@@ -45,21 +48,33 @@ int main(int, char**){
 
     fontContext fontContext(fonts);
 
-    window appWindow("GLFW Test", fontContext);
+    TD::window appWindow("GLFW Test", fontContext);
+    TD::updateWindow(&appWindow);
 
     TD::IM_RegisterKeyListener(&keyCallBack);
 
+    TD::firstPersonCamera camera;
+    TD::debugUI debugUITool(&camera);
+    debugUIToolPtr = &debugUITool;
+
     TD::shader triangleShader("../assets/shaders/triangle.vert", "../assets/shaders/triangle.frag");
+    triangleShader.setUniformBlockLocation("Matrices", 1);
     TD::vao triangleVAO(vertices, texCoords, indices, 1);
     TD::texture benTexture("../assets/textures/ben.jpg");
+
+    glm::mat4 trans = glm::mat4(1.0f);
+    trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
 
     // Main loop
     while (!appWindow.isCloseRequested()) {
         appWindow.startRender(0.45f, 0.55f, 0.60f, 1.00f);
+        camera.update();
 
         debugUITool.render(fontContext);
 
         triangleShader.use();
+        trans = glm::rotate(trans, glm::radians(0.05f * 1000.0f / ImGui::GetIO().Framerate), glm::vec3(5.0, 0.5, 1.0));
+        triangleShader.setMatrix("transform", trans);
         benTexture.enableGlTextures(1);
         benTexture.bind();
         triangleVAO.bind();

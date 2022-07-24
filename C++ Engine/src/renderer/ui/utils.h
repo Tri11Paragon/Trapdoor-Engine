@@ -7,6 +7,7 @@
 
 #include "../../imgui/imgui.h"
 #include "../../font.h"
+#include "../camera.h"
 
 namespace TD {
 
@@ -18,7 +19,9 @@ namespace TD {
     class debugUI : renderable {
     private:
         bool enabled = false;
+        TD::camera* camera;
     public:
+        debugUI(TD::camera* camera);
         void toggle(){
             enabled = !enabled;
         }
@@ -29,6 +32,7 @@ namespace TD {
             ImGui::Begin("Debug Info");
 
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+            ImGui::Text("Camera Position: %f, %f, %f", camera->getPosition().x, camera->getPosition().y, camera->getPosition().z);
 
             ImGui::End();
             ImGui::PopFont();

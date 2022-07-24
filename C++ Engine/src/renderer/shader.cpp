@@ -29,7 +29,7 @@ namespace TD {
         glValidateProgram(programID);
     }
 
-    unsigned int shader::loadShader(string file, int type) {
+    unsigned int shader::loadShader(const string &file, int type) {
         if (!exists(file)){
             flog << "Shader file not found.\n";
             return -1;
@@ -93,12 +93,11 @@ namespace TD {
         glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, name.c_str()), location);
     }
 
-    unsigned int shader::getUniformLocation(std::string name) {
-        tlog << uniformVars[name] << "\n";
-        if (uniformVars[name])
-            return uniformVars[name];
-        int loc = glGetUniformLocation(programID, name.c_str());
-        uniformVars[name] = loc;
+    unsigned int shader::getUniformLocation(const std::string &name) {
+        if (uniformVars[name].i != -1)
+            return uniformVars[name].i;
+        unsigned int loc = glGetUniformLocation(programID, name.c_str());
+        uniformVars[name].i = loc;
         return loc;
     }
 
@@ -134,6 +133,10 @@ namespace TD {
 
     void shader::setFloat(const string &name, float value) {
         glUniform1f(getUniformLocation(name), value);
+    }
+
+    void shader::setMatrix(const string &name, glm::mat4x4 matrix) {
+        glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(matrix) );
     }
 
 } // TD
