@@ -139,4 +139,28 @@ namespace TD {
         glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(matrix) );
     }
 
+    void shader::setVec2(const string &name, glm::vec2 vec) {
+        glUniform2f(getUniformLocation(name), vec.x, vec.y);
+    }
+
+    void shader::setVec3(const string &name, glm::vec3 vec) {
+        glUniform3f(getUniformLocation(name), vec.x, vec.y, vec.z);
+    }
+
+    void shader::setVec4(const string &name, glm::vec4 vec) {
+        glUniform4f(getUniformLocation(name), vec.x, vec.y, vec.z, vec.w);
+    }
+
+    void shader::setVec2(const string &name, float x, float y) {
+        glUniform2f(getUniformLocation(name), x, y);
+    }
+
+    void shader::setVec3(const string &name, float x, float y, float z) {
+        glUniform3f(getUniformLocation(name), x, y, z);
+    }
+
+    void shader::setVec4(const string &name, float x, float y, float z, float w) {
+        glUniform4f(getUniformLocation(name), x, y, z, w);
+    }
+
 } // TD

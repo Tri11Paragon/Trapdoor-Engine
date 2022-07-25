@@ -65,6 +65,9 @@ int main(int, char**){
     glm::mat4 trans = glm::mat4(1.0f);
     trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
 
+    triangleShader.use();
+    triangleShader.setVec3("lightColor", glm::vec3(1.0));
+
     // Main loop
     while (!appWindow.isCloseRequested()) {
         appWindow.startRender(0.45f, 0.55f, 0.60f, 1.00f);

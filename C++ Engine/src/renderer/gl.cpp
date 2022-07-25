@@ -31,7 +31,31 @@ namespace TD {
         return vboID;
     }
 
-    unsigned int vao::storeData(int length, unsigned int *data) {
+    unsigned int vao::storeData(const std::vector<Vertex> &vertices) {
+        unsigned int vboID;
+        glGenBuffers(1, &vboID);
+
+        vbos.push_back(vboID);
+
+        glBindBuffer(GL_ARRAY_BUFFER, vboID);
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
+
+        // vertex positions
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+        // vertex normals
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
+        // vertex texture coords
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, UV));
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        return vboID;
+    }
+
+    unsigned int vao::storeData(int length, const unsigned int *data) {
         unsigned int eboID;
         glGenBuffers(1, &eboID);
 
@@ -84,6 +108,21 @@ namespace TD {
         unbind();
     }
 
+    vao::vao(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices, const std::vector<Texture> &textures) {
+        vaoID = createVAO();
+        for (int i = 0; i < 3; i++) {
+            glEnableVertexAttribArray(1);
+            glEnableVertexArrayAttrib(vaoID, i);
+        }
+        storeData(indices.size(), indices.data());
+
+        storeData(vertices);
+
+        unbind();
+        this->textures = textures;
+        this->indexCount = indices.size();
+    }
+
     void vao::bind() {
         glBindVertexArray(vaoID);
     }
@@ -98,6 +137,19 @@ namespace TD {
         for (const unsigned int vbo : vbos){
             glDeleteBuffers(1, &vbo);
         }
+    }
+
+    void vao::bindTextures() {
+        for (Texture t : textures){
+            glActiveTexture(GL_TEXTURE0 + t.location);
+            t.texture.bind();
+        }
+    }
+
+    void vao::draw() {
+        if (indexCount < 0)
+            return;
+        glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
     }
 
     /***---------------{Texture}---------------***/

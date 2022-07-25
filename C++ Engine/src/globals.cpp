@@ -1,6 +1,10 @@
 //
 // Created by brett on 24/07/22.
 //
+// The globals class contains all the globals used for the trapdoor engine
+// this is done this way to provide a simple unified source file for all the global definitions
+// Yes putting them in the corresponding cpp file may be better however I prefer it this way
+// you are not required to follow this code style and in fact I discourage it.
 #include "std.h"
 #include "glm.h"
 #include "input.h"

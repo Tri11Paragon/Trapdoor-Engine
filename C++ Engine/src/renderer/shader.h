@@ -33,6 +33,12 @@ namespace TD {
         void setInt(const std::string &name, int value);
         void setFloat(const std::string &name, float value);
         void setMatrix(const std::string &name, glm::mat4x4 matrix);
+        void setVec2(const std::string &name, glm::vec2 vec);
+        void setVec3(const std::string &name, glm::vec3 vec);
+        void setVec4(const std::string &name, glm::vec4 vec);
+        void setVec2(const std::string &name, float x, float y);
+        void setVec3(const std::string &name, float x, float y, float z);
+        void setVec4(const std::string &name, float x, float y, float z, float w);
         void use();
         ~shader();
     };

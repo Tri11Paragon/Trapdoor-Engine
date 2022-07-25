@@ -15,22 +15,6 @@
 
 namespace TD {
 
-    class vao {
-    private:
-        unsigned int vaoID;
-        std::vector<unsigned int> vbos;
-        unsigned int createVAO();
-        unsigned int storeData(int attrNumber, int coordSize, int stride, long offset, int length, float* data);
-        unsigned int storeData(int length, unsigned int* data);
-    public:
-        vao(std::vector<float> &verts, std::vector<unsigned int> &indicies, int attributeCount);
-        vao(std::vector<float> &verts, std::vector<float> &uvs, std::vector<unsigned int> &indicies, int attributeCount);
-        vao(std::vector<float> &verts, int dimensions, int attributeCount);
-        ~vao();
-        void bind();
-        void unbind();
-    };
-
     class texture {
     private:
         unsigned int textureID;
@@ -43,6 +27,37 @@ namespace TD {
         void bind();
         void unbind();
         void enableGlTextures(int textureCount);
+    };
+
+    struct Vertex {
+        glm::vec3 Position;
+        glm::vec3 Normal;
+        glm::vec2 UV;
+    };
+    struct Texture {
+        texture texture;
+        int location;
+    };
+    class vao {
+    private:
+        unsigned int vaoID;
+        std::vector<unsigned int> vbos;
+        std::vector<Texture> textures;
+        int indexCount = -1;
+        unsigned int createVAO();
+        unsigned int storeData(int attrNumber, int coordSize, int stride, long offset, int length, float* data);
+        unsigned int storeData(int length, const unsigned int* data);
+        unsigned int storeData(const std::vector<Vertex> &vertices);
+    public:
+        vao(std::vector<float> &verts, std::vector<unsigned int> &indicies, int attributeCount);
+        vao(std::vector<float> &verts, std::vector<float> &uvs, std::vector<unsigned int> &indicies, int attributeCount);
+        vao(std::vector<float> &verts, int dimensions, int attributeCount);
+        vao(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices, const std::vector<Texture> &textures);
+        ~vao();
+        void bind();
+        void bindTextures();
+        void draw();
+        void unbind();
     };
 
     void createMatrixUBO();
