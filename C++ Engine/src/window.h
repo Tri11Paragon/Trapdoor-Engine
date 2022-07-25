@@ -16,35 +16,29 @@ namespace TD {
 
     class window {
     private:
-        GLFWwindow *_window;
-        bool _isMouseGrabbed = false;
-        int _display_w, _display_h;
-        bool _loadingComplete = false;
-        double _dx, _dy, _lx, _ly, _mx, _my;
-
         static void glfw_error_callback(int error, const char *description) {
             elog << "Glfw Error " << error << ": " << description << std::endl;
+            exit(error);
         }
-
     public:
-        window() : window("Generic GLFW Window") {};
-        window(string title) : window(title, NULL_CONTEXT) {};
-        window(string title, fontContext &fonts);
+        static void initWindow() {initWindow("Generic GLFW Window");};
+        static void initWindow(string title) {initWindow(title, NULL_CONTEXT);};
+        static void initWindow(string title, fontContext &fonts);
 
-        void startRender(float r, float g, float b, float a);
-        void finishRender();
-        bool isCloseRequested();
-        int width();
-        int height();
-        bool loadingCompleted();
-        bool isMouseGrabbed();
-        void setMouseGrabbed(bool grabbed);
-        double getMouseDX();
-        double getMouseDY();
-        double getMouseX();
-        double getMouseY();
+        static void startRender(float r, float g, float b, float a);
+        static void finishRender();
+        static bool isCloseRequested();
+        static int width();
+        static int height();
+        static bool loadingCompleted();
+        static bool isMouseGrabbed();
+        static void setMouseGrabbed(bool grabbed);
+        static double getMouseDX();
+        static double getMouseDY();
+        static double getMouseX();
+        static double getMouseY();
 
-        ~window();
+        static void deleteWindow();
     };
 
     // key defs

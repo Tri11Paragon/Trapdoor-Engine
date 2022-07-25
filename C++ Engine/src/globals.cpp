@@ -18,11 +18,17 @@ namespace TD {
     std::vector<pmousefunc_t> mouseListeners;
     bool keyDown[1024];
     bool mouseDown[512];
-    window* _window;
 
     // UBOS
     unsigned int matrixUBO;
     const unsigned int MATRIX_COUNT = 2;
     float matrixData[MATRIX_COUNT * 16];
     std::map<std::string, Texture> loadedTextures;
+
+    // Window / GLFW
+    GLFWwindow *_window;
+    bool _isMouseGrabbed = false;
+    int _display_w, _display_h;
+    bool _loadingComplete = false;
+    double _dx, _dy, _lx, _ly, _mx, _my;
 }

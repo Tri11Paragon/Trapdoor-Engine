@@ -48,8 +48,7 @@ int main(int, char**){
 
     fontContext fontContext(fonts);
 
-    TD::window appWindow("GLFW Test", fontContext);
-    TD::updateWindow(&appWindow);
+    TD::window::initWindow("GLFW Test", fontContext);
 
     TD::IM_RegisterKeyListener(&keyCallBack);
 
@@ -83,8 +82,8 @@ int main(int, char**){
     triangleShader.setVec3("lightColor", glm::vec3(1.0));
 
     // Main loop
-    while (!appWindow.isCloseRequested()) {
-        appWindow.startRender(0.45f, 0.55f, 0.60f, 1.00f);
+    while (!TD::window::isCloseRequested()) {
+        TD::window::startRender(0.45f, 0.55f, 0.60f, 1.00f);
         camera.update();
 
         debugUITool.render(fontContext);
@@ -108,10 +107,10 @@ int main(int, char**){
         skyboxVAO.bind();
         skyboxVAO.draw();
 
-        appWindow.finishRender();
+        TD::window::finishRender();
     }
 
-    TD::deleteGlobalTextureCache();
+    TD::window::deleteWindow();
 
     return 0;
 }

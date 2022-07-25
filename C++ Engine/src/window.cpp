@@ -12,7 +12,13 @@
 
 namespace TD {
 
-    window::window(string title, fontContext &fonts) {
+    extern GLFWwindow *_window;
+    extern bool _isMouseGrabbed;
+    extern int _display_w, _display_h;
+    extern bool _loadingComplete;
+    extern double _dx, _dy, _lx, _ly, _mx, _my;
+
+    void window::initWindow(string title, fontContext &fonts) {
         // Setup window
         glfwSetErrorCallback(glfw_error_callback);
         if (!glfwInit()) {
@@ -158,7 +164,8 @@ namespace TD {
         return _loadingComplete;
     }
 
-    window::~window() {
+    void window::deleteWindow() {
+        TD::deleteGlobalTextureCache();
         // Cleanup
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();

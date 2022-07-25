@@ -10,7 +10,6 @@ namespace TD {
     extern std::vector<pmousefunc_t> mouseListeners;
     extern bool keyDown[1024];
     extern bool mouseDown[512];
-    extern window* _window;
 
     void IM_KeyPressed(int keycode){
         keyDown[keycode] = true;
@@ -56,32 +55,28 @@ namespace TD {
         return keyDown[code];
     }
 
-    void updateWindow(void* theWindow) {
-        _window = (TD::window*) theWindow;
-    }
-
     bool isMouseGrabbed() {
-        return _window->isMouseGrabbed();
+        return TD::window::isMouseGrabbed();
     }
 
     void setMouseGrabbed(bool grabbed) {
-        _window->setMouseGrabbed(grabbed);
+        TD::window::setMouseGrabbed(grabbed);
     }
 
     double getMouseDX() {
-        return _window->getMouseDX();
+        return TD::window::getMouseDX();
     }
 
     double getMouseDY() {
-        return _window->getMouseDY();
+        return TD::window::getMouseDY();
     }
 
     double getMouseX() {
-        return _window->getMouseX();
+        return TD::window::getMouseX();
     }
 
     double getMouseY() {
-        return _window->getMouseY();
+        return TD::window::getMouseY();
     }
 
 }
