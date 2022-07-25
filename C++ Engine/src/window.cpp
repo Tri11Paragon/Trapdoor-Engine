@@ -84,13 +84,19 @@ namespace TD {
 
         fonts.load(io);
 
-        glEnable(GL_DEPTH_TEST);
         TD::createMatrixUBO();
+
 
         _loadingComplete = true;
     }
 
     void window::startRender(float r, float g, float b, float a) {
+        glClearColor(r * a, g * a, b * a, a);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LEQUAL);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
         // Poll and handle events (inputs, window resize, etc.)
         // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
         // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application, or clear/overwrite your copy of the mouse data.
@@ -124,8 +130,6 @@ namespace TD {
                     glm::perspective(glm::radians(90.0f), (float) _display_w / (float) _display_h, 0.1f, 1000.0f));
             dlog << "Changing Projection Matrix to " << _display_w << "w " << _display_h << "h\n";
         }
-        glClearColor(r * a, g * a, b * a, a);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
     void window::finishRender() {

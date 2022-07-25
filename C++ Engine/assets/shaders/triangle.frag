@@ -14,5 +14,5 @@ void main() {
 
     vec3 result = ambient * textureColor.rgb;
 
-    FragColor = vec4(result, 1.0f);
+    FragColor = vec4(textureColor.rgb, 1.0f);
 }

@@ -9,6 +9,7 @@
 #include "glm.h"
 #include "input.h"
 #include "window.h"
+#include "renderer/gl.h"
 namespace TD {
     double lastTime;
     double frameTimeMS, frameTimeS, fps;
@@ -18,4 +19,10 @@ namespace TD {
     bool keyDown[1024];
     bool mouseDown[512];
     window* _window;
+
+    // UBOS
+    unsigned int matrixUBO;
+    const unsigned int MATRIX_COUNT = 2;
+    float matrixData[MATRIX_COUNT * 16];
+    std::map<std::string, Texture> loadedTextures;
 }

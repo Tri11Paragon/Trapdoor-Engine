@@ -37,11 +37,11 @@ namespace TD {
                 _yaw = 0;
 
             if (TD::isKeyDown(GLFW_KEY_LEFT_ALT))
-                speed = 1.0f;
-            else if (TD::isKeyDown(KEY_L_CONTROL))
-                speed = 25.0f;
-            else
                 speed = 5.0f;
+            else if (TD::isKeyDown(KEY_L_CONTROL))
+                speed = 150.0f;
+            else
+                speed = 40.0f;
 
             if (TD::isKeyDown(KEY_W))
                 _moveAtX = (float) (-speed * TD::getFrameTimeSeconds());

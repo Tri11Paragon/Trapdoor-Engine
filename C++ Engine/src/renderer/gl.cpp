@@ -17,7 +17,7 @@ namespace TD {
         return vaoID;
     }
 
-    unsigned int vao::storeData(int attrNumber, int coordSize, int stride, long offset, int length, float* data) {
+    unsigned int vao::storeData(int attrNumber, int coordSize, int stride, long offset, int length, const float* data) {
         unsigned int vboID;
         glGenBuffers(1, &vboID);
 
@@ -68,10 +68,11 @@ namespace TD {
         return eboID;
     }
 
-    vao::vao(std::vector<float> &verts, std::vector<unsigned int> &indicies, int attributeCount) {
+    vao::vao(const std::vector<float> &verts, const std::vector<unsigned int> &indicies, int attributeCount) {
+        this->indexCount = indicies.size();
         vaoID = createVAO();
         for (int i = 0; i < attributeCount; i++) {
-            glEnableVertexAttribArray(1);
+            glEnableVertexAttribArray(i);
             glEnableVertexArrayAttrib(vaoID, i);
         }
         indicies.size();
@@ -83,15 +84,16 @@ namespace TD {
     }
 
     vao::vao(std::vector<float> &verts, std::vector<float> &uvs, std::vector<unsigned int> &indicies, int attributeCount) {
+        this->indexCount = indicies.size();
         vaoID = createVAO();
         for (int i = 0; i < attributeCount; i++) {
-            glEnableVertexAttribArray(1);
+            glEnableVertexAttribArray(i);
             glEnableVertexArrayAttrib(vaoID, i);
         }
         storeData(indicies.size(), indicies.data());
 
         storeData(0, 3, 3 * sizeof(float), 0, verts.size(), verts.data());
-        storeData(1, 2, 2 * sizeof(float), 0, uvs.size(), uvs.data());
+        storeData(2, 2, 2 * sizeof(float), 0, uvs.size(), uvs.data());
 
         unbind();
     }
@@ -99,7 +101,7 @@ namespace TD {
     vao::vao(std::vector<float> &verts, int dimensions, int attributeCount) {
         vaoID = createVAO();
         for (int i = 0; i < attributeCount; i++) {
-            glEnableVertexAttribArray(1);
+            glEnableVertexAttribArray(i);
             glEnableVertexArrayAttrib(vaoID, i);
         }
 
@@ -109,9 +111,11 @@ namespace TD {
     }
 
     vao::vao(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices, const std::vector<Texture> &textures) {
+        this->textures = textures;
+        this->indexCount = indices.size();
         vaoID = createVAO();
         for (int i = 0; i < 3; i++) {
-            glEnableVertexAttribArray(1);
+            glEnableVertexAttribArray(i);
             glEnableVertexArrayAttrib(vaoID, i);
         }
         storeData(indices.size(), indices.data());
@@ -119,8 +123,6 @@ namespace TD {
         storeData(vertices);
 
         unbind();
-        this->textures = textures;
-        this->indexCount = indices.size();
     }
 
     void vao::bind() {
@@ -142,7 +144,7 @@ namespace TD {
     void vao::bindTextures() {
         for (Texture t : textures){
             glActiveTexture(GL_TEXTURE0 + t.location);
-            t.texture.bind();
+            t.texture->bind();
         }
     }
 
@@ -154,9 +156,13 @@ namespace TD {
 
     /***---------------{Texture}---------------***/
 
+    texture::texture(){
+
+    }
+
     texture::texture(std::string path) {
         unsigned char* data = loadTexture(path);
-        if (data == NULL){
+        if (data == nullptr){
             flog << "There was an error loading the image file " << path;
             throw "Error loading image from file!";
         }
@@ -167,10 +173,10 @@ namespace TD {
         // TODO: add more image processing options
         stbi_set_flip_vertically_on_load(true);
         unsigned char *data = stbi_load(path.c_str(), &width, &height, &channels, 0);
-        if (stbi__g_failure_reason) {
-            flog << "STB Error Reason: ";
-            flog << stbi__g_failure_reason;
-        }
+        //if (stbi__g_failure_reason) {
+        //    flog << "STB Error Reason: ";
+        //    flog << stbi__g_failure_reason;
+        //}
         return data;
     }
 
@@ -207,9 +213,184 @@ namespace TD {
             glActiveTexture(GL_TEXTURE0 + i);
     }
 
-    static unsigned int matrixUBO;
-    static const unsigned int MATRIX_COUNT = 2;
-    static float matrixData[MATRIX_COUNT * 16];
+    /***---------------{Cubemap Texture}---------------***/
+
+    cubemapTexture::cubemapTexture(std::vector<std::string> paths) {
+        if (paths.size() < 6)
+            throw "Cubemap must have 6 paths provided!";
+        glGenTextures(1, &textureID);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        for (int i = 0; i < paths.size(); i++){
+            stbi_set_flip_vertically_on_load(false);
+            unsigned char* data = stbi_load(paths[i].c_str(), &width, &height, &channels, 4);
+
+            int GL_RGB_SETTING = GL_RGBA;
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB_SETTING, width, height, 0, GL_RGB_SETTING, GL_UNSIGNED_BYTE, data);
+
+            stbi_image_free(data);
+        }
+        //glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+    }
+
+    void cubemapTexture::bind() {
+        glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+    }
+
+    void cubemapTexture::unbind() {
+        glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+    }
+
+    /***---------------{Model}---------------***/
+
+    void model::draw(shader &shader, glm::vec3 *positions, int numberOfPositions) {
+        shader.use();
+        for (vao* mesh : meshes){
+            mesh->bind();
+            mesh->bindTextures();
+            for (int i = 0; i < numberOfPositions; i++){
+                shader.setMatrix("transform", glm::translate(glm::mat4(1.0f), positions[i]));
+                mesh->draw();
+            }
+        }
+    }
+
+    void model::draw(shader &shader, glm::vec3 position) {
+        shader.use();
+        shader.setMatrix("transform", glm::translate(glm::mat4(1.0f), position));
+        for (vao* mesh : meshes){
+            mesh->bindTextures();
+            mesh->bind();
+            mesh->draw();
+        }
+    }
+
+    void model::draw(shader &shader, std::vector<glm::vec3> positions) {
+        draw(shader, positions.data(), positions.size());
+    }
+
+    void model::loadModel(std::string path) {
+        Assimp::Importer import;
+
+        const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+
+        if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
+            flog << "Error loading model with Assimp." << std::endl;
+            flog << import.GetErrorString() << std::endl;
+            return;
+        }
+        directory = path.substr(0, path.find_last_of('/'));
+
+        processNode(scene->mRootNode, scene);
+    }
+
+    void model::processNode(aiNode *node, const aiScene *scene) {
+        // process all the node's meshes (if any)
+        for(unsigned int i = 0; i < node->mNumMeshes; i++) {
+            aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
+            meshes.push_back(processMesh(mesh, scene));
+        }
+        // then do the same for each of its children
+        for(unsigned int i = 0; i < node->mNumChildren; i++) {
+            processNode(node->mChildren[i], scene);
+        }
+    }
+
+    vao* model::processMesh(aiMesh *mesh, const aiScene *scene) {
+        std::vector<Vertex> vertices;
+        std::vector<unsigned int> indices;
+        std::vector<Texture> textures;
+
+        for(unsigned int i = 0; i < mesh->mNumVertices; i++)
+        {
+            Vertex vertex;
+            // process vertex positions, normals and texture coordinates
+            glm::vec3 vector;
+            vector.x = mesh->mVertices[i].x;
+            vector.y = mesh->mVertices[i].y;
+            vector.z = mesh->mVertices[i].z;
+            vertex.Position = vector;
+
+            vector.x = mesh->mNormals[i].x;
+            vector.y = mesh->mNormals[i].y;
+            vector.z = mesh->mNormals[i].z;
+            vertex.Normal = vector;
+
+            // does the mesh contain texture coordinates?
+            if(mesh->mTextureCoords[0]) {
+                glm::vec2 vec;
+                vec.x = mesh->mTextureCoords[0][i].x;
+                vec.y = mesh->mTextureCoords[0][i].y;
+                vertex.UV = vec;
+            } else
+                vertex.UV = glm::vec2(0.0f, 0.0f);
+
+            vertices.push_back(vertex);
+        }
+        // process indices
+        for(unsigned int i = 0; i < mesh->mNumFaces; i++) {
+            aiFace face = mesh->mFaces[i];
+            for(unsigned int j = 0; j < face.mNumIndices; j++)
+                indices.push_back(face.mIndices[j]);
+        }
+
+        // process material
+        if(mesh->mMaterialIndex >= 0) {
+            aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
+            std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, DIFFUSE);
+            textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+
+            std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, SPECULAR);
+            textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+
+            std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_NORMALS, NORMAL);
+            textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
+        }
+
+        return new vao(vertices, indices, textures);
+    }
+
+    extern std::map<std::string, Texture> loadedTextures;
+
+    std::vector<Texture> model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, TEXTURE_TYPE textureType) {
+        std::vector<Texture> textures;
+        for(unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
+            aiString str;
+            mat->GetTexture(type, i, &str);
+            std::string path = std::string("../assets/textures/") + str.C_Str();
+
+            std::map<std::string, Texture>& textureMap = useTextureCache ? TD::loadedTextures : this->loadedTextures;
+
+            if (textureMap.contains(path)){
+                textures.push_back(textureMap.at(path));
+                continue;
+            }
+
+            ilog << "Loading texture{ " << str.C_Str() << " } @ " << path;
+            Texture tex(new TD::texture(path), textureType, path);
+            textureMap.insert(std::pair(path, tex));
+            textures.push_back(tex);
+        }
+        return textures;
+    }
+
+    model::~model(){
+        for (vao* m : meshes)
+            delete(m);
+        for (std::pair<std::string, Texture> tpair : loadedTextures)
+            delete(tpair.second.texture);
+    }
+
+    /***---------------{Static Stuff}---------------***/
+
+    extern unsigned int matrixUBO;
+    extern const unsigned int MATRIX_COUNT = 2;
+    extern float matrixData[MATRIX_COUNT * 16];
 
     void createMatrixUBO() {
         glGenBuffers(1, &matrixUBO);
@@ -228,4 +409,23 @@ namespace TD {
         glBufferSubData(GL_UNIFORM_BUFFER, (long) (16 * sizeof(float)), 16 * sizeof(float), glm::value_ptr(matrix));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
+    void deleteGlobalTextureCache() {
+        for (std::pair<std::string, Texture> tpair : loadedTextures)
+            delete(tpair.second.texture);
+    }
+
+    static const std::vector<unsigned int> INDICES { 0, 1, 3, 1, 2, 3, 1, 5, 2, 2, 5, 6, 4, 7, 5, 5, 7, 6, 0,
+                                         3, 4, 4, 3, 7, 7, 3, 6, 6, 3, 2, 4, 5, 0, 0, 5, 1 };
+
+    const std::vector<float> getCubeVertexPositions(float size) {
+        return std::vector<float>{ -size, size, size, size, size, size, size, -size, size, -size, -size,
+                 size, -size, size, -size, size, size, -size, size, -size, -size, -size, -size,
+                 -size };;
+    }
+    const std::vector<unsigned int> getCubeIndices() {
+        return INDICES;
+    }
+
+    Texture::Texture(TD::texture* texture, TEXTURE_TYPE type, std::string path) : texture(texture) {this->type = type; this->path = path; this->location = 0;}
+
 }

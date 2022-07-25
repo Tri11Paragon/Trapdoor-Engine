@@ -57,10 +57,24 @@ int main(int, char**){
     TD::debugUI debugUITool(&camera);
     debugUIToolPtr = &debugUITool;
 
+    TD::shader skyboxShader("../assets/shaders/skybox/skybox.vert", "../assets/shaders/skybox/skybox.frag");
+    skyboxShader.setUniformBlockLocation("Matrices", 1);
+    skyboxShader.setFloat("useColor", 0);
+    TD::cubemapTexture skyboxTexture(std::vector<std::string> {
+        "../assets/textures/skyboxes/basic_day/right.png",
+        "../assets/textures/skyboxes/basic_day/left.png",
+        "../assets/textures/skyboxes/basic_day/top.png",
+        "../assets/textures/skyboxes/basic_day/bottom.png",
+        "../assets/textures/skyboxes/basic_day/back.png",
+        "../assets/textures/skyboxes/basic_day/front.png"
+    });
+    TD::vao skyboxVAO(TD::getCubeVertexPositions(250), TD::getCubeIndices(), 1);
+
     TD::shader triangleShader("../assets/shaders/triangle.vert", "../assets/shaders/triangle.frag");
     triangleShader.setUniformBlockLocation("Matrices", 1);
-    TD::vao triangleVAO(vertices, texCoords, indices, 1);
-    TD::texture benTexture("../assets/textures/ben.jpg");
+    TD::vao triangleVAO(vertices, texCoords, indices, 3);
+    TD::texture benTexture("../assets/textures/kent.png");
+    TD::model kent("../assets/models/kent.dae");
 
     glm::mat4 trans = glm::mat4(1.0f);
     trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
@@ -75,19 +89,29 @@ int main(int, char**){
 
         debugUITool.render(fontContext);
 
+        kent.draw(triangleShader, std::vector<glm::vec3> {
+            glm::vec3(0, 0, -1), glm::vec3(0, 0, -10), glm::vec3(12, 0, -1), glm::vec3(4, 21, -1), glm::vec3(6, -5, -1)
+        });
+
         triangleShader.use();
         trans = glm::rotate(trans, glm::radians(0.05f * 1000.0f / ImGui::GetIO().Framerate), glm::vec3(5.0, 0.5, 1.0));
         triangleShader.setMatrix("transform", trans);
+
         benTexture.enableGlTextures(1);
         benTexture.bind();
         triangleVAO.bind();
-        //glEnableVertexAttribArray(0);
-        //glDrawArrays(GL_TRIANGLES, 0, 3);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         triangleVAO.unbind();
 
+        skyboxShader.use();
+        skyboxTexture.bind();
+        skyboxVAO.bind();
+        skyboxVAO.draw();
+
         appWindow.finishRender();
     }
+
+    TD::deleteGlobalTextureCache();
 
     return 0;
 }
