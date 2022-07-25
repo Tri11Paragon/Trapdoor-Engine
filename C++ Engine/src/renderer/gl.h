@@ -108,6 +108,46 @@ namespace TD {
         std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, TEXTURE_TYPE textureType);
     };
 
+    enum DEPTH_ATTACHMENT_TYPE {
+        DEPTH_BUFFER,
+        DEPTH_TEXTURE
+    };
+
+    class fbo {
+    private:
+        unsigned int _fboID;
+        DEPTH_ATTACHMENT_TYPE _fboType;
+        int _width = 0, _height = 0;
+
+        std::unordered_map<int, unsigned int> _colorTextures;
+        unsigned int _depthAttachment;
+
+        void validateFramebuffer();
+    public:
+        fbo();
+        fbo(DEPTH_ATTACHMENT_TYPE type);
+        fbo(int width, int height);
+        fbo(int width, int height, DEPTH_ATTACHMENT_TYPE type);
+
+        void createColorTexture(int colorAttachment);
+
+        void bindColorTexture(int colorAttachment);
+        void bindDepthTexture(int depthAttachment);
+        void bindFBO();
+        void unbindFBO();
+
+        void blitToScreen();
+        void blitToFBO(int readBuffer, fbo& outputFBO);
+
+        void renderToQuad();
+        void renderToQuad(glm::vec2 size);
+        void renderToQuad(glm::vec2 pos, glm::vec2 size);
+        void renderToQuad(int width, int height);
+        void renderToQuad(int x, int y, int width, int height);
+
+        ~fbo();
+    };
+
     void createMatrixUBO();
     void updateProjectionMatrixUBO(glm::mat4 matrix);
     void updateViewMatrixUBO(glm::mat4 matrix);

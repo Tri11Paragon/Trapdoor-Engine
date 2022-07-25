@@ -386,6 +386,118 @@ namespace TD {
             delete(tpair.second.texture);
     }
 
+    /***---------------{FBOs}---------------***/
+    extern int _display_w, _display_h;
+
+    fbo::fbo() : fbo(_display_w, _display_h, DEPTH_BUFFER) {}
+    fbo::fbo(DEPTH_ATTACHMENT_TYPE type): fbo(_display_w, _display_h, type) {}
+    fbo::fbo(int width, int height): fbo(width, height, DEPTH_BUFFER) {}
+
+    fbo::fbo(int width, int height, DEPTH_ATTACHMENT_TYPE type){
+        this->_width = width;
+        this->_height = height;
+        this->_fboType = type;
+        glGenFramebuffers(1, &_fboID);
+        bindFBO();
+
+        if (type == DEPTH_TEXTURE){
+            glGenTextures(1, &_depthAttachment);
+            glBindTexture(GL_TEXTURE_2D, _depthAttachment);
+
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, _width, _height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
+
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, _depthAttachment, 0);
+        } else if (type == DEPTH_BUFFER) {
+            glGenRenderbuffers(1, &_depthAttachment);
+            glBindRenderbuffer(GL_RENDERBUFFER, _depthAttachment);
+
+            glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, _width, _height);
+            glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _depthAttachment);
+        }
+
+        validateFramebuffer();
+        unbindFBO();
+    }
+
+    void fbo::validateFramebuffer() {
+        if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+            throw "Unable to create framebuffer!";
+    }
+
+    void fbo::createColorTexture(int colorAttachment) {
+        unsigned int colorTextureID;
+        glGenTextures(1, &colorTextureID);
+        glBindTexture(GL_TEXTURE_2D, colorTextureID);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, _width, _height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        glFramebufferTexture2D(GL_FRAMEBUFFER, colorAttachment, GL_TEXTURE_2D, colorTextureID, 0);
+    }
+
+    void fbo::bindColorTexture(int colorAttachment) {
+
+    }
+
+    void fbo::bindDepthTexture(int depthAttachment) {
+        if (_fboType != DEPTH_TEXTURE)
+            throw "Unable to bind texture. FBO uses renderbuffer!";
+
+    }
+
+    void fbo::bindFBO() {
+        glBindFramebuffer(GL_FRAMEBUFFER, _fboID);
+    }
+
+    void fbo::unbindFBO() {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+
+    void fbo::blitToScreen() {
+
+    }
+
+    void fbo::blitToFBO(int readBuffer, fbo &outputFBO) {
+
+    }
+
+    void fbo::renderToQuad() {
+        renderToQuad(_width, _height);
+    }
+
+    void fbo::renderToQuad(glm::vec2 size) {
+        renderToQuad(size.x, size.y);
+    }
+
+    void fbo::renderToQuad(glm::vec2 pos, glm::vec2 size) {
+        renderToQuad(pos.x, pos.y, size.x, size.y);
+    }
+
+    void fbo::renderToQuad(int width, int height) {
+        renderToQuad(0,0, width, height);
+    }
+
+    void fbo::renderToQuad(int x, int y, int width, int height) {
+
+    }
+
+    fbo::~fbo() {
+        glDeleteFramebuffers(1, &_fboID);
+        if (_fboType == DEPTH_BUFFER){
+            glDeleteRenderbuffers(1, &_depthAttachment);
+        } else if (_fboType == DEPTH_TEXTURE){
+            glDeleteTextures(1, &_depthAttachment);
+        }
+        for (std::pair<int, unsigned int> p : _colorTextures){
+            glDeleteTextures(1, &p.second);
+        }
+    }
+
     /***---------------{Static Stuff}---------------***/
 
     extern unsigned int matrixUBO;
