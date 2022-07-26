@@ -29,4 +29,6 @@ namespace TD {
     bool _loadingComplete = false;
     double _dx, _dy, _lx, _ly, _mx, _my;
     glm::mat4 projectionMatrix;
+    glm::mat4 projectionViewMatrix;
+    glm::mat4 viewMatrix;
 }

@@ -143,6 +143,7 @@ namespace TD {
             updateProjections();
             dlog << "Changing Projection Matrix to " << _display_w << "w " << _display_h << "h\n";
         }
+
     }
 
     void window::finishRender() {

@@ -549,11 +549,19 @@ namespace TD {
         }
     }
 
+    /***---------------{GBuffer FBO}---------------***/
+
+
+
     /***---------------{Static Stuff}---------------***/
 
     unsigned int matrixUBO;
     const unsigned int MATRIX_COUNT = 4;
     float matrixData[MATRIX_COUNT * 16];
+
+    extern glm::mat4 projectionMatrix;
+    extern glm::mat4 projectionViewMatrix;
+    extern glm::mat4 viewMatrix;
 
     void createMatrixUBO() {
         glGenBuffers(1, &matrixUBO);
@@ -568,6 +576,9 @@ namespace TD {
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
     void updateViewMatrixUBO(glm::mat4 matrix) {
+        viewMatrix = matrix;
+        projectionViewMatrix = projectionMatrix * matrix;
+        updateProjectViewMatrixUBO(projectionViewMatrix);
         glBindBuffer(GL_UNIFORM_BUFFER, matrixUBO);
         glBufferSubData(GL_UNIFORM_BUFFER, (long) (16 * sizeof(float)), 16 * sizeof(float), glm::value_ptr(matrix));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);

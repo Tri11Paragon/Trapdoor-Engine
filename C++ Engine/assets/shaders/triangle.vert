@@ -15,6 +15,6 @@ layout (std140) uniform Matrices {
 };
 
 void main() {
-    gl_Position = projectionMatrix * viewMatrix * transform * vec4(aPos, 1.0);
+    gl_Position = projectViewMatrix * transform * vec4(aPos, 1.0);
     TexCoord = aTexCoord;
 }

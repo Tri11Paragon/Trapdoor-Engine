@@ -151,6 +151,10 @@ namespace TD {
         ~fbo();
     };
 
+    class gBufferFBO : public fbo {
+
+    };
+
     void createMatrixUBO();
     void updateProjectionMatrixUBO(glm::mat4 matrix);
     void updateViewMatrixUBO(glm::mat4 matrix);
