@@ -71,7 +71,7 @@ namespace TD {
         unsigned int storeData(const std::vector<Vertex> &vertices);
     public:
         vao(const std::vector<float> &verts, const std::vector<unsigned int> &indicies, int attributeCount);
-        vao(std::vector<float> &verts, std::vector<float> &uvs, std::vector<unsigned int> &indicies, int attributeCount);
+        vao(const std::vector<float> &verts, const std::vector<float> &uvs, const std::vector<unsigned int> &indicies, int attributeCount);
         vao(std::vector<float> &verts, int dimensions, int attributeCount);
         vao(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices, const std::vector<Texture> &textures);
         ~vao();
@@ -118,6 +118,7 @@ namespace TD {
         unsigned int _fboID;
         DEPTH_ATTACHMENT_TYPE _fboType;
         int _width = 0, _height = 0;
+        vao* quad;
 
         std::unordered_map<int, unsigned int> _colorTextures;
         unsigned int _depthAttachment;
@@ -131,19 +132,21 @@ namespace TD {
 
         void createColorTexture(int colorAttachment);
 
-        void bindColorTexture(int colorAttachment);
+        void bindColorTexture(int activeTexture, int colorAttachment);
         void bindDepthTexture(int depthAttachment);
         void bindFBO();
         void unbindFBO();
 
+        void bindFBODraw();
+
         void blitToScreen();
         void blitToFBO(int readBuffer, fbo& outputFBO);
 
-        void renderToQuad();
-        void renderToQuad(glm::vec2 size);
-        void renderToQuad(glm::vec2 pos, glm::vec2 size);
-        void renderToQuad(int width, int height);
-        void renderToQuad(int x, int y, int width, int height);
+        void renderToQuad(TD::shader& shader);
+        void renderToQuad(TD::shader& shader, glm::vec2 size);
+        void renderToQuad(TD::shader& shader, glm::vec2 pos, glm::vec2 size);
+        void renderToQuad(TD::shader& shader, int width, int height);
+        void renderToQuad(TD::shader& shader, int x, int y, int width, int height);
 
         ~fbo();
     };
@@ -151,6 +154,8 @@ namespace TD {
     void createMatrixUBO();
     void updateProjectionMatrixUBO(glm::mat4 matrix);
     void updateViewMatrixUBO(glm::mat4 matrix);
+    void updateOrthoMatrixUBO(glm::mat4 matrix);
+    void updateProjectViewMatrixUBO(glm::mat4 matrix);
     void deleteGlobalTextureCache();
     const std::vector<float> getCubeVertexPositions(float size);
     const std::vector<unsigned int> getCubeIndices();

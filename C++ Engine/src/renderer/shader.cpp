@@ -27,12 +27,15 @@ namespace TD {
         // link and make sure that our program is valid.
         glLinkProgram(programID);
         glValidateProgram(programID);
+        use();
+        setUniformBlockLocation("Matrices", 1);
+        glUseProgram(0);
     }
 
     unsigned int shader::loadShader(const string &file, int type) {
         if (!exists(file)){
             flog << "Shader file not found.\n";
-            return -1;
+            throw "Shader file not found!";
         }
 
         // 1. retrieve the vertex/fragment source code from filePath

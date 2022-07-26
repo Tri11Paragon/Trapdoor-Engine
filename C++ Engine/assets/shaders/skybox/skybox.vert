@@ -8,6 +8,8 @@ out vec3 fragpos;
 layout (std140) uniform Matrices {
     mat4 projectionMatrix;
     mat4 viewMatrix;
+    mat4 orthoMatrix;
+    mat4 projectViewMatrix;
 };
 
 void main(void){

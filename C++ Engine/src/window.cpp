@@ -17,13 +17,21 @@ namespace TD {
     extern int _display_w, _display_h;
     extern bool _loadingComplete;
     extern double _dx, _dy, _lx, _ly, _mx, _my;
+    extern glm::mat4 projectionMatrix;
+
+    void updateProjections(){
+        glViewport(0, 0, _display_w, _display_h);
+        projectionMatrix = glm::perspective(glm::radians(90.0f), (float) _display_w / (float) _display_h, 0.1f, 1000.0f);
+        TD::updateProjectionMatrixUBO(projectionMatrix);
+        TD::updateOrthoMatrixUBO(glm::ortho(0.0f, (float)_display_w, 0.0f, (float)_display_h, 0.1f, 1000.0f));
+    }
 
     void window::initWindow(string title, fontContext &fonts) {
         // Setup window
         glfwSetErrorCallback(glfw_error_callback);
         if (!glfwInit()) {
-        flog << "GLFW Init Error";
-        return;
+            flog << "GLFW Init Error";
+            return;
         }
 
         // Setup GL Version
@@ -36,7 +44,7 @@ namespace TD {
         ilog << "GLFW Window Setup complete, using GL4.5" << "\n";
 
         // Create window with graphics context
-        _window = glfwCreateWindow(1280, 720, title.c_str(), NULL, NULL);
+        _window = glfwCreateWindow(_display_w, _display_h, title.c_str(), NULL, NULL);
         if (_window == NULL) {
         flog << "Unable to create GLFW window\n";
         return;
@@ -92,6 +100,7 @@ namespace TD {
 
         TD::createMatrixUBO();
 
+        updateProjections();
 
         _loadingComplete = true;
     }
@@ -131,9 +140,7 @@ namespace TD {
         int pastValueW = _display_w, pastValueH = _display_h;
         glfwGetFramebufferSize(_window, &_display_w, &_display_h);
         if (pastValueW != _display_w && pastValueH != _display_h) {
-            glViewport(0, 0, _display_w, _display_h);
-            TD::updateProjectionMatrixUBO(
-                    glm::perspective(glm::radians(90.0f), (float) _display_w / (float) _display_h, 0.1f, 1000.0f));
+            updateProjections();
             dlog << "Changing Projection Matrix to " << _display_w << "w " << _display_h << "h\n";
         }
     }

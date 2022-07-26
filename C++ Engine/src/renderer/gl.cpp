@@ -43,12 +43,12 @@ namespace TD {
         // vertex positions
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
-        // vertex normals
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
         // vertex texture coords
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, UV));
+        // vertex normals
         glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, UV));
+        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -83,7 +83,7 @@ namespace TD {
         unbind();
     }
 
-    vao::vao(std::vector<float> &verts, std::vector<float> &uvs, std::vector<unsigned int> &indicies, int attributeCount) {
+    vao::vao(const std::vector<float> &verts, const std::vector<float> &uvs, const std::vector<unsigned int> &indicies, int attributeCount) {
         this->indexCount = indicies.size();
         vaoID = createVAO();
         for (int i = 0; i < attributeCount; i++) {
@@ -93,7 +93,7 @@ namespace TD {
         storeData(indicies.size(), indicies.data());
 
         storeData(0, 3, 3 * sizeof(float), 0, verts.size(), verts.data());
-        storeData(2, 2, 2 * sizeof(float), 0, uvs.size(), uvs.data());
+        storeData(1, 2, 2 * sizeof(float), 0, uvs.size(), uvs.data());
 
         unbind();
     }
@@ -151,7 +151,8 @@ namespace TD {
     void vao::draw() {
         if (indexCount < 0)
             return;
-        glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
+        else
+            glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
     }
 
     /***---------------{Texture}---------------***/
@@ -389,11 +390,30 @@ namespace TD {
     /***---------------{FBOs}---------------***/
     extern int _display_w, _display_h;
 
+    const std::vector<float> vertices = {
+            1.0f,  1.0f, 0.0f,  // top right
+            1.0f,  0.0f, 0.0f,  // bottom right
+            0.0f,  0.0f, 0.0f,  // bottom left
+            0.0f,  1.0f, 0.0f   // top left
+    };
+
+    const std::vector<unsigned int> indices = {
+            3, 1, 0,   // first triangle
+            3, 2, 1    // second triangle
+    };
+
+    const std::vector<float> texCoords = {
+            1.0f, 1.0f,   // top right
+            1.0f, 0.0f,   // bottom right
+            0.0f, 0.0f,   // bottom left
+            0.0f, 1.0f    // top left
+    };
+
     fbo::fbo() : fbo(_display_w, _display_h, DEPTH_BUFFER) {}
     fbo::fbo(DEPTH_ATTACHMENT_TYPE type): fbo(_display_w, _display_h, type) {}
     fbo::fbo(int width, int height): fbo(width, height, DEPTH_BUFFER) {}
 
-    fbo::fbo(int width, int height, DEPTH_ATTACHMENT_TYPE type){
+    fbo::fbo(int width, int height, DEPTH_ATTACHMENT_TYPE type) {
         this->_width = width;
         this->_height = height;
         this->_fboType = type;
@@ -420,14 +440,18 @@ namespace TD {
 
         validateFramebuffer();
         unbindFBO();
+        quad = new vao(vertices, texCoords, indices, 2);
     }
 
     void fbo::validateFramebuffer() {
-        if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+            flog << "Unable to create framebuffer! " << glCheckFramebufferStatus(GL_FRAMEBUFFER);
             throw "Unable to create framebuffer!";
+        }
     }
 
     void fbo::createColorTexture(int colorAttachment) {
+        bindFBO();
         unsigned int colorTextureID;
         glGenTextures(1, &colorTextureID);
         glBindTexture(GL_TEXTURE_2D, colorTextureID);
@@ -438,10 +462,14 @@ namespace TD {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
         glFramebufferTexture2D(GL_FRAMEBUFFER, colorAttachment, GL_TEXTURE_2D, colorTextureID, 0);
+        validateFramebuffer();
+        _colorTextures.insert(std::pair<int, unsigned int>(colorAttachment, colorTextureID));
+        unbindFBO();
     }
 
-    void fbo::bindColorTexture(int colorAttachment) {
-
+    void fbo::bindColorTexture(int activeTexture, int colorAttachment) {
+        glActiveTexture(activeTexture);
+        glBindTexture(GL_TEXTURE_2D, _colorTextures.at(colorAttachment));
     }
 
     void fbo::bindDepthTexture(int depthAttachment) {
@@ -458,35 +486,58 @@ namespace TD {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
-    void fbo::blitToScreen() {
+    void fbo::bindFBODraw(){
+        bindFBO();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // we're not using the stencil buffer now
+        glEnable(GL_DEPTH_TEST);
+    }
 
+    void fbo::blitToScreen() {
+        bindFBO();
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, _fboID);
+        glDrawBuffer(GL_BACK);
+        glBlitFramebuffer(0, 0, _width, _height, 0, 0, _display_w, _display_h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+        unbindFBO();
     }
 
     void fbo::blitToFBO(int readBuffer, fbo &outputFBO) {
-
+        bindFBO();
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, outputFBO._fboID);
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, _fboID);
+        glReadBuffer(readBuffer);
+        glBlitFramebuffer(0, 0, _width, _height, 0, 0, outputFBO._width, outputFBO._height, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+        unbindFBO();
     }
 
-    void fbo::renderToQuad() {
-        renderToQuad(_width, _height);
+    void fbo::renderToQuad(TD::shader& shader) {
+        renderToQuad(shader, _width, _height);
     }
 
-    void fbo::renderToQuad(glm::vec2 size) {
-        renderToQuad(size.x, size.y);
+    void fbo::renderToQuad(TD::shader& shader, glm::vec2 size) {
+        renderToQuad(shader, size.x, size.y);
     }
 
-    void fbo::renderToQuad(glm::vec2 pos, glm::vec2 size) {
-        renderToQuad(pos.x, pos.y, size.x, size.y);
+    void fbo::renderToQuad(TD::shader& shader, glm::vec2 pos, glm::vec2 size) {
+        renderToQuad(shader, pos.x, pos.y, size.x, size.y);
     }
 
-    void fbo::renderToQuad(int width, int height) {
-        renderToQuad(0,0, width, height);
+    void fbo::renderToQuad(TD::shader& shader, int width, int height) {
+        renderToQuad(shader, 0,0, width, height);
     }
 
-    void fbo::renderToQuad(int x, int y, int width, int height) {
-
+    void fbo::renderToQuad(TD::shader& shader, int x, int y, int width, int height) {
+        shader.use();
+        shader.setMatrix("transform", glm::scale(glm::translate(glm::mat4(1), glm::vec3(x, y, -0.5f)), glm::vec3(width, height, 1.0f)));
+        glDisable(GL_DEPTH_TEST);
+        quad->bind();
+        quad->draw();
+        quad->unbind();
+        glEnable(GL_DEPTH_TEST);
     }
 
     fbo::~fbo() {
+        delete(quad);
         glDeleteFramebuffers(1, &_fboID);
         if (_fboType == DEPTH_BUFFER){
             glDeleteRenderbuffers(1, &_depthAttachment);
@@ -500,9 +551,9 @@ namespace TD {
 
     /***---------------{Static Stuff}---------------***/
 
-    extern unsigned int matrixUBO;
-    extern const unsigned int MATRIX_COUNT = 2;
-    extern float matrixData[MATRIX_COUNT * 16];
+    unsigned int matrixUBO;
+    const unsigned int MATRIX_COUNT = 4;
+    float matrixData[MATRIX_COUNT * 16];
 
     void createMatrixUBO() {
         glGenBuffers(1, &matrixUBO);
@@ -519,6 +570,16 @@ namespace TD {
     void updateViewMatrixUBO(glm::mat4 matrix) {
         glBindBuffer(GL_UNIFORM_BUFFER, matrixUBO);
         glBufferSubData(GL_UNIFORM_BUFFER, (long) (16 * sizeof(float)), 16 * sizeof(float), glm::value_ptr(matrix));
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    }
+    void updateOrthoMatrixUBO(glm::mat4 matrix) {
+        glBindBuffer(GL_UNIFORM_BUFFER, matrixUBO);
+        glBufferSubData(GL_UNIFORM_BUFFER, (long) (32 * sizeof(float)), 16 * sizeof(float), glm::value_ptr(matrix));
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    }
+    void updateProjectViewMatrixUBO(glm::mat4 matrix) {
+        glBindBuffer(GL_UNIFORM_BUFFER, matrixUBO);
+        glBufferSubData(GL_UNIFORM_BUFFER, (long) (48 * sizeof(float)), 16 * sizeof(float), glm::value_ptr(matrix));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
     void deleteGlobalTextureCache() {

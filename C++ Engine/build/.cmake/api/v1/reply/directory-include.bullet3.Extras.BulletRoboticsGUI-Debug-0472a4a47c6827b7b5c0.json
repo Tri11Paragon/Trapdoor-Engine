@@ -1,0 +1,75 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"INSTALL"
+		],
+		"files" : 
+		[
+			"include/bullet3/Extras/BulletRoboticsGUI/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 174,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 189,
+				"parent" : 0
+			}
+		]
+	},
+	"installers" : 
+	[
+		{
+			"backtrace" : 1,
+			"component" : "Unspecified",
+			"destination" : "lib",
+			"paths" : 
+			[
+				"include/bullet3/Extras/BulletRoboticsGUI/libBulletRoboticsGUId.so.3.25"
+			],
+			"targetId" : "BulletRoboticsGUI::@d410b658808763e3d086",
+			"targetIndex" : 24,
+			"targetInstallNamelink" : "skip",
+			"type" : "target"
+		},
+		{
+			"backtrace" : 1,
+			"component" : "Unspecified",
+			"destination" : "lib",
+			"paths" : 
+			[
+				"include/bullet3/Extras/BulletRoboticsGUI/libBulletRoboticsGUId.so"
+			],
+			"targetId" : "BulletRoboticsGUI::@d410b658808763e3d086",
+			"targetIndex" : 24,
+			"targetInstallNamelink" : "only",
+			"type" : "target"
+		},
+		{
+			"backtrace" : 2,
+			"component" : "Unspecified",
+			"destination" : "lib/pkgconfig",
+			"paths" : 
+			[
+				"build/include/bullet3/Extras/BulletRoboticsGUI/bullet_robotics_gui.pc"
+			],
+			"type" : "file"
+		}
+	],
+	"paths" : 
+	{
+		"build" : "include/bullet3/Extras/BulletRoboticsGUI",
+		"source" : "include/bullet3/Extras/BulletRoboticsGUI"
+	}
+}

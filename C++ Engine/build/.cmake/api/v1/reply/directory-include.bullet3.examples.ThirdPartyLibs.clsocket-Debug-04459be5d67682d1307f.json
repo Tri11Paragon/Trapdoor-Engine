@@ -1,0 +1,65 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"install"
+		],
+		"files" : 
+		[
+			"include/bullet3/examples/ThirdPartyLibs/clsocket/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 69,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 70,
+				"parent" : 0
+			}
+		]
+	},
+	"installers" : 
+	[
+		{
+			"backtrace" : 1,
+			"component" : "Unspecified",
+			"destination" : "lib",
+			"paths" : 
+			[
+				"include/bullet3/examples/ThirdPartyLibs/clsocket/libclsocketd.a"
+			],
+			"targetId" : "clsocket::@e6bba727133a342b0544",
+			"targetIndex" : 42,
+			"type" : "target"
+		},
+		{
+			"backtrace" : 2,
+			"component" : "Unspecified",
+			"destination" : "include",
+			"paths" : 
+			[
+				"include/bullet3/examples/ThirdPartyLibs/clsocket/src/ActiveSocket.h",
+				"include/bullet3/examples/ThirdPartyLibs/clsocket/src/Host.h",
+				"include/bullet3/examples/ThirdPartyLibs/clsocket/src/PassiveSocket.h",
+				"include/bullet3/examples/ThirdPartyLibs/clsocket/src/SimpleSocket.h",
+				"include/bullet3/examples/ThirdPartyLibs/clsocket/src/StatTimer.h"
+			],
+			"type" : "file"
+		}
+	],
+	"paths" : 
+	{
+		"build" : "include/bullet3/examples/ThirdPartyLibs/clsocket",
+		"source" : "include/bullet3/examples/ThirdPartyLibs/clsocket"
+	}
+}

@@ -19,16 +19,14 @@ namespace TD {
     bool keyDown[1024];
     bool mouseDown[512];
 
-    // UBOS
-    unsigned int matrixUBO;
-    const unsigned int MATRIX_COUNT = 2;
-    float matrixData[MATRIX_COUNT * 16];
+    // Texturing
     std::map<std::string, Texture> loadedTextures;
 
     // Window / GLFW
     GLFWwindow *_window;
     bool _isMouseGrabbed = false;
-    int _display_w, _display_h;
+    int _display_w = 1280, _display_h = 720;
     bool _loadingComplete = false;
     double _dx, _dy, _lx, _ly, _mx, _my;
+    glm::mat4 projectionMatrix;
 }

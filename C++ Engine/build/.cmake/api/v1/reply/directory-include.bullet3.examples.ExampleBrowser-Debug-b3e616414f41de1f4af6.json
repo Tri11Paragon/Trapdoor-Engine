@@ -1,0 +1,59 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"INSTALL"
+		],
+		"files" : 
+		[
+			"include/bullet3/examples/ExampleBrowser/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 75,
+				"parent" : 0
+			}
+		]
+	},
+	"installers" : 
+	[
+		{
+			"backtrace" : 1,
+			"component" : "Unspecified",
+			"destination" : "lib",
+			"paths" : 
+			[
+				"include/bullet3/examples/ExampleBrowser/libBulletExampleBrowserLibd.so.3.25"
+			],
+			"targetId" : "BulletExampleBrowserLib::@742d28dbcbe88882cfe5",
+			"targetIndex" : 19,
+			"targetInstallNamelink" : "skip",
+			"type" : "target"
+		},
+		{
+			"backtrace" : 1,
+			"component" : "Unspecified",
+			"destination" : "lib",
+			"paths" : 
+			[
+				"include/bullet3/examples/ExampleBrowser/libBulletExampleBrowserLibd.so"
+			],
+			"targetId" : "BulletExampleBrowserLib::@742d28dbcbe88882cfe5",
+			"targetIndex" : 19,
+			"targetInstallNamelink" : "only",
+			"type" : "target"
+		}
+	],
+	"paths" : 
+	{
+		"build" : "include/bullet3/examples/ExampleBrowser",
+		"source" : "include/bullet3/examples/ExampleBrowser"
+	}
+}

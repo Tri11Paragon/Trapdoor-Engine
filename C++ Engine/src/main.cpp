@@ -57,7 +57,6 @@ int main(int, char**){
     debugUIToolPtr = &debugUITool;
 
     TD::shader skyboxShader("../assets/shaders/skybox/skybox.vert", "../assets/shaders/skybox/skybox.frag");
-    skyboxShader.setUniformBlockLocation("Matrices", 1);
     skyboxShader.setFloat("useColor", 0);
     TD::cubemapTexture skyboxTexture(std::vector<std::string> {
         "../assets/textures/skyboxes/basic_day/right.png",
@@ -69,8 +68,11 @@ int main(int, char**){
     });
     TD::vao skyboxVAO(TD::getCubeVertexPositions(250), TD::getCubeIndices(), 1);
 
+    TD::shader fboTestShader("../assets/shaders/postprocessing/filter-fxaa.vert", "../assets/shaders/postprocessing/filter-fxaa.frag");
+    TD::fbo testFBO(TD::DEPTH_BUFFER);
+    testFBO.createColorTexture(GL_COLOR_ATTACHMENT0);
+
     TD::shader triangleShader("../assets/shaders/triangle.vert", "../assets/shaders/triangle.frag");
-    triangleShader.setUniformBlockLocation("Matrices", 1);
     TD::vao triangleVAO(vertices, texCoords, indices, 3);
     TD::texture benTexture("../assets/textures/kent.png");
     TD::model kent("../assets/models/kent.dae");
@@ -87,6 +89,8 @@ int main(int, char**){
         camera.update();
 
         debugUITool.render(fontContext);
+
+        testFBO.bindFBODraw();
 
         kent.draw(triangleShader, std::vector<glm::vec3> {
             glm::vec3(0, 0, -1), glm::vec3(0, 0, -10), glm::vec3(12, 0, -1), glm::vec3(4, 21, -1), glm::vec3(6, -5, -1)
@@ -106,6 +110,11 @@ int main(int, char**){
         skyboxTexture.bind();
         skyboxVAO.bind();
         skyboxVAO.draw();
+
+        testFBO.unbindFBO();
+
+        testFBO.bindColorTexture(GL_TEXTURE0, GL_COLOR_ATTACHMENT0);
+        testFBO.renderToQuad(fboTestShader);
 
         TD::window::finishRender();
     }

@@ -1,0 +1,267 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "include/bullet3/src/BulletInverseDynamics/libBulletInverseDynamicsd.so"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"ADD_LIBRARY",
+			"TARGET_LINK_LIBRARIES",
+			"include_directories",
+			"INCLUDE_DIRECTORIES"
+		],
+		"files" : 
+		[
+			"include/bullet3/src/BulletInverseDynamics/CMakeLists.txt",
+			"CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 32,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 36,
+				"parent" : 0
+			},
+			{
+				"file" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 22,
+				"parent" : 3
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 1,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-g -D_DEBUG -fPIC"
+				},
+				{
+					"fragment" : "-std=gnu++20"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"define" : "BT_USE_EGL"
+				},
+				{
+					"define" : "BulletInverseDynamics_EXPORTS"
+				},
+				{
+					"define" : "USE_GRAPHICAL_BENCHMARK"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 4,
+					"path" : "/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/C++ Engine/include/boost_lib/include"
+				},
+				{
+					"backtrace" : 5,
+					"path" : "/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/C++ Engine/include/bullet3/src"
+				}
+			],
+			"language" : "CXX",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					1
+				],
+				"standard" : "20"
+			},
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3
+			]
+		}
+	],
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 2,
+			"id" : "LinearMath::@53095c07f6147adc28b9"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "Bullet3Common::@4e0aed055889f26982fc"
+		}
+	],
+	"id" : "BulletInverseDynamics::@1c01ac56174840473e08",
+	"link" : 
+	{
+		"commandFragments" : 
+		[
+			{
+				"fragment" : "",
+				"role" : "flags"
+			},
+			{
+				"fragment" : "-Wl,-rpath,\"/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/C++ Engine/build/include/bullet3/src/Bullet3Common:/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/C++ Engine/build/include/bullet3/src/LinearMath\"",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "include/bullet3/src/Bullet3Common/libBullet3Commond.so.3.25",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "include/bullet3/src/LinearMath/libLinearMathd.so.3.25",
+				"role" : "libraries"
+			}
+		],
+		"language" : "CXX"
+	},
+	"name" : "BulletInverseDynamics",
+	"nameOnDisk" : "libBulletInverseDynamicsd.so",
+	"paths" : 
+	{
+		"build" : "include/bullet3/src/BulletInverseDynamics",
+		"source" : "include/bullet3/src/BulletInverseDynamics"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3
+			]
+		},
+		{
+			"name" : "Header Files",
+			"sourceIndexes" : 
+			[
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				14
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "include/bullet3/src/BulletInverseDynamics/IDMath.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "include/bullet3/src/BulletInverseDynamics/MultiBodyTree.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "include/bullet3/src/BulletInverseDynamics/details/MultiBodyTreeInitCache.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "include/bullet3/src/BulletInverseDynamics/details/MultiBodyTreeImpl.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "include/bullet3/src/BulletInverseDynamics/IDConfig.hpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "include/bullet3/src/BulletInverseDynamics/IDConfigEigen.hpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "include/bullet3/src/BulletInverseDynamics/IDMath.hpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "include/bullet3/src/BulletInverseDynamics/IDConfigBuiltin.hpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "include/bullet3/src/BulletInverseDynamics/IDErrorMessages.hpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "include/bullet3/src/BulletInverseDynamics/MultiBodyTree.hpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "include/bullet3/src/BulletInverseDynamics/details/IDEigenInterface.hpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "include/bullet3/src/BulletInverseDynamics/details/IDMatVec.hpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "include/bullet3/src/BulletInverseDynamics/details/IDLinearMathInterface.hpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "include/bullet3/src/BulletInverseDynamics/details/MultiBodyTreeImpl.hpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "include/bullet3/src/BulletInverseDynamics/details/MultiBodyTreeInitCache.hpp",
+			"sourceGroupIndex" : 1
+		}
+	],
+	"type" : "SHARED_LIBRARY"
+}
