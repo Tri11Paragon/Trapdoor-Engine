@@ -9,6 +9,7 @@
 #include "imgui/imgui_impl_opengl3.h"
 #include "clock.h"
 #include "input.h"
+#include "renderer/ui/utils.h"
 
 namespace TD {
 
@@ -174,6 +175,7 @@ namespace TD {
 
     void window::deleteWindow() {
         TD::deleteGlobalTextureCache();
+        TD::debugUI::deleteAllTabs();
         // Cleanup
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();

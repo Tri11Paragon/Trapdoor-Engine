@@ -5,14 +5,17 @@
 #ifndef ENGINE_PROFILER_H
 #define ENGINE_PROFILER_H
 
-#include <boost/timer/timer.hpp>
+#include <chrono>
+#include "renderer/ui/utils.h"
 
 namespace TD {
-    class profiler {
+    class profiler : public DebugTab {
     private:
-        boost::timer::cpu_timer timer;
+        long _start = 0;
+        long _end = 0;
+        long _time = 0;
     public:
-        profiler();
+        profiler(std::string name);
 
         void start();
 
@@ -22,7 +25,7 @@ namespace TD {
 
         void endAndPrint();
 
-        void addToDebugMenu();
+        void render();
 
         ~profiler();
     };

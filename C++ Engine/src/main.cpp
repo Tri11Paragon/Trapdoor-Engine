@@ -12,6 +12,7 @@
 #include "renderer/camera.h"
 #include "boost/random.hpp"
 #include "boost/generator_iterator.hpp"
+#include "profiler.h"
 
 static TD::debugUI* debugUIToolPtr;
 
@@ -85,6 +86,8 @@ int main(int, char**){
 
     std::vector<TD::Light> lights = {};
 
+    TD::profiler renderTimer("Render");
+
     // Main loop
     while (!TD::window::isCloseRequested()) {
         TD::window::startRender(0.45f, 0.55f, 0.60f, 1.00f);
@@ -93,6 +96,7 @@ int main(int, char**){
         TD::debugUI::render();
         //ImGui::ShowDemoWindow();
 
+        renderTimer.start();
         gBufferFbo.bindFirstPass();
 
         kent.draw(*gBufferFbo.getFirstPassShader(), std::vector<glm::vec3> {
@@ -117,6 +121,7 @@ int main(int, char**){
 
         //fxaaFBO.bindFBODraw();
         gBufferFbo.bindSecondPass(camera.getPosition(), lights);
+        renderTimer.end();
         //fxaaFBO.unbindFBO();
 
         //fxaaFBO.bindColorTexture(GL_TEXTURE0, GL_COLOR_ATTACHMENT0);

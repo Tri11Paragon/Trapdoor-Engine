@@ -10,20 +10,24 @@
 
 namespace TD {
 
-    profiler::profiler() {
-        timer = boost::timer::cpu_timer();
+    profiler::profiler(std::string name) {
+        this->name = name;
+        TD::debugUI::addTab(this);
     }
 
     void profiler::start() {
-        timer.resume();
+        auto p1 = std::chrono::high_resolution_clock::now();
+        _start = std::chrono::duration_cast<std::chrono::nanoseconds>(p1.time_since_epoch()).count();
     }
 
     void profiler::end() {
-        timer.stop();
+        auto p1 = std::chrono::high_resolution_clock::now();
+        _end = std::chrono::duration_cast<std::chrono::nanoseconds>(p1.time_since_epoch()).count();
+        _time = _end - _start;
     }
 
     void profiler::print() {
-        ilog << "Profiler recorded " << timer.format();
+        ilog << "Profiler recorded " << _time << "ms to run " << name << "!";
     }
 
     void profiler::endAndPrint() {
@@ -31,18 +35,15 @@ namespace TD {
         print();
     }
 
-    void profiler::addToDebugMenu() {
-        boost::timer::cpu_times times = timer.elapsed();
-        ImGui::PushFont(TD::fontContext::get("roboto"));
-        ImGui::Begin("Profiler Realtime Results");
-
-        ImGui::Text("");
-
-        ImGui::End();
-        ImGui::PopFont();
+    void profiler::render() {
+        ImGui::Text("CPU Timings:");
+        ImGui::Indent();
+        ImGui::Text("Elapsed Time:  %fms", (double) (_time / 1000000.0));
+        ImGui::Unindent();
+        ImGui::NewLine();
     }
 
     profiler::~profiler() {
-
+        TD::debugUI::deleteTab(this);
     }
 }

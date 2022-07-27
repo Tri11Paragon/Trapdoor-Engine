@@ -11,6 +11,7 @@
 #include "window.h"
 #include "renderer/gl.h"
 #include "renderer/camera.h"
+#include "renderer/ui/utils.h"
 
 namespace TD {
     double lastTime;
@@ -41,4 +42,5 @@ namespace TD {
     // IMGUI Fonts
     unordered_map<string, ImFont*> loadedFonts;
     vector<font> _fonts;
+    unordered_map<string, DebugTab*> debugTabs;
 }

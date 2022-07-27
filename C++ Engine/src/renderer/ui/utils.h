@@ -11,6 +11,16 @@
 
 namespace TD {
 
+    class DebugTab{
+    protected:
+        std::string name;
+    public:
+        virtual void render() {}
+        std::string getName() {
+            return name;
+        }
+    };
+
     class renderable {
     public:
         virtual void render() = 0;
@@ -18,11 +28,14 @@ namespace TD {
 
     class debugUI {
     private:
-        debugUI(TD::camera* camera);
+        debugUI(TD::camera* camera) {}
     public:
         static void toggle();
         static void render();
-        static void addTab();
+        static void addTab(DebugTab* tab);
+        static void deleteTab(DebugTab* tab);
+        static void deleteAllTabs();
+
         static void changeActiveCamera(TD::camera* camera);
     };
 
