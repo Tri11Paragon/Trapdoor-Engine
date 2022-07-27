@@ -16,18 +16,29 @@ namespace TD {
     }
 
     void profiler::start() {
+        start("Unnamed");
+    }
+    void profiler::start(std::string name) {
         auto p1 = std::chrono::high_resolution_clock::now();
         _start = std::chrono::duration_cast<std::chrono::nanoseconds>(p1.time_since_epoch()).count();
+        timings[name] = std::pair<long, long>(_start, 0);
     }
 
     void profiler::end() {
+        end("Unnamed");
+    }
+    void profiler::end(std::string name) {
         auto p1 = std::chrono::high_resolution_clock::now();
         _end = std::chrono::duration_cast<std::chrono::nanoseconds>(p1.time_since_epoch()).count();
-        _time = _end - _start;
+        timings[name] = std::pair<long, long>(timings[name].first, _end);
     }
 
     void profiler::print() {
-        ilog << "Profiler recorded " << _time << "ms to run " << name << "!";
+        ilog << "Profiler recorded: ";
+        for (std::pair<std::string, std::pair<long, long>> e : timings){
+            ilog << "\t" << e.first << (e.second.second - e.second.first) << "ms to run in " << name << "!";
+        }
+
     }
 
     void profiler::endAndPrint() {
@@ -38,7 +49,9 @@ namespace TD {
     void profiler::render() {
         ImGui::Text("CPU Timings:");
         ImGui::Indent();
-        ImGui::Text("Elapsed Time:  %fms", (double) (_time / 1000000.0));
+        for (std::pair<std::string, std::pair<long, long>> e : timings) {
+            ImGui::Text("Elapsed Time(%s):  %fms", e.first.c_str(), (double) ((e.second.second - e.second.first) / 1000000.0));
+        }
         ImGui::Unindent();
         ImGui::NewLine();
     }

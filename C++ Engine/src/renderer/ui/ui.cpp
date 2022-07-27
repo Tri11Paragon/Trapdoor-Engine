@@ -2,7 +2,7 @@
 // Created by brett on 21/07/22.
 //
 
-#include "utils.h"
+#include "ui.h"
 
 namespace TD {
     extern TD::camera *activeCamera;
@@ -60,7 +60,7 @@ namespace TD {
 
     void debugUI::deleteTab(DebugTab* tab) {
         debugTabs.erase(tab->getName());
-        delete(tab);
+        //delete(tab);
     }
 
     void debugUI::deleteAllTabs() {

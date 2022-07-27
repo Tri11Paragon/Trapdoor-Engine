@@ -2,8 +2,8 @@
 // Created by brett on 21/07/22.
 //
 
-#ifndef ENGINE_UTILS_H
-#define ENGINE_UTILS_H
+#ifndef ENGINE_UI_H
+#define ENGINE_UI_H
 
 #include "../../imgui/imgui.h"
 #include "../../font.h"
@@ -42,4 +42,4 @@ namespace TD {
 }
 
 
-#endif //ENGINE_UTILS_H
+#endif //ENGINE_UI_H
