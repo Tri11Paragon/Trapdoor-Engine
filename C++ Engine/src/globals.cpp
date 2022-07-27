@@ -10,6 +10,8 @@
 #include "input.h"
 #include "window.h"
 #include "renderer/gl.h"
+#include "renderer/camera.h"
+
 namespace TD {
     double lastTime;
     double frameTimeMS, frameTimeS, fps;
@@ -31,4 +33,12 @@ namespace TD {
     glm::mat4 projectionMatrix;
     glm::mat4 projectionViewMatrix;
     glm::mat4 viewMatrix;
+
+    // Developer / Debug
+    bool debugMenuEnabled = false;
+    TD::camera* activeCamera;
+
+    // IMGUI Fonts
+    unordered_map<string, ImFont*> loadedFonts;
+    vector<font> _fonts;
 }

@@ -65,7 +65,7 @@ namespace TD {
         std::vector<unsigned int> vbos;
         std::vector<Texture> textures;
         int indexCount = -1;
-        unsigned int createVAO();
+        static unsigned int createVAO();
         unsigned int storeData(int attrNumber, int coordSize, int stride, long offset, int length, const float* data);
         unsigned int storeData(int length, const unsigned int* data);
         unsigned int storeData(const std::vector<Vertex> &vertices);
@@ -114,7 +114,7 @@ namespace TD {
     };
 
     class fbo {
-    private:
+    protected:
         unsigned int _fboID;
         DEPTH_ATTACHMENT_TYPE _fboType;
         int _width = 0, _height = 0;
@@ -131,6 +131,9 @@ namespace TD {
         fbo(int width, int height, DEPTH_ATTACHMENT_TYPE type);
 
         void createColorTexture(int colorAttachment);
+        void createColorTexture(int colorAttachment, int format);
+        void createColorTexture(int colorAttachment, int format, int formatInternal, int type, int filter);
+        inline void assignUsingColorTextures(const std::vector<unsigned int>& colorAttachments);
 
         void bindColorTexture(int activeTexture, int colorAttachment);
         void bindDepthTexture(int depthAttachment);
@@ -152,7 +155,18 @@ namespace TD {
     };
 
     class gBufferFBO : public fbo {
+    private:
+        TD::shader* firstPassShader;
+        TD::shader* secondPassShader;
+    public:
+        gBufferFBO(std::string fpvertex, std::string fpfragment, std::string gvertex, std::string gfragment);
 
+        TD::shader* getFirstPassShader();
+
+        void bindFirstPass();
+        void bindSecondPass(glm::vec3 cameraPos, std::vector<TD::Light> lights);
+
+        ~gBufferFBO();
     };
 
     void createMatrixUBO();

@@ -166,4 +166,12 @@ namespace TD {
         glUniform4f(getUniformLocation(name), x, y, z, w);
     }
 
+    void shader::setLight(int pos, Light light) {
+        setVec3("lights[" + std::to_string(pos) + "].Position", light.Position);
+        setVec3("lights[" + std::to_string(pos) + "].Color", light.Color);
+        setFloat("lights[" + std::to_string(pos) + "].Linear", light.Linear);
+        setFloat("lights[" + std::to_string(pos) + "].Quadratic", light.Quadratic);
+        setFloat("lights[" + std::to_string(pos) + "].Radius", light.Radius);
+    }
+
 } // TD

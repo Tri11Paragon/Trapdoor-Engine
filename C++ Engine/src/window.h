@@ -10,8 +10,6 @@
 
 using namespace std;
 
-static fontContext NULL_CONTEXT((vector<font>()));
-
 namespace TD {
 
     class window {
@@ -22,8 +20,7 @@ namespace TD {
         }
     public:
         static void initWindow() {initWindow("Generic GLFW Window");};
-        static void initWindow(string title) {initWindow(title, NULL_CONTEXT);};
-        static void initWindow(string title, fontContext &fonts);
+        static void initWindow(string title);
 
         static void startRender(float r, float g, float b, float a);
         static void finishRender();

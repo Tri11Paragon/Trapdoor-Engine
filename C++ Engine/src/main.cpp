@@ -10,6 +10,8 @@
 #include "renderer/ui/utils.h"
 #include "renderer/shader.h"
 #include "renderer/camera.h"
+#include "boost/random.hpp"
+#include "boost/generator_iterator.hpp"
 
 static TD::debugUI* debugUIToolPtr;
 
@@ -42,19 +44,18 @@ vector<float> texCoords = {
 int main(int, char**){
     init_logging("output");
 
-    vector<font> fonts;
-    fonts.push_back(font("quicksand", "../assets/fonts/quicksand/Quicksand-Regular.ttf", 16.0f));
-    fonts.push_back(font("roboto", "../assets/fonts/roboto/Roboto-Regular.ttf", 16.0f));
+    vector<TD::font> fonts;
+    fonts.push_back(TD::font("quicksand", "../assets/fonts/quicksand/Quicksand-Regular.ttf", 16.0f));
+    fonts.push_back(TD::font("roboto", "../assets/fonts/roboto/Roboto-Regular.ttf", 16.0f));
 
-    fontContext fontContext(fonts);
+    TD::fontContext::loadContexts(fonts);
 
-    TD::window::initWindow("GLFW Test", fontContext);
+    TD::window::initWindow("GLFW Test");
 
     TD::IM_RegisterKeyListener(&keyCallBack);
 
     TD::firstPersonCamera camera;
-    TD::debugUI debugUITool(&camera);
-    debugUIToolPtr = &debugUITool;
+    TD::debugUI::changeActiveCamera(&camera);
 
     TD::shader skyboxShader("../assets/shaders/skybox/skybox.vert", "../assets/shaders/skybox/skybox.frag");
     skyboxShader.setFloat("useColor", 0);
@@ -68,11 +69,13 @@ int main(int, char**){
     });
     TD::vao skyboxVAO(TD::getCubeVertexPositions(250), TD::getCubeIndices(), 1);
 
-    TD::shader fboTestShader("../assets/shaders/postprocessing/filter-fxaa.vert", "../assets/shaders/postprocessing/filter-fxaa.frag");
-    TD::fbo testFBO(TD::DEPTH_BUFFER);
-    testFBO.createColorTexture(GL_COLOR_ATTACHMENT0);
+    TD::gBufferFBO gBufferFbo("../assets/shaders/gbuffers/firstpass.vert", "../assets/shaders/gbuffers/firstpass.frag",
+                              "../assets/shaders/gbuffers/secondpass.vert", "../assets/shaders/gbuffers/secondpass.frag");
 
-    TD::shader triangleShader("../assets/shaders/triangle.vert", "../assets/shaders/triangle.frag");
+    TD::shader fxaaShader("../assets/shaders/postprocessing/filter-fxaa.vert", "../assets/shaders/postprocessing/filter-fxaa.frag");
+    TD::fbo fxaaFBO(TD::DEPTH_BUFFER);
+    fxaaFBO.createColorTexture(GL_COLOR_ATTACHMENT0);
+
     TD::vao triangleVAO(vertices, texCoords, indices, 3);
     TD::texture benTexture("../assets/textures/kent.png");
     TD::model kent("../assets/models/kent.dae");
@@ -80,25 +83,24 @@ int main(int, char**){
     glm::mat4 trans = glm::mat4(1.0f);
     trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
 
-    triangleShader.use();
-    triangleShader.setVec3("lightColor", glm::vec3(1.0));
+    std::vector<TD::Light> lights = {};
 
     // Main loop
     while (!TD::window::isCloseRequested()) {
         TD::window::startRender(0.45f, 0.55f, 0.60f, 1.00f);
         camera.update();
 
-        debugUITool.render(fontContext);
+        TD::debugUI::render();
+        //ImGui::ShowDemoWindow();
 
-        testFBO.bindFBODraw();
+        gBufferFbo.bindFirstPass();
 
-        kent.draw(triangleShader, std::vector<glm::vec3> {
+        kent.draw(*gBufferFbo.getFirstPassShader(), std::vector<glm::vec3> {
             glm::vec3(0, 0, -1), glm::vec3(0, 0, -10), glm::vec3(12, 0, -1), glm::vec3(4, 21, -1), glm::vec3(6, -5, -1)
         });
 
-        triangleShader.use();
         trans = glm::rotate(trans, glm::radians(0.05f * 1000.0f / ImGui::GetIO().Framerate), glm::vec3(5.0, 0.5, 1.0));
-        triangleShader.setMatrix("transform", trans);
+        gBufferFbo.getFirstPassShader()->setMatrix("transform", trans);
 
         benTexture.enableGlTextures(1);
         benTexture.bind();
@@ -111,10 +113,14 @@ int main(int, char**){
         skyboxVAO.bind();
         skyboxVAO.draw();
 
-        testFBO.unbindFBO();
+        gBufferFbo.unbindFBO();
 
-        testFBO.bindColorTexture(GL_TEXTURE0, GL_COLOR_ATTACHMENT0);
-        testFBO.renderToQuad(fboTestShader);
+        //fxaaFBO.bindFBODraw();
+        gBufferFbo.bindSecondPass(camera.getPosition(), lights);
+        //fxaaFBO.unbindFBO();
+
+        //fxaaFBO.bindColorTexture(GL_TEXTURE0, GL_COLOR_ATTACHMENT0);
+        //fxaaFBO.renderToQuad(fxaaShader);
 
         TD::window::finishRender();
     }

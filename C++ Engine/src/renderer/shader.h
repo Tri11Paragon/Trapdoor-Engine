@@ -12,6 +12,15 @@
 
 namespace TD {
 
+    struct Light {
+        glm::vec3 Position;
+        glm::vec3 Color;
+
+        float Linear;
+        float Quadratic;
+        float Radius;
+    };
+
     class shader {
     private:
         struct IntDefaultedToMinusOne {
@@ -39,6 +48,7 @@ namespace TD {
         void setVec2(const std::string &name, float x, float y);
         void setVec3(const std::string &name, float x, float y, float z);
         void setVec4(const std::string &name, float x, float y, float z, float w);
+        void setLight(int pos, Light light);
         void use();
         ~shader();
     };

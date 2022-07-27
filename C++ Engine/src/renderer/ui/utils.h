@@ -13,30 +13,17 @@ namespace TD {
 
     class renderable {
     public:
-        virtual void render(fontContext& fonts) = 0;
+        virtual void render() = 0;
     };
 
-    class debugUI : renderable {
+    class debugUI {
     private:
-        bool enabled = false;
-        TD::camera* camera;
-    public:
         debugUI(TD::camera* camera);
-        void toggle(){
-            enabled = !enabled;
-        }
-        void render(fontContext& fc) override {
-            if (!enabled)
-                return;
-            ImGui::PushFont(fc["roboto"]);
-            ImGui::Begin("Debug Info");
-
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-            ImGui::Text("Camera Position: %f, %f, %f", camera->getPosition().x, camera->getPosition().y, camera->getPosition().z);
-
-            ImGui::End();
-            ImGui::PopFont();
-        }
+    public:
+        static void toggle();
+        static void render();
+        static void addTab();
+        static void changeActiveCamera(TD::camera* camera);
     };
 
 }

@@ -26,7 +26,7 @@ namespace TD {
         TD::updateOrthoMatrixUBO(glm::ortho(0.0f, (float)_display_w, 0.0f, (float)_display_h, 0.1f, 1000.0f));
     }
 
-    void window::initWindow(string title, fontContext &fonts) {
+    void window::initWindow(string title) {
         // Setup window
         glfwSetErrorCallback(glfw_error_callback);
         if (!glfwInit()) {
@@ -96,7 +96,7 @@ namespace TD {
         //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
         //IM_ASSERT(font != NULL);
 
-        fonts.load(io);
+        TD::fontContext::load(io);
 
         TD::createMatrixUBO();
 

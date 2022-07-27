@@ -47,7 +47,9 @@ uniform float useColor;
 
 uniform samplerCube cubeMap;
 
-out vec4 out_Color;
+layout (location = 0) out vec4 gPosition;
+layout (location = 1) out vec4 gNormal;
+layout (location = 2) out vec4 gAlbedoSpec;
 
 float smoothlyStep(float edge0, float edge1, float x){
     float t = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
@@ -55,10 +57,12 @@ float smoothlyStep(float edge0, float edge1, float x){
 }
 
 void main(void){
+    gPosition = vec4(fragpos, 1.0f);
+
     if (useColor == 1){
         float fadeFactor = 1.0 - smoothlyStep(-50.0, 70.0, pass_height);
-        out_Color = mix(color2, color1, fadeFactor);
+        gAlbedoSpec = mix(color2, color1, fadeFactor);
     } else {
-        out_Color = texture(cubeMap, fragpos);
+        gAlbedoSpec = texture(cubeMap, fragpos);
     }
 }
