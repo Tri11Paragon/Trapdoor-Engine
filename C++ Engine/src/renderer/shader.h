@@ -73,7 +73,8 @@ namespace TD {
         void setVec2(const std::string &name, float x, float y);
         void setVec3(const std::string &name, float x, float y, float z);
         void setVec4(const std::string &name, float x, float y, float z, float w);
-        void setLight(int pos, Light light);
+        void setLightArray(const std::string& name, int pos, Light light);
+        void setLight(const std::string& name, Light light);
         void use();
         ~shader();
     };

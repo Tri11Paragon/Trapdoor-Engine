@@ -106,8 +106,8 @@ namespace TD {
         _loadingComplete = true;
     }
 
-    void window::startRender(float r, float g, float b, float a) {
-        glClearColor(r * a, g * a, b * a, a);
+    void window::startRender() {
+        glClearColor(0.0, 0.0, 0.0, 1.0); // keep it black so it doesn't leak into g-buffer
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LEQUAL);

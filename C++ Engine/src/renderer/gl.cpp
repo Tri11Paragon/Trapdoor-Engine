@@ -5,6 +5,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_FAILURE_USERMSG
 #include <stb_image.h>
+#include "../par_shapes/par_shapes.h"
 
 namespace TD {
 
@@ -307,8 +308,7 @@ namespace TD {
         std::vector<unsigned int> indices;
         std::vector<Texture> textures;
 
-        for(unsigned int i = 0; i < mesh->mNumVertices; i++)
-        {
+        for(unsigned int i = 0; i < mesh->mNumVertices; i++) {
             Vertex vertex;
             // process vertex positions, normals and texture coordinates
             glm::vec3 vector;
@@ -563,21 +563,31 @@ namespace TD {
 
     /***---------------{GBuffer FBO}---------------***/
 
-    gBufferFBO::gBufferFBO(std::string fpvertex, std::string fpfragment, std::string gvertex, std::string gfragment){
+    extern std::string assetsLocation;
+
+    gBufferFBO::gBufferFBO(){
         this->_width = _display_w;
         this->_height = _display_h;
         this->_fboType = DEPTH_BUFFER;
 
-        firstPassShader = new shader(fpvertex, fpfragment);
+        firstPassShader = new shader(assetsLocation + "shaders/gbuffers/firstpass.vert", assetsLocation + "shaders/gbuffers/firstpass.frag");
         firstPassShader->use();
         firstPassShader->setInt("texture_diffuse1", 0);
         firstPassShader->setInt("texture_specular1", 1);
-        secondPassShader = new shader(gvertex, gfragment);
-        secondPassShader->use();
-        secondPassShader->setInt("gPosition", 0);
-        secondPassShader->setInt("gNormal", 1);
-        secondPassShader->setInt("gAlbedoSpec", 2);
+        nullShader = new shader(assetsLocation + "shaders/gbuffers/null_technique.vert", assetsLocation +  "shaders/gbuffers/null_technique.frag");
+        dirLightPassShader = new shader(assetsLocation + "shaders/gbuffers/dir_light_pass.vert", assetsLocation + "shaders/gbuffers/dir_light_pass.frag");
+        dirLightPassShader->use();
+        dirLightPassShader->setInt("gPosition", 0);
+        dirLightPassShader->setInt("gNormal", 1);
+        dirLightPassShader->setInt("gAlbedoSpec", 2);
+        pointLightPassShader = new shader(assetsLocation + "shaders/gbuffers/point_light_pass.vert", assetsLocation + "shaders/gbuffers/point_light_pass.frag");
+        pointLightPassShader->use();
+        pointLightPassShader->setInt("gPosition", 0);
+        pointLightPassShader->setInt("gNormal", 1);
+        pointLightPassShader->setInt("gAlbedoSpec", 2);
 
+        glDeleteFramebuffers(1, &_fboID);
+        glDeleteRenderbuffers(1, &_depthAttachment);
         glGenFramebuffers(1, &_fboID);
         bindFBO();
 
@@ -585,8 +595,7 @@ namespace TD {
         //createColorTexture(GL_COLOR_ATTACHMENT1, GL_RGBA16F, GL_RGBA, GL_FLOAT, GL_NEAREST);
         //createColorTexture(GL_COLOR_ATTACHMENT2, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, GL_NEAREST);
 
-
-        unsigned int gPosition, gNormal, gAlbedoSpec;
+        unsigned int gPosition, gNormal, gAlbedoSpec, finalTexture;
         // position color buffer
         glGenTextures(1, &gPosition);
         glBindTexture(GL_TEXTURE_2D, gPosition);
@@ -608,42 +617,177 @@ namespace TD {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gAlbedoSpec, 0);
+        // final
+        glBindTexture(GL_TEXTURE_2D, finalTexture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _width, _height, 0, GL_RGB, GL_FLOAT, NULL);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, finalTexture, 0);
 
         _colorTextures.insert(std::pair<int, unsigned int>(GL_COLOR_ATTACHMENT0, gPosition));
         _colorTextures.insert(std::pair<int, unsigned int>(GL_COLOR_ATTACHMENT1, gNormal));
         _colorTextures.insert(std::pair<int, unsigned int>(GL_COLOR_ATTACHMENT2, gAlbedoSpec));
+        _colorTextures.insert(std::pair<int, unsigned int>(GL_COLOR_ATTACHMENT3, finalTexture));
         // tell OpenGL which color attachments we'll use (of this framebuffer) for rendering
         unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
         glDrawBuffers(3, attachments);
 
         glGenRenderbuffers(1, &_depthAttachment);
         glBindRenderbuffer(GL_RENDERBUFFER, _depthAttachment);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, _width, _height);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _depthAttachment);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH32F_STENCIL8, _width, _height);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, _depthAttachment);
+        //glBindTexture(GL_TEXTURE_2D, _depthAttachment); // GL_FLOAT_32_UNSIGNED_INT_24_8_REV
+        //glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH32F_STENCIL8, _width, _height, 0, GL_DEPTH_STENCIL, GL_FLOAT, NULL);
+        //glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, _depthAttachment, 0);
 
         validateFramebuffer();
         unbindFBO();
         quad = new vao(vertices, texCoords, indices, 2);
+        sphereMesh = new TD::model(assetsLocation + "models/light_sphere.obj");
+        if (sphereMesh->getMeshes().size() >= 1){
+            sphereVAO = sphereMesh->getMeshes()[0];
+        } else
+            throw std::runtime_error("Error loading sphere model!");
     }
 
-    void gBufferFBO::bindFirstPass() {
-        bindFBO();
-        glClearColor(0.0, 0.0, 0.0, 1.0); // keep it black so it doesn't leak into g-buffer
+    float CalcPointLightBSphere(const TD::Light& Light) {
+        float MaxChannel = fmax(fmax(Light.Color.x, Light.Color.y), Light.Color.z);
+
+        float ret = (-Light.Linear + sqrtf(Light.Linear * Light.Linear - 4 * Light.Quadratic * (Light.Quadratic - 256 * MaxChannel * 1)))
+                    /
+                    (2 * Light.Quadratic);
+        return ret;
+    }
+
+    void gBufferFBO::bindForGeomPass() {
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _fboID);
+        glDrawBuffer(GL_COLOR_ATTACHMENT4);
+        glClear(GL_COLOR_BUFFER_BIT);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _fboID);
+        const GLenum DrawBuffers[] = { GL_COLOR_ATTACHMENT0,
+                                       GL_COLOR_ATTACHMENT1,
+                                       GL_COLOR_ATTACHMENT2 };
+
+        glDrawBuffers(3, DrawBuffers);
+
+        glDepthMask(GL_TRUE);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glEnable(GL_DEPTH_TEST);
         firstPassShader->use();
+        glDisable(GL_BLEND);
+
+    }
+
+    void gBufferFBO::bindForStencilPass() {
+        glDrawBuffer(GL_NONE);
+    }
+
+    void gBufferFBO::bindForLightPass(){
+        glDrawBuffer(GL_COLOR_ATTACHMENT4);
+
+        //bindColorTexture(GL_TEXTURE0, GL_COLOR_ATTACHMENT0);
+        //bindColorTexture(GL_TEXTURE1, GL_COLOR_ATTACHMENT1);
+        //bindColorTexture(GL_TEXTURE2, GL_COLOR_ATTACHMENT2);
+    }
+
+    void gBufferFBO::bindForFinalPass() {
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, _fboID);
+        glReadBuffer(GL_COLOR_ATTACHMENT4);
+        //glDrawBuffer(GL_BACK);
+    }
+
+    void gBufferFBO::runPointLight(int index, std::vector<TD::Light>& lights) {
+        bindForLightPass();
+        pointLightPassShader->use();
+        glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
+
+        glDisable(GL_DEPTH_TEST);
+        glEnable(GL_BLEND);
+        glBlendEquation(GL_FUNC_ADD);
+        glBlendFunc(GL_ONE, GL_ONE);
+
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_FRONT);
+
+        Light light = lights[index];
+        float sphereScale = CalcPointLightBSphere(light);
+        glm::mat4 trans(1.0);
+        trans = glm::translate(trans, light.Position);
+        trans = glm::scale(trans, glm::vec3(sphereScale));
+        pointLightPassShader->setMatrix("transform", trans);
+        sphereVAO->draw();
+
+        glCullFace(GL_BACK);
+        glDisable(GL_BLEND);
+    }
+    void gBufferFBO::runStencil(int index, std::vector<TD::Light>& lights) {
+        nullShader->use();
+        bindForStencilPass();
+        glEnable(GL_DEPTH_TEST);
+        glDisable(GL_CULL_FACE);
+        glClear(GL_STENCIL_BUFFER_BIT);
+
+        // We need the stencil test to be enabled but we want it
+        // to succeed always. Only the depth test matters.
+        glStencilFunc(GL_ALWAYS, 0, 0);
+
+        glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR_WRAP, GL_KEEP);
+        glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
+        Light light = lights[index];
+        float sphereScale = CalcPointLightBSphere(light);
+        glm::mat4 trans(1.0);
+        trans = glm::translate(trans, light.Position);
+        trans = glm::scale(trans, glm::vec3(sphereScale));
+        nullShader->setMatrix("transform", trans);
+        sphereVAO->draw();
     }
 
     void gBufferFBO::bindSecondPass(glm::vec3 cameraPos, std::vector<TD::Light> lights) {
+        //glDepthMask(GL_FALSE);
+        //glDisable(GL_DEPTH_TEST);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        //glEnable(GL_BLEND);
+        //glBlendEquation(GL_FUNC_ADD);
+        //glBlendFunc(GL_ONE, GL_ONE);
 
         bindColorTexture(GL_TEXTURE0, GL_COLOR_ATTACHMENT0);
         bindColorTexture(GL_TEXTURE1, GL_COLOR_ATTACHMENT1);
         bindColorTexture(GL_TEXTURE2, GL_COLOR_ATTACHMENT2);
-        secondPassShader->use();
-        secondPassShader->setVec3("viewPos", cameraPos);
-        for (int i = 0; i < lights.size(); i++)
-            secondPassShader->setLight(i, lights[i]);
-        renderToQuad(*secondPassShader);
+        //glEnable(GL_STENCIL_TEST);
+        pointLightPassShader->use();
+        pointLightPassShader->setVec3("viewPos", cameraPos);
+        pointLightPassShader->setVec2("screenSize", _display_w, _display_h);
+        sphereVAO->bind();
+
+        glEnable(GL_STENCIL_TEST);
+
+        for (int i = 0; i < lights.size(); i++) {
+            runStencil(i, lights);
+            runPointLight(i, lights);
+        }
+
+        glDisable(GL_STENCIL_TEST);
+
+        bindForLightPass();
+        glDisable(GL_DEPTH_TEST);
+        glEnable(GL_BLEND);
+        glBlendEquation(GL_FUNC_ADD);
+        glBlendFunc(GL_ONE, GL_ONE);
+        dirLightPassShader->use();
+        dirLightPassShader->setMatrix("transform", glm::scale(glm::translate(glm::mat4(1), glm::vec3(0, 0, -0.5f)), glm::vec3(_width, _height, 1.0f)));
+        dirLightPassShader->setVec3("viewPos", cameraPos);
+        dirLightPassShader->setVec2("screenSize", _display_w, _display_h);
+        dirLightPassShader->setVec3("direction", 45, 45, 45);
+        dirLightPassShader->setVec3("color", 1, 1, 1);
+        dirLightPassShader->setInt("enabled", false);
+        quad->bind();
+        quad->draw();
+        quad->unbind();
+        glDisable(GL_BLEND);
+
+        bindForFinalPass();
+        glBlitFramebuffer(0, 0, _width, _height, 0, 0, _width, _height, GL_COLOR_BUFFER_BIT, GL_LINEAR);
     }
 
     TD::shader* gBufferFBO::getFirstPassShader(){
@@ -652,7 +796,10 @@ namespace TD {
 
     gBufferFBO::~gBufferFBO() {
         delete(firstPassShader);
-        delete(secondPassShader);
+        delete(dirLightPassShader);
+        delete(pointLightPassShader);
+        delete(nullShader);
+        delete(sphereVAO);
         dlog << "Deleting GBuffer " << _fboID;
     }
 

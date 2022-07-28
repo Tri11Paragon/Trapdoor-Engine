@@ -94,6 +94,9 @@ namespace TD {
         void draw(shader &shader, glm::vec3 *positions, int numberOfPositions);
         void draw(shader &shader, glm::vec3 position);
         void draw(shader &shader, std::vector<glm::vec3> positions);
+        inline std::vector<vao*> getMeshes() {
+            return meshes;
+        }
         ~model();
     private:
         // model data
@@ -157,13 +160,22 @@ namespace TD {
     class gBufferFBO : public fbo {
     private:
         TD::shader* firstPassShader;
-        TD::shader* secondPassShader;
+        TD::shader* dirLightPassShader;
+        TD::shader* pointLightPassShader;
+        TD::shader* nullShader;
+        TD::model* sphereMesh;
+        TD::vao* sphereVAO;
     public:
-        gBufferFBO(std::string fpvertex, std::string fpfragment, std::string gvertex, std::string gfragment);
+        gBufferFBO();
 
         TD::shader* getFirstPassShader();
 
-        void bindFirstPass();
+        void bindForGeomPass();
+        void bindForStencilPass();
+        void bindForLightPass();
+        void bindForFinalPass();
+        void runPointLight(int index, std::vector<TD::Light>& lights);
+        void runStencil(int index, std::vector<TD::Light>& lights);
         void bindSecondPass(glm::vec3 cameraPos, std::vector<TD::Light> lights);
 
         ~gBufferFBO();

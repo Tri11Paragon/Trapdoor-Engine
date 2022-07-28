@@ -43,4 +43,7 @@ namespace TD {
     unordered_map<string, ImFont*> loadedFonts;
     vector<font> _fonts;
     unordered_map<string, DebugTab*> debugTabs;
+
+    // Pathings
+    std::string assetsLocation = "../assets/";
 }

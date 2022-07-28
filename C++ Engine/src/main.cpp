@@ -69,8 +69,7 @@ int main(int, char**){
     });
     TD::vao skyboxVAO(TD::getCubeVertexPositions(250), TD::getCubeIndices(), 1);
 
-    TD::gBufferFBO gBufferFbo("../assets/shaders/gbuffers/firstpass.vert", "../assets/shaders/gbuffers/firstpass.frag",
-                              "../assets/shaders/gbuffers/secondpass.vert", "../assets/shaders/gbuffers/secondpass.frag");
+    TD::gBufferFBO gBufferFbo;
 
     TD::shader fxaaShader("../assets/shaders/postprocessing/filter-fxaa.vert", "../assets/shaders/postprocessing/filter-fxaa.frag");
     TD::fbo fxaaFBO(TD::DEPTH_BUFFER);
@@ -83,30 +82,31 @@ int main(int, char**){
     // Standard Defered about 120fps @ 1024 lights (8.5ms)
 
     TD::profiler renderTimer("Render");
-    int MAX_LIGHTS = 1024;
-    TD::random pos(-10, 10);
+    int MAX_LIGHTS = 1;
+    TD::random pos(-35, 35);
     TD::random color(0, 1);
     for (int i = 0; i < MAX_LIGHTS; i++){
         TD::Light light(
-                pos.getVec3(),
+                glm::vec3(0,0,0),
                 color.getVec3(),
-                0.07,
-                0.20,
-                65
+                0.35,
+                0.44,
+                13
         );
         lights.push_back(light);
     }
 
     // Main loop
     while (!TD::window::isCloseRequested()) {
-        TD::window::startRender(0.45f, 0.55f, 0.60f, 1.00f);
+        // 0.45f, 0.55f, 0.60f, 1.00f
+        TD::window::startRender();
         camera.update();
 
         TD::debugUI::render();
         //ImGui::ShowDemoWindow();
 
         renderTimer.start("Geometry Pass");
-        gBufferFbo.bindFirstPass();
+        gBufferFbo.bindForGeomPass();
 
         kent.draw(*gBufferFbo.getFirstPassShader(), std::vector<glm::vec3> {
             glm::vec3(0, 0, -1), glm::vec3(0, 0, -10), glm::vec3(12, 0, -1), glm::vec3(4, 21, -1), glm::vec3(6, -5, -1)
@@ -117,7 +117,8 @@ int main(int, char**){
         skyboxVAO.bind();
         skyboxVAO.draw();
 
-        gBufferFbo.unbindFBO();
+        //gBufferFbo.unbindFBO();
+        //glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
         renderTimer.end("Geometry Pass");
 
         renderTimer.start("Lighting Pass");

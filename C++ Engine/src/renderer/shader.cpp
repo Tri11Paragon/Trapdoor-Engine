@@ -166,12 +166,20 @@ namespace TD {
         glUniform4f(getUniformLocation(name), x, y, z, w);
     }
 
-    void shader::setLight(int pos, Light light) {
-        setVec3("lights[" + std::to_string(pos) + "].Position", light.Position);
-        setVec3("lights[" + std::to_string(pos) + "].Color", light.Color);
-        setFloat("lights[" + std::to_string(pos) + "].Linear", light.Linear);
-        setFloat("lights[" + std::to_string(pos) + "].Quadratic", light.Quadratic);
-        setFloat("lights[" + std::to_string(pos) + "].Radius", light.Radius);
+    void shader::setLightArray(const string &name, int pos, Light light) {
+        setVec3(name + "[" + std::to_string(pos) + "].Position", light.Position);
+        setVec3(name + "[" + std::to_string(pos) + "].Color", light.Color);
+        setFloat(name + "[" + std::to_string(pos) + "].Linear", light.Linear);
+        setFloat(name + "[" + std::to_string(pos) + "].Quadratic", light.Quadratic);
+        setFloat(name + "[" + std::to_string(pos) + "].Radius", light.Radius);
+    }
+
+    void shader::setLight(const string &name, Light light) {
+        setVec3(name + ".Position", light.Position);
+        setVec3(name + ".Color", light.Color);
+        setFloat(name + ".Linear", light.Linear);
+        setFloat(name + ".Quadratic", light.Quadratic);
+        setFloat(name + ".Radius", light.Radius);
     }
 
 } // TD

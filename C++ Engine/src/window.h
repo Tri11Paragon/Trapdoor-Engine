@@ -22,7 +22,7 @@ namespace TD {
         static void initWindow() {initWindow("Generic GLFW Window");};
         static void initWindow(string title);
 
-        static void startRender(float r, float g, float b, float a);
+        static void startRender();
         static void finishRender();
         static bool isCloseRequested();
         static int width();
