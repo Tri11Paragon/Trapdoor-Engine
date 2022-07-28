@@ -91,6 +91,7 @@ namespace TD {
             loadModel(path);
             this->useTextureCache = useTextureCache;
         }
+        inline std::vector<vao*> getMeshes() {return meshes;}
         void draw(shader &shader, glm::vec3 *positions, int numberOfPositions);
         void draw(shader &shader, glm::vec3 position);
         void draw(shader &shader, std::vector<glm::vec3> positions);
@@ -158,8 +159,12 @@ namespace TD {
     private:
         TD::shader* firstPassShader;
         TD::shader* secondPassShader;
+        TD::shader* pointPassShader;
+        TD::shader* dirPassShader;
+        TD::model* sphereModel;
+        TD::vao* sphereVAO;
     public:
-        gBufferFBO(std::string fpvertex, std::string fpfragment, std::string gvertex, std::string gfragment);
+        gBufferFBO();
 
         TD::shader* getFirstPassShader();
 

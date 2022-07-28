@@ -563,20 +563,32 @@ namespace TD {
 
     /***---------------{GBuffer FBO}---------------***/
 
-    gBufferFBO::gBufferFBO(std::string fpvertex, std::string fpfragment, std::string gvertex, std::string gfragment){
+    extern std::string assetsPath;
+
+    gBufferFBO::gBufferFBO(){
         this->_width = _display_w;
         this->_height = _display_h;
         this->_fboType = DEPTH_BUFFER;
 
-        firstPassShader = new shader(fpvertex, fpfragment);
+        firstPassShader = new shader("../assets/shaders/gbuffers/firstpass.vert", "../assets/shaders/gbuffers/firstpass.frag");
         firstPassShader->use();
         firstPassShader->setInt("texture_diffuse1", 0);
         firstPassShader->setInt("texture_specular1", 1);
-        secondPassShader = new shader(gvertex, gfragment);
+        secondPassShader = new shader("../assets/shaders/gbuffers/secondpass.vert", "../assets/shaders/gbuffers/secondpass.frag");
         secondPassShader->use();
         secondPassShader->setInt("gPosition", 0);
         secondPassShader->setInt("gNormal", 1);
         secondPassShader->setInt("gAlbedoSpec", 2);
+        pointPassShader = new shader("../assets/shaders/gbuffers/point_light_pass.vert", "../assets/shaders/gbuffers/point_light_pass.frag");
+        pointPassShader->use();
+        pointPassShader->setInt("gPosition", 0);
+        pointPassShader->setInt("gNormal", 1);
+        pointPassShader->setInt("gAlbedoSpec", 2);
+        dirPassShader = new shader("../assets/shaders/gbuffers/dir_light_pass.vert", "../assets/shaders/gbuffers/dir_light_pass.frag");
+        dirPassShader->use();
+        dirPassShader->setInt("gPosition", 0);
+        dirPassShader->setInt("gNormal", 1);
+        dirPassShader->setInt("gAlbedoSpec", 2);
 
         glGenFramebuffers(1, &_fboID);
         bindFBO();
@@ -624,6 +636,11 @@ namespace TD {
         validateFramebuffer();
         unbindFBO();
         quad = new vao(vertices, texCoords, indices, 2);
+        sphereModel = new model(assetsPath + "models/light_sphere.obj");
+        if (!sphereModel->getMeshes().empty()){
+            sphereVAO = sphereModel->getMeshes()[0];
+        } else
+            throw std::runtime_error("Error loading light sphere!");
     }
 
     void gBufferFBO::bindFirstPass() {
@@ -639,6 +656,9 @@ namespace TD {
         bindColorTexture(GL_TEXTURE0, GL_COLOR_ATTACHMENT0);
         bindColorTexture(GL_TEXTURE1, GL_COLOR_ATTACHMENT1);
         bindColorTexture(GL_TEXTURE2, GL_COLOR_ATTACHMENT2);
+
+
+
         secondPassShader->use();
         secondPassShader->setVec3("viewPos", cameraPos);
         for (int i = 0; i < lights.size(); i++)
@@ -651,8 +671,11 @@ namespace TD {
     }
 
     gBufferFBO::~gBufferFBO() {
+        delete(pointPassShader);
+        delete(dirPassShader);
         delete(firstPassShader);
         delete(secondPassShader);
+        delete(sphereModel);
         dlog << "Deleting GBuffer " << _fboID;
     }
 

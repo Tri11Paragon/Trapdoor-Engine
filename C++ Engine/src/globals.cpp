@@ -22,8 +22,9 @@ namespace TD {
     bool keyDown[1024];
     bool mouseDown[512];
 
-    // Texturing
+    // Texturing / Modeling
     std::map<std::string, Texture> loadedTextures;
+    std::string assetsPath = "../assets/";
 
     // Window / GLFW
     GLFWwindow *_window;

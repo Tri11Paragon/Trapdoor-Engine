@@ -69,8 +69,7 @@ int main(int, char**){
     });
     TD::vao skyboxVAO(TD::getCubeVertexPositions(250), TD::getCubeIndices(), 1);
 
-    TD::gBufferFBO gBufferFbo("../assets/shaders/gbuffers/firstpass.vert", "../assets/shaders/gbuffers/firstpass.frag",
-                              "../assets/shaders/gbuffers/secondpass.vert", "../assets/shaders/gbuffers/secondpass.frag");
+    TD::gBufferFBO gBufferFbo;
 
     TD::shader fxaaShader("../assets/shaders/postprocessing/filter-fxaa.vert", "../assets/shaders/postprocessing/filter-fxaa.frag");
     TD::fbo fxaaFBO(TD::DEPTH_BUFFER);
@@ -83,12 +82,12 @@ int main(int, char**){
     // Standard Defered about 120fps @ 1024 lights (8.5ms)
 
     TD::profiler renderTimer("Render");
-    int MAX_LIGHTS = 1024;
+    int MAX_LIGHTS = 1;
     TD::random pos(-10, 10);
     TD::random color(0, 1);
     for (int i = 0; i < MAX_LIGHTS; i++){
         TD::Light light(
-                pos.getVec3(),
+                glm::vec3(0, 3, 0),
                 color.getVec3(),
                 0.07,
                 0.20,
