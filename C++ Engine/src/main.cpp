@@ -82,8 +82,8 @@ int main(int, char**){
     // Standard Defered about 120fps @ 1024 lights (8.5ms)
 
     TD::profiler renderTimer("Render");
-    int MAX_LIGHTS = 1024;
-    TD::random pos(-10, 10);
+    int MAX_LIGHTS = 50;
+    TD::random pos(-75, 75);
     TD::random color(0, 1);
     for (int i = 0; i < MAX_LIGHTS; i++){
         TD::Light light(

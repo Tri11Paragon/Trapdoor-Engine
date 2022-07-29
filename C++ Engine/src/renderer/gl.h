@@ -82,6 +82,42 @@ namespace TD {
         void unbind();
     };
 
+    class instancedVAO {
+    protected:
+        unsigned int vaoID;
+        unsigned int instanceVarsVBO;
+        std::vector<unsigned int> vbos;
+        int indexCount = -1;
+        int max_transforms = 10000;
+        unsigned int storeData(int length, const unsigned int* data);
+        unsigned int storeData(const std::vector<Vertex> &vertices);
+        static unsigned int createVAO();
+        unsigned int createInstanceVBO(int bytePerInstance);
+        void addInstancedAttribute(int attribute, int size, int dataLength, int offset);
+    public:
+        instancedVAO(int max_transforms, const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices);
+        void bind();
+        void draw(int count);
+        void unbind();
+        ~instancedVAO();
+    };
+
+    class instancedLightVAO : public instancedVAO {
+    private:
+        struct LightData {
+            glm::mat4 transform;
+            glm::vec3 position;
+            glm::vec3 color;
+            float Linear;
+            float Quadratic;
+            float Radius;
+        };
+    public:
+        instancedLightVAO(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices);
+        void updateLightData(TD::camera &camera, const std::vector<Light> &lights);
+        ~instancedLightVAO();
+    };
+
     class model {
     public:
         model(std::string path) {
@@ -96,6 +132,9 @@ namespace TD {
         void draw(shader &shader, glm::vec3 *positions, int numberOfPositions);
         void draw(shader &shader, glm::vec3 position);
         void draw(shader &shader, std::vector<glm::vec3> positions);
+        inline std::vector<Vertex> getVertices(){return vertices;}
+        inline std::vector<unsigned int> getIndices(){return indices;}
+        inline std::vector<Texture> getUVs(){return uvs;}
         ~model();
     private:
         // model data
@@ -103,6 +142,9 @@ namespace TD {
         std::string directory;
         bool useTextureCache = false;
         std::map<std::string, Texture> loadedTextures;
+        std::vector<Vertex> vertices;
+        std::vector<unsigned int> indices;
+        std::vector<Texture> uvs;
 
         void loadModel(std::string path);
         void processNode(aiNode *node, const aiScene *scene);
@@ -164,6 +206,7 @@ namespace TD {
         TD::shader* dirPassShader;
         TD::model* sphereModel;
         TD::vao* sphereVAO;
+        TD::instancedLightVAO* lightSphere;
     public:
         gBufferFBO();
 

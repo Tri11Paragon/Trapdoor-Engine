@@ -8,6 +8,15 @@
 
 namespace TD {
 
+    float CalcPointLightBSphere(const TD::Light& Light) {
+        float MaxChannel = fmax(fmax(Light.Color.x, Light.Color.y), Light.Color.z);
+
+        float ret = (-Light.Linear + sqrtf(Light.Linear * Light.Linear - 4 * Light.Quadratic * (Light.Quadratic - 256 * MaxChannel * 1)))
+                    /
+                    (2 * Light.Quadratic);
+        return ret;
+    }
+
     /***---------------{VAO}---------------***/
 
     unsigned int vao::createVAO() {
@@ -153,6 +162,154 @@ namespace TD {
             return;
         else
             glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
+    }
+
+    /***---------------{Instanced VAO}---------------***/
+
+    unsigned int instancedVAO::createVAO() {
+        unsigned int vaoID;
+        glGenVertexArrays(1, &vaoID);
+        glBindVertexArray(vaoID);
+        return vaoID;
+    }
+
+    unsigned int instancedVAO::storeData(int length, const unsigned int *data) {
+        unsigned int eboID;
+        glGenBuffers(1, &eboID);
+
+        vbos.push_back(eboID);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
+        // 4 bytes / int
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, length << 2, data, GL_STATIC_DRAW);
+
+        return eboID;
+    }
+
+    unsigned int instancedVAO::storeData(const std::vector<Vertex> &vertices) {
+        unsigned int vboID;
+        glGenBuffers(1, &vboID);
+
+        vbos.push_back(vboID);
+
+        glBindBuffer(GL_ARRAY_BUFFER, vboID);
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
+
+        // vertex positions
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+        // vertex texture coords
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, UV));
+        // vertex normals
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        return vboID;
+    }
+
+    instancedVAO::instancedVAO(int max_transforms, const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices) {
+        this->max_transforms = max_transforms;
+        this->indexCount = indices.size();
+        vaoID = createVAO();
+        for (int i = 0; i < 3; i++) {
+            glEnableVertexAttribArray(i);
+            glEnableVertexArrayAttrib(vaoID, i);
+        }
+        storeData(indices.size(), indices.data());
+
+        storeData(vertices);
+    }
+
+    unsigned int instancedVAO::createInstanceVBO(int bytePerInstance) {
+        unsigned int vboID;
+        glGenBuffers(1, &vboID);
+
+        instanceVarsVBO = vboID;
+
+        glBindBuffer(GL_ARRAY_BUFFER, vboID);
+        glBufferData(GL_ARRAY_BUFFER, max_transforms * bytePerInstance, NULL, GL_STREAM_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        return vboID;
+    }
+
+    void instancedVAO::bind() {
+        glBindVertexArray(vaoID);
+    }
+
+    void instancedVAO::draw(int count) {
+        //glDrawElementsInstanced(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0, count);
+        glDrawElementsInstancedBaseVertexBaseInstance(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0, count, 0, 0);
+    }
+
+    void instancedVAO::unbind() {
+        glBindVertexArray(0);
+    }
+
+    instancedVAO::~instancedVAO() {
+        const unsigned int vao = vaoID;
+        glDeleteVertexArrays(1, &vao);
+        for (const unsigned int vbo : vbos){
+            glDeleteBuffers(1, &vbo);
+        }
+        glDeleteBuffers(1, &instanceVarsVBO);
+    }
+
+    void instancedVAO::addInstancedAttribute(int attribute, int dataSize, int dataLengthBytes, int offset) {
+        glBindBuffer(GL_ARRAY_BUFFER, instanceVarsVBO);
+        glBindVertexArray(vaoID);
+        glEnableVertexAttribArray(attribute);
+        glVertexAttribPointer(attribute, dataSize, GL_FLOAT, GL_FALSE, dataLengthBytes, (void *) (long)offset);
+        glVertexAttribDivisor(attribute, 1);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+    }
+
+    /***---------------{Instanced Light VAO}---------------***/
+
+    instancedLightVAO::instancedLightVAO(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices): instancedVAO(2048, vertices, indices) {
+        createInstanceVBO(sizeof(LightData));
+        addInstancedAttribute(3, 4, sizeof(LightData), 0);
+        addInstancedAttribute(4, 4, sizeof(LightData), 16);
+        addInstancedAttribute(5, 4, sizeof(LightData), 32);
+        addInstancedAttribute(6, 4, sizeof(LightData), 48);
+        addInstancedAttribute(7, 3, sizeof(LightData), offsetof(LightData, position));
+        addInstancedAttribute(8, 3, sizeof(LightData), offsetof(LightData, color));
+        addInstancedAttribute(9, 1, sizeof(LightData), offsetof(LightData, Linear));
+        addInstancedAttribute(10, 1, sizeof(LightData), offsetof(LightData, Quadratic));
+        addInstancedAttribute(11, 1, sizeof(LightData), offsetof(LightData, Radius));
+    }
+
+    void instancedLightVAO::updateLightData(TD::camera &camera, const std::vector<Light> &lights) {
+        std::vector<LightData> datas;
+        for (int i = 0; i < lights.size(); i++){
+            Light l = lights[i];
+            float sphereScale = CalcPointLightBSphere(l);
+            if (!camera.sphereInFrustum(l.Position, sphereScale))
+                continue;
+            glm::mat4 trans(1.0);
+            trans = glm::translate(trans, l.Position);
+            trans = glm::scale(trans, glm::vec3(sphereScale));
+            LightData data;
+            data.transform = trans;
+            data.position = l.Position;
+            data.color = l.Color;
+            data.Linear = l.Linear;
+            data.Quadratic = l.Quadratic;
+            data.Radius = l.Radius;
+            datas.push_back(data);
+        }
+        glBindBuffer(GL_ARRAY_BUFFER, instanceVarsVBO);
+        //glBufferData(GL_ARRAY_BUFFER, datas.size() * sizeof(LightData), NULL, GL_STREAM_DRAW);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, datas.size() * sizeof(LightData), &datas[0]);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+
+    instancedLightVAO::~instancedLightVAO() {
+
     }
 
     /***---------------{Texture}---------------***/
@@ -353,6 +510,9 @@ namespace TD {
             textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
         }
 
+        this->vertices = vertices;
+        this->indices = indices;
+        this->uvs = textures;
         return new vao(vertices, indices, textures);
     }
 
@@ -638,6 +798,7 @@ namespace TD {
             sphereVAO = sphereModel->getMeshes()[0];
         } else
             throw std::runtime_error("Error loading light sphere!");
+        lightSphere = new instancedLightVAO(sphereModel->getVertices(), sphereModel->getIndices());
     }
 
     void gBufferFBO::bindFirstPass() {
@@ -645,15 +806,6 @@ namespace TD {
         glClearColor(0.0, 0.0, 0.0, 1.0); // keep it black so it doesn't leak into g-buffer
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         firstPassShader->use();
-    }
-
-    float CalcPointLightBSphere(const TD::Light& Light) {
-        float MaxChannel = fmax(fmax(Light.Color.x, Light.Color.y), Light.Color.z);
-
-        float ret = (-Light.Linear + sqrtf(Light.Linear * Light.Linear - 4 * Light.Quadratic * (Light.Quadratic - 256 * MaxChannel * 1)))
-                    /
-                    (2 * Light.Quadratic);
-        return ret;
     }
 
     void gBufferFBO::bindSecondPass() {
@@ -673,25 +825,13 @@ namespace TD {
         bindColorTexture(GL_TEXTURE0, GL_COLOR_ATTACHMENT0);
         bindColorTexture(GL_TEXTURE1, GL_COLOR_ATTACHMENT1);
         bindColorTexture(GL_TEXTURE2, GL_COLOR_ATTACHMENT2);
-        for (Light l : lights){
-            float sphereScale = CalcPointLightBSphere(l);
-            if (!camera.sphereInFrustum(l.Position, sphereScale))
-                continue;
-            float dist = glm::distance(l.Position, camera.getPosition());
-            //tlog << dist << " " << l.Radius;
-            if (dist < sphereScale)
-                glCullFace ( GL_FRONT );
-            else
-                glCullFace ( GL_BACK );
+        glDisable(GL_CULL_FACE);
 
-
-            glm::mat4 trans(1.0);
-            trans = glm::translate(trans, l.Position);
-            trans = glm::scale(trans, glm::vec3(sphereScale));
-            pointPassShader->setMatrix("transform", trans);
-            pointPassShader->setLight("light", l);
-            sphereVAO->draw();
-        }
+        lightSphere->updateLightData(camera, lights);
+        lightSphere->bind();
+        lightSphere->draw(lights.size());
+        lightSphere->unbind();
+        glEnable(GL_CULL_FACE);
 
         glCullFace ( GL_BACK );
     }
@@ -724,6 +864,7 @@ namespace TD {
         delete(firstPassShader);
         delete(secondPassShader);
         delete(sphereModel);
+        delete(lightSphere);
         dlog << "Deleting GBuffer " << _fboID;
     }
 

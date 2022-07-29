@@ -5,15 +5,12 @@ uniform sampler2D gPosition;
 uniform sampler2D gNormal;
 uniform sampler2D gAlbedoSpec;
 
-struct Light {
-    vec3 Position;
-    vec3 Color;
+in vec3 position_out;
+in vec3 color_out;
+in float linear_out;
+in float quadratic_out;
+in float radius_out;
 
-    float Linear;
-    float Quadratic;
-    float Radius;
-};
-uniform Light light;
 uniform vec3 viewPos;
 uniform vec2 screenSize;
 
@@ -40,17 +37,18 @@ void main() {
     vec3 lighting  = Diffuse * 0.1; // hard-coded ambient component
     vec3 viewDir  = normalize(viewPos - FragPos);
         // calculate distance between light source and current fragment
-        float distance = length(light.Position - FragPos);
-        if(distance < light.Radius) {
+        vec3 posmfrag = position_out - FragPos;
+        float distance = length(posmfrag);
+        if(distance < radius_out) {
             // diffuse
-            vec3 lightDir = normalize(light.Position - FragPos);
-            vec3 diffuse = max(dot(Normal, lightDir), 0.0) * Diffuse * light.Color;
+            vec3 lightDir = normalize(posmfrag);
+            vec3 diffuse = max(dot(Normal, lightDir), 0.0) * Diffuse * color_out;
             // specular
             vec3 halfwayDir = normalize(lightDir + viewDir);
             float spec = pow(max(dot(Normal, halfwayDir), 0.0), 16.0);
-            vec3 specular = light.Color * spec * Specular;
+            vec3 specular = color_out * spec * Specular;
             // attenuation
-            float attenuation = 1.0 / (1.0 + light.Linear * distance + light.Quadratic * distance * distance);
+            float attenuation = 1.0 / (1.0 + linear_out * distance + quadratic_out * distance * distance);
             diffuse *= attenuation;
             specular *= attenuation;
             lighting += diffuse + specular;
