@@ -76,6 +76,7 @@ int main(int, char**){
     fxaaFBO.createColorTexture(GL_COLOR_ATTACHMENT0);
 
     TD::model kent("../assets/models/kent.dae");
+    TD::model plane("../assets/models/32x32plane.dae");
 
     std::vector<TD::Light> lights = {};
 
@@ -107,9 +108,13 @@ int main(int, char**){
         renderTimer.start("Geometry Pass");
         gBufferFbo.bindFirstPass();
 
+        plane.draw(*gBufferFbo.getFirstPassShader(), glm::vec3(0,0,0));
+
         kent.draw(*gBufferFbo.getFirstPassShader(), std::vector<glm::vec3> {
             glm::vec3(0, 0, -1), glm::vec3(0, 0, -10), glm::vec3(12, 0, -1), glm::vec3(4, 21, -1), glm::vec3(6, -5, -1)
         });
+
+
 
         skyboxShader.use();
         skyboxTexture.bind();

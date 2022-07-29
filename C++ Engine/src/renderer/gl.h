@@ -140,7 +140,7 @@ namespace TD {
         // model data
         std::vector<vao*> meshes;
         std::string directory;
-        bool useTextureCache = false;
+        bool useTextureCache = true;
         std::map<std::string, Texture> loadedTextures;
         std::vector<Vertex> vertices;
         std::vector<unsigned int> indices;
@@ -204,6 +204,7 @@ namespace TD {
         TD::shader* secondPassShader;
         TD::shader* pointPassShader;
         TD::shader* dirPassShader;
+        TD::shader* nullShader;
         TD::model* sphereModel;
         TD::vao* sphereVAO;
         TD::instancedLightVAO* lightSphere;

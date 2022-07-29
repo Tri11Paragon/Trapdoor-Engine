@@ -299,7 +299,7 @@ namespace TD {
             data.color = l.Color;
             data.Linear = l.Linear;
             data.Quadratic = l.Quadratic;
-            data.Radius = l.Radius;
+            data.Radius = sphereScale;
             datas.push_back(data);
         }
         glBindBuffer(GL_ARRAY_BUFFER, instanceVarsVBO);
@@ -422,8 +422,8 @@ namespace TD {
         shader.use();
         shader.setMatrix("transform", glm::translate(glm::mat4(1.0f), position));
         for (vao* mesh : meshes){
-            mesh->bindTextures();
             mesh->bind();
+            mesh->bindTextures();
             mesh->draw();
         }
     }
@@ -435,7 +435,8 @@ namespace TD {
     void model::loadModel(std::string path) {
         Assimp::Importer import;
 
-        const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+        const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs
+                                                    | aiProcess_PreTransformVertices | aiProcess_ImproveCacheLocality | aiProcess_OptimizeMeshes);
 
         if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
             flog << "Error loading model with Assimp." << std::endl;
@@ -523,7 +524,14 @@ namespace TD {
         for(unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
             aiString str;
             mat->GetTexture(type, i, &str);
-            std::string path = std::string("../assets/textures/") + str.C_Str();
+            std::string imgPath = std::string(str.C_Str());
+
+            std::string delim = "/textures/";
+            int pos = imgPath.find(delim, 0);
+            std::string filterPath = str.C_Str();
+            if (pos < imgPath.size())
+                filterPath = imgPath.substr(pos + delim.length(), imgPath.size());
+            std::string path = std::string("../assets/textures/") + filterPath;
 
             std::map<std::string, Texture>& textureMap = useTextureCache ? TD::loadedTextures : this->loadedTextures;
 
@@ -749,6 +757,7 @@ namespace TD {
         dirPassShader->setInt("gPosition", 0);
         dirPassShader->setInt("gNormal", 1);
         dirPassShader->setInt("gAlbedoSpec", 2);
+        nullShader = new shader("../assets/shaders/gbuffers/nulltech.vert", "../assets/shaders/gbuffers/nulltech.frag");
 
         glDeleteFramebuffers(1, &_fboID);
         glDeleteRenderbuffers(1, &_depthAttachment);
@@ -787,8 +796,8 @@ namespace TD {
 
         glGenRenderbuffers(1, &_depthAttachment);
         glBindRenderbuffer(GL_RENDERBUFFER, _depthAttachment);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, _width, _height);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _depthAttachment);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH32F_STENCIL8, _width, _height);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, _depthAttachment);
 
         validateFramebuffer();
         unbindFBO();
@@ -806,34 +815,65 @@ namespace TD {
         glClearColor(0.0, 0.0, 0.0, 1.0); // keep it black so it doesn't leak into g-buffer
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         firstPassShader->use();
+        GLenum DrawBuffers[] = { GL_COLOR_ATTACHMENT0,
+                                 GL_COLOR_ATTACHMENT1,
+                                 GL_COLOR_ATTACHMENT2 };
+
+        glDrawBuffers(3, DrawBuffers);
     }
 
     void gBufferFBO::bindSecondPass() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, _fboID);
+        glBlitFramebuffer(0, 0, _width, _height, 0, 0, _width, _height, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+    }
+
+    int lastCount = 0;
+
+    void gBufferFBO::runPointLighting(TD::camera &camera, std::vector<TD::Light> lights) {
+        glEnable(GL_STENCIL_TEST);
+        glEnable(GL_DEPTH_TEST);
+        glDisable(GL_CULL_FACE);
+        glClear(GL_STENCIL_BUFFER_BIT);
+        glStencilFunc(GL_ALWAYS, 0, 0);
+
+        glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR_WRAP, GL_KEEP);
+        glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
+
+        nullShader->use();
+        glDrawBuffer(GL_NONE);
+
+        if (lastCount != lights.size()){
+            lastCount = lights.size();
+            lightSphere->updateLightData(camera, lights);
+        }
+        lightSphere->bind();
+        lightSphere->draw(lights.size());
+        //lightSphere->unbind();
+        glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
 
         glEnable(GL_BLEND);
         glBlendEquation(GL_FUNC_ADD);
         glBlendFunc(GL_ONE, GL_ONE);
         glDisable(GL_DEPTH_TEST);
-    }
 
-    void gBufferFBO::runPointLighting(TD::camera &camera, std::vector<TD::Light> lights) {
-        sphereVAO->bind();
-        pointPassShader->use();
-        pointPassShader->setVec3("viewPos", camera.getPosition());
-        pointPassShader->setVec2("screenSize", (float) _display_w, (float) _display_h);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_FRONT);
+        glDrawBuffer(GL_BACK);
+
         bindColorTexture(GL_TEXTURE0, GL_COLOR_ATTACHMENT0);
         bindColorTexture(GL_TEXTURE1, GL_COLOR_ATTACHMENT1);
         bindColorTexture(GL_TEXTURE2, GL_COLOR_ATTACHMENT2);
-        glDisable(GL_CULL_FACE);
-
-        lightSphere->updateLightData(camera, lights);
-        lightSphere->bind();
+        pointPassShader->use();
+        pointPassShader->setVec3("viewPos", camera.getPosition());
+        pointPassShader->setVec2("screenSize", (float) _display_w, (float) _display_h);
+        //lightSphere->bind();
         lightSphere->draw(lights.size());
         lightSphere->unbind();
-        glEnable(GL_CULL_FACE);
 
         glCullFace ( GL_BACK );
+        glDisable(GL_STENCIL_TEST);
     }
 
     void gBufferFBO::runDirLighting(TD::camera &camera, std::vector<TD::Light> lights) {
@@ -863,6 +903,7 @@ namespace TD {
         delete(dirPassShader);
         delete(firstPassShader);
         delete(secondPassShader);
+        delete(nullShader);
         delete(sphereModel);
         delete(lightSphere);
         dlog << "Deleting GBuffer " << _fboID;
