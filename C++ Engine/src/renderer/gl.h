@@ -13,6 +13,7 @@
 #include "../logging.h"
 #include "../glm.h"
 #include "shader.h"
+#include "camera.h"
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -169,7 +170,10 @@ namespace TD {
         TD::shader* getFirstPassShader();
 
         void bindFirstPass();
-        void bindSecondPass(glm::vec3 cameraPos, std::vector<TD::Light> lights);
+        void bindSecondPass();
+        void runPointLighting(TD::camera &camera, std::vector<TD::Light> lights);
+        void runDirLighting(TD::camera &camera, std::vector<TD::Light> lights);
+        void endSecondPass();
 
         ~gBufferFBO();
     };

@@ -13,6 +13,13 @@ namespace TD {
         glm::vec3 _cameraPos = glm::vec3(0.0f);
         float _moveAtX = 0, _moveAtY = 0, _moveAtZ = 0;
         float _yaw = 0, _pitch = 0, _roll = 0;
+        float clippingPlanes[16];
+        double m_Frustum[6][4];
+        static inline float getInMatrix(glm::mat4 mat,int pos){
+            return mat[pos >> 2][pos % 4];
+        }
+        void normalizePlane(double frustum[6][4], int side);
+        void calculateFrustum();
     public:
         virtual void update() {}
         glm::vec3 getPosition();
@@ -20,6 +27,12 @@ namespace TD {
         float getYaw();
         float getPitch();
         float getRoll();
+        bool pointInFrustum(double x, double y, double z);
+        bool sphereInFrustum(double x, double y, double z, double radius);
+        bool cubeInFrustum(double x1, double y1, double z1, double x2, double y2, double z2);
+        inline bool pointInFrustum(glm::vec3 pos) { return pointInFrustum(pos.x, pos.y, pos.z); }
+        inline bool sphereInFrustum(glm::vec3 pos, double radius) { return sphereInFrustum(pos.x, pos.y, pos.z, radius); }
+        inline bool cubeInFrustum(glm::vec3 pos1, glm::vec3 pos2) { return cubeInFrustum(pos1.x, pos1.y, pos1.z, pos2.x, pos2.y, pos2.z); }
     };
 
     class firstPersonCamera : public camera {

@@ -590,13 +590,10 @@ namespace TD {
         dirPassShader->setInt("gNormal", 1);
         dirPassShader->setInt("gAlbedoSpec", 2);
 
+        glDeleteFramebuffers(1, &_fboID);
+        glDeleteRenderbuffers(1, &_depthAttachment);
         glGenFramebuffers(1, &_fboID);
         bindFBO();
-
-        //createColorTexture(GL_COLOR_ATTACHMENT0, GL_RGBA32F, GL_RGBA, GL_FLOAT, GL_NEAREST);
-        //createColorTexture(GL_COLOR_ATTACHMENT1, GL_RGBA16F, GL_RGBA, GL_FLOAT, GL_NEAREST);
-        //createColorTexture(GL_COLOR_ATTACHMENT2, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, GL_NEAREST);
-
 
         unsigned int gPosition, gNormal, gAlbedoSpec;
         // position color buffer
@@ -650,20 +647,71 @@ namespace TD {
         firstPassShader->use();
     }
 
-    void gBufferFBO::bindSecondPass(glm::vec3 cameraPos, std::vector<TD::Light> lights) {
+    float CalcPointLightBSphere(const TD::Light& Light) {
+        float MaxChannel = fmax(fmax(Light.Color.x, Light.Color.y), Light.Color.z);
+
+        float ret = (-Light.Linear + sqrtf(Light.Linear * Light.Linear - 4 * Light.Quadratic * (Light.Quadratic - 256 * MaxChannel * 1)))
+                    /
+                    (2 * Light.Quadratic);
+        return ret;
+    }
+
+    void gBufferFBO::bindSecondPass() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        glEnable(GL_BLEND);
+        glBlendEquation(GL_FUNC_ADD);
+        glBlendFunc(GL_ONE, GL_ONE);
+        glDisable(GL_DEPTH_TEST);
+    }
+
+    void gBufferFBO::runPointLighting(TD::camera &camera, std::vector<TD::Light> lights) {
+        sphereVAO->bind();
+        pointPassShader->use();
+        pointPassShader->setVec3("viewPos", camera.getPosition());
+        pointPassShader->setVec2("screenSize", (float) _display_w, (float) _display_h);
         bindColorTexture(GL_TEXTURE0, GL_COLOR_ATTACHMENT0);
         bindColorTexture(GL_TEXTURE1, GL_COLOR_ATTACHMENT1);
         bindColorTexture(GL_TEXTURE2, GL_COLOR_ATTACHMENT2);
+        for (Light l : lights){
+            float sphereScale = CalcPointLightBSphere(l);
+            if (!camera.sphereInFrustum(l.Position, sphereScale))
+                continue;
+            float dist = glm::distance(l.Position, camera.getPosition());
+            //tlog << dist << " " << l.Radius;
+            if (dist < sphereScale)
+                glCullFace ( GL_FRONT );
+            else
+                glCullFace ( GL_BACK );
 
 
+            glm::mat4 trans(1.0);
+            trans = glm::translate(trans, l.Position);
+            trans = glm::scale(trans, glm::vec3(sphereScale));
+            pointPassShader->setMatrix("transform", trans);
+            pointPassShader->setLight("light", l);
+            sphereVAO->draw();
+        }
 
-        secondPassShader->use();
-        secondPassShader->setVec3("viewPos", cameraPos);
-        for (int i = 0; i < lights.size(); i++)
-            secondPassShader->setLight(i, lights[i]);
-        renderToQuad(*secondPassShader);
+        glCullFace ( GL_BACK );
+    }
+
+    void gBufferFBO::runDirLighting(TD::camera &camera, std::vector<TD::Light> lights) {
+        dirPassShader->use();
+        dirPassShader->setMatrix("transform", glm::scale(glm::translate(glm::mat4(1), glm::vec3(0, 0, -0.5f)), glm::vec3(_width, _height, 1.0f)));
+        dirPassShader->setVec3("viewPos", camera.getPosition());
+        dirPassShader->setVec2("screenSize", (float) _display_w, (float) _display_h);
+        dirPassShader->setVec3("direction", 45, 45, 45);
+        dirPassShader->setVec3("color", 1, 1, 1);
+        dirPassShader->setInt("enabled", false);
+        quad->bind();
+        quad->draw();
+        quad->unbind();
+    }
+
+    void gBufferFBO::endSecondPass() {
+        glEnable(GL_DEPTH_TEST);
+        glDisable(GL_BLEND);
     }
 
     TD::shader* gBufferFBO::getFirstPassShader(){

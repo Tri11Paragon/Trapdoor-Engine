@@ -82,12 +82,12 @@ int main(int, char**){
     // Standard Defered about 120fps @ 1024 lights (8.5ms)
 
     TD::profiler renderTimer("Render");
-    int MAX_LIGHTS = 1;
+    int MAX_LIGHTS = 1024;
     TD::random pos(-10, 10);
     TD::random color(0, 1);
     for (int i = 0; i < MAX_LIGHTS; i++){
         TD::Light light(
-                glm::vec3(0, 3, 0),
+                pos.getVec3(),
                 color.getVec3(),
                 0.07,
                 0.20,
@@ -119,16 +119,23 @@ int main(int, char**){
         gBufferFbo.unbindFBO();
         renderTimer.end("Geometry Pass");
 
-        renderTimer.start("Lighting Pass");
         //fxaaFBO.bindFBODraw();
-        gBufferFbo.bindSecondPass(camera.getPosition(), lights);
-        renderTimer.end("Lighting Pass");
+        gBufferFbo.bindSecondPass();
+        renderTimer.start("Point Lighting Pass");
+        gBufferFbo.runPointLighting(camera, lights);
+        renderTimer.end("Point Lighting Pass");
+        renderTimer.start("Dir Lighting Pass");
+        gBufferFbo.runDirLighting(camera, lights);
+        renderTimer.end("Dir Lighting Pass");
+        renderTimer.start("Finishing Pass");
+        gBufferFbo.endSecondPass();
         //fxaaFBO.unbindFBO();
 
         //fxaaFBO.bindColorTexture(GL_TEXTURE0, GL_COLOR_ATTACHMENT0);
         //fxaaFBO.renderToQuad(fxaaShader);
 
         TD::window::finishRender();
+        renderTimer.end("Finishing Pass");
     }
 
     TD::window::deleteWindow();
