@@ -140,6 +140,7 @@ namespace TD {
         inline std::vector<Vertex> getVertices(){return vertices;}
         inline std::vector<unsigned int> getIndices(){return indices;}
         inline std::vector<Texture> getUVs(){return uvs;}
+        inline std::vector<std::pair<std::string, TEXTURE_TYPE>> getUnloadedTextures(){return unloadedTextures;}
         ~model();
     private:
         // model data
@@ -150,6 +151,8 @@ namespace TD {
         std::vector<Vertex> vertices;
         std::vector<unsigned int> indices;
         std::vector<Texture> uvs;
+        std::vector<std::pair<std::string, TEXTURE_TYPE>> unloadedTextures;
+        std::vector<std::pair<std::vector<Vertex>, std::pair<std::vector<unsigned int>, std::vector<Texture>>>> allUnloadedMeshes;
         bool loadGL = true;
 
         void loadModel(std::string path);

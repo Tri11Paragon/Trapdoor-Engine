@@ -518,8 +518,10 @@ namespace TD {
         this->uvs = textures;
         if (loadGL)
             return new vao(vertices, indices, textures);
-        else
+        else {
+            allUnloadedMeshes.emplace_back(vertices, std::pair(indices, textures));
             return nullptr;
+        }
     }
 
     extern std::map<std::string, Texture> loadedTextures;
@@ -551,7 +553,7 @@ namespace TD {
                 textureMap.insert(std::pair(path, tex));
                 textures.push_back(tex);
             } else {
-                
+                unloadedTextures.push_back(std::pair(path, textureType));
             }
         }
         return textures;
@@ -565,7 +567,17 @@ namespace TD {
     }
 
     void model::loadToGL() {
-
+        std::vector<Texture> textures;
+        for (auto ul : unloadedTextures){
+            textures.push_back(Texture(new TD::texture(ul.first), ul.second, ul.first));
+        }
+        uvs.insert(uvs.end(), textures.begin(), textures.end());
+        for (auto ul : allUnloadedMeshes){
+            meshes.push_back(new vao(ul.first, ul.second.first, ul.second.second));
+        }
+        // TODO: make this a pointer and delete it.
+        allUnloadedMeshes = std::vector<std::pair<std::vector<Vertex>, std::pair<std::vector<unsigned int>, std::vector<Texture>>>>();
+        unloadedTextures = std::vector<std::pair<std::string, TEXTURE_TYPE>>();
     }
 
     /***---------------{FBOs}---------------***/

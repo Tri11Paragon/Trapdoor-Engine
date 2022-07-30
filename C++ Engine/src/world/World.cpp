@@ -18,8 +18,8 @@ namespace TD {
         }
     }
 
-    std::vector<std::queue<std::pair<std::string, std::string>>> unloadedModels;
-    std::vector<std::queue<std::pair<std::string, std::string>>> unloadedTextures;
+    extern std::vector<std::queue<std::pair<std::string, std::string>>> unloadedModels;
+    extern std::vector<std::queue<std::pair<std::string, std::string>>> unloadedTextures;
     std::vector<std::thread*> createdThreads;
 
     void Threadpool::createThreadPool() {

@@ -48,8 +48,8 @@ namespace TD {
     std::string assetsPath = "../assets/";
 
     // ---------------{GameRegistry}---------------
-    std::vector<std::pair<std::string, std::string>> unloadedModels;
-    std::vector<std::pair<std::string, std::string>> unloadedTextures;
+    std::vector<std::queue<std::pair<std::string, std::string>>> unloadedModels;
+    std::vector<std::queue<std::pair<std::string, std::string>>> unloadedTextures;
     std::unordered_map<std::string, TD::model*> loadedModels;
     std::unordered_map<std::string, TD::texture*> loadedTextures;
 }
