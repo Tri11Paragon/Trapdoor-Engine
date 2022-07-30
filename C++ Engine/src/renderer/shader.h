@@ -79,6 +79,11 @@ namespace TD {
         ~shader();
     };
 
+    class WindowResize {
+    public:
+        virtual void windowResized(int width, int height) = 0;
+    };
+
 } // TD
 
 #endif //ENGINE_SHADER_H

@@ -9,4 +9,12 @@
 #include <map>
 #include <string>
 
+namespace TD {
+
+    //static inline void removeFromVector(std::vector<T> vector, T objectToRemove){
+    //    vector.erase(std::remove(vector.begin(), vector.end(), objectToRemove), vector.end());
+    //}
+    // windowResizeCallbacks.erase(std::remove(windowResizeCallbacks.begin(), windowResizeCallbacks.end(), this), windowResizeCallbacks.end());
+}
+
 #endif //ENGINE_STD_H

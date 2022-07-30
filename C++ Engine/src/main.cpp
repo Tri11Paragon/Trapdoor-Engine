@@ -72,13 +72,28 @@ int main(int, char**){
     TD::gBufferFBO gBufferFbo;
 
     TD::shader fxaaShader("../assets/shaders/postprocessing/filter-fxaa.vert", "../assets/shaders/postprocessing/filter-fxaa.frag");
-    TD::fbo fxaaFBO(TD::DEPTH_BUFFER);
-    fxaaFBO.createColorTexture(GL_COLOR_ATTACHMENT0);
+    //TD::fbo fxaaFBO(TD::DEPTH_BUFFER);
 
     TD::model kent("../assets/models/kent.dae");
     TD::model plane("../assets/models/32x32plane.dae");
 
-    std::vector<TD::Light> lights = {};
+    float height = 5;
+    
+    std::vector<TD::Light> lights = {
+            TD::Light(glm::vec3(0,height,0),glm::vec3(1,1,1),0.07,0.20,65),
+            TD::Light(glm::vec3(5,height,0),glm::vec3(1,1,1),0.07,0.20,65),
+            TD::Light(glm::vec3(0,height,5),glm::vec3(1,1,1),0.07,0.20,65),
+            TD::Light(glm::vec3(-5,height,0),glm::vec3(1,1,1),0.07,0.20,65),
+            TD::Light(glm::vec3(0,height,-5),glm::vec3(1,1,1),0.07,0.20,65),
+            TD::Light(glm::vec3(5,height,5),glm::vec3(1,1,1),0.07,0.20,65),
+            TD::Light(glm::vec3(-5,height,-5),glm::vec3(1,1,1),0.07,0.20,65),
+            TD::Light(glm::vec3(25,height,0),glm::vec3(1,1,1),0.07,0.20,65),
+            TD::Light(glm::vec3(0,height,25),glm::vec3(1,1,1),0.07,0.20,65),
+            TD::Light(glm::vec3(-25,height,0),glm::vec3(1,1,1),0.07,0.20,65),
+            TD::Light(glm::vec3(0,height,-25),glm::vec3(1,1,1),0.07,0.20,65),
+            TD::Light(glm::vec3(25,height,25),glm::vec3(1,1,1),0.07,0.20,65),
+            TD::Light(glm::vec3(-25,height,-25),glm::vec3(1,1,1),0.07,0.20,65),
+    };
 
     // Standard Defered about 120fps @ 1024 lights (8.5ms)
 
@@ -94,8 +109,10 @@ int main(int, char**){
                 0.20,
                 65
         );
-        lights.push_back(light);
+        //lights.push_back(light);
     }
+
+    gBufferFbo.updateLights(lights);
 
     // Main loop
     while (!TD::window::isCloseRequested()) {
@@ -125,22 +142,16 @@ int main(int, char**){
         renderTimer.end("Geometry Pass");
 
         //fxaaFBO.bindFBODraw();
-        gBufferFbo.bindSecondPass();
-        renderTimer.start("Point Lighting Pass");
-        gBufferFbo.runPointLighting(camera, lights);
-        renderTimer.end("Point Lighting Pass");
-        renderTimer.start("Dir Lighting Pass");
-        gBufferFbo.runDirLighting(camera, lights);
-        renderTimer.end("Dir Lighting Pass");
-        renderTimer.start("Finishing Pass");
-        gBufferFbo.endSecondPass();
+
+        renderTimer.start("Lighting Pass");
+        gBufferFbo.bindSecondPass(camera);
         //fxaaFBO.unbindFBO();
 
         //fxaaFBO.bindColorTexture(GL_TEXTURE0, GL_COLOR_ATTACHMENT0);
         //fxaaFBO.renderToQuad(fxaaShader);
 
         TD::window::finishRender();
-        renderTimer.end("Finishing Pass");
+        renderTimer.end("Lighting Pass");
     }
 
     TD::window::deleteWindow();

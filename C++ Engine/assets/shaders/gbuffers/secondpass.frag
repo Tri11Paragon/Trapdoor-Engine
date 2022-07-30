@@ -15,9 +15,29 @@ struct Light {
     float Quadratic;
     float Radius;
 };
-const int NR_LIGHTS = 1024;
+const int NR_LIGHTS = 50;
 uniform Light lights[NR_LIGHTS];
 uniform vec3 viewPos;
+
+uniform vec3 direction;
+uniform vec3 color;
+uniform bool enabled;
+
+vec3 calcDirLight(vec3 FragPos, vec3 norm, float Specular){
+    if (!enabled)
+        return vec3(0);
+    vec3 lightDir = normalize(direction);
+    float diff = max(dot(norm, lightDir), 0.0);
+
+    vec3 diffuse = color * diff;
+
+    vec3 viewDir = normalize(viewPos - FragPos);
+    vec3 halfwayDir = normalize(lightDir + viewDir);
+    float spec = pow(max(dot(norm, halfwayDir), 0.0), 16.0);
+    vec3 specular = color * spec * Specular;
+
+    return vec3(diffuse + specular);
+}
 
 void main() {
     // retrieve data from gbuffer
@@ -53,5 +73,5 @@ void main() {
             lighting += diffuse + specular;
         }
     }
-    FragColor = vec4(lighting, 1.0);
+    FragColor = vec4(lighting + calcDirLight(FragPos, Normal, Specular), 1.0);
 }

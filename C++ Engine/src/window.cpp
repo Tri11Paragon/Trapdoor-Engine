@@ -19,6 +19,7 @@ namespace TD {
     extern bool _loadingComplete;
     extern double _dx, _dy, _lx, _ly, _mx, _my;
     extern glm::mat4 projectionMatrix;
+    extern bool _isWindowOpen;
 
     void updateProjections(){
         glViewport(0, 0, _display_w, _display_h);
@@ -106,6 +107,8 @@ namespace TD {
         _loadingComplete = true;
     }
 
+    extern std::vector<WindowResize*> windowResizeCallbacks;;
+
     void window::startRender(float r, float g, float b, float a) {
         glClearColor(r * a, g * a, b * a, a);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -140,8 +143,10 @@ namespace TD {
 
         int pastValueW = _display_w, pastValueH = _display_h;
         glfwGetFramebufferSize(_window, &_display_w, &_display_h);
-        if (pastValueW != _display_w && pastValueH != _display_h) {
+        if (pastValueW != _display_w || pastValueH != _display_h) {
             updateProjections();
+            for (int i = 0; i < windowResizeCallbacks.size(); i++)
+                windowResizeCallbacks[i]->windowResized(_display_w, _display_h);
             dlog << "Changing Projection Matrix to " << _display_w << "w " << _display_h << "h\n";
         }
 
@@ -158,7 +163,9 @@ namespace TD {
     }
 
     bool window::isCloseRequested() {
-        return glfwWindowShouldClose(_window);
+        bool close = glfwWindowShouldClose(_window);
+        _isWindowOpen = !close;
+        return close;
     }
 
     int window::width() {

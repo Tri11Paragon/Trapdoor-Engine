@@ -557,6 +557,7 @@ namespace TD {
 
     /***---------------{FBOs}---------------***/
     extern int _display_w, _display_h;
+    extern std::vector<WindowResize*> windowResizeCallbacks;
 
     const std::vector<float> vertices = {
             1.0f,  1.0f, 0.0f,  // top right
@@ -577,36 +578,16 @@ namespace TD {
             0.0f, 1.0f    // top left
     };
 
-    fbo::fbo() : fbo(_display_w, _display_h, DEPTH_BUFFER) {}
-    fbo::fbo(DEPTH_ATTACHMENT_TYPE type): fbo(_display_w, _display_h, type) {}
+    fbo::fbo() : fbo(_display_w, _display_h, DEPTH_BUFFER) { screenSized = true; }
+    fbo::fbo(DEPTH_ATTACHMENT_TYPE type): fbo(_display_w, _display_h, type) { screenSized = true; }
     fbo::fbo(int width, int height): fbo(width, height, DEPTH_BUFFER) {}
 
     fbo::fbo(int width, int height, DEPTH_ATTACHMENT_TYPE type) {
+        windowResizeCallbacks.push_back(this);
         this->_width = width;
         this->_height = height;
         this->_fboType = type;
-        glGenFramebuffers(1, &_fboID);
-        bindFBO();
-
-        if (type == DEPTH_TEXTURE){
-            glGenTextures(1, &_depthAttachment);
-            glBindTexture(GL_TEXTURE_2D, _depthAttachment);
-
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, _width, _height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
-
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, _depthAttachment, 0);
-        } else if (type == DEPTH_BUFFER) {
-            glGenRenderbuffers(1, &_depthAttachment);
-            glBindRenderbuffer(GL_RENDERBUFFER, _depthAttachment);
-
-            glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, _width, _height);
-            glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _depthAttachment);
-        }
-
-        validateFramebuffer();
+        createFrameBuffer();
         unbindFBO();
         quad = new vao(vertices, texCoords, indices, 2);
     }
@@ -616,30 +597,6 @@ namespace TD {
             flog << "Unable to create framebuffer! " << glCheckFramebufferStatus(GL_FRAMEBUFFER);
             throw "Unable to create framebuffer!";
         }
-    }
-
-    void fbo::createColorTexture(int colorAttachment) {
-        createColorTexture(colorAttachment, GL_RGB);
-    }
-    void fbo::createColorTexture(int colorAttachment, int format) {
-        createColorTexture(colorAttachment, format, format, GL_UNSIGNED_BYTE, GL_LINEAR);
-    }
-    void fbo::createColorTexture(int colorAttachment, int format, int formatInternal, int type, int filter) {
-        // TODO: binding and unbinding breaks this for multi color attachments.
-        bindFBO();
-        unsigned int colorTextureID;
-        glGenTextures(1, &colorTextureID);
-        glBindTexture(GL_TEXTURE_2D, colorTextureID);
-
-        glTexImage2D(GL_TEXTURE_2D, 0, format, _width, _height, 0, formatInternal, type, NULL);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
-
-        glFramebufferTexture2D(GL_FRAMEBUFFER, colorAttachment, GL_TEXTURE_2D, colorTextureID, 0);
-        validateFramebuffer();
-        _colorTextures.insert(std::pair<int, unsigned int>(colorAttachment, colorTextureID));
-        unbindFBO();
     }
 
     void fbo::bindColorTexture(int activeTexture, int colorAttachment) {
@@ -717,6 +674,39 @@ namespace TD {
 
     fbo::~fbo() {
         delete(quad);
+        windowResizeCallbacks.erase(std::remove(windowResizeCallbacks.begin(), windowResizeCallbacks.end(), this), windowResizeCallbacks.end());
+        deleteFrameBuffer();
+        dlog << "Deleting FBO " << _fboID;
+    }
+
+    void fbo::createFrameBuffer() {
+        glGenFramebuffers(1, &_fboID);
+        bindFBO();
+
+        createAttachments();
+
+        if (_fboType == DEPTH_TEXTURE){
+            glGenTextures(1, &_depthAttachment);
+            glBindTexture(GL_TEXTURE_2D, _depthAttachment);
+
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, _width, _height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
+
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, _depthAttachment, 0);
+        } else if (_fboType == DEPTH_BUFFER) {
+            glGenRenderbuffers(1, &_depthAttachment);
+            glBindRenderbuffer(GL_RENDERBUFFER, _depthAttachment);
+
+            glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, _width, _height);
+            glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _depthAttachment);
+        }
+
+        validateFramebuffer();
+    }
+
+    void fbo::deleteFrameBuffer() {
         glDeleteFramebuffers(1, &_fboID);
         if (_fboType == DEPTH_BUFFER){
             glDeleteRenderbuffers(1, &_depthAttachment);
@@ -726,7 +716,16 @@ namespace TD {
         for (std::pair<int, unsigned int> p : _colorTextures){
             glDeleteTextures(1, &p.second);
         }
-        dlog << "Deleting FBO " << _fboID;
+        _colorTextures = std::unordered_map<int, unsigned int>();
+    }
+
+    void fbo::windowResized(int width, int height) {
+        if (!screenSized)
+            return;
+        this->_width = width;
+        this->_height = height;
+        deleteFrameBuffer();
+        createFrameBuffer();
     }
 
     /***---------------{GBuffer FBO}---------------***/
@@ -747,67 +746,12 @@ namespace TD {
         secondPassShader->setInt("gPosition", 0);
         secondPassShader->setInt("gNormal", 1);
         secondPassShader->setInt("gAlbedoSpec", 2);
-        pointPassShader = new shader("../assets/shaders/gbuffers/point_light_pass.vert", "../assets/shaders/gbuffers/point_light_pass.frag");
-        pointPassShader->use();
-        pointPassShader->setInt("gPosition", 0);
-        pointPassShader->setInt("gNormal", 1);
-        pointPassShader->setInt("gAlbedoSpec", 2);
-        dirPassShader = new shader("../assets/shaders/gbuffers/dir_light_pass.vert", "../assets/shaders/gbuffers/dir_light_pass.frag");
-        dirPassShader->use();
-        dirPassShader->setInt("gPosition", 0);
-        dirPassShader->setInt("gNormal", 1);
-        dirPassShader->setInt("gAlbedoSpec", 2);
-        nullShader = new shader("../assets/shaders/gbuffers/nulltech.vert", "../assets/shaders/gbuffers/nulltech.frag");
 
         glDeleteFramebuffers(1, &_fboID);
         glDeleteRenderbuffers(1, &_depthAttachment);
-        glGenFramebuffers(1, &_fboID);
-        bindFBO();
+        createFrameBuffer();
 
-        unsigned int gPosition, gNormal, gAlbedoSpec;
-        // position color buffer
-        glGenTextures(1, &gPosition);
-        glBindTexture(GL_TEXTURE_2D, gPosition);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, _width, _height, 0, GL_RGBA, GL_FLOAT, NULL);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gPosition, 0);
-        // normal color buffer
-        glGenTextures(1, &gNormal);
-        glBindTexture(GL_TEXTURE_2D, gNormal);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, _width, _height, 0, GL_RGBA, GL_FLOAT, NULL);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gNormal, 0);
-        // color + specular color buffer
-        glGenTextures(1, &gAlbedoSpec);
-        glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _width, _height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gAlbedoSpec, 0);
-
-        _colorTextures.insert(std::pair<int, unsigned int>(GL_COLOR_ATTACHMENT0, gPosition));
-        _colorTextures.insert(std::pair<int, unsigned int>(GL_COLOR_ATTACHMENT1, gNormal));
-        _colorTextures.insert(std::pair<int, unsigned int>(GL_COLOR_ATTACHMENT2, gAlbedoSpec));
-        // tell OpenGL which color attachments we'll use (of this framebuffer) for rendering
-        unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
-        glDrawBuffers(3, attachments);
-
-        glGenRenderbuffers(1, &_depthAttachment);
-        glBindRenderbuffer(GL_RENDERBUFFER, _depthAttachment);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH32F_STENCIL8, _width, _height);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, _depthAttachment);
-
-        validateFramebuffer();
         unbindFBO();
-        quad = new vao(vertices, texCoords, indices, 2);
-        sphereModel = new model(assetsPath + "models/light_sphere.obj");
-        if (!sphereModel->getMeshes().empty()){
-            sphereVAO = sphereModel->getMeshes()[0];
-        } else
-            throw std::runtime_error("Error loading light sphere!");
-        lightSphere = new instancedLightVAO(sphereModel->getVertices(), sphereModel->getIndices());
     }
 
     void gBufferFBO::bindFirstPass() {
@@ -815,83 +759,26 @@ namespace TD {
         glClearColor(0.0, 0.0, 0.0, 1.0); // keep it black so it doesn't leak into g-buffer
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         firstPassShader->use();
-        GLenum DrawBuffers[] = { GL_COLOR_ATTACHMENT0,
-                                 GL_COLOR_ATTACHMENT1,
-                                 GL_COLOR_ATTACHMENT2 };
-
-        glDrawBuffers(3, DrawBuffers);
     }
 
-    void gBufferFBO::bindSecondPass() {
+    void gBufferFBO::updateLights(std::vector<Light> &lights){
+        secondPassShader->use();
+        for (int i = 0; i < lights.size(); i++)
+            secondPassShader->setLightArray("lights", i, lights[i]);
+    }
+
+    void gBufferFBO::bindSecondPass(TD::camera &camera) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
         glBindFramebuffer(GL_READ_FRAMEBUFFER, _fboID);
         glBlitFramebuffer(0, 0, _width, _height, 0, 0, _width, _height, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
-    }
-
-    int lastCount = 0;
-
-    void gBufferFBO::runPointLighting(TD::camera &camera, std::vector<TD::Light> lights) {
-        glEnable(GL_STENCIL_TEST);
-        glEnable(GL_DEPTH_TEST);
-        glDisable(GL_CULL_FACE);
-        glClear(GL_STENCIL_BUFFER_BIT);
-        glStencilFunc(GL_ALWAYS, 0, 0);
-
-        glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR_WRAP, GL_KEEP);
-        glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
-
-        nullShader->use();
-        glDrawBuffer(GL_NONE);
-
-        if (lastCount != lights.size()){
-            lastCount = lights.size();
-            lightSphere->updateLightData(camera, lights);
-        }
-        lightSphere->bind();
-        lightSphere->draw(lights.size());
-        //lightSphere->unbind();
-        glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
-
-        glEnable(GL_BLEND);
-        glBlendEquation(GL_FUNC_ADD);
-        glBlendFunc(GL_ONE, GL_ONE);
-        glDisable(GL_DEPTH_TEST);
-
-        glEnable(GL_CULL_FACE);
-        glCullFace(GL_FRONT);
-        glDrawBuffer(GL_BACK);
 
         bindColorTexture(GL_TEXTURE0, GL_COLOR_ATTACHMENT0);
         bindColorTexture(GL_TEXTURE1, GL_COLOR_ATTACHMENT1);
         bindColorTexture(GL_TEXTURE2, GL_COLOR_ATTACHMENT2);
-        pointPassShader->use();
-        pointPassShader->setVec3("viewPos", camera.getPosition());
-        pointPassShader->setVec2("screenSize", (float) _display_w, (float) _display_h);
-        //lightSphere->bind();
-        lightSphere->draw(lights.size());
-        lightSphere->unbind();
-
-        glCullFace ( GL_BACK );
-        glDisable(GL_STENCIL_TEST);
-    }
-
-    void gBufferFBO::runDirLighting(TD::camera &camera, std::vector<TD::Light> lights) {
-        dirPassShader->use();
-        dirPassShader->setMatrix("transform", glm::scale(glm::translate(glm::mat4(1), glm::vec3(0, 0, -0.5f)), glm::vec3(_width, _height, 1.0f)));
-        dirPassShader->setVec3("viewPos", camera.getPosition());
-        dirPassShader->setVec2("screenSize", (float) _display_w, (float) _display_h);
-        dirPassShader->setVec3("direction", 45, 45, 45);
-        dirPassShader->setVec3("color", 1, 1, 1);
-        dirPassShader->setInt("enabled", false);
-        quad->bind();
-        quad->draw();
-        quad->unbind();
-    }
-
-    void gBufferFBO::endSecondPass() {
-        glEnable(GL_DEPTH_TEST);
-        glDisable(GL_BLEND);
+        secondPassShader->use();
+        secondPassShader->setVec3("viewPos", camera.getPosition());
+        renderToQuad(*secondPassShader);
     }
 
     TD::shader* gBufferFBO::getFirstPassShader(){
@@ -899,14 +786,25 @@ namespace TD {
     }
 
     gBufferFBO::~gBufferFBO() {
-        delete(pointPassShader);
-        delete(dirPassShader);
         delete(firstPassShader);
         delete(secondPassShader);
-        delete(nullShader);
-        delete(sphereModel);
-        delete(lightSphere);
         dlog << "Deleting GBuffer " << _fboID;
+    }
+
+    void gBufferFBO::createAttachments(){
+        createColorTexture(GL_COLOR_ATTACHMENT0, GL_RGBA32F, GL_RGBA, GL_FLOAT, GL_NEAREST);
+        createColorTexture(GL_COLOR_ATTACHMENT1, GL_RGBA16F, GL_RGBA, GL_FLOAT, GL_NEAREST);
+        createColorTexture(GL_COLOR_ATTACHMENT2, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, GL_NEAREST);
+
+        unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+        glDrawBuffers(3, attachments);
+    }
+
+    void gBufferFBO::updateDirLight(glm::vec3 direction, glm::vec3 color, bool enabled) {
+        secondPassShader->use();
+        secondPassShader->setVec3("direction", direction);
+        secondPassShader->setVec3("color", color);
+        secondPassShader->setBool("enabled", enabled);
     }
 
     /***---------------{Static Stuff}---------------***/

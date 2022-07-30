@@ -11,6 +11,7 @@
 #include "window.h"
 #include "renderer/gl.h"
 #include "renderer/camera.h"
+#include "renderer/shader.h"
 #include "renderer/ui/ui.h"
 
 namespace TD {
@@ -22,12 +23,9 @@ namespace TD {
     bool keyDown[1024];
     bool mouseDown[512];
 
-    // Texturing / Modeling
-    std::map<std::string, Texture> loadedTextures;
-    std::string assetsPath = "../assets/";
-
     // Window / GLFW
     GLFWwindow *_window;
+    volatile bool _isWindowOpen = true;
     bool _isMouseGrabbed = false;
     int _display_w = 1280, _display_h = 720;
     bool _loadingComplete = false;
@@ -35,6 +33,7 @@ namespace TD {
     glm::mat4 projectionMatrix;
     glm::mat4 projectionViewMatrix;
     glm::mat4 viewMatrix;
+    std::vector<WindowResize*> windowResizeCallbacks;
 
     // Developer / Debug
     bool debugMenuEnabled = false;
@@ -44,4 +43,13 @@ namespace TD {
     unordered_map<string, ImFont*> loadedFonts;
     vector<font> _fonts;
     unordered_map<string, DebugTab*> debugTabs;
+
+    // Texturing / Modeling
+    std::string assetsPath = "../assets/";
+
+    // ---------------{GameRegistry}---------------
+    std::vector<std::pair<std::string, std::string>> unloadedModels;
+    std::vector<std::pair<std::string, std::string>> unloadedTextures;
+    std::unordered_map<std::string, TD::model*> loadedModels;
+    std::unordered_map<std::string, TD::texture*> loadedTextures;
 }

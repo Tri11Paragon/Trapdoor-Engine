@@ -157,26 +157,46 @@ namespace TD {
         DEPTH_TEXTURE
     };
 
-    class fbo {
+    class fbo : public WindowResize {
     protected:
         unsigned int _fboID;
         DEPTH_ATTACHMENT_TYPE _fboType;
         int _width = 0, _height = 0;
+        bool screenSized = false;
         vao* quad;
 
         std::unordered_map<int, unsigned int> _colorTextures;
         unsigned int _depthAttachment;
 
         void validateFramebuffer();
+        virtual void createFrameBuffer();
+        virtual void createAttachments() {}
+        void deleteFrameBuffer();
     public:
         fbo();
         fbo(DEPTH_ATTACHMENT_TYPE type);
         fbo(int width, int height);
         fbo(int width, int height, DEPTH_ATTACHMENT_TYPE type);
 
-        void createColorTexture(int colorAttachment);
-        void createColorTexture(int colorAttachment, int format);
-        void createColorTexture(int colorAttachment, int format, int formatInternal, int type, int filter);
+        inline void createColorTexture(int colorAttachment) {
+            createColorTexture(colorAttachment, GL_RGB);
+        }
+        inline void createColorTexture(int colorAttachment, int format) {
+            createColorTexture(colorAttachment, format, format, GL_UNSIGNED_BYTE, GL_LINEAR);
+        }
+        inline void createColorTexture(int colorAttachment, int format, int formatInternal, int type, int filter) {
+            unsigned int colorTextureID;
+            glGenTextures(1, &colorTextureID);
+            glBindTexture(GL_TEXTURE_2D, colorTextureID);
+
+            glTexImage2D(GL_TEXTURE_2D, 0, format, _width, _height, 0, formatInternal, type, NULL);
+
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
+
+            glFramebufferTexture2D(GL_FRAMEBUFFER, colorAttachment, GL_TEXTURE_2D, colorTextureID, 0);
+            _colorTextures.insert(std::pair<int, unsigned int>(colorAttachment, colorTextureID));
+        }
         inline void assignUsingColorTextures(const std::vector<unsigned int>& colorAttachments);
 
         void bindColorTexture(int activeTexture, int colorAttachment);
@@ -194,6 +214,7 @@ namespace TD {
         void renderToQuad(TD::shader& shader, glm::vec2 pos, glm::vec2 size);
         void renderToQuad(TD::shader& shader, int width, int height);
         void renderToQuad(TD::shader& shader, int x, int y, int width, int height);
+        virtual void windowResized(int width, int height);
 
         ~fbo();
     };
@@ -202,22 +223,16 @@ namespace TD {
     private:
         TD::shader* firstPassShader;
         TD::shader* secondPassShader;
-        TD::shader* pointPassShader;
-        TD::shader* dirPassShader;
-        TD::shader* nullShader;
-        TD::model* sphereModel;
-        TD::vao* sphereVAO;
-        TD::instancedLightVAO* lightSphere;
+        virtual void createAttachments();
     public:
         gBufferFBO();
 
         TD::shader* getFirstPassShader();
 
         void bindFirstPass();
-        void bindSecondPass();
-        void runPointLighting(TD::camera &camera, std::vector<TD::Light> lights);
-        void runDirLighting(TD::camera &camera, std::vector<TD::Light> lights);
-        void endSecondPass();
+        void updateLights(std::vector<Light> &lights);
+        void updateDirLight(glm::vec3 direction, glm::vec3 color, bool enabled);
+        void bindSecondPass(TD::camera &camera);
 
         ~gBufferFBO();
     };
