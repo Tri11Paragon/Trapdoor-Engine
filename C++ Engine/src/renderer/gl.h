@@ -120,14 +120,19 @@ namespace TD {
 
     class model {
     public:
-        model(std::string path) {
+        model(std::string path): model(true, path) {}
+        model(bool loadGL, std::string path) {
+            this->loadGL = loadGL;
             loadModel(path);
         }
         // useTextureCache refers to using the global texture cache (true) or use the class level cache (false)
-        model(std::string path, bool useTextureCache) {
-            loadModel(path);
+        model(std::string path, bool useTextureCache) : model(true, path, useTextureCache) {}
+        model(bool loadGL, std::string path, bool useTextureCache) {
+            this->loadGL = loadGL;
             this->useTextureCache = useTextureCache;
+            loadModel(path);
         }
+        void loadToGL();
         inline std::vector<vao*> getMeshes() {return meshes;}
         void draw(shader &shader, glm::vec3 *positions, int numberOfPositions);
         void draw(shader &shader, glm::vec3 position);
@@ -145,6 +150,7 @@ namespace TD {
         std::vector<Vertex> vertices;
         std::vector<unsigned int> indices;
         std::vector<Texture> uvs;
+        bool loadGL = true;
 
         void loadModel(std::string path);
         void processNode(aiNode *node, const aiScene *scene);

@@ -25,7 +25,6 @@ namespace TD {
         static void registerRegistrationCallback(void* (*funcion)());
         static void registerModel(std::string unlocalizedName, std::string modelPath);
         static void registerTexture(std::string unlocalizedName, std::string texturePath);
-        static void registerBlocking();
         static void registerThreaded();
         static void deleteResources();
     };

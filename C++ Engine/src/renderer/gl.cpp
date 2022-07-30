@@ -452,7 +452,9 @@ namespace TD {
         // process all the node's meshes (if any)
         for(unsigned int i = 0; i < node->mNumMeshes; i++) {
             aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
-            meshes.push_back(processMesh(mesh, scene));
+            vao* ptr = processMesh(mesh, scene);
+            if (ptr != nullptr)
+                meshes.push_back(ptr);
         }
         // then do the same for each of its children
         for(unsigned int i = 0; i < node->mNumChildren; i++) {
@@ -514,7 +516,10 @@ namespace TD {
         this->vertices = vertices;
         this->indices = indices;
         this->uvs = textures;
-        return new vao(vertices, indices, textures);
+        if (loadGL)
+            return new vao(vertices, indices, textures);
+        else
+            return nullptr;
     }
 
     extern std::map<std::string, Texture> loadedTextures;
@@ -541,9 +546,13 @@ namespace TD {
             }
 
             ilog << "Loading texture{ " << str.C_Str() << " } @ " << path;
-            Texture tex(new TD::texture(path), textureType, path);
-            textureMap.insert(std::pair(path, tex));
-            textures.push_back(tex);
+            if (loadGL) {
+                Texture tex(new TD::texture(path), textureType, path);
+                textureMap.insert(std::pair(path, tex));
+                textures.push_back(tex);
+            } else {
+                
+            }
         }
         return textures;
     }
@@ -553,6 +562,10 @@ namespace TD {
             delete(m);
         for (std::pair<std::string, Texture> tpair : loadedTextures)
             delete(tpair.second.texture);
+    }
+
+    void model::loadToGL() {
+
     }
 
     /***---------------{FBOs}---------------***/
