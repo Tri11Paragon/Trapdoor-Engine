@@ -6,6 +6,7 @@
 #include <thread>
 #include <atomic>
 #include "../font.h"
+#include "../logging.h"
 
 namespace TD {
 
@@ -152,6 +153,38 @@ namespace TD {
     }
 
     World::~World() {
+        for (auto ptr : entityMap)
+            delete(ptr.second);
+    }
 
+    void World::render(TD::shader& shader) {
+        for (auto ptr : entityMap) {
+            ptr.second->render();
+            std::string modelName = ptr.second->getModelName();
+            // TODO: batching / instancing
+            try {
+                TD::GameRegistry::getModel(modelName)->draw(shader, ptr.second->getTranslationMatrix());
+            } catch(std::out_of_range e) {
+                flog << "Unable to find " << modelName << " in the loaded model list. (Did you forget to register it?)";
+            }
+        }
+    }
+
+    void World::update() {
+        for (auto ptr : entityMap)
+            ptr.second->update();
+    }
+
+    void World::spawnEntity(std::string entityName, Entity *entity) {
+        entityMap.insert(std::pair(entityName, entity));
+    }
+
+    void World::deleteEntity(std::string entityName) {
+        TD::Entity* ptr = entityMap.at(entityName);
+        auto it = entityMap.find(entityName);
+        if (it != entityMap.end()) {
+            entityMap.erase(it);
+            delete(ptr);
+        }
     }
 }

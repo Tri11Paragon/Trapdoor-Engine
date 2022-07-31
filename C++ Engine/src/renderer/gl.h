@@ -142,6 +142,7 @@ namespace TD {
         void draw(shader &shader, glm::vec3 *positions, int numberOfPositions);
         void draw(shader &shader, glm::vec3 position);
         void draw(shader &shader, std::vector<glm::vec3> positions);
+        void draw(shader &shader, glm::mat4 trans);
         inline std::vector<Vertex> getVertices(){return vertices;}
         inline std::vector<unsigned int> getIndices(){return indices;}
         inline std::vector<Texture> getUVs(){return uvs;}

@@ -3,3 +3,7 @@
 //
 
 #include "Entity.h"
+
+namespace TD {
+
+}

@@ -425,13 +425,7 @@ namespace TD {
     }
 
     void model::draw(shader &shader, glm::vec3 position) {
-        shader.use();
-        shader.setMatrix("transform", glm::translate(glm::mat4(1.0f), position));
-        for (vao* mesh : meshes){
-            mesh->bind();
-            mesh->bindTextures();
-            mesh->draw();
-        }
+        draw(shader, glm::translate(glm::mat4(1.0f), position));
     }
 
     void model::draw(shader &shader, std::vector<glm::vec3> positions) {
@@ -587,6 +581,16 @@ namespace TD {
         // TODO: make this a pointer and delete it.
         allUnloadedMeshes = std::vector<std::pair<std::vector<Vertex>, std::vector<unsigned int>>>();
         unloadedTextures = std::vector<std::pair<std::string, TEXTURE_TYPE>>();
+    }
+
+    void model::draw(shader &shader, glm::mat4 trans) {
+        shader.use();
+        shader.setMatrix("transform", trans);
+        for (vao* mesh : meshes){
+            mesh->bind();
+            mesh->bindTextures();
+            mesh->draw();
+        }
     }
 
     /***---------------{FBOs}---------------***/

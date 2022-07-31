@@ -8,6 +8,8 @@
 #include "../std.h"
 #include "../renderer/gl.h"
 #include "../renderer/camera.h"
+#include "Entity.h"
+#include "../renderer/shader.h"
 
 namespace TD {
 
@@ -38,8 +40,16 @@ namespace TD {
     class World {
     private:
         TD::camera* camera;
+        std::unordered_map<std::string, TD::Entity*> entityMap;
     public:
         World();
+        void render(TD::shader& shader);
+        void update();
+        // the entity pointer should be a pointer to a *new* entity
+        // this will be deleted when the world is deleted or
+        // when deleteEntity(entityName) is called.
+        void spawnEntity(std::string entityName, Entity* entity);
+        void deleteEntity(std::string entityName);
         ~World();
     };
 
