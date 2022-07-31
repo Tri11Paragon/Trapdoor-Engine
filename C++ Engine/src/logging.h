@@ -47,7 +47,7 @@ static void td_coloring_formatter(logging::record_view const& rec, logging::form
         // Set the color
         switch (severity.get()) {
             case logging::trivial::severity_level::trace:
-                strm << "\033[97m";
+                strm << "\033[97m"; // 37
                 break;
             case logging::trivial::severity_level::debug:
                 strm << "\033[36m";
@@ -96,9 +96,11 @@ static void td_coloring_formatter(logging::record_view const& rec, logging::form
     if (hour < 10)
         strBuild << "0";
     strBuild << hour;
+    strBuild << ":";
     if (minute < 10)
         strBuild << "0";
     strBuild << minute;
+    strBuild << ":";
     if (seconds < 10)
         strBuild << "0";
     strBuild << seconds;
