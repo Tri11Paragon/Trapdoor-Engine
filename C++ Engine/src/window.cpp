@@ -110,8 +110,7 @@ namespace TD {
 
     extern std::vector<WindowResize*> windowResizeCallbacks;;
 
-    void window::startRender(float r, float g, float b, float a) {
-        glClearColor(r * a, g * a, b * a, a);
+    void window::startRender() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LEQUAL);
@@ -230,8 +229,10 @@ namespace TD {
             TD::setMouseGrabbed(!TD::isMouseGrabbed());
     }
 
-    void DisplayManager::init(std::string window) {
+    extern std::unordered_map<std::string, TD::Display*> displays;
+    extern std::string activeDisplay;
 
+    void DisplayManager::init(std::string window) {
         TD::fontContext::loadContexts(fonts);
         TD::window::initWindow(window);
         TD::IM_RegisterKeyListener(&keyCallBack);
@@ -242,10 +243,22 @@ namespace TD {
     }
 
     void DisplayManager::close() {
-
+        TD::window::deleteWindow();
+        for (auto pa : displays)
+            delete(pa.second);
     }
 
     void DisplayManager::changeActiveCamera(camera *camera) {
         activeCamera = camera;
+    }
+
+    void DisplayManager::changeDisplay(std::string name) {
+        displays[activeDisplay]->onLeave();
+        displays[name]->onSwitch();
+        activeDisplay = name;
+    }
+
+    Display::Display(std::string name) {
+        displays.insert(std::pair(name, this));
     }
 }

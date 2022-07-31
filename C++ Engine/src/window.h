@@ -22,7 +22,7 @@ namespace TD {
         static void initWindow() {initWindow("Generic GLFW Window");};
         static void initWindow(string title);
 
-        static void startRender(float r, float g, float b, float a);
+        static void startRender();
         static void finishRender();
         static bool isCloseRequested();
         static int width();
@@ -38,12 +38,24 @@ namespace TD {
         static void deleteWindow();
     };
 
+    class Display {
+    private:
+    public:
+        Display(std::string name);
+        virtual void onSwitch() = 0;
+        virtual void render() = 0;
+        virtual void update() = 0;
+        virtual void onLeave() = 0;
+        ~Display() {}
+    };
+
     class DisplayManager {
     private:
     public:
         static void init(std::string windowName);
         static void update();
         static void close();
+        static void changeDisplay(std::string name);
         static void changeActiveCamera(TD::camera* camera);
     };
 

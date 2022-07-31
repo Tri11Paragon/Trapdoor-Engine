@@ -32,18 +32,6 @@ int main(int, char**){
     TD::firstPersonCamera camera;
     TD::DisplayManager::changeActiveCamera(&camera);
 
-    TD::shader skyboxShader("../assets/shaders/skybox/skybox.vert", "../assets/shaders/skybox/skybox.frag");
-    skyboxShader.setBool("useColor", 1);
-    TD::cubemapTexture skyboxTexture(std::vector<std::string> {
-        "../assets/textures/skyboxes/basic_day/right.png",
-        "../assets/textures/skyboxes/basic_day/left.png",
-        "../assets/textures/skyboxes/basic_day/top.png",
-        "../assets/textures/skyboxes/basic_day/bottom.png",
-        "../assets/textures/skyboxes/basic_day/back.png",
-        "../assets/textures/skyboxes/basic_day/front.png"
-    });
-    TD::vao skyboxVAO(TD::getCubeVertexPositions(250), TD::getCubeIndices(), 1);
-
     TD::gBufferFBO gBufferFbo;
 
     TD::shader fxaaShader("../assets/shaders/postprocessing/filter-fxaa.vert", "../assets/shaders/postprocessing/filter-fxaa.frag");
@@ -99,7 +87,7 @@ int main(int, char**){
     loadTimer.endAndPrint();
     // Main loop
     while (!TD::window::isCloseRequested()) {
-        TD::window::startRender(0.45f, 0.55f, 0.60f, 1.00f);
+        TD::window::startRender();
         camera.update();
 
         TD::debugUI::render();
@@ -116,13 +104,6 @@ int main(int, char**){
 
         TD::GameRegistry::getModel("32x32sided_plane")->draw(*gBufferFbo.getFirstPassShader(), glm::vec3(-1, 15, -1));
 
-
-
-        skyboxShader.use();
-        skyboxTexture.bind();
-        skyboxVAO.bind();
-        skyboxVAO.draw();
-
         gBufferFbo.unbindFBO();
         renderTimer.end("Geometry Pass");
 
@@ -138,8 +119,6 @@ int main(int, char**){
         TD::window::finishRender();
         renderTimer.end("Lighting Pass");
     }
-
-    TD::window::deleteWindow();
-
+    TD::DisplayManager::close();
     return 0;
 }
