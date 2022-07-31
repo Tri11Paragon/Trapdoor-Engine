@@ -10,6 +10,7 @@
 #include "clock.h"
 #include "input.h"
 #include "renderer/ui/ui.h"
+#include "world/World.h"
 
 namespace TD {
 
@@ -181,7 +182,7 @@ namespace TD {
     }
 
     void window::deleteWindow() {
-        TD::deleteGlobalTextureCache();
+        TD::GameRegistry::deleteResources();
         TD::debugUI::deleteAllTabs();
         // Cleanup
         ImGui_ImplOpenGL3_Shutdown();
@@ -217,5 +218,34 @@ namespace TD {
 
     double window::getMouseY() {
         return _ly;
+    }
+
+    extern vector<TD::font> fonts;
+    extern TD::camera *activeCamera;
+
+    static void keyCallBack(bool pressed, int code){
+        if (code == GLFW_KEY_F3 && pressed)
+            TD::debugUI::toggle();
+        if (code == GLFW_KEY_ESCAPE && pressed)
+            TD::setMouseGrabbed(!TD::isMouseGrabbed());
+    }
+
+    void DisplayManager::init(std::string window) {
+
+        TD::fontContext::loadContexts(fonts);
+        TD::window::initWindow(window);
+        TD::IM_RegisterKeyListener(&keyCallBack);
+    }
+
+    void DisplayManager::update() {
+
+    }
+
+    void DisplayManager::close() {
+
+    }
+
+    void DisplayManager::changeActiveCamera(camera *camera) {
+        activeCamera = camera;
     }
 }

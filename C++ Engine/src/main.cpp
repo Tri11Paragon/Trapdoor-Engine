@@ -12,53 +12,28 @@
 #include "renderer/camera.h"
 #include "util.h"
 #include "profiler.h"
-
-static TD::debugUI* debugUIToolPtr;
-
-static void keyCallBack(bool pressed, int code){
-    if (code == GLFW_KEY_F3 && pressed)
-        debugUIToolPtr->toggle();
-    if (code == GLFW_KEY_ESCAPE && pressed)
-        TD::setMouseGrabbed(!TD::isMouseGrabbed());
-}
-
-vector<float> vertices = {
-        0.5f,  0.5f, 0.0f,  // top right
-        0.5f, -0.5f, 0.0f,  // bottom right
-        -0.5f, -0.5f, 0.0f,  // bottom left
-        -0.5f,  0.5f, 0.0f   // top left
-};
-
-vector<unsigned int> indices = {
-        0, 1, 3,   // first triangle
-        1, 2, 3    // second triangle
-};
-
-vector<float> texCoords = {
-        1.0f, 1.0f,   // top right
-        1.0f, 0.0f,   // bottom right
-        0.0f, 0.0f,   // bottom left
-        0.0f, 1.0f    // top left
-};
+#include "world/World.h"
 
 int main(int, char**){
+    TD::profiler loadTimer("Load Time");
+    loadTimer.start();
     init_logging("output");
 
-    vector<TD::font> fonts;
-    fonts.push_back(TD::font("quicksand", "../assets/fonts/quicksand/Quicksand-Regular.ttf", 16.0f));
-    fonts.push_back(TD::font("roboto", "../assets/fonts/roboto/Roboto-Regular.ttf", 16.0f));
+    TD::GameRegistry::registerRegistrationCallback([]() -> void* {
+        TD::GameRegistry::registerModel("32x32sided_plane", "../assets/models/32x32plane_sided.dae");
+        TD::GameRegistry::registerFont("quicksand", "../assets/fonts/quicksand/Quicksand-Regular.ttf", 16.0f);
+        TD::GameRegistry::registerFont("roboto", "../assets/fonts/roboto/Roboto-Regular.ttf", 16.0f);
+        return nullptr;
+    });
 
-    TD::fontContext::loadContexts(fonts);
-
-    TD::window::initWindow("GLFW Test");
-
-    TD::IM_RegisterKeyListener(&keyCallBack);
+    TD::GameRegistry::registerThreaded();
+    TD::DisplayManager::init("GLFW Test");
 
     TD::firstPersonCamera camera;
-    TD::debugUI::changeActiveCamera(&camera);
+    TD::DisplayManager::changeActiveCamera(&camera);
 
     TD::shader skyboxShader("../assets/shaders/skybox/skybox.vert", "../assets/shaders/skybox/skybox.frag");
-    skyboxShader.setFloat("useColor", 0);
+    skyboxShader.setBool("useColor", 1);
     TD::cubemapTexture skyboxTexture(std::vector<std::string> {
         "../assets/textures/skyboxes/basic_day/right.png",
         "../assets/textures/skyboxes/basic_day/left.png",
@@ -76,6 +51,7 @@ int main(int, char**){
 
     TD::model kent("../assets/models/kent.dae");
     TD::model plane("../assets/models/32x32plane.dae");
+
 
     float height = 5;
     
@@ -114,6 +90,13 @@ int main(int, char**){
 
     gBufferFbo.updateLights(lights);
 
+
+    while (!TD::Threadpool::loadingComplete()){
+        //tlog << "Waiting for load!";
+    }
+    TD::GameRegistry::loadToGPU();
+    TD::Threadpool::deleteThreads();
+    loadTimer.endAndPrint();
     // Main loop
     while (!TD::window::isCloseRequested()) {
         TD::window::startRender(0.45f, 0.55f, 0.60f, 1.00f);
@@ -130,6 +113,8 @@ int main(int, char**){
         kent.draw(*gBufferFbo.getFirstPassShader(), std::vector<glm::vec3> {
             glm::vec3(0, 0, -1), glm::vec3(0, 0, -10), glm::vec3(12, 0, -1), glm::vec3(4, 21, -1), glm::vec3(6, -5, -1)
         });
+
+        TD::GameRegistry::getModel("32x32sided_plane")->draw(*gBufferFbo.getFirstPassShader(), glm::vec3(-1, 15, -1));
 
 
 

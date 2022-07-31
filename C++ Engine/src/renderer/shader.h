@@ -37,13 +37,8 @@ namespace TD {
         float Linear;
         float Quadratic;
         float Radius;
-        Light(glm::vec3 position, glm::vec3 color, float linear, float quad, float radius){
-            Position = position;
-            Color = color;
-            Linear = linear;
-            Quadratic = quad;
-            Radius = radius;
-        }
+        Light(glm::vec3 position, glm::vec3 color, float linear, float quad, float radius):
+            Position(position), Color(color), Linear(linear), Quadratic(quad), Radius(radius) {}
     };
 
     class shader {

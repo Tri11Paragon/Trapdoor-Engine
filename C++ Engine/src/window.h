@@ -38,6 +38,15 @@ namespace TD {
         static void deleteWindow();
     };
 
+    class DisplayManager {
+    private:
+    public:
+        static void init(std::string windowName);
+        static void update();
+        static void close();
+        static void changeActiveCamera(TD::camera* camera);
+    };
+
     // key defs
     #define KEY_A GLFW_KEY_A
     #define KEY_B GLFW_KEY_B

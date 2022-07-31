@@ -35,8 +35,6 @@ namespace TD {
         static void addTab(DebugTab* tab);
         static void deleteTab(DebugTab* tab);
         static void deleteAllTabs();
-
-        static void changeActiveCamera(TD::camera* camera);
     };
 
 }

@@ -43,7 +43,7 @@ in vec3 fragpos;
 uniform vec4 color1;
 uniform vec4 color2;
 
-uniform float useColor;
+uniform bool useColor;
 
 uniform samplerCube cubeMap;
 
@@ -59,7 +59,7 @@ float smoothlyStep(float edge0, float edge1, float x){
 void main(void){
     gPosition = vec4(fragpos, 1.0f);
 
-    if (useColor == 1){
+    if (useColor){
         float fadeFactor = 1.0 - smoothlyStep(-50.0, 70.0, pass_height);
         gAlbedoSpec = mix(color2, color1, fadeFactor);
     } else {

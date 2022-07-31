@@ -25,13 +25,18 @@ namespace TD {
         unsigned int textureID;
         int width, height, channels;
         unsigned char* loadTexture(std::string path);
-        void loadGLTexture(unsigned char* data);
+
+        bool loadGL = true;
+        bool loadedToGpu = false;
+        unsigned char* data;
     public:
         texture();
-        texture(std::string path);
+        texture(std::string path) : texture(true, path) {}
+        texture(bool loadGL, std::string path);
         ~texture();
         virtual void bind();
         virtual void unbind();
+        void loadGLTexture();
         void enableGlTextures(int textureCount);
     };
 
@@ -147,12 +152,12 @@ namespace TD {
         std::vector<vao*> meshes;
         std::string directory;
         bool useTextureCache = true;
-        std::map<std::string, Texture> loadedTextures;
+        std::unordered_map<std::string, TD::Texture> loadedTextures;
         std::vector<Vertex> vertices;
         std::vector<unsigned int> indices;
         std::vector<Texture> uvs;
         std::vector<std::pair<std::string, TEXTURE_TYPE>> unloadedTextures;
-        std::vector<std::pair<std::vector<Vertex>, std::pair<std::vector<unsigned int>, std::vector<Texture>>>> allUnloadedMeshes;
+        std::vector<std::pair<std::vector<Vertex>, std::vector<unsigned int>>> allUnloadedMeshes;
         bool loadGL = true;
 
         void loadModel(std::string path);
@@ -251,7 +256,6 @@ namespace TD {
     void updateViewMatrixUBO(glm::mat4 matrix);
     void updateOrthoMatrixUBO(glm::mat4 matrix);
     void updateProjectViewMatrixUBO(glm::mat4 matrix);
-    void deleteGlobalTextureCache();
     const std::vector<float> getCubeVertexPositions(float size);
     const std::vector<unsigned int> getCubeIndices();
 

@@ -5,6 +5,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_FAILURE_USERMSG
 #include <stb_image.h>
+#include "../world/World.h"
 
 namespace TD {
 
@@ -318,13 +319,15 @@ namespace TD {
 
     }
 
-    texture::texture(std::string path) {
-        unsigned char* data = loadTexture(path);
+    texture::texture(bool loadGL, std::string path) {
+        this->loadGL = loadGL;
+        data = loadTexture(path);
         if (data == nullptr){
             flog << "There was an error loading the image file " << path;
             throw "Error loading image from file!";
         }
-        loadGLTexture(data);
+        if (loadGL)
+            loadGLTexture();
     }
 
     unsigned char *texture::loadTexture(std::string path) {
@@ -338,7 +341,9 @@ namespace TD {
         return data;
     }
 
-    void texture::loadGLTexture(unsigned char *data) {
+    void texture::loadGLTexture() {
+        if (loadedToGpu)
+            return;
         glGenTextures(1, &textureID);
         glBindTexture(GL_TEXTURE_2D, textureID);
 
@@ -352,6 +357,7 @@ namespace TD {
         glGenerateMipmap(GL_TEXTURE_2D);
 
         stbi_image_free(data);
+        loadedToGpu = true;
     }
 
     texture::~texture() {
@@ -519,12 +525,12 @@ namespace TD {
         if (loadGL)
             return new vao(vertices, indices, textures);
         else {
-            allUnloadedMeshes.emplace_back(vertices, std::pair(indices, textures));
+            allUnloadedMeshes.emplace_back(vertices, indices);
             return nullptr;
         }
     }
 
-    extern std::map<std::string, Texture> loadedTextures;
+    extern std::unordered_map<std::string, TD::Texture> loadedTextures;
 
     std::vector<Texture> model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, TEXTURE_TYPE textureType) {
         std::vector<Texture> textures;
@@ -540,7 +546,7 @@ namespace TD {
                 filterPath = imgPath.substr(pos + delim.length(), imgPath.size());
             std::string path = std::string("../assets/textures/") + filterPath;
 
-            std::map<std::string, Texture>& textureMap = useTextureCache ? TD::loadedTextures : this->loadedTextures;
+            std::unordered_map<std::string, TD::Texture>& textureMap = useTextureCache ? TD::loadedTextures : this->loadedTextures;
 
             if (textureMap.contains(path)){
                 textures.push_back(textureMap.at(path));
@@ -553,7 +559,10 @@ namespace TD {
                 textureMap.insert(std::pair(path, tex));
                 textures.push_back(tex);
             } else {
-                unloadedTextures.push_back(std::pair(path, textureType));
+                // of course let the loadgl function know that this is the textures we are using
+                unloadedTextures.emplace_back(path, textureType);
+                // then tell the gameregistry to load this texture.
+                TD::GameRegistry::registerTexture(path, path);
             }
         }
         return textures;
@@ -569,14 +578,14 @@ namespace TD {
     void model::loadToGL() {
         std::vector<Texture> textures;
         for (auto ul : unloadedTextures){
-            textures.push_back(Texture(new TD::texture(ul.first), ul.second, ul.first));
+            textures.push_back(TD::GameRegistry::getTexture(ul.first));
         }
         uvs.insert(uvs.end(), textures.begin(), textures.end());
         for (auto ul : allUnloadedMeshes){
-            meshes.push_back(new vao(ul.first, ul.second.first, ul.second.second));
+            meshes.push_back(new vao(ul.first, ul.second, uvs));
         }
         // TODO: make this a pointer and delete it.
-        allUnloadedMeshes = std::vector<std::pair<std::vector<Vertex>, std::pair<std::vector<unsigned int>, std::vector<Texture>>>>();
+        allUnloadedMeshes = std::vector<std::pair<std::vector<Vertex>, std::vector<unsigned int>>>();
         unloadedTextures = std::vector<std::pair<std::string, TEXTURE_TYPE>>();
     }
 
@@ -871,10 +880,6 @@ namespace TD {
         glBindBuffer(GL_UNIFORM_BUFFER, matrixUBO);
         glBufferSubData(GL_UNIFORM_BUFFER, (long) (48 * sizeof(float)), 16 * sizeof(float), glm::value_ptr(matrix));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
-    }
-    void deleteGlobalTextureCache() {
-        for (std::pair<std::string, Texture> tpair : loadedTextures)
-            delete(tpair.second.texture);
     }
 
     static const std::vector<unsigned int> INDICES { 0, 1, 3, 1, 2, 3, 1, 5, 2, 2, 5, 6, 4, 7, 5, 5, 7, 6, 0,

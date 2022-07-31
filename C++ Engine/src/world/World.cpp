@@ -4,6 +4,8 @@
 
 #include "World.h"
 #include <thread>
+#include <atomic>
+#include "../font.h"
 
 namespace TD {
 
@@ -11,34 +13,71 @@ namespace TD {
 
     const unsigned int processor_count = std::thread::hardware_concurrency() > 0 ? std::thread::hardware_concurrency() : 4;
     extern volatile bool _isWindowOpen;
-
-    void runThread(int threadID){
-        while (_isWindowOpen){
-
-        }
-    }
-
     extern std::vector<std::queue<std::pair<std::string, std::string>>> unloadedModels;
     extern std::vector<std::queue<std::pair<std::string, std::string>>> unloadedTextures;
+    extern std::unordered_map<std::string, TD::model*> loadedModels;
+    extern std::unordered_map<std::string, TD::Texture> loadedTextures;
+    extern bool queuesCreated;
+    extern vector<TD::font> fonts;
     std::vector<std::thread*> createdThreads;
+    std::atomic<int> done(0);
+
+    void runThread(int threadID){
+        std::queue<std::pair<std::string, std::string>> modelQueue = unloadedModels[threadID];
+        std::queue<std::pair<std::string, std::string>> textureQueue = unloadedTextures[threadID];
+        // first load all the models
+        while (!modelQueue.empty()){
+            auto modelToLoad = modelQueue.front();
+
+            std::string ident = modelToLoad.first;
+            std::string path = modelToLoad.second;
+            TD::model* model = new TD::model(false, path);
+            loadedModels.insert(std::pair(ident, model));
+            dlog << "Loaded Model " << ident << " From " << path;
+
+            modelQueue.pop();
+        }
+        // then load all the textures
+        while (!textureQueue.empty()){
+            auto textureToLoad = textureQueue.front();
+
+            std::string ident = textureToLoad.first;
+            std::string path = textureToLoad.second;
+            TD::texture* tex = new TD::texture(path);
+            loadedTextures.insert(std::pair(ident, TD::Texture(tex, DIFFUSE, path)));
+
+            textureQueue.pop();
+        }
+        // finally then we are done and the loaded assets can be sent to the GPU.
+        done++;
+    }
 
     void Threadpool::createThreadPool() {
-        for (int i = 0; i < processor_count; i++) {
-            unloadedModels.emplace_back();
-            unloadedTextures.emplace_back();
+        for (int i = 0; i < processor_count; i++)
             createdThreads.push_back(new std::thread(runThread, i));
-        }
     }
 
     void Threadpool::deleteThreads() {
-        for (std::thread* thread : createdThreads)
-            delete(thread);
+        for (int i = 0; i < createdThreads.size(); i++) {
+            createdThreads[i]->join();
+            delete(createdThreads[i]);
+        }
+    }
+
+    bool Threadpool::loadingComplete() {
+        return done >= createdThreads.size();
+    }
+
+    void Threadpool::createQueues() {
+        for (int i = 0; i < processor_count; i++) {
+            unloadedModels.emplace_back();
+            unloadedTextures.emplace_back();
+        }
+        queuesCreated = true;
     }
 
     // ---------------{GameRegistry}---------------
 
-    extern std::unordered_map<std::string, TD::model*> loadedModels;
-    extern std::unordered_map<std::string, TD::texture*> loadedTextures;
     std::vector<void* (*)()> callbacks;
 
     void GameRegistry::registerRegistrationCallback(void *(*funcion)()) {
@@ -46,6 +85,8 @@ namespace TD {
     }
 
     void GameRegistry::registerModel(std::string unlocalizedName, std::string modelPath) {
+        if (!queuesCreated)
+            TD::Threadpool::createQueues();
         int smallest = 1073741824;
         int smallestPos = 0;
         for (int i = 0; i < unloadedModels.size(); i++){
@@ -58,6 +99,8 @@ namespace TD {
     }
 
     void GameRegistry::registerTexture(std::string unlocalizedName, std::string texturePath) {
+        if (!queuesCreated)
+            TD::Threadpool::createQueues();
         int smallest = 1073741824;
         int smallestPos = 0;
         for (int i = 0; i < unloadedTextures.size(); i++){
@@ -70,14 +113,36 @@ namespace TD {
     }
 
     void GameRegistry::registerThreaded() {
-
+        for (int i = 0; i < callbacks.size(); i++){
+            callbacks[i]();
+        }
+        TD::Threadpool::createThreadPool();
     }
 
     void GameRegistry::deleteResources() {
         for (auto pair : loadedModels)
             delete(pair.second);
         for (auto pair : loadedTextures)
-            delete(pair.second);
+            delete(pair.second.texture);
+    }
+
+    TD::model* GameRegistry::getModel(std::string unlocalizedName) {
+        return loadedModels.at(unlocalizedName);
+    }
+
+    TD::Texture GameRegistry::getTexture(std::string unlocalizedName) {
+        return loadedTextures.at(unlocalizedName);
+    }
+
+    void GameRegistry::loadToGPU() {
+        for (auto pair : loadedModels)
+            pair.second->loadToGL();
+        for (auto pair : loadedTextures)
+            pair.second.texture->loadGLTexture();
+    }
+
+    void GameRegistry::registerFont(std::string id, std::string path, float size) {
+        fonts.emplace_back(id, path, size);
     }
 
     // ---------------{World}---------------

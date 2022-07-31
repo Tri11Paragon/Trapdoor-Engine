@@ -13,10 +13,6 @@ namespace TD {
         debugMenuEnabled = !debugMenuEnabled;
     }
 
-    void TD::debugUI::changeActiveCamera(TD::camera *camera) {
-        activeCamera = camera;
-    }
-
     void TD::debugUI::render() {
         if (!debugMenuEnabled)
             return;
