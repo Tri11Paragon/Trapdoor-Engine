@@ -253,7 +253,8 @@ namespace TD {
     }
 
     void DisplayManager::changeDisplay(std::string name) {
-        displays[activeDisplay]->onLeave();
+        if (activeDisplay != "NULL")
+            displays[activeDisplay]->onLeave();
         displays[name]->onSwitch();
         activeDisplay = name;
     }

@@ -40,6 +40,18 @@ int main(int, char**){
     TD::model kent("../assets/models/kent.dae");
     TD::model plane("../assets/models/32x32plane.dae");
 
+    tlog << "Test!";
+    tlog << "TTest!\n";
+    dlog << "Debug!";
+    dlog << "Debug!\n";
+    ilog << "Info";
+    ilog << "Info\n";
+    wlog << "Warning!";
+    wlog << "Warning!\n";
+    elog << "Error!";
+    elog << "Error!\n";
+    flog << "Fatal!";
+    flog << "Fatal!\n";
 
     float height = 5;
     

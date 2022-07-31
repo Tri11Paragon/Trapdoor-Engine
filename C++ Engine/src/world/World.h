@@ -10,6 +10,7 @@
 #include "../renderer/camera.h"
 #include "Entity.h"
 #include "../renderer/shader.h"
+#include "../renderer/renderer.h"
 
 namespace TD {
 
@@ -40,6 +41,7 @@ namespace TD {
     class World {
     private:
         TD::camera* camera;
+        TD::skyboxRenderer skyboxRenderer;
         std::unordered_map<std::string, TD::Entity*> entityMap;
     public:
         World();

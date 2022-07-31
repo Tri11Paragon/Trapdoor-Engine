@@ -3,13 +3,11 @@
 //
 
 #include "shader.h"
-#include <boost/filesystem.hpp>
 #include "gl.h"
 #include "../logging.h"
 #include <fstream>
 
 using namespace std;
-using namespace boost::filesystem;
 
 namespace TD {
 
@@ -33,14 +31,13 @@ namespace TD {
     }
 
     unsigned int shader::loadShader(const string &file, int type) {
-        if (!exists(file)){
-            flog << "Shader file not found.\n";
-            throw "Shader file not found!";
-        }
-
         // 1. retrieve the vertex/fragment source code from filePath
         string shaderSource;
         ifstream vShaderFile;
+        if (!vShaderFile.good()){
+            flog << "Shader file not found.\n";
+            throw std::runtime_error("Shader file not found!");
+        }
         // ensure ifstream objects can throw exceptions:
         vShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
         try {

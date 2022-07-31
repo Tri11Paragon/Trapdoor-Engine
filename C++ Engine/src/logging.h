@@ -41,6 +41,88 @@ namespace keywords = boost::log::keywords;
 BOOST_LOG_ATTRIBUTE_KEYWORD(a_timestamp, "TimeStamp", attrs::local_clock::value_type)
 BOOST_LOG_ATTRIBUTE_KEYWORD(a_thread_id, "ThreadID", attrs::current_thread_id::value_type)
 
+static void td_coloring_formatter(logging::record_view const& rec, logging::formatting_ostream& strm){
+    auto severity = rec[logging::trivial::severity];
+    if (severity) {
+        // Set the color
+        switch (severity.get()) {
+            case logging::trivial::severity_level::trace:
+                strm << "\033[97m";
+                break;
+            case logging::trivial::severity_level::debug:
+                strm << "\033[36m";
+                break;
+            case logging::trivial::severity_level::info:
+                strm << "\033[92m";
+                break;
+            case logging::trivial::severity_level::warning:
+                strm << "\033[93m";
+                break;
+            case logging::trivial::severity_level::error:
+                strm << "\033[91m";
+                break;
+            case logging::trivial::severity_level::fatal:
+                strm << "\033[97;41m";
+                break;
+            default:
+                break;
+        }
+    }
+
+    // evil hacks
+    auto timestamp = rec[a_timestamp];
+    auto date = timestamp->date();
+    auto time = timestamp->time_of_day();
+
+    long month = date.month().as_number();
+    long day = date.day().as_number();
+    long hour = time.hours();
+    long minute = time.minutes();
+    long seconds = time.seconds();
+
+    std::stringstream strBuild;
+
+    strBuild << "[";
+    strBuild << date.year();
+    strBuild << "-";
+    if (month < 10)
+        strBuild << "0";
+    strBuild << month;
+    strBuild << "-";
+    if (day < 10)
+        strBuild << "0";
+    strBuild << day;
+    strBuild << " ";
+    if (hour < 10)
+        strBuild << "0";
+    strBuild << hour;
+    if (minute < 10)
+        strBuild << "0";
+    strBuild << minute;
+    if (seconds < 10)
+        strBuild << "0";
+    strBuild << seconds;
+    strBuild << ".";
+    strBuild << time.ticks();
+    strBuild << "] ";
+
+    strm << strBuild.str();
+    strm << "[" << rec[a_thread_id] << "] ";
+    strm << "[" << severity << "]: ";
+
+    auto theMessage = rec[logging::expressions::smessage];
+    if (theMessage->ends_with('\n'))
+        strm << theMessage->substr(0, theMessage->size()-1);
+    else
+        strm << theMessage;
+
+    if (severity) {
+        // Restore the default color
+        strm << "\033[0m";
+    }
+}
+
+
 static void init_logging(std::string file){
 #ifndef ENGINE_LOGGING_INIT_COMPLETE
     logging::register_simple_formatter_factory<logging::trivial::severity_level, char>("Severity");
@@ -54,7 +136,8 @@ static void init_logging(std::string file){
             keywords::format = _format
     );
 
-    logging::add_console_log(std::cout, boost::log::keywords::format = _format);
+    auto log = logging::add_console_log(std::cout, boost::log::keywords::format = _format);
+    log->set_formatter(&td_coloring_formatter);
 
     logging::add_common_attributes();
 

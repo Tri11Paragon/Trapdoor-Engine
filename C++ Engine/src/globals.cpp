@@ -35,7 +35,7 @@ namespace TD {
     glm::mat4 viewMatrix;
     std::vector<WindowResize*> windowResizeCallbacks;
     std::unordered_map<std::string, TD::Display*> displays;
-    std::string activeDisplay;
+    std::string activeDisplay = "NULL";
 
     // Developer / Debug
     bool debugMenuEnabled = false;

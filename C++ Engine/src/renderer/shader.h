@@ -30,6 +30,15 @@ namespace TD {
      *
      */
 
+    // put in another file and include it like a c++ file.
+#ifdef CPP_GLSL_INCLUDE
+    std::string my_shader_glsl_src = R"("
+#endif
+    // SHADER CODE HERE.
+#ifdef CPP_GLSL_INCLUDE
+    ")";
+#endif
+
     struct Light {
         glm::vec3 Position;
         glm::vec3 Color;

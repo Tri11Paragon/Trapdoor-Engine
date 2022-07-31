@@ -5,4 +5,27 @@
 #include "TestDisplay.h"
 
 namespace TD {
+    TestDisplay::TestDisplay(std::string name) : Display(name) {
+
+    }
+
+    void TestDisplay::onSwitch() {
+
+    }
+
+    void TestDisplay::render() {
+
+    }
+
+    void TestDisplay::update() {
+
+    }
+
+    void TestDisplay::onLeave() {
+
+    }
+
+    TestDisplay::~TestDisplay() {
+
+    }
 } // TD

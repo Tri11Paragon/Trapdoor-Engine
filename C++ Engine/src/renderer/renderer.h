@@ -8,6 +8,7 @@
 #include "shader.h"
 #include "gl.h"
 #include "../std.h"
+#include "../world/Entity.h"
 
 namespace TD {
 
@@ -38,7 +39,7 @@ namespace TD {
         }
     };
 
-    class entityRenderer {
+    class renderer {
     private:
 
     public:

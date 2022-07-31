@@ -3,7 +3,6 @@
 //
 
 #include "profiler.h"
-#include <boost/timer/timer.hpp>
 #include "logging.h"
 #include "imgui/imgui.h"
 #include "font.h"
