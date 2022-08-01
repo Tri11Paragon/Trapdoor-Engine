@@ -444,7 +444,6 @@ namespace TD {
             flog << import.GetErrorString() << std::endl;
             return;
         }
-        directory = path.substr(0, path.find_last_of('/'));
 
         processNode(scene->mRootNode, scene);
     }
@@ -453,9 +452,7 @@ namespace TD {
         // process all the node's meshes (if any)
         for(unsigned int i = 0; i < node->mNumMeshes; i++) {
             aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
-            vao* ptr = processMesh(mesh, scene);
-            if (ptr != nullptr)
-                meshes.push_back(ptr);
+            processMesh(mesh, scene, node->mTransformation);
         }
         // then do the same for each of its children
         for(unsigned int i = 0; i < node->mNumChildren; i++) {
@@ -463,10 +460,9 @@ namespace TD {
         }
     }
 
-    vao* model::processMesh(aiMesh *mesh, const aiScene *scene) {
+    void model::processMesh(aiMesh *mesh, const aiScene *scene, aiMatrix4x4 transform) {
         std::vector<Vertex> vertices;
         std::vector<unsigned int> indices;
-        std::vector<Texture> textures;
 
         for(unsigned int i = 0; i < mesh->mNumVertices; i++) {
             Vertex vertex;
@@ -503,84 +499,48 @@ namespace TD {
         // process material
         if(mesh->mMaterialIndex >= 0) {
             aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
-            std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, DIFFUSE);
-            textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-
-            std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, SPECULAR);
-            textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-
-            std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_NORMALS, NORMAL);
-            textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
+            loadMaterialTextures(material, aiTextureType_DIFFUSE, DIFFUSE);
+            loadMaterialTextures(material, aiTextureType_SPECULAR, SPECULAR);
+            loadMaterialTextures(material, aiTextureType_NORMALS, NORMAL);
         }
 
         this->vertices = vertices;
         this->indices = indices;
-        this->uvs = textures;
-        if (loadGL)
-            return new vao(vertices, indices, textures);
-        else {
-            allUnloadedMeshes.emplace_back(vertices, indices);
-            return nullptr;
-        }
+        unloadedMeshes.emplace_back(vertices, indices, transform, std::string(mesh->mName.C_Str()));
     }
 
-    extern parallel_node_hash_map<std::string, TD::Texture> loadedTextures;
-
-    std::vector<Texture> model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, TEXTURE_TYPE textureType) {
-        std::vector<Texture> textures;
+    void model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, TEXTURE_TYPE textureType) {
         for(unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
             aiString str;
             mat->GetTexture(type, i, &str);
             std::string imgPath = std::string(str.C_Str());
 
             std::string delim = "/textures/";
-            int pos = imgPath.find(delim, 0);
+            int pos = (int) imgPath.find(delim, 0);
             std::string filterPath = str.C_Str();
             if (pos < imgPath.size())
                 filterPath = imgPath.substr(pos + delim.length(), imgPath.size());
             std::string path = std::string("../assets/textures/") + filterPath;
 
-            parallel_node_hash_map<std::string, TD::Texture>& textureMap = TD::loadedTextures;
-
-            if (textureMap.contains(path)){
-                textures.push_back(textureMap.at(path));
-                continue;
-            }
-
-            if (loadGL) {
-                dlog << "Loading texture { " << str.C_Str() << " } @ " << path;
-                Texture tex(new TD::texture(path), textureType, path);
-                textureMap.insert(std::pair(path, tex));
-                textures.push_back(tex);
-            } else {
-                dlog << "Queuing texture { " << path << " } @ " << path;
-                // of course let the loadgl function know that this is the textures we are using
-                unloadedTextures.emplace_back(path, textureType);
-                // then tell the gameregistry to load this texture.
-                TD::GameRegistry::registerTexture(path, path);
-            }
+            dlog << "Queuing texture { " << path << " } @ " << path;
+            // of course let the loadgl function know that this is the textures we are using
+            unloadedTextures.emplace_back(path, textureType);
+            // then tell the gameregistry to load this texture.
+            TD::GameRegistry::registerTexture(path, path);
         }
-        return textures;
     }
 
     model::~model(){
         for (vao* m : meshes)
             delete(m);
-        for (std::pair<std::string, Texture> tpair : loadedTextures)
-            delete(tpair.second.texture);
     }
 
     void model::loadToGL() {
-        std::vector<Texture> textures;
-        for (auto ul : unloadedTextures){
-            textures.push_back(TD::GameRegistry::getTexture(ul.first));
-        }
-        uvs.insert(uvs.end(), textures.begin(), textures.end());
-        for (auto ul : allUnloadedMeshes){
-            meshes.push_back(new vao(ul.first, ul.second, uvs));
-        }
-        // TODO: make this a pointer and delete it.
-        allUnloadedMeshes = std::vector<std::pair<std::vector<Vertex>, std::vector<unsigned int>>>();
+        for (auto ul : unloadedTextures)
+            uvs.push_back(TD::GameRegistry::getTexture(ul.first));
+        for (auto ul : unloadedMeshes)
+            meshes.push_back(new vao(ul.vertexs, ul.indices, uvs));
+        unloadedMeshes = std::vector<unloadedVAO>();
         unloadedTextures = std::vector<std::pair<std::string, TEXTURE_TYPE>>();
     }
 

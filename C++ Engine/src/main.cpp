@@ -14,6 +14,7 @@
 #include "profiler.h"
 #include "world/World.h"
 #include "game/TestDisplay.h"
+#include "world/GameRegistry.h"
 
 int main(int, char**){
     TD::profiler loadTimer("Load Time");
@@ -39,11 +40,11 @@ int main(int, char**){
 
     // Standard Defered about 120fps @ 1024 lights (8.5ms)
 
-    while (!TD::Threadpool::loadingComplete()){
+    while (!TD::GameRegistry::loadingComplete()){
         //tlog << "Waiting for load!";
     }
     TD::GameRegistry::loadToGPU();
-    TD::Threadpool::deleteThreads();
+    TD::GameRegistry::deleteThreads();
     loadTimer.end("Load Time");
     loadTimer.print();
     TD::DisplayManager::update();

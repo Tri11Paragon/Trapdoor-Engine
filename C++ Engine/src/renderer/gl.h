@@ -125,15 +125,8 @@ namespace TD {
 
     class model {
     public:
-        model(std::string path): model(true, path) {}
-        model(bool loadGL, std::string path) {
-            this->loadGL = loadGL;
-            loadModel(path);
-        }
-        // useTextureCache refers to using the global texture cache (true) or use the class level cache (false)
-        model(std::string path, bool useTextureCache) : model(true, path, useTextureCache) {}
-        model(bool loadGL, std::string path, bool useTextureCache) {
-            this->loadGL = loadGL;
+        model(std::string path) {
+            this->path = path;
             loadModel(path);
         }
         void loadToGL();
@@ -142,26 +135,33 @@ namespace TD {
         void draw(shader &shader, glm::vec3 position);
         void draw(shader &shader, std::vector<glm::vec3> positions);
         void draw(shader &shader, glm::mat4 trans);
+
         inline std::vector<Vertex> getVertices(){return vertices;}
         inline std::vector<unsigned int> getIndices(){return indices;}
         inline std::vector<Texture> getUVs(){return uvs;}
-        inline std::vector<std::pair<std::string, TEXTURE_TYPE>> getUnloadedTextures(){return unloadedTextures;}
         ~model();
     private:
+        struct unloadedVAO {
+            std::vector<Vertex> vertexs;
+            std::vector<unsigned int> indices;
+            aiMatrix4x4 transform;
+            std::string name;
+        };
         // model data
         std::vector<vao*> meshes;
-        std::string directory;
+        // unloaded data, gets loaded by loadToGL
+        std::vector<std::pair<std::string, TEXTURE_TYPE>> unloadedTextures;
+        std::vector<unloadedVAO> unloadedMeshes;
+
+        std::string path;
         std::vector<Vertex> vertices;
         std::vector<unsigned int> indices;
         std::vector<Texture> uvs;
-        std::vector<std::pair<std::string, TEXTURE_TYPE>> unloadedTextures;
-        std::vector<std::pair<std::vector<Vertex>, std::vector<unsigned int>>> allUnloadedMeshes;
-        bool loadGL = true;
 
         void loadModel(std::string path);
         void processNode(aiNode *node, const aiScene *scene);
-        vao* processMesh(aiMesh *mesh, const aiScene *scene);
-        std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, TEXTURE_TYPE textureType);
+        void processMesh(aiMesh *mesh, const aiScene *scene, aiMatrix4x4 transform);
+        void loadMaterialTextures(aiMaterial *mat, aiTextureType type, TEXTURE_TYPE textureType);
     };
 
     enum DEPTH_ATTACHMENT_TYPE {
