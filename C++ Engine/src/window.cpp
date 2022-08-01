@@ -49,8 +49,8 @@ namespace TD {
         // Create window with graphics context
         _window = glfwCreateWindow(_display_w, _display_h, title.c_str(), NULL, NULL);
         if (_window == NULL) {
-        flog << "Unable to create GLFW window\n";
-        return;
+            flog << "Unable to create GLFW window\n";
+            return;
         }
         glfwMakeContextCurrent(_window);
         glfwSwapInterval(0); // Enable vsync
@@ -60,8 +60,8 @@ namespace TD {
 
         int version = gladLoadGL(glfwGetProcAddress);
         if (version == 0) {
-        elog << "Failed to initialize OpenGL context\n";
-        return;
+            elog << "Failed to initialize OpenGL context\n";
+            return;
         }
 
         ilog << "Glad Init Complete. Loaded GL" << GLAD_VERSION_MAJOR(version) << "." << GLAD_VERSION_MINOR(version)
@@ -240,7 +240,32 @@ namespace TD {
     }
 
     void DisplayManager::update() {
+        // Main loop
+        while (!TD::window::isCloseRequested()) {
+            TD::window::startRender();
 
+
+            TD::debugUI::render();
+            //ImGui::ShowDemoWindow();
+
+            if (activeDisplay != "NULL") {
+                try {
+                    displays[activeDisplay]->render();
+                    displays[activeDisplay]->update();
+                } catch (std::exception e){
+                    elog << "ERROR RENDERING ACTIVE DISPLAY. DID YOU SET THE RIGHT IDENT?";
+                }
+            }
+
+            //fxaaFBO.bindFBODraw();
+
+            //fxaaFBO.unbindFBO();
+
+            //fxaaFBO.bindColorTexture(GL_TEXTURE0, GL_COLOR_ATTACHMENT0);
+            //fxaaFBO.renderToQuad(fxaaShader);
+
+            TD::window::finishRender();
+        }
     }
 
     void DisplayManager::close() {

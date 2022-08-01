@@ -67,13 +67,13 @@ namespace TD {
         while(!TD::Threadpool::loadingComplete()){
             std::this_thread::sleep_for(std::chrono::milliseconds(16));
             if (modelLoaded >= modelThreads.size() && modelThreads.size() > 0){
-                tlog << "Spawning texture loaders";
+                dlog << "Spawning texture loaders";
                 for (int i = 0; i < processor_count; i++)
                     textureThreads.push_back(new std::thread(runTextureThread, i));
                 return;
             }
         }
-        tlog << "Watchdog thread exiting!";
+        dlog << "Watchdog thread exiting!";
     }
 
     void Threadpool::createThreadPool() {
@@ -166,14 +166,10 @@ namespace TD {
     }
 
     void GameRegistry::loadToGPU() {
-        for (auto pair : loadedModels) {
-            tlog << pair.first;
+        for (auto pair : loadedModels)
             pair.second->loadToGL();
-        }
-        for (auto pair : loadedTextures) {
-            tlog << pair.first;
+        for (auto pair : loadedTextures)
             pair.second.texture->loadGLTexture();
-        }
     }
 
     void GameRegistry::registerFont(std::string id, std::string path, float size) {
@@ -181,6 +177,8 @@ namespace TD {
     }
 
     // ---------------{World}---------------
+
+    extern TD::camera* activeCamera;
 
     World::World() {
 
@@ -191,17 +189,22 @@ namespace TD {
             delete(ptr.second);
     }
 
-    void World::render(TD::shader& shader) {
+    void World::render() {
+        gBufferFbo.bindFirstPass();
         for (auto ptr : entityMap) {
             ptr.second->render();
             std::string modelName = ptr.second->getModelName();
             // TODO: batching / instancing
             try {
-                TD::GameRegistry::getModel(modelName)->draw(shader, ptr.second->getTranslationMatrix());
-            } catch(std::out_of_range e) {
+                TD::GameRegistry::getModel(modelName)->draw(*gBufferFbo.getFirstPassShader(), ptr.second->getTranslationMatrix());
+            } catch(std::out_of_range& e) {
                 flog << "Unable to find " << modelName << " in the loaded model list. (Did you forget to register it?)";
             }
         }
+        gBufferFbo.unbindFBO();
+        // FBO is required
+        //fxaaShader.use();
+        gBufferFbo.bindSecondPass(*activeCamera);
     }
 
     void World::update() {
@@ -220,5 +223,9 @@ namespace TD {
             entityMap.erase(it);
             delete(ptr);
         }
+    }
+
+    void World::updateLights(std::vector<TD::Light> lights) {
+        gBufferFbo.updateLights(lights);
     }
 }

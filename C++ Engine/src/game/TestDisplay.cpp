@@ -6,7 +6,8 @@
 
 namespace TD {
     TestDisplay::TestDisplay(std::string name) : Display(name) {
-
+        TD::DisplayManager::changeActiveCamera(&camera);
+        world.updateLights(lights);
     }
 
     void TestDisplay::onSwitch() {
@@ -14,11 +15,12 @@ namespace TD {
     }
 
     void TestDisplay::render() {
-
+        world.render();
     }
 
     void TestDisplay::update() {
-
+        camera.update();
+        world.update();
     }
 
     void TestDisplay::onLeave() {

@@ -43,15 +43,18 @@ namespace TD {
         TD::camera* camera;
         TD::skyboxRenderer skyboxRenderer;
         std::unordered_map<std::string, TD::Entity*> entityMap;
+        TD::gBufferFBO gBufferFbo;
+        TD::shader fxaaShader = TD::shader("../assets/shaders/postprocessing/filter-fxaa.vert", "../assets/shaders/postprocessing/filter-fxaa.frag");
     public:
         World();
-        void render(TD::shader& shader);
+        void render();
         void update();
         // the entity pointer should be a pointer to a *new* entity
         // this will be deleted when the world is deleted or
         // when deleteEntity(entityName) is called.
         void spawnEntity(std::string entityName, Entity* entity);
         void deleteEntity(std::string entityName);
+        void updateLights(std::vector<TD::Light> lights);
         ~World();
     };
 
