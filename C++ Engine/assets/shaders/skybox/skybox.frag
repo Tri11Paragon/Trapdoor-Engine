@@ -60,7 +60,7 @@ void main(void){
     gPosition = vec4(fragpos, 1.0f);
 
     if (useColor){
-        float fadeFactor = 1.0 - smoothlyStep(-50.0, 70.0, pass_height);
+        float fadeFactor = 1.0 - smoothlyStep(-100.0, 100.0, pass_height);
         gAlbedoSpec = mix(color2, color1, fadeFactor);
     } else {
         gAlbedoSpec = texture(cubeMap, fragpos);

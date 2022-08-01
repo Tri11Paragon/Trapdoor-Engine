@@ -24,12 +24,11 @@ namespace TD {
     extern vector<TD::font> fonts;
     std::vector<std::thread*> modelThreads;
     std::vector<std::thread*> textureThreads;
-    std::thread* watchdogThread;
     std::atomic<int> done(0);
     std::atomic<int> modelLoaded(0);
 
     void runModelThread(int threadID){
-        std::queue<std::pair<std::string, std::string>> modelQueue = unloadedModels[threadID];
+        std::queue<std::pair<std::string, std::string>>& modelQueue = unloadedModels[threadID];
         // first load all the models
         while (!modelQueue.empty()){
             auto modelToLoad = modelQueue.front();
@@ -43,43 +42,29 @@ namespace TD {
             modelQueue.pop();
         }
         modelLoaded++;
-    }
-
-    void runTextureThread(int threadID){
-        std::queue<std::pair<std::string, std::string>> textureQueue = unloadedTextures[threadID];
+        std::queue<std::pair<std::string, std::string>>& textureQueue = unloadedTextures[threadID];
         // then load all the textures
-        while (!textureQueue.empty()){
-            auto textureToLoad = textureQueue.front();
+        while (!textureQueue.empty() || modelLoaded < modelThreads.size()){
+            if (!textureQueue.empty()) {
+                auto textureToLoad = textureQueue.front();
 
-            std::string ident = textureToLoad.first;
-            std::string path = textureToLoad.second;
-            TD::texture* tex = new TD::texture(false, path);
-            loadedTextures.insert(std::pair(ident, TD::Texture(tex, DIFFUSE, path)));
-            dlog << "Loaded Texture " << ident << " From " << path;
+                std::string ident = textureToLoad.first;
+                std::string path = textureToLoad.second;
+                TD::texture *tex = new TD::texture(false, path);
+                loadedTextures.insert(std::pair(ident, TD::Texture(tex, DIFFUSE, path)));
+                dlog << "Loaded Texture " << ident << " From " << path;
 
-            textureQueue.pop();
+                textureQueue.pop();
+            } else
+                std::this_thread::sleep_for(std::chrono::milliseconds(16));
         }
         // finally then we are done and the loaded assets can be sent to the GPU.
         done++;
     }
 
-    void watchdog(int id){
-        while(!TD::Threadpool::loadingComplete()){
-            std::this_thread::sleep_for(std::chrono::milliseconds(16));
-            if (modelLoaded >= modelThreads.size() && modelThreads.size() > 0){
-                dlog << "Spawning texture loaders";
-                for (int i = 0; i < processor_count; i++)
-                    textureThreads.push_back(new std::thread(runTextureThread, i));
-                return;
-            }
-        }
-        dlog << "Watchdog thread exiting!";
-    }
-
     void Threadpool::createThreadPool() {
         for (int i = 0; i < processor_count; i++)
             modelThreads.push_back(new std::thread(runModelThread, i));
-        watchdogThread = new std::thread(watchdog, 0);
     }
 
     void Threadpool::deleteThreads() {
@@ -91,8 +76,6 @@ namespace TD {
             textureThreads[i]->join();
             delete(textureThreads[i]);
         }
-        watchdogThread->join();
-        delete(watchdogThread);
     }
 
     bool Threadpool::loadingComplete() {
@@ -192,15 +175,16 @@ namespace TD {
     void World::render() {
         gBufferFbo.bindFirstPass();
         for (auto ptr : entityMap) {
+            // TODO: batching / instancing, components?
             ptr.second->render();
             std::string modelName = ptr.second->getModelName();
-            // TODO: batching / instancing
             try {
                 TD::GameRegistry::getModel(modelName)->draw(*gBufferFbo.getFirstPassShader(), ptr.second->getTranslationMatrix());
             } catch(std::out_of_range& e) {
                 flog << "Unable to find " << modelName << " in the loaded model list. (Did you forget to register it?)";
             }
         }
+        skyboxRenderer.render();
         gBufferFbo.unbindFBO();
         // FBO is required
         //fxaaShader.use();
@@ -213,7 +197,10 @@ namespace TD {
     }
 
     void World::spawnEntity(std::string entityName, Entity *entity) {
-        entityMap.insert(std::pair(entityName, entity));
+        if (entityMap.find(entityName) == entityMap.end())
+            entityMap.insert(std::pair(entityName, entity));
+        else
+            wlog << "Entity {" << entityName << "} with name already exists, not adding to world!";
     }
 
     void World::deleteEntity(std::string entityName) {

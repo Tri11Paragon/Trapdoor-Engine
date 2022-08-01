@@ -11,6 +11,7 @@
 #include "Entity.h"
 #include "../renderer/shader.h"
 #include "../renderer/renderer.h"
+#include "../hashmaps.h"
 
 namespace TD {
 
@@ -42,7 +43,7 @@ namespace TD {
     private:
         TD::camera* camera;
         TD::skyboxRenderer skyboxRenderer;
-        std::unordered_map<std::string, TD::Entity*> entityMap;
+        parallel_flat_hash_map<std::string, TD::Entity*> entityMap;
         TD::gBufferFBO gBufferFbo;
         TD::shader fxaaShader = TD::shader("../assets/shaders/postprocessing/filter-fxaa.vert", "../assets/shaders/postprocessing/filter-fxaa.frag");
     public:

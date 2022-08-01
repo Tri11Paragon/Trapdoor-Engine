@@ -179,4 +179,21 @@ namespace TD {
         setFloat(name + ".Radius", light.Radius);
     }
 
+    void shader::setColor(const string &name, glm::vec3 color) {
+        setColor(name, color.r, color.g, color.b, 255);
+    }
+
+    void shader::setColor(const string &name, glm::vec4 color) {
+        setColor(name, color.r, color.g, color.b, color.a);
+    }
+
+    void shader::setColor(const string &name, float r, float g, float b) {
+        setColor(name, r, g, b, 255);
+    }
+
+    void shader::setColor(const string &name, float r, float g, float b, float a) {
+        setVec4(name, r / 255.0, g / 255.0, b / 255.0, a / 255.0);
+    }
+
+
 } // TD

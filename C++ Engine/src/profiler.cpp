@@ -33,9 +33,9 @@ namespace TD {
     }
 
     void profiler::print() {
-        ilog << "Profiler recorded: ";
+        ilog << "Profiler " << name << " recorded: ";
         for (std::pair<std::string, std::pair<long, long>> e : timings){
-            ilog << "\t" << e.first << " " << ((e.second.second - e.second.first) / 1000000.0) << "ms to run in " << name << "!";
+            ilog << "\t" << e.first << " took " << ((double)(e.second.second - e.second.first) / 1000000.0) << "ms to run!";
         }
 
     }

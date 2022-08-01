@@ -77,6 +77,10 @@ namespace TD {
         void setVec2(const std::string &name, float x, float y);
         void setVec3(const std::string &name, float x, float y, float z);
         void setVec4(const std::string &name, float x, float y, float z, float w);
+        void setColor(const std::string &name, glm::vec3 color);
+        void setColor(const std::string &name, glm::vec4 color);
+        void setColor(const std::string &name, float r, float g, float b);
+        void setColor(const std::string &name, float r, float g, float b, float a);
         void setLightArray(const std::string &name, int pos, Light light);
         void setLight(const std::string &name, Light light);
         void use();
