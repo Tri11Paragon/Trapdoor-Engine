@@ -134,7 +134,6 @@ namespace TD {
         model(std::string path, bool useTextureCache) : model(true, path, useTextureCache) {}
         model(bool loadGL, std::string path, bool useTextureCache) {
             this->loadGL = loadGL;
-            this->useTextureCache = useTextureCache;
             loadModel(path);
         }
         void loadToGL();
@@ -152,8 +151,6 @@ namespace TD {
         // model data
         std::vector<vao*> meshes;
         std::string directory;
-        bool useTextureCache = true;
-        std::unordered_map<std::string, TD::Texture> loadedTextures;
         std::vector<Vertex> vertices;
         std::vector<unsigned int> indices;
         std::vector<Texture> uvs;

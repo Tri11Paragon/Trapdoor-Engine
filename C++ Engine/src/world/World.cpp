@@ -7,6 +7,8 @@
 #include <atomic>
 #include "../font.h"
 #include "../logging.h"
+#include "../hashmaps.h"
+#include <chrono>
 
 namespace TD {
 
@@ -16,16 +18,18 @@ namespace TD {
     extern volatile bool _isWindowOpen;
     extern std::vector<std::queue<std::pair<std::string, std::string>>> unloadedModels;
     extern std::vector<std::queue<std::pair<std::string, std::string>>> unloadedTextures;
-    extern std::unordered_map<std::string, TD::model*> loadedModels;
-    extern std::unordered_map<std::string, TD::Texture> loadedTextures;
+    extern parallel_node_hash_map<std::string, TD::model*> loadedModels;
+    extern parallel_node_hash_map<std::string, TD::Texture> loadedTextures;
     extern bool queuesCreated;
     extern vector<TD::font> fonts;
-    std::vector<std::thread*> createdThreads;
+    std::vector<std::thread*> modelThreads;
+    std::vector<std::thread*> textureThreads;
+    std::thread* watchdogThread;
     std::atomic<int> done(0);
+    std::atomic<int> modelLoaded(0);
 
-    void runThread(int threadID){
+    void runModelThread(int threadID){
         std::queue<std::pair<std::string, std::string>> modelQueue = unloadedModels[threadID];
-        std::queue<std::pair<std::string, std::string>> textureQueue = unloadedTextures[threadID];
         // first load all the models
         while (!modelQueue.empty()){
             auto modelToLoad = modelQueue.front();
@@ -38,14 +42,20 @@ namespace TD {
 
             modelQueue.pop();
         }
+        modelLoaded++;
+    }
+
+    void runTextureThread(int threadID){
+        std::queue<std::pair<std::string, std::string>> textureQueue = unloadedTextures[threadID];
         // then load all the textures
         while (!textureQueue.empty()){
             auto textureToLoad = textureQueue.front();
 
             std::string ident = textureToLoad.first;
             std::string path = textureToLoad.second;
-            TD::texture* tex = new TD::texture(path);
+            TD::texture* tex = new TD::texture(false, path);
             loadedTextures.insert(std::pair(ident, TD::Texture(tex, DIFFUSE, path)));
+            dlog << "Loaded Texture " << ident << " From " << path;
 
             textureQueue.pop();
         }
@@ -53,20 +63,40 @@ namespace TD {
         done++;
     }
 
+    void watchdog(int id){
+        while(!TD::Threadpool::loadingComplete()){
+            std::this_thread::sleep_for(std::chrono::milliseconds(16));
+            if (modelLoaded >= modelThreads.size() && modelThreads.size() > 0){
+                tlog << "Spawning texture loaders";
+                for (int i = 0; i < processor_count; i++)
+                    textureThreads.push_back(new std::thread(runTextureThread, i));
+                return;
+            }
+        }
+        tlog << "Watchdog thread exiting!";
+    }
+
     void Threadpool::createThreadPool() {
         for (int i = 0; i < processor_count; i++)
-            createdThreads.push_back(new std::thread(runThread, i));
+            modelThreads.push_back(new std::thread(runModelThread, i));
+        watchdogThread = new std::thread(watchdog, 0);
     }
 
     void Threadpool::deleteThreads() {
-        for (int i = 0; i < createdThreads.size(); i++) {
-            createdThreads[i]->join();
-            delete(createdThreads[i]);
+        for (int i = 0; i < modelThreads.size(); i++) {
+            modelThreads[i]->join();
+            delete(modelThreads[i]);
         }
+        for (int i = 0; i < textureThreads.size(); i++) {
+            textureThreads[i]->join();
+            delete(textureThreads[i]);
+        }
+        watchdogThread->join();
+        delete(watchdogThread);
     }
 
     bool Threadpool::loadingComplete() {
-        return done >= createdThreads.size();
+        return done >= textureThreads.size() && modelLoaded >= modelThreads.size();
     }
 
     void Threadpool::createQueues() {
@@ -136,10 +166,14 @@ namespace TD {
     }
 
     void GameRegistry::loadToGPU() {
-        for (auto pair : loadedModels)
+        for (auto pair : loadedModels) {
+            tlog << pair.first;
             pair.second->loadToGL();
-        for (auto pair : loadedTextures)
+        }
+        for (auto pair : loadedTextures) {
+            tlog << pair.first;
             pair.second.texture->loadGLTexture();
+        }
     }
 
     void GameRegistry::registerFont(std::string id, std::string path, float size) {

@@ -233,6 +233,7 @@ namespace TD {
     extern std::string activeDisplay;
 
     void DisplayManager::init(std::string window) {
+        TD::GameRegistry::registerThreaded();
         TD::fontContext::loadContexts(fonts);
         TD::window::initWindow(window);
         TD::IM_RegisterKeyListener(&keyCallBack);

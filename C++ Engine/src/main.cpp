@@ -20,13 +20,16 @@ int main(int, char**){
     init_logging("output");
 
     TD::GameRegistry::registerRegistrationCallback([]() -> void* {
-        TD::GameRegistry::registerModel("32x32sided_plane", "../assets/models/32x32plane_sided.dae");
+        // Register Models
+        TD::GameRegistry::registerModel("taylor_plane", "../assets/models/32x32plane_sided.dae");
+        TD::GameRegistry::registerModel("kent", "../assets/models/kent.dae");
+        TD::GameRegistry::registerModel("plane", "../assets/models/32x32plane.dae");
+        // Register Fonts
         TD::GameRegistry::registerFont("quicksand", "../assets/fonts/quicksand/Quicksand-Regular.ttf", 16.0f);
         TD::GameRegistry::registerFont("roboto", "../assets/fonts/roboto/Roboto-Regular.ttf", 16.0f);
         return nullptr;
     });
 
-    TD::GameRegistry::registerThreaded();
     TD::DisplayManager::init("GLFW Test");
 
     TD::firstPersonCamera camera;
@@ -36,22 +39,6 @@ int main(int, char**){
 
     TD::shader fxaaShader("../assets/shaders/postprocessing/filter-fxaa.vert", "../assets/shaders/postprocessing/filter-fxaa.frag");
     //TD::fbo fxaaFBO(TD::DEPTH_BUFFER);
-
-    TD::model kent("../assets/models/kent.dae");
-    TD::model plane("../assets/models/32x32plane.dae");
-
-    tlog << "Test!";
-    tlog << "TTest!\n";
-    dlog << "Debug!";
-    dlog << "Debug!\n";
-    ilog << "Info";
-    ilog << "Info\n";
-    wlog << "Warning!";
-    wlog << "Warning!\n";
-    elog << "Error!";
-    elog << "Error!\n";
-    flog << "Fatal!";
-    flog << "Fatal!\n";
 
     float height = 5;
     
@@ -108,13 +95,13 @@ int main(int, char**){
         renderTimer.start("Geometry Pass");
         gBufferFbo.bindFirstPass();
 
-        plane.draw(*gBufferFbo.getFirstPassShader(), glm::vec3(0,0,0));
+        TD::GameRegistry::getModel("plane")->draw(*gBufferFbo.getFirstPassShader(), glm::vec3(0,0,0));
 
-        kent.draw(*gBufferFbo.getFirstPassShader(), std::vector<glm::vec3> {
+        TD::GameRegistry::getModel("kent")->draw(*gBufferFbo.getFirstPassShader(), std::vector<glm::vec3> {
             glm::vec3(0, 0, -1), glm::vec3(0, 0, -10), glm::vec3(12, 0, -1), glm::vec3(4, 21, -1), glm::vec3(6, -5, -1)
         });
 
-        TD::GameRegistry::getModel("32x32sided_plane")->draw(*gBufferFbo.getFirstPassShader(), glm::vec3(-1, 15, -1));
+        TD::GameRegistry::getModel("taylor_plane")->draw(*gBufferFbo.getFirstPassShader(), glm::vec3(-1, 15, -1));
 
         gBufferFbo.unbindFBO();
         renderTimer.end("Geometry Pass");

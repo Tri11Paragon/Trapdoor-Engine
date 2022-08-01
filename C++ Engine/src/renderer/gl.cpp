@@ -6,6 +6,7 @@
 #define STBI_FAILURE_USERMSG
 #include <stb_image.h>
 #include "../world/World.h"
+#include "../hashmaps.h"
 
 namespace TD {
 
@@ -467,8 +468,7 @@ namespace TD {
         std::vector<unsigned int> indices;
         std::vector<Texture> textures;
 
-        for(unsigned int i = 0; i < mesh->mNumVertices; i++)
-        {
+        for(unsigned int i = 0; i < mesh->mNumVertices; i++) {
             Vertex vertex;
             // process vertex positions, normals and texture coordinates
             glm::vec3 vector;
@@ -524,7 +524,7 @@ namespace TD {
         }
     }
 
-    extern std::unordered_map<std::string, TD::Texture> loadedTextures;
+    extern parallel_node_hash_map<std::string, TD::Texture> loadedTextures;
 
     std::vector<Texture> model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, TEXTURE_TYPE textureType) {
         std::vector<Texture> textures;
@@ -540,19 +540,20 @@ namespace TD {
                 filterPath = imgPath.substr(pos + delim.length(), imgPath.size());
             std::string path = std::string("../assets/textures/") + filterPath;
 
-            std::unordered_map<std::string, TD::Texture>& textureMap = useTextureCache ? TD::loadedTextures : this->loadedTextures;
+            parallel_node_hash_map<std::string, TD::Texture>& textureMap = TD::loadedTextures;
 
             if (textureMap.contains(path)){
                 textures.push_back(textureMap.at(path));
                 continue;
             }
 
-            ilog << "Loading texture{ " << str.C_Str() << " } @ " << path;
             if (loadGL) {
+                dlog << "Loading texture { " << str.C_Str() << " } @ " << path;
                 Texture tex(new TD::texture(path), textureType, path);
                 textureMap.insert(std::pair(path, tex));
                 textures.push_back(tex);
             } else {
+                dlog << "Queuing texture { " << path << " } @ " << path;
                 // of course let the loadgl function know that this is the textures we are using
                 unloadedTextures.emplace_back(path, textureType);
                 // then tell the gameregistry to load this texture.

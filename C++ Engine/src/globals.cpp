@@ -13,6 +13,7 @@
 #include "renderer/camera.h"
 #include "renderer/shader.h"
 #include "renderer/ui/ui.h"
+#include "hashmaps.h"
 
 namespace TD {
     double lastTime;
@@ -50,10 +51,15 @@ namespace TD {
     std::string assetsPath = "../assets/";
 
     // ---------------{GameRegistry}---------------
+    // all of these get init before threads are created, therefore it is fine that they are not thread safe
+    // since all threads get their own queue it doesn't matter as well.
     std::vector<std::queue<std::pair<std::string, std::string>>> unloadedModels;
     std::vector<std::queue<std::pair<std::string, std::string>>> unloadedTextures;
-    std::unordered_map<std::string, TD::model*> loadedModels;
-    std::unordered_map<std::string, TD::Texture> loadedTextures;
+
+    // final loaded resources
+    parallel_node_hash_map<std::string, TD::model*> loadedModels;
+    parallel_node_hash_map<std::string, TD::Texture> loadedTextures;
+
     vector<TD::font> fonts;
     bool queuesCreated = false;
 }

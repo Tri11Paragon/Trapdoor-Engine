@@ -10,6 +10,23 @@
 #include <string>
 #include <queue>
 
+/**
+ *
+    The flat hash maps will move the keys and values in memory.
+    So if you keep a pointer to something inside a flat hash map, this pointer may become invalid when the map is mutated.
+    The node hash maps don't, and should be used instead if this is a problem.
+
+    The flat hash maps will use less memory, and usually be faster than the node hash maps, so use them if you can.
+    the exception is when the values inserted in the hash map are large (say more than 100 bytes [needs testing]) and costly to move.
+
+    The parallel hash maps are preferred when you have a few hash maps that will store a very large number of values.
+    The non-parallel hash maps are preferred if you have a large number of hash maps, each storing a relatively small number of values.
+
+    The benefits of the parallel hash maps are:
+    a. reduced peak memory usage (when resizing), and
+    b. multithreading support (and inherent internal parallelism)
+
+ */
 namespace TD {
 
     //static inline void removeFromVector(std::vector<T> vector, T objectToRemove){
