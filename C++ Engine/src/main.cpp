@@ -7,7 +7,7 @@
 #include <nfd.h>
 #include <stdio.h>
 #include "input.h"
-#include "renderer/ui/ui.h"
+#include "renderer/ui/debug.h"
 #include "renderer/shader.h"
 #include "renderer/camera.h"
 #include "util.h"

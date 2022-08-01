@@ -5,8 +5,8 @@
       <author>Blender User</author>
       <authoring_tool>Blender 3.1.2</authoring_tool>
     </contributor>
-    <created>2022-07-29T12:47:36</created>
-    <modified>2022-07-29T12:47:36</modified>
+    <created>2022-08-01T19:27:27</created>
+    <modified>2022-08-01T19:27:27</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -29,7 +29,7 @@
               <color sid="emission">0 0 0 1</color>
             </emission>
             <diffuse>
-              <texture texture="taylor2_jpg-sampler" texcoord="UVMap"/>
+              <texture texture="taylor2_jpg-sampler" texcoord="Cube_001-mesh-map-0"/>
             </diffuse>
             <index_of_refraction>
               <float sid="ior">1.45</float>
@@ -41,7 +41,7 @@
   </library_effects>
   <library_images>
     <image id="taylor2_jpg" name="taylor2_jpg">
-      <init_from>/home/brett/Documents/Brock/Gamers/Java%20Brock%202021%20Project/C++%20Engine/assets/textures/taylor2.jpg</init_from>
+      <init_from>taylor2.jpg</init_from>
     </image>
   </library_images>
   <library_materials>
@@ -53,7 +53,7 @@
     <geometry id="Cube_001-mesh" name="Cube.001">
       <mesh>
         <source id="Cube_001-mesh-positions">
-          <float_array id="Cube_001-mesh-positions-array" count="24">-1 -1 -1 -1 -1 1 -1 1 -1 -1 1 1 1 -1 -1 1 -1 1 1 1 -1 1 1 1</float_array>
+          <float_array id="Cube_001-mesh-positions-array" count="24">-1 -1 1 -1 1 1 -1 -1 -1 -1 1 -1 1 -1 1 1 1 1 1 -1 -1 1 1 -1</float_array>
           <technique_common>
             <accessor source="#Cube_001-mesh-positions-array" count="8" stride="3">
               <param name="X" type="float"/>
@@ -63,7 +63,7 @@
           </technique_common>
         </source>
         <source id="Cube_001-mesh-normals">
-          <float_array id="Cube_001-mesh-normals-array" count="18">-1 0 0 0 1 0 1 0 0 0 -1 0 0 0 -1 0 0 1</float_array>
+          <float_array id="Cube_001-mesh-normals-array" count="18">-1 0 0 0 0 -1 1 0 0 0 0 1 0 -1 0 0 1 0</float_array>
           <technique_common>
             <accessor source="#Cube_001-mesh-normals-array" count="6" stride="3">
               <param name="X" type="float"/>
@@ -96,12 +96,12 @@
   <library_visual_scenes>
     <visual_scene id="Scene" name="Scene">
       <node id="Cube" name="Cube" type="NODE">
-        <matrix sid="transform">32 0 0 0 0 32 0 0 0 0 0.05000001 0 0 0 0 1</matrix>
+        <matrix sid="transform">32 0 0 0 0 -2.18557e-9 32 0 0 -0.05000001 -1.39876e-6 0 0 0 0 1</matrix>
         <instance_geometry url="#Cube_001-mesh" name="Cube">
           <bind_material>
             <technique_common>
               <instance_material symbol="Material_001-material" target="#Material_001-material">
-                <bind_vertex_input semantic="UVMap" input_semantic="TEXCOORD" input_set="0"/>
+                <bind_vertex_input semantic="Cube_001-mesh-map-0" input_semantic="TEXCOORD" input_set="0"/>
               </instance_material>
             </technique_common>
           </bind_material>

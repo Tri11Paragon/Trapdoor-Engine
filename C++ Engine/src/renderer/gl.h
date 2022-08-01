@@ -64,27 +64,65 @@ namespace TD {
         TEXTURE_TYPE type;
         std::string path;
     };
+    struct unloadedVAO {
+        std::vector<Vertex> vertexVec;
+        std::vector<unsigned int> indicesVec;
+        glm::mat4 transform;
+        std::string name;
+    };
 
     class vao {
-    private:
+    protected:
         unsigned int vaoID;
         std::vector<unsigned int> vbos;
         std::vector<Texture> textures;
-        int indexCount = -1;
+        int drawCount = -1;
         static unsigned int createVAO();
         unsigned int storeData(int attrNumber, int coordSize, int stride, long offset, int length, const float* data);
         unsigned int storeData(int length, const unsigned int* data);
         unsigned int storeData(const std::vector<Vertex> &vertices);
     public:
+        vao() {}
         vao(const std::vector<float> &verts, const std::vector<unsigned int> &indicies, int attributeCount);
         vao(const std::vector<float> &verts, const std::vector<float> &uvs, const std::vector<unsigned int> &indicies, int attributeCount);
-        vao(std::vector<float> &verts, int dimensions, int attributeCount);
-        vao(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices, const std::vector<Texture> &textures);
         ~vao();
         void bind();
-        void bindTextures();
-        void draw();
+        virtual void bindTextures();
+        virtual void draw();
         void unbind();
+    };
+
+    class vertexVAO : public vao {
+    private:
+    public:
+        vertexVAO(std::vector<float> &verts, int dimensions, int attributeCount) {
+            vaoID = createVAO();
+            for (int i = 0; i < attributeCount; i++) {
+                glEnableVertexAttribArray(i);
+                glEnableVertexArrayAttrib(vaoID, i);
+            }
+
+            storeData(0, dimensions, dimensions * sizeof(float), 0, verts.size(), verts.data());
+
+            unbind();
+        }
+        virtual void draw(){
+            glDrawArrays(GL_TRIANGLES, 0, drawCount);
+        }
+    };
+
+    class modelVAO : public vao {
+    private:
+        std::string name;
+        glm::mat4 localModelTransform;
+    public:
+        modelVAO(const unloadedVAO& vaoInfo, const std::vector<Texture> &textures);
+        inline std::string& getName(){
+            return name;
+        }
+        inline glm::mat4 getTransform(){
+            return localModelTransform;
+        }
     };
 
     class instancedVAO {
@@ -130,25 +168,18 @@ namespace TD {
             loadModel(path);
         }
         void loadToGL();
-        inline std::vector<vao*> getMeshes() {return meshes;}
-        void draw(shader &shader, glm::vec3 *positions, int numberOfPositions);
-        void draw(shader &shader, glm::vec3 position);
-        void draw(shader &shader, std::vector<glm::vec3> positions);
+        inline std::vector<modelVAO*> getMeshes() {return meshes;}
         void draw(shader &shader, glm::mat4 trans);
+        void draw(shader &shader, std::vector<glm::mat4> transforms);
 
         inline std::vector<Vertex> getVertices(){return vertices;}
         inline std::vector<unsigned int> getIndices(){return indices;}
         inline std::vector<Texture> getUVs(){return uvs;}
+
         ~model();
     private:
-        struct unloadedVAO {
-            std::vector<Vertex> vertexs;
-            std::vector<unsigned int> indices;
-            aiMatrix4x4 transform;
-            std::string name;
-        };
         // model data
-        std::vector<vao*> meshes;
+        std::vector<modelVAO*> meshes;
         // unloaded data, gets loaded by loadToGL
         std::vector<std::pair<std::string, TEXTURE_TYPE>> unloadedTextures;
         std::vector<unloadedVAO> unloadedMeshes;

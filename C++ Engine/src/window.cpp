@@ -9,7 +9,7 @@
 #include "imgui/imgui_impl_opengl3.h"
 #include "clock.h"
 #include "input.h"
-#include "renderer/ui/ui.h"
+#include "renderer/ui/debug.h"
 #include "world/World.h"
 
 namespace TD {

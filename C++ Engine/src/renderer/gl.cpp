@@ -80,7 +80,7 @@ namespace TD {
     }
 
     vao::vao(const std::vector<float> &verts, const std::vector<unsigned int> &indicies, int attributeCount) {
-        this->indexCount = indicies.size();
+        this->drawCount = indicies.size();
         vaoID = createVAO();
         for (int i = 0; i < attributeCount; i++) {
             glEnableVertexAttribArray(i);
@@ -95,7 +95,7 @@ namespace TD {
     }
 
     vao::vao(const std::vector<float> &verts, const std::vector<float> &uvs, const std::vector<unsigned int> &indicies, int attributeCount) {
-        this->indexCount = indicies.size();
+        this->drawCount = indicies.size();
         vaoID = createVAO();
         for (int i = 0; i < attributeCount; i++) {
             glEnableVertexAttribArray(i);
@@ -105,33 +105,6 @@ namespace TD {
 
         storeData(0, 3, 3 * sizeof(float), 0, verts.size(), verts.data());
         storeData(1, 2, 2 * sizeof(float), 0, uvs.size(), uvs.data());
-
-        unbind();
-    }
-
-    vao::vao(std::vector<float> &verts, int dimensions, int attributeCount) {
-        vaoID = createVAO();
-        for (int i = 0; i < attributeCount; i++) {
-            glEnableVertexAttribArray(i);
-            glEnableVertexArrayAttrib(vaoID, i);
-        }
-
-        storeData(0, dimensions, dimensions * sizeof(float), 0, verts.size(), verts.data());
-
-        unbind();
-    }
-
-    vao::vao(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices, const std::vector<Texture> &textures) {
-        this->textures = textures;
-        this->indexCount = indices.size();
-        vaoID = createVAO();
-        for (int i = 0; i < 3; i++) {
-            glEnableVertexAttribArray(i);
-            glEnableVertexArrayAttrib(vaoID, i);
-        }
-        storeData(indices.size(), indices.data());
-
-        storeData(vertices);
 
         unbind();
     }
@@ -160,10 +133,29 @@ namespace TD {
     }
 
     void vao::draw() {
-        if (indexCount < 0)
+        if (drawCount < 0)
             return;
         else
-            glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
+            glDrawElements(GL_TRIANGLES, drawCount, GL_UNSIGNED_INT, 0);
+    }
+
+    /***---------------{Model VAO}---------------***/
+
+    modelVAO::modelVAO(const unloadedVAO& vaoInfo, const std::vector<Texture> &textures) {
+        this->textures = textures;
+        this->drawCount = vaoInfo.indicesVec.size();
+        this->name = vaoInfo.name;
+        this->localModelTransform = vaoInfo.transform;
+        vaoID = createVAO();
+        for (int i = 0; i < 3; i++) {
+            glEnableVertexAttribArray(i);
+            glEnableVertexArrayAttrib(vaoID, i);
+        }
+        storeData(vaoInfo.indicesVec.size(), vaoInfo.indicesVec.data());
+
+        storeData(vaoInfo.vertexVec);
+
+        unbind();
     }
 
     /***---------------{Instanced VAO}---------------***/
@@ -413,35 +405,37 @@ namespace TD {
 
     /***---------------{Model}---------------***/
 
-    void model::draw(shader &shader, glm::vec3 *positions, int numberOfPositions) {
+    void model::draw(shader &shader, glm::mat4 trans) {
         shader.use();
-        for (vao* mesh : meshes){
+        for (modelVAO* mesh : meshes){
+            shader.setMatrix("transform", mesh->getTransform() * trans);
             mesh->bind();
             mesh->bindTextures();
-            for (int i = 0; i < numberOfPositions; i++){
-                shader.setMatrix("transform", glm::translate(glm::mat4(1.0f), positions[i]));
-                mesh->draw();
-            }
+            mesh->draw();
         }
     }
 
-    void model::draw(shader &shader, glm::vec3 position) {
-        draw(shader, glm::translate(glm::mat4(1.0f), position));
-    }
-
-    void model::draw(shader &shader, std::vector<glm::vec3> positions) {
-        draw(shader, positions.data(), positions.size());
+    void model::draw(shader &shader, std::vector<glm::mat4> trans) {
+        shader.use();
+        for (modelVAO* mesh : meshes){
+            mesh->bind();
+            mesh->bindTextures();
+            for (glm::mat4 tran : trans) {
+                shader.setMatrix("transform", mesh->getTransform() * tran);
+                mesh->draw();
+            }
+        }
     }
 
     void model::loadModel(std::string path) {
         Assimp::Importer import;
 
         const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs
-                                                    | aiProcess_PreTransformVertices | aiProcess_ImproveCacheLocality | aiProcess_OptimizeMeshes);
+                                                            | aiProcess_ImproveCacheLocality | aiProcess_OptimizeMeshes);
 
         if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-            flog << "Error loading model with Assimp." << std::endl;
-            flog << import.GetErrorString() << std::endl;
+            flog << "Error loading model with Assimp.";
+            flog << import.GetErrorString();
             return;
         }
 
@@ -506,7 +500,18 @@ namespace TD {
 
         this->vertices = vertices;
         this->indices = indices;
-        unloadedMeshes.emplace_back(vertices, indices, transform, std::string(mesh->mName.C_Str()));
+        unloadedVAO unlVAO;
+        unlVAO.vertexVec = vertices;
+        unlVAO.indicesVec = indices;
+        // copy it here where it will be loaded inside a thread.
+        glm::mat4 glmTransform;
+        glmTransform[0] = glm::vec4(transform.a1, transform.a2, transform.a3, transform.a4);
+        glmTransform[1] = glm::vec4(transform.b1, transform.b2, transform.b3, transform.b4);
+        glmTransform[2] = glm::vec4(transform.c1, transform.c2, transform.c3, transform.c4);
+        glmTransform[3] = glm::vec4(transform.d1, transform.d2, transform.d3, transform.d4);
+        unlVAO.transform = glmTransform;
+        unlVAO.name = std::string(mesh->mName.C_Str());
+        unloadedMeshes.emplace_back(unlVAO);
     }
 
     void model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, TEXTURE_TYPE textureType) {
@@ -539,19 +544,9 @@ namespace TD {
         for (auto ul : unloadedTextures)
             uvs.push_back(TD::GameRegistry::getTexture(ul.first));
         for (auto ul : unloadedMeshes)
-            meshes.push_back(new vao(ul.vertexs, ul.indices, uvs));
+            meshes.push_back(new modelVAO(ul, uvs));
         unloadedMeshes = std::vector<unloadedVAO>();
         unloadedTextures = std::vector<std::pair<std::string, TEXTURE_TYPE>>();
-    }
-
-    void model::draw(shader &shader, glm::mat4 trans) {
-        shader.use();
-        shader.setMatrix("transform", trans);
-        for (vao* mesh : meshes){
-            mesh->bind();
-            mesh->bindTextures();
-            mesh->draw();
-        }
     }
 
     /***---------------{FBOs}---------------***/

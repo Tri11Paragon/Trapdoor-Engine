@@ -12,7 +12,7 @@
 #include "renderer/gl.h"
 #include "renderer/camera.h"
 #include "renderer/shader.h"
-#include "renderer/ui/ui.h"
+#include "renderer/ui/debug.h"
 #include "hashmaps.h"
 
 namespace TD {

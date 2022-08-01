@@ -2,7 +2,7 @@
 // Created by brett on 21/07/22.
 //
 
-#include "ui.h"
+#include "debug.h"
 
 namespace TD {
     extern TD::camera *activeCamera;

@@ -6,7 +6,7 @@
 #define ENGINE_PROFILER_H
 
 #include <chrono>
-#include "renderer/ui/ui.h"
+#include "renderer/ui/debug.h"
 
 namespace TD {
     class profiler : public DebugTab {
