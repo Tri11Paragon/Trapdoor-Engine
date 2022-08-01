@@ -17,7 +17,7 @@
 
 int main(int, char**){
     TD::profiler loadTimer("Load Time");
-    loadTimer.start();
+    loadTimer.start("Load Time");
     init_logging("output");
 
     TD::GameRegistry::registerRegistrationCallback([]() -> void* {
@@ -44,7 +44,8 @@ int main(int, char**){
     }
     TD::GameRegistry::loadToGPU();
     TD::Threadpool::deleteThreads();
-    loadTimer.endAndPrint();
+    loadTimer.end("Load Time");
+    loadTimer.print();
     TD::DisplayManager::update();
     TD::DisplayManager::close();
     return 0;

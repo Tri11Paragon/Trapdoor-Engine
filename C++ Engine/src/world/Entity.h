@@ -21,10 +21,12 @@ namespace TD {
         Entity(std::string modelName) { this->modelName = modelName; }
 
         inline glm::mat4 getTranslationMatrix() {
-            glm::mat4 trans;
-            glm::rotate(trans, 1.0f, rotation);
-            glm::scale(trans, scale);
-            glm::translate(trans, position);
+            glm::mat4 trans(1.0);
+            trans = glm::translate(trans, position);
+            trans = glm::rotate(trans, glm::radians(rotation.x), glm::vec3(1,0,0));
+            trans = glm::rotate(trans, glm::radians(rotation.y), glm::vec3(0,1,0));
+            trans = glm::rotate(trans, glm::radians(rotation.z), glm::vec3(0,0,1));
+            trans = glm::scale(trans, scale);
             return trans;
         }
 
@@ -41,6 +43,23 @@ namespace TD {
         inline glm::vec3 getScale() { return scale; }
 
         inline std::string getModelName() { return modelName; }
+    };
+
+    class StaticEntity : public Entity {
+    public:
+        StaticEntity(std::string modelName, glm::vec3 pos): StaticEntity(modelName, pos, glm::vec3(0), glm::vec3(1)){}
+        StaticEntity(std::string modelName, glm::vec3 pos, glm::vec3 scale): StaticEntity(modelName, pos, glm::vec3(0), scale) {}
+        StaticEntity(std::string modelName, glm::vec3 pos, glm::vec3 rotation, glm::vec3 scale): Entity(modelName) {
+            this->position = pos;
+            this->rotation = rotation;
+            this->scale = scale;
+        }
+        virtual void render(){
+
+        }
+        virtual void update(){
+
+        }
     };
 }
 

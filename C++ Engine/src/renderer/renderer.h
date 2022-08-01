@@ -28,7 +28,9 @@ namespace TD {
     public:
         skyboxRenderer() {
             skyboxShader.use();
-            skyboxShader.setBool("useColor", 1);
+            skyboxShader.setColor("color1", 252.0, 187.0, 88.0);
+            skyboxShader.setColor("color2", 88.0, 186.0, 252.0);
+            skyboxShader.setBool("useColor", 0);
         }
 
         void render() {
