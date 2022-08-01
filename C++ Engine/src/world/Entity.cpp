@@ -1,9 +1,0 @@
-//
-// Created by brett on 30/07/22.
-//
-
-#include "Entity.h"
-
-namespace TD {
-
-}
