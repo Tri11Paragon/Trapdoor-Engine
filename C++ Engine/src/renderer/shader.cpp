@@ -21,23 +21,27 @@ namespace TD {
         programID = glCreateProgram();
         // attach the loaded shaders to the shader program
         glAttachShader(programID, vertexShaderID);
+        checkCompileErrors(vertexShaderID, "VERTEX", vertex);
         glAttachShader(programID, fragmentShaderID);
+        checkCompileErrors(fragmentShaderID, "FRAGMENT", fragment);
         // link and make sure that our program is valid.
         glLinkProgram(programID);
+        checkCompileErrors(programID, "PROGRAM", vertex);
         glValidateProgram(programID);
         use();
         setUniformBlockLocation("Matrices", 1);
+        setUniformBlockLocation("LightSpaceMatrices", 3);
         glUseProgram(0);
     }
 
     shader::shader(std::string vertex, std::string geometry, std::string fragment) {
         vertexShaderID = loadShader(vertex, GL_VERTEX_SHADER);
+        checkCompileErrors(vertexShaderID, "VERTEX", vertex);
         geometryShaderID = loadShader(geometry, GL_GEOMETRY_SHADER);
+        checkCompileErrors(geometryShaderID, "GEOMETRY", geometry);
         fragmentShaderID = loadShader(fragment, GL_FRAGMENT_SHADER);
-        if (vertexShaderID <= 0 || geometryShaderID <= 0 || fragmentShaderID <= 0) {
-            flog << "Failed to load shaders!";
-            throw SHADER_LOAD_FAILURE;
-        }
+        checkCompileErrors(fragmentShaderID, "FRAGMENT", fragment);
+
         programID = glCreateProgram();
         // attach the loaded shaders to the shader program
         glAttachShader(programID, vertexShaderID);
@@ -45,10 +49,11 @@ namespace TD {
         glAttachShader(programID, fragmentShaderID);
         // link and make sure that our program is valid.
         glLinkProgram(programID);
+        checkCompileErrors(programID, "PROGRAM", vertex);
         glValidateProgram(programID);
         use();
         setUniformBlockLocation("Matrices", 1);
-        setUniformBlockLocation("LightSpaceMatrices", 0);
+        setUniformBlockLocation("LightSpaceMatrices", 3);
         glUseProgram(0);
     }
 
@@ -85,7 +90,7 @@ namespace TD {
         // Compile it
         glCompileShader(shaderID);
         // make sure there is no errors
-        int status = 0;
+        /*int status = 0;
         glGetShaderiv(shaderID, GL_COMPILE_STATUS, &status);
         if (!status) {
             char* log;
@@ -97,7 +102,7 @@ namespace TD {
                                  << (type == GL_VERTEX_SHADER ? "vertex" : type == GL_GEOMETRY_SHADER ? "geometry" : "fragment") << ")\n";
             flog << "Shader File: " << file << "\n";
             return -1;
-        }
+        }*/
         return shaderID;
     }
 
@@ -217,5 +222,24 @@ namespace TD {
         setVec4(name, r / 255.0, g / 255.0, b / 255.0, a / 255.0);
     }
 
+    void shader::checkCompileErrors(GLuint shader, std::string type, std::string shaderPath) {
+        GLint success;
+        GLchar infoLog[1024];
+        if(type != "PROGRAM") {
+            glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+            if(!success) {
+                glGetShaderInfoLog(shader, 1024, NULL, infoLog);
+                std::cout << shaderPath << "\n";
+                std::cout << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+            }
+        } else {
+            glGetProgramiv(shader, GL_LINK_STATUS, &success);
+            if(!success) {
+                glGetProgramInfoLog(shader, 1024, NULL, infoLog);
+                std::cout << shaderPath << "\n";
+                std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+            }
+        }
+    }
 
 } // TD

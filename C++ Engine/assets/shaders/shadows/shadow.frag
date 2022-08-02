@@ -6,7 +6,7 @@ in vec2 textureCoord;
 
 uniform sampler2D tex;
 
-void main() {
+void main(void) {
     //if (texture(tex, textureCoord).a < 0.1f)
     //    discard;
     out_Color = vec4(1.0f);

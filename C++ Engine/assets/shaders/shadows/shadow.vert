@@ -5,6 +5,8 @@ layout (location = 2) in vec3 aNormal;
 
 uniform mat4 transform;
 
+out vec2 textureCoord;
+
 layout (std140) uniform Matrices {
     mat4 projectionMatrix;
     mat4 viewMatrix;
@@ -12,7 +14,7 @@ layout (std140) uniform Matrices {
     mat4 projectViewMatrix;
 };
 
-void main() {
-    vec4 worldPos = transform * vec4(aPos, 1.0);
-    gl_Position = projectViewMatrix * worldPos;
+void main(void) {
+    textureCoord = aTexCoord;
+    gl_Position = transform * vec4(aPos, 1.0f);
 }

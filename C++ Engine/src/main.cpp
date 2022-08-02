@@ -43,7 +43,9 @@ int main(int, char**){
     while (!TD::GameRegistry::loadingComplete()){
         //tlog << "Waiting for load!";
     }
+    tlog << "Loading Complete";
     TD::GameRegistry::loadToGPU();
+    tlog << "GL Complete";
     TD::GameRegistry::deleteThreads();
     loadTimer.end("Load Time");
     loadTimer.print();

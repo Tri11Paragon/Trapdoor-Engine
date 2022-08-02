@@ -742,6 +742,8 @@ namespace TD {
         secondPassShader->setInt("gPosition", 0);
         secondPassShader->setInt("gNormal", 1);
         secondPassShader->setInt("gAlbedoSpec", 2);
+        secondPassShader->setInt("shadowMap", 3);
+        secondPassShader->setFloat("farPlane", camera_far_plane);
 
         //glDeleteFramebuffers(1, &_fboID);
         //glDeleteRenderbuffers(1, &_depthAttachment);
@@ -805,11 +807,11 @@ namespace TD {
         // TODO: settings loader
         this->_width = 2048;
         this->_height = 2048;
-        this->_fboType = DEPTH_BUFFER;
+        this->_fboType = DEPTH_NONE;
 
-        depthShader = new shader("../assets/shaders/shadows/shadow.vert", "../assets/shaders/shadows/shadow.geom", "../assets/shaders/shadows/shadow.vert");
+        depthShader = new TD::shader("../assets/shaders/shadows/shadow.vert", "../assets/shaders/shadows/shadow.geom", "../assets/shaders/shadows/shadow.frag");
 
-        createFrameBuffer();
+        glGenFramebuffers(1, &_fboID);
 
         glGenTextures(1, &_depthAttachment);
         glBindTexture(GL_TEXTURE_2D_ARRAY, _depthAttachment);
@@ -832,19 +834,17 @@ namespace TD {
 
         constexpr float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
         glTexParameterfv(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_BORDER_COLOR, borderColor);
-
         glBindFramebuffer(GL_FRAMEBUFFER, _fboID);
         glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, _depthAttachment, 0);
         glDrawBuffer(GL_NONE);
         glReadBuffer(GL_NONE);
-        _colorTextures.insert(std::pair<int, unsigned int>(GL_TEXTURE1, _depthAttachment));
-
+        _colorTextures.insert(std::pair<int, unsigned int>(GL_TEXTURE3, _depthAttachment));
         validateFramebuffer();
         unbindFBO();
         glGenBuffers(1, &matricesUBO);
         glBindBuffer(GL_UNIFORM_BUFFER, matricesUBO);
-        glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4x4) * 16, nullptr, GL_STATIC_DRAW);
-        glBindBufferBase(GL_UNIFORM_BUFFER, 0, matricesUBO);
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4x4) * 5, nullptr, GL_STATIC_DRAW);
+        glBindBufferBase(GL_UNIFORM_BUFFER, 3, matricesUBO);
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
 
@@ -854,10 +854,11 @@ namespace TD {
 
     void shadowFBO::bind() {
         depthShader->use();
-        generateLightMatrix();
+        const auto lightMatrices = generateLightMatrix();
         glBindBuffer(GL_UNIFORM_BUFFER, matricesUBO);
-        for (size_t i = 0; i < lightMatricesCache.size(); ++i) {
-            glBufferSubData(GL_UNIFORM_BUFFER, i * sizeof(glm::mat4x4), sizeof(glm::mat4x4), &lightMatricesCache[i]);
+        for (size_t i = 0; i < lightMatrices.size(); ++i) {
+            //tlog << lightMatrices[i][0].x;
+            glBufferSubData(GL_UNIFORM_BUFFER, i * sizeof(glm::mat4x4), sizeof(glm::mat4x4), &lightMatrices[i]);
         }
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
@@ -939,6 +940,7 @@ namespace TD {
 
         // Tune this parameter according to the scene
         constexpr float zMult = 10.0f;
+        constexpr float bias = 10.0f;
         if (minZ < 0){
             minZ *= zMult;
         }else{
@@ -950,21 +952,28 @@ namespace TD {
             maxZ *= zMult;
         }
 
-        const glm::mat4 lightProjection = glm::ortho(minX, maxX, minY, maxY, minZ, maxZ);
+        const glm::mat4 lightProjection = glm::ortho(minX - bias, maxX + bias, minY - bias, maxY + bias, minZ, maxZ);
 
         return lightProjection * lightView;
     }
 
-    void shadowFBO::generateLightMatrix() {
+    std::vector<glm::mat4> shadowFBO::generateLightMatrix() {
+        std::vector<glm::mat4> ret;
         for (size_t i = 0; i < shadowCascadeLevels.size() + 1; ++i) {
             if (i == 0) {
-                lightMatricesCache.push_back(getLightSpaceMatrix(0.1f, shadowCascadeLevels[i]));
+                ret.push_back(getLightSpaceMatrix(0.1f, shadowCascadeLevels[i]));
             } else if (i < shadowCascadeLevels.size()) {
-                lightMatricesCache.push_back(getLightSpaceMatrix(shadowCascadeLevels[i - 1], shadowCascadeLevels[i]));
+                ret.push_back(getLightSpaceMatrix(shadowCascadeLevels[i - 1], shadowCascadeLevels[i]));
             } else {
-                lightMatricesCache.push_back(getLightSpaceMatrix(shadowCascadeLevels[i - 1], camera_far_plane));
+                ret.push_back(getLightSpaceMatrix(shadowCascadeLevels[i - 1], camera_far_plane));
             }
         }
+        return ret;
+    }
+
+    void shadowFBO::bindDepthTextureArray() {
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D_ARRAY, _depthAttachment);
     }
 
     /***---------------{Static Stuff}---------------***/

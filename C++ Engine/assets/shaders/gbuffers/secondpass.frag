@@ -1,4 +1,4 @@
-#version 330 core
+#version 460 core
 out vec4 FragColor;
 
 in vec2 TexCoords;
@@ -6,6 +6,7 @@ in vec2 TexCoords;
 uniform sampler2D gPosition;
 uniform sampler2D gNormal;
 uniform sampler2D gAlbedoSpec;
+uniform sampler2DArray shadowMap;
 
 struct Light {
     vec3 Position;
@@ -19,9 +20,77 @@ const int NR_LIGHTS = 50;
 uniform Light lights[NR_LIGHTS];
 uniform vec3 viewPos;
 
+layout (std140) uniform Matrices {
+    mat4 projectionMatrix;
+    mat4 viewMatrix;
+    mat4 orthoMatrix;
+    mat4 projectViewMatrix;
+};
+
+
 uniform vec3 direction;
 uniform vec4 color;
 uniform bool enabled;
+
+layout (std140, binding = 3) uniform LightSpaceMatrices {
+    mat4 lightSpaceMatrices[16];
+};
+uniform float cascadePlaneDistances[16];
+uniform int cascadeCount;   // number of frusta - 1
+uniform float farPlane;
+
+float ShadowCalculation(vec3 fragPosWorldSpace, vec3 Normal) {
+    // select cascade layer
+    vec4 fragPosViewSpace = viewMatrix * vec4(fragPosWorldSpace, 1.0);
+    float depthValue = abs(fragPosViewSpace.z);
+
+    int layer = -1;
+    for (int i = 0; i < cascadeCount; ++i) {
+        if (depthValue < cascadePlaneDistances[i]) {
+            layer = i;
+            break;
+        }
+    }
+    if (layer == -1) {
+        layer = cascadeCount;
+    }
+
+    vec4 fragPosLightSpace = lightSpaceMatrices[layer] * vec4(fragPosWorldSpace, 1.0);
+    // perform perspective divide
+    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+    // transform to [0,1] range
+    projCoords = projCoords * 0.5 + 0.5;
+
+    // get depth of current fragment from light's perspective
+    float currentDepth = projCoords.z;
+
+    // keep the shadow at 0.0 when outside the far_plane region of the light's frustum.
+    if (currentDepth > 1.0) {
+        return 0.0;
+    }
+    // calculate bias (based on depth map resolution and slope)
+    vec3 normal = normalize(Normal);
+    float bias = max(0.05 * (1.0 - dot(normal, direction)), 0.005);
+    const float biasModifier = 0.5f;
+    if (layer == cascadeCount) {
+        bias *= 1 / (farPlane * biasModifier);
+    } else {
+        bias *= 1 / (cascadePlaneDistances[layer] * biasModifier);
+    }
+
+    // PCF
+    float shadow = 0.0;
+    vec2 texelSize = 1.0 / vec2(textureSize(shadowMap, 0));
+    for(int x = -1; x <= 1; ++x) {
+        for(int y = -1; y <= 1; ++y) {
+            float pcfDepth = texture(shadowMap, vec3(projCoords.xy + vec2(x, y) * texelSize, layer)).r;
+            shadow += (currentDepth - bias) > pcfDepth ? 1.0 : 0.0;
+        }
+    }
+    shadow /= 9.0;
+
+    return shadow;
+}
 
 vec3 calcDirLight(vec3 FragPos, vec3 Diffuse, vec3 Normal, float Specular){
     if (!enabled)
@@ -69,7 +138,8 @@ void main() {
     }
 
     // then calculate lighting as usual
-    vec3 lighting = (Diffuse * 0.1) + calcDirLight(FragPos, Diffuse, Normal, Specular); // hard-coded ambient component
+    float shadow = ShadowCalculation(FragPos, Normal);
+    vec3 lighting = ((Diffuse * 0.1) + calcDirLight(FragPos, Diffuse, Normal, Specular)) * (1.0 - 0.8 * shadow); // hard-coded ambient component
     vec3 viewDir = normalize(viewPos - FragPos);
     for(int i = 0; i < NR_LIGHTS; ++i) {
         // calculate distance between light source and current fragment

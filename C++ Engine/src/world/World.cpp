@@ -11,10 +11,17 @@ namespace TD {
     extern TD::camera* activeCamera;
 
     World::World() {
-
+        tlog << "World Created";
+        TD::shader* shader = gBufferFbo.getSecondPassShader();
+        shader->use();
+        shader->setInt("cascadeCount", shadowFbo.shadowCascadeLevels.size());
+        for (size_t i = 0; i < shadowFbo.shadowCascadeLevels.size(); ++i) {
+            shader->setFloat("cascadePlaneDistances[" + std::to_string(i) + "]", shadowFbo.shadowCascadeLevels[i]);
+        }
     }
 
     World::~World() {
+        tlog << "World Deleted";
         for (auto ptr : entityMap)
             delete(ptr.second);
     }
@@ -47,6 +54,7 @@ namespace TD {
         gBufferFbo.unbindFBO();
         // FBO is required
         //fxaaShader.use();
+        shadowFbo.bindDepthTextureArray();
         gBufferFbo.bindSecondPass(*activeCamera);
     }
 

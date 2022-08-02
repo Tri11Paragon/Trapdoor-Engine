@@ -63,6 +63,7 @@ namespace TD {
         std::map<std::string, IntDefaultedToMinusOne> uniformVars;
         unsigned int loadShader(const std::string &file, int type);
         unsigned int getUniformLocation(const std::string &name);
+        void checkCompileErrors(unsigned int shader, std::string type, std::string shaderPath);
     public:
         shader(std::string vertex, std::string fragment);
         shader(std::string vertex, std::string geometry, std::string fragment);

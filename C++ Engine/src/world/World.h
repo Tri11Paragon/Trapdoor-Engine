@@ -90,7 +90,7 @@ namespace TD {
         void deleteEntity(std::string entityName);
         void updateLights(std::vector<TD::Light> lights);
         inline TD::shader* getFirstPassShader() { return gBufferFbo.getFirstPassShader(); }
-        inline void updateDirectionalLighting(glm::vec3 dir, glm::vec3 color, bool enabled) {gBufferFbo.updateDirLight(dir, color, enabled);}
+        inline void updateDirectionalLighting(glm::vec3 dir, glm::vec3 color, bool enabled) {shadowFbo.updateLightDirection(dir); gBufferFbo.updateDirLight(dir, color, enabled);}
         ~World();
     };
 

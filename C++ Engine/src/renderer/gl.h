@@ -288,22 +288,20 @@ namespace TD {
 
     class shadowFBO : public fbo {
     private:
-        shader* depthShader;
+        TD::shader* depthShader;
         unsigned int matricesUBO;
 
         glm::vec3 lightDireciton;
         glm::mat4 lightViewMatrix;
         glm::mat4 lightProjectionMatrix;
-        std::vector<glm::mat4> lightMatricesCache;
-
-        std::vector<float> shadowCascadeLevels{ camera_far_plane / 50.0f, camera_far_plane / 25.0f, camera_far_plane / 10.0f, camera_far_plane / 2.0f };
 
         virtual void createAttachments();
         static std::vector<glm::vec4> getFrustumCornersWorldSpace(glm::mat4 projectView);
         static std::vector<glm::vec4> getFrustumCornersWorldSpace(glm::mat4 project, glm::mat4 view);
         glm::mat4 getLightSpaceMatrix(const float nearPlane, const float farPlane);
-        void generateLightMatrix();
+        std::vector<glm::mat4> generateLightMatrix();
     public:
+        std::vector<float> shadowCascadeLevels{ camera_far_plane / 50.0f, camera_far_plane / 25.0f, camera_far_plane / 10.0f, camera_far_plane / 2.0f };
         shadowFBO();
         ~shadowFBO();
         void updateLightDirection(glm::vec3 lightDirection) {
@@ -311,6 +309,7 @@ namespace TD {
         }
         inline shader* getShader() {return depthShader;}
         void bind();
+        void bindDepthTextureArray();
         void finish();
     };
 
