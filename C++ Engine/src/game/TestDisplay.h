@@ -15,7 +15,9 @@ namespace TD {
 
     class TestDisplay : Display {
     private:
-        glm::vec3 direction = glm::vec3(0.2f, 1.0f, 0.3f);
+        glm::vec3 direction = glm::vec3(0.5f, 1.0f, 0.6f);
+        //glm::vec3 direction = glm::vec3(0.2f, 1.0f, 0.3f);
+        //glm::vec3 direction = glm::vec3(0.1f, 1.0f, 0.2);
         glm::vec3 color = glm::vec3(255.0/2.0);
         bool dirEnabled = true;
 

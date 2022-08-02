@@ -26,6 +26,7 @@ int main(int, char**){
         TD::GameRegistry::registerModel("taylor_plane", "../assets/models/32x32plane_sided.dae");
         TD::GameRegistry::registerModel("kent", "../assets/models/kent.dae");
         TD::GameRegistry::registerModel("plane", "../assets/models/32x32plane.dae");
+        TD::GameRegistry::registerModel("sponza", "../assets/models/sponzame/sponza.dae");
         // Register Fonts
         TD::GameRegistry::registerFont("quicksand", "../assets/fonts/quicksand/Quicksand-Regular.ttf", 16.0f);
         TD::GameRegistry::registerFont("roboto", "../assets/fonts/roboto/Roboto-Regular.ttf", 16.0f);

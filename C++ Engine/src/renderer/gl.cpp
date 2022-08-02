@@ -496,8 +496,8 @@ namespace TD {
         if(mesh->mMaterialIndex >= 0) {
             aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
             loadMaterialTextures(material, aiTextureType_DIFFUSE, DIFFUSE);
-            loadMaterialTextures(material, aiTextureType_SPECULAR, SPECULAR);
-            loadMaterialTextures(material, aiTextureType_NORMALS, NORMAL);
+            //loadMaterialTextures(material, aiTextureType_SPECULAR, SPECULAR);
+            //loadMaterialTextures(material, aiTextureType_NORMALS, NORMAL);
         }
 
         this->vertices = vertices;

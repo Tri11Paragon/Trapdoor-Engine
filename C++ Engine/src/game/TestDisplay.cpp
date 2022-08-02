@@ -14,6 +14,7 @@ namespace TD {
         world.spawnEntity("Kent2", new StaticEntity("kent", glm::vec3(5, 1, 0)));
         world.spawnEntity("Kent3", new StaticEntity("kent", glm::vec3(0, 1, 5)));
         world.spawnEntity("Kent4", new StaticEntity("kent", glm::vec3(12, 5, -5)));
+        world.spawnEntity("sponza", new StaticEntity("sponza", glm::vec3(9000, 0, 9000), glm::vec3(0, 45, 0), glm::vec3(7, 4, 7)));
         world.updateDirectionalLighting(direction, color, dirEnabled);
     }
 

@@ -39,12 +39,14 @@ uniform float cascadePlaneDistances[16];
 uniform int cascadeCount;   // number of frusta - 1
 uniform float farPlane;
 
+int layer;
+
 float ShadowCalculation(vec3 fragPosWorldSpace, vec3 Normal) {
     // select cascade layer
     vec4 fragPosViewSpace = viewMatrix * vec4(fragPosWorldSpace, 1.0);
     float depthValue = abs(fragPosViewSpace.z);
 
-    int layer = -1;
+    layer = -1;
     for (int i = 0; i < cascadeCount; ++i) {
         if (depthValue < cascadePlaneDistances[i]) {
             layer = i;
@@ -124,6 +126,51 @@ vec3 CalcDirLight(vec3 FragPos, vec3 Diffuse, vec3 normal, float Specular) {
     return (diffuse + specular);
 }
 
+const int NB_STEPS = 100;
+const float G_SCATTERING = 0.5;
+const float PI = 3.14159265359;
+
+float ComputeScattering(float lightDotView) {
+    float result = 1.0f - G_SCATTERING * G_SCATTERING;
+    result /= (4.0f * PI * pow(1.0f + G_SCATTERING * G_SCATTERING - (2.0f * G_SCATTERING) * lightDotView, 1.5f));
+    return result;
+}
+
+vec3 accumFog(vec3 worldPos, vec3 startPosition){
+    vec3 rayVector = worldPos.xyz - startPosition;
+
+    float rayLength = length(rayVector);
+    vec3 rayDirection = rayVector / rayLength;
+
+    float stepLength = rayLength / NB_STEPS;
+
+    vec3 step = rayDirection * stepLength;
+
+    vec3 currentPosition = startPosition;
+
+    vec3 accumFog = vec3(0.0f);
+
+    for (int i = 0; i < NB_STEPS; i++) {
+        vec4 worldInShadowCameraSpace = lightSpaceMatrices[layer] * vec4(currentPosition, 1.0f);
+        vec3 projCoords = worldInShadowCameraSpace.xyz / worldInShadowCameraSpace.w;
+
+        // transform to [0,1] range
+        projCoords = projCoords * 0.5 + 0.5;
+        float currentDepth = projCoords.z;
+
+
+        float shadowMapValue = texture(shadowMap, vec3(projCoords.xy, layer)).r;
+
+        if (shadowMapValue > currentDepth) { // worldByShadowCamera.z
+            accumFog += vec3(ComputeScattering(dot(rayDirection, direction))) * color.xyz;
+        }
+        currentPosition += step;
+    }
+    accumFog /= NB_STEPS;
+    return accumFog;
+}
+
+
 void main() {
     // retrieve data from gbuffer
     vec4 posTexture = texture(gPosition, TexCoords);
@@ -159,5 +206,5 @@ void main() {
             lighting += diffuse + specular;
         }
     }
-    FragColor = vec4(lighting, 1.0);
+    FragColor = vec4(lighting + accumFog(FragPos, viewPos), 1.0);
 }
