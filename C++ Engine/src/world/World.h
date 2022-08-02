@@ -77,6 +77,7 @@ namespace TD {
         TD::skyboxRenderer skyboxRenderer;
         parallel_flat_hash_map<std::string, TD::Entity*> entityMap;
         TD::gBufferFBO gBufferFbo;
+        TD::shadowFBO shadowFbo;
         TD::shader fxaaShader = TD::shader("../assets/shaders/postprocessing/filter-fxaa.vert", "../assets/shaders/postprocessing/filter-fxaa.frag");
     public:
         World();
@@ -88,6 +89,8 @@ namespace TD {
         void spawnEntity(std::string entityName, Entity* entity);
         void deleteEntity(std::string entityName);
         void updateLights(std::vector<TD::Light> lights);
+        inline TD::shader* getFirstPassShader() { return gBufferFbo.getFirstPassShader(); }
+        inline void updateDirectionalLighting(glm::vec3 dir, glm::vec3 color, bool enabled) {gBufferFbo.updateDirLight(dir, color, enabled);}
         ~World();
     };
 

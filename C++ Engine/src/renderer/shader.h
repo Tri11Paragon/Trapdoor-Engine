@@ -65,6 +65,7 @@ namespace TD {
         unsigned int getUniformLocation(const std::string &name);
     public:
         shader(std::string vertex, std::string fragment);
+        shader(std::string vertex, std::string geometry, std::string fragment);
         void bindAttribute(int attribute, std::string name);
         void setUniformBlockLocation(std::string name, int location);
         void setBool(const std::string &name, bool value);

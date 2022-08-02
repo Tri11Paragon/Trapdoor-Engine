@@ -21,10 +21,12 @@ namespace TD {
     extern double _dx, _dy, _lx, _ly, _mx, _my;
     extern glm::mat4 projectionMatrix;
     extern bool _isWindowOpen;
+    extern float camera_far_plane;
+    extern float fov;
 
     void updateProjections(){
         glViewport(0, 0, _display_w, _display_h);
-        projectionMatrix = glm::perspective(glm::radians(90.0f), (float) _display_w / (float) _display_h, 0.1f, 1000.0f);
+        projectionMatrix = glm::perspective(glm::radians(fov), (float) _display_w / (float) _display_h, 0.1f, camera_far_plane);
         TD::updateProjectionMatrixUBO(projectionMatrix);
         TD::updateOrthoMatrixUBO(glm::ortho(0.0f, (float)_display_w, 0.0f, (float)_display_h, 0.1f, 1000.0f));
     }

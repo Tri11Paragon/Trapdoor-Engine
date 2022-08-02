@@ -6,9 +6,12 @@
 #define STBI_FAILURE_USERMSG
 #include <stb_image.h>
 #include "../world/World.h"
-#include "../hashmaps.h"
 
 namespace TD {
+
+    extern glm::mat4 projectionMatrix;
+    extern glm::mat4 projectionViewMatrix;
+    extern glm::mat4 viewMatrix;
 
     float CalcPointLightBSphere(const TD::Light& Light) {
         float MaxChannel = fmax(fmax(Light.Color.x, Light.Color.y), Light.Color.z);
@@ -86,7 +89,6 @@ namespace TD {
             glEnableVertexAttribArray(i);
             glEnableVertexArrayAttrib(vaoID, i);
         }
-        indicies.size();
         storeData(indicies.size(), indicies.data());
 
         storeData(0, 3, 3 * sizeof(float), 0, verts.size(), verts.data());
@@ -581,8 +583,8 @@ namespace TD {
         this->_width = width;
         this->_height = height;
         this->_fboType = type;
-        createFrameBuffer();
-        unbindFBO();
+        //createFrameBuffer();
+        //unbindFBO();
         quad = new vao(vertices, texCoords, indices, 2);
     }
 
@@ -696,8 +698,8 @@ namespace TD {
             glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, _width, _height);
             glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _depthAttachment);
         }
-
-        validateFramebuffer();
+        if (_fboType != DEPTH_NONE)
+            validateFramebuffer();
     }
 
     void fbo::deleteFrameBuffer() {
@@ -741,8 +743,8 @@ namespace TD {
         secondPassShader->setInt("gNormal", 1);
         secondPassShader->setInt("gAlbedoSpec", 2);
 
-        glDeleteFramebuffers(1, &_fboID);
-        glDeleteRenderbuffers(1, &_depthAttachment);
+        //glDeleteFramebuffers(1, &_fboID);
+        //glDeleteRenderbuffers(1, &_depthAttachment);
         createFrameBuffer();
 
         unbindFBO();
@@ -775,10 +777,6 @@ namespace TD {
         renderToQuad(*secondPassShader);
     }
 
-    TD::shader* gBufferFBO::getFirstPassShader(){
-        return firstPassShader;
-    }
-
     gBufferFBO::~gBufferFBO() {
         delete(firstPassShader);
         delete(secondPassShader);
@@ -797,8 +795,176 @@ namespace TD {
     void gBufferFBO::updateDirLight(glm::vec3 direction, glm::vec3 color, bool enabled) {
         secondPassShader->use();
         secondPassShader->setVec3("direction", direction);
-        secondPassShader->setVec3("color", color);
+        secondPassShader->setColor("color", color);
         secondPassShader->setBool("enabled", enabled);
+    }
+
+    /***---------------{Shadow FBO}---------------***/
+
+    shadowFBO::shadowFBO() {
+        // TODO: settings loader
+        this->_width = 2048;
+        this->_height = 2048;
+        this->_fboType = DEPTH_BUFFER;
+
+        depthShader = new shader("../assets/shaders/shadows/shadow.vert", "../assets/shaders/shadows/shadow.geom", "../assets/shaders/shadows/shadow.vert");
+
+        createFrameBuffer();
+
+        glGenTextures(1, &_depthAttachment);
+        glBindTexture(GL_TEXTURE_2D_ARRAY, _depthAttachment);
+        glTexImage3D(
+                GL_TEXTURE_2D_ARRAY,
+                0,
+                GL_DEPTH_COMPONENT32F,
+                this->_width,
+                this->_height,
+                int(shadowCascadeLevels.size()) + 1,
+                0,
+                GL_DEPTH_COMPONENT,
+                GL_FLOAT,
+                nullptr);
+
+        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+
+        constexpr float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+        glTexParameterfv(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+        glBindFramebuffer(GL_FRAMEBUFFER, _fboID);
+        glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, _depthAttachment, 0);
+        glDrawBuffer(GL_NONE);
+        glReadBuffer(GL_NONE);
+        _colorTextures.insert(std::pair<int, unsigned int>(GL_TEXTURE1, _depthAttachment));
+
+        validateFramebuffer();
+        unbindFBO();
+        glGenBuffers(1, &matricesUBO);
+        glBindBuffer(GL_UNIFORM_BUFFER, matricesUBO);
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4x4) * 16, nullptr, GL_STATIC_DRAW);
+        glBindBufferBase(GL_UNIFORM_BUFFER, 0, matricesUBO);
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    }
+
+    void shadowFBO::createAttachments() {
+
+    }
+
+    void shadowFBO::bind() {
+        depthShader->use();
+        generateLightMatrix();
+        glBindBuffer(GL_UNIFORM_BUFFER, matricesUBO);
+        for (size_t i = 0; i < lightMatricesCache.size(); ++i) {
+            glBufferSubData(GL_UNIFORM_BUFFER, i * sizeof(glm::mat4x4), sizeof(glm::mat4x4), &lightMatricesCache[i]);
+        }
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+        glBindFramebuffer(GL_FRAMEBUFFER, _fboID);
+        glFramebufferTexture(GL_FRAMEBUFFER, GL_TEXTURE_2D_ARRAY, _depthAttachment, 0);
+        glViewport(0, 0, _width, _height);
+        glClear(GL_DEPTH_BUFFER_BIT);
+        glDisable(GL_CULL_FACE);
+        //glCullFace(GL_FRONT);  // peter panning
+    }
+
+    void shadowFBO::finish() {
+        glEnable(GL_CULL_FACE);
+        glViewport(0, 0, _display_w, _display_h);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+
+    shadowFBO::~shadowFBO() {
+        glDeleteBuffers(1, &matricesUBO);
+        delete(depthShader);
+    }
+
+    std::vector<glm::vec4> shadowFBO::getFrustumCornersWorldSpace(glm::mat4 projectView) {
+        const auto inv = glm::inverse(projectView);
+
+        std::vector<glm::vec4> frustumCorners;
+        for (unsigned int x = 0; x < 2; ++x) {
+            for (unsigned int y = 0; y < 2; ++y) {
+                for (unsigned int z = 0; z < 2; ++z) {
+                    const glm::vec4 pt = inv * glm::vec4(
+                            2.0f * x - 1.0f,
+                            2.0f * y - 1.0f,
+                            2.0f * z - 1.0f,
+                            1.0f);
+                    frustumCorners.push_back(pt / pt.w);
+                }
+            }
+        }
+
+        return frustumCorners;
+    }
+
+    std::vector<glm::vec4> shadowFBO::getFrustumCornersWorldSpace(glm::mat4 project, glm::mat4 view) {
+        return getFrustumCornersWorldSpace(project * view);
+    }
+
+    extern float fov;
+
+    glm::mat4 shadowFBO::getLightSpaceMatrix(const float nearPlane, const float farPlane) {
+        const auto proj = glm::perspective(
+                glm::radians(fov), (float)_display_w / (float)_display_h, nearPlane,
+                farPlane);
+        const auto corners = getFrustumCornersWorldSpace(proj, viewMatrix);
+
+        glm::vec3 center = glm::vec3(0, 0, 0);
+        for (const auto& v : corners)
+        {
+            center += glm::vec3(v);
+        }
+        center /= corners.size();
+
+        const auto lightView = glm::lookAt(center + lightDireciton, center, glm::vec3(0.0f, 1.0f, 0.0f));
+
+        float minX = std::numeric_limits<float>::max();
+        float maxX = std::numeric_limits<float>::min();
+        float minY = std::numeric_limits<float>::max();
+        float maxY = std::numeric_limits<float>::min();
+        float minZ = std::numeric_limits<float>::max();
+        float maxZ = std::numeric_limits<float>::min();
+        for (const auto& v : corners) {
+            const auto trf = lightView * v;
+            minX = std::min(minX, trf.x);
+            maxX = std::max(maxX, trf.x);
+            minY = std::min(minY, trf.y);
+            maxY = std::max(maxY, trf.y);
+            minZ = std::min(minZ, trf.z);
+            maxZ = std::max(maxZ, trf.z);
+        }
+
+        // Tune this parameter according to the scene
+        constexpr float zMult = 10.0f;
+        if (minZ < 0){
+            minZ *= zMult;
+        }else{
+            minZ /= zMult;
+        }
+        if (maxZ < 0){
+            maxZ /= zMult;
+        }else{
+            maxZ *= zMult;
+        }
+
+        const glm::mat4 lightProjection = glm::ortho(minX, maxX, minY, maxY, minZ, maxZ);
+
+        return lightProjection * lightView;
+    }
+
+    void shadowFBO::generateLightMatrix() {
+        for (size_t i = 0; i < shadowCascadeLevels.size() + 1; ++i) {
+            if (i == 0) {
+                lightMatricesCache.push_back(getLightSpaceMatrix(0.1f, shadowCascadeLevels[i]));
+            } else if (i < shadowCascadeLevels.size()) {
+                lightMatricesCache.push_back(getLightSpaceMatrix(shadowCascadeLevels[i - 1], shadowCascadeLevels[i]));
+            } else {
+                lightMatricesCache.push_back(getLightSpaceMatrix(shadowCascadeLevels[i - 1], camera_far_plane));
+            }
+        }
     }
 
     /***---------------{Static Stuff}---------------***/
@@ -806,10 +972,6 @@ namespace TD {
     unsigned int matrixUBO;
     const unsigned int MATRIX_COUNT = 4;
     float matrixData[MATRIX_COUNT * 16];
-
-    extern glm::mat4 projectionMatrix;
-    extern glm::mat4 projectionViewMatrix;
-    extern glm::mat4 viewMatrix;
 
     void createMatrixUBO() {
         glGenBuffers(1, &matrixUBO);

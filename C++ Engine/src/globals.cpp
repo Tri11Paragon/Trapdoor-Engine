@@ -31,6 +31,8 @@ namespace TD {
     int _display_w = 1280, _display_h = 720;
     bool _loadingComplete = false;
     double _dx, _dy, _lx, _ly, _mx, _my;
+    float camera_far_plane = 500.0f;
+    float fov = 90;
     glm::mat4 projectionMatrix;
     glm::mat4 projectionViewMatrix;
     glm::mat4 viewMatrix;

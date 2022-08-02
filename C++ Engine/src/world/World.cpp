@@ -20,6 +20,18 @@ namespace TD {
     }
 
     void World::render() {
+        shadowFbo.bind();
+        for (auto ptr : entityMap) {
+            // TODO: batching / instancing, components?
+            ptr.second->render();
+            std::string modelName = ptr.second->getModelName();
+            try {
+                TD::GameRegistry::getModel(modelName)->draw(*shadowFbo.getShader(), ptr.second->getTranslationMatrix());
+            } catch(std::out_of_range& e) {
+                flog << "Unable to find " << modelName << " in the loaded model list. (Did you forget to register it?)";
+            }
+        }
+        shadowFbo.finish();
         gBufferFbo.bindFirstPass();
         for (auto ptr : entityMap) {
             // TODO: batching / instancing, components?

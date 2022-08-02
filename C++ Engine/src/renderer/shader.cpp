@@ -30,6 +30,28 @@ namespace TD {
         glUseProgram(0);
     }
 
+    shader::shader(std::string vertex, std::string geometry, std::string fragment) {
+        vertexShaderID = loadShader(vertex, GL_VERTEX_SHADER);
+        geometryShaderID = loadShader(geometry, GL_GEOMETRY_SHADER);
+        fragmentShaderID = loadShader(fragment, GL_FRAGMENT_SHADER);
+        if (vertexShaderID <= 0 || geometryShaderID <= 0 || fragmentShaderID <= 0) {
+            flog << "Failed to load shaders!";
+            throw SHADER_LOAD_FAILURE;
+        }
+        programID = glCreateProgram();
+        // attach the loaded shaders to the shader program
+        glAttachShader(programID, vertexShaderID);
+        glAttachShader(programID, geometryShaderID);
+        glAttachShader(programID, fragmentShaderID);
+        // link and make sure that our program is valid.
+        glLinkProgram(programID);
+        glValidateProgram(programID);
+        use();
+        setUniformBlockLocation("Matrices", 1);
+        setUniformBlockLocation("LightSpaceMatrices", 0);
+        glUseProgram(0);
+    }
+
     unsigned int shader::loadShader(const string &file, int type) {
         // 1. retrieve the vertex/fragment source code from filePath
         string shaderSource;
