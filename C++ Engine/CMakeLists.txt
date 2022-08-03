@@ -53,17 +53,26 @@ add_subdirectory(include/glm)
 
 glad_add_library(glad_gl_core SHARED API gl:core=4.5)
 
+set(TD_BUILD_SETTING ${CMAKE_BUILD_TYPE})
+message("Cached BUILD: ${TD_BUILD_SETTING} // ${CMAKE_BUILD_TYPE}")
 # Utils Setup
+set(CMAKE_BUILD_TYPE "Debug")
 add_subdirectory(include/assimp)
+message("Assimp BUILD: ${TD_BUILD_SETTING} // ${CMAKE_BUILD_TYPE}")
+set(CMAKE_BUILD_TYPE ${TD_BUILD_SETTING})
 add_subdirectory(include/meshoptimizer)
-
+message("Meshoptimizer BUILD: ${TD_BUILD_SETTING} // ${CMAKE_BUILD_TYPE}")
 # Bullet Setup
 #set( BULLET_ROOT "include/bullet3/build" CACHE PATH "Bullet library path" )
 
 #find_package(Bullet REQUIRED)
 #include_directories(${BULLET_INCLUDE_DIRS})
+set(CMAKE_BUILD_TYPE "Release")
 add_subdirectory(${PROJECT_SOURCE_DIR}/include/bullet3)
 include_directories(${PROJECT_SOURCE_DIR}/include/bullet3/src)
+message("Bullet BUILD: ${TD_BUILD_SETTING} // ${CMAKE_BUILD_TYPE}")
+set(CMAKE_BUILD_TYPE ${TD_BUILD_SETTING})
+message("Backto BUILD: ${TD_BUILD_SETTING} // ${CMAKE_BUILD_TYPE}")
 
 # NFD Setup
 #include_directories(${PROJECT_SOURCE_DIR}/include/nativefiledialog/src/include)

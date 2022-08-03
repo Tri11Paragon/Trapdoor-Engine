@@ -233,12 +233,25 @@ namespace TD {
 
     extern std::unordered_map<std::string, TD::Display*> displays;
     extern std::string activeDisplay;
+    DefaultLoadingScreenDisplay* defaultLoadDisplay = new DefaultLoadingScreenDisplay("_TD::LOADING_SCREEN_DISPLAY");
 
     void DisplayManager::init(std::string window) {
         TD::GameRegistry::registerThreaded();
         TD::fontContext::loadContexts(fonts);
         TD::window::initWindow(window);
         TD::IM_RegisterKeyListener(&keyCallBack);
+
+        while (!TD::GameRegistry::loadingComplete()){
+            TD::window::startRender();
+            defaultLoadDisplay->render();
+            defaultLoadDisplay->update();
+            //tlog << "Waiting for load!";
+            TD::window::finishRender();
+        }
+        tlog << "Loading Complete";
+        TD::GameRegistry::loadToGPU();
+        tlog << "GL Complete";
+        TD::GameRegistry::deleteThreads();
     }
 
     void DisplayManager::update() {
@@ -255,7 +268,7 @@ namespace TD {
                     Display* ptr = displays.at(activeDisplay);
                     ptr->render();
                     ptr->update();
-                } catch (std::exception e){
+                } catch (std::exception& e){
                     elog << "ERROR RENDERING ACTIVE DISPLAY. DID YOU SET THE RIGHT IDENT?";
                 }
             }
@@ -283,12 +296,69 @@ namespace TD {
 
     void DisplayManager::changeDisplay(std::string name) {
         if (activeDisplay != "NULL")
-            displays[activeDisplay]->onLeave();
-        displays[name]->onSwitch();
+            displays.at(activeDisplay)->onLeave();
+        displays.at(name)->onSwitch();
         activeDisplay = name;
+    }
+
+    void DisplayManager::changeLoadingScreenDisplay(std::string name) {
+        if (!(defaultLoadDisplay = dynamic_cast<DefaultLoadingScreenDisplay *>(displays.at(name)))){
+            elog << "Unable to change loading screen display, not of type DefaultLoadingScreenDisplay!";
+        }
     }
 
     Display::Display(std::string name) {
         displays.insert(std::pair(name, this));
+    }
+
+    DefaultLoadingScreenDisplay::DefaultLoadingScreenDisplay(std::string name) : Display(name) {
+
+    }
+
+    void DefaultLoadingScreenDisplay::onSwitch() {
+
+    }
+
+    void DefaultLoadingScreenDisplay::render() {
+        constexpr int flags = ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar |
+                ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDecoration;
+
+        ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.5444f, 0.62f, 0.69f, 1.0));
+        ImGui::SetNextWindowPos(ImVec2(0,0), ImGuiCond_Appearing);
+        ImGui::SetNextWindowSize(ImVec2(_display_w, _display_h), ImGuiCond_Always);
+        ImGui::Begin("Loading Screen", nullptr, flags);
+
+        ImGui::Text("Hello!");
+
+        ImGui::End();
+        ImGui::PopStyleColor();
+    }
+
+    void DefaultLoadingScreenDisplay::update() {
+
+    }
+
+    void DefaultLoadingScreenDisplay::onLeave() {
+
+    }
+
+    DefaultLoadingScreenDisplay::~DefaultLoadingScreenDisplay() {
+
+    }
+
+    void DefaultLoadingScreenDisplay::modelRegistered(std::string ident, std::string path) {
+
+    }
+
+    void DefaultLoadingScreenDisplay::textureRegisted(std::string ident, std::string path) {
+
+    }
+
+    void DefaultLoadingScreenDisplay::modelLoaded(std::string ident, std::string path) {
+
+    }
+
+    void DefaultLoadingScreenDisplay::textureLoaded(std::string ident, std::string path) {
+
     }
 }

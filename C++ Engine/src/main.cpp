@@ -37,19 +37,13 @@ int main(int, char**){
 
     TD::DisplayManager::init("GLFW Test");
 
+    // Standard Defered about 120fps @ 1024 lights (8.5ms)
+
     // will automatically be cleaned up when the display manager exits
     new TD::TestDisplay("TestDisplay");
     TD::DisplayManager::changeDisplay("TestDisplay");
 
-    // Standard Defered about 120fps @ 1024 lights (8.5ms)
 
-    while (!TD::GameRegistry::loadingComplete()){
-        //tlog << "Waiting for load!";
-    }
-    tlog << "Loading Complete";
-    TD::GameRegistry::loadToGPU();
-    tlog << "GL Complete";
-    TD::GameRegistry::deleteThreads();
     loadTimer.end("Load Time");
     loadTimer.print();
     TD::DisplayManager::update();

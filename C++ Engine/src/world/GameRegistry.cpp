@@ -9,6 +9,7 @@
 #include <chrono>
 #include <thread>
 #include <atomic>
+#include "../window.h"
 
 namespace TD {
 
@@ -22,6 +23,7 @@ namespace TD {
     extern parallel_node_hash_map<std::string, TD::Texture> loadedTextures;
     extern bool queuesCreated;
     extern vector<TD::font> fonts;
+    extern DefaultLoadingScreenDisplay* defaultLoadDisplay;
     std::vector<std::thread*> modelThreads;
 
     std::atomic<int> done(0);
@@ -37,6 +39,7 @@ namespace TD {
             std::string path = modelToLoad.second;
             TD::model* model = new TD::model(path);
             loadedModels.insert(std::pair(ident, model));
+            defaultLoadDisplay->modelLoaded(ident, path);
             dlog << "Loaded Model " << ident << " From " << path;
 
             modelQueue.pop();
@@ -52,6 +55,7 @@ namespace TD {
                 std::string path = textureToLoad.second;
                 TD::texture *tex = new TD::texture(false, path);
                 loadedTextures.insert(std::pair(ident, TD::Texture(tex, DIFFUSE, path)));
+                defaultLoadDisplay->textureLoaded(ident, path);
                 dlog << "Loaded Texture " << ident << " From " << path;
 
                 textureQueue.pop();
@@ -106,6 +110,7 @@ namespace TD {
             }
         }
         unloadedModels[smallestPos].push(std::pair(unlocalizedName, modelPath));
+        defaultLoadDisplay->modelRegistered(unlocalizedName, modelPath);
     }
 
     void GameRegistry::registerTexture(std::string unlocalizedName, std::string texturePath) {
@@ -120,6 +125,7 @@ namespace TD {
             }
         }
         unloadedTextures[smallestPos].push(std::pair(unlocalizedName, texturePath));
+        defaultLoadDisplay->modelRegistered(unlocalizedName, texturePath);
     }
 
     void GameRegistry::registerThreaded() {

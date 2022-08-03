@@ -142,7 +142,7 @@ vec3 accumFog(vec3 worldPos, vec3 startPosition){
     vec3 currentPosition = startPosition;
 
     vec3 accumFog = vec3(0.0f);
-    vec4 dith = (vec4(step, 1.0f) * ditherPattern);
+    //float ditherValue = ditherPattern[int(gl_FragCoord.x) % 4][int(gl_FragCoord.y) % 4];
 
     for (int i = 0; i < NB_STEPS; i++) {
         // select cascade layer
@@ -174,7 +174,7 @@ vec3 accumFog(vec3 worldPos, vec3 startPosition){
         if (shadowMapValue > currentDepth) { // worldByShadowCamera.z
             accumFog += vec3(ComputeScattering(dot(rayDirection, direction))) * color.xyz;
         }
-        currentPosition += step * dith.rgb;
+        currentPosition += step;
     }
     accumFog /= NB_STEPS;
     return accumFog;

@@ -49,6 +49,20 @@ namespace TD {
         ~Display() {}
     };
 
+    class DefaultLoadingScreenDisplay : public Display {
+    public:
+        DefaultLoadingScreenDisplay(std::string name);
+        virtual void onSwitch();
+        virtual void render();
+        virtual void update();
+        virtual void onLeave();
+        virtual void modelRegistered(std::string ident, std::string path);
+        virtual void textureRegisted(std::string ident, std::string path);
+        virtual void modelLoaded(std::string ident, std::string path);
+        virtual void textureLoaded(std::string ident, std::string path);
+        ~DefaultLoadingScreenDisplay();
+    };
+
     class DisplayManager {
     private:
     public:
@@ -56,6 +70,8 @@ namespace TD {
         static void update();
         static void close();
         static void changeDisplay(std::string name);
+        // must be called before init.
+        static void changeLoadingScreenDisplay(std::string name);
         static void changeActiveCamera(TD::camera* camera);
     };
 
