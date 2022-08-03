@@ -50,6 +50,9 @@ namespace TD {
     };
 
     class DefaultLoadingScreenDisplay : public Display {
+    private:
+        float modelCount = 1, modelsLoaded = 0, textureCount = 1, texturesLoaded = 0;
+        std::string lastLoaded;
     public:
         DefaultLoadingScreenDisplay(std::string name);
         virtual void onSwitch();

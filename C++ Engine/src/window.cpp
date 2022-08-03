@@ -323,15 +323,31 @@ namespace TD {
         constexpr int flags = ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar |
                 ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDecoration;
 
+        ImGui::PushFont(TD::fontContext::get("roboto"));
         ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.5444f, 0.62f, 0.69f, 1.0));
         ImGui::SetNextWindowPos(ImVec2(0,0), ImGuiCond_Appearing);
-        ImGui::SetNextWindowSize(ImVec2(_display_w, _display_h), ImGuiCond_Always);
+        ImGui::SetNextWindowSize(ImVec2((float)_display_w, (float)_display_h), ImGuiCond_Always);
         ImGui::Begin("Loading Screen", nullptr, flags);
 
-        ImGui::Text("Hello!");
+        float progressWidth = _display_w/2;
+        //tlog << modelsLoaded << " / " << modelCount;
+        ImGui::SetCursorPos(ImVec2(progressWidth - progressWidth/2, _display_h/2));
+        // changes background of the progress bar
+        //ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.270, 0.960, 0.0192, 1.0));
+        ImGui::PushStyleColor(ImGuiCol_PlotHistogram, ImVec4(0.225, 0.820, 0.00820, 1.0));
+        ImGui::ProgressBar(modelsLoaded / modelCount, ImVec2(progressWidth, 60));
+        ImGui::NewLine();
+        ImGui::SetCursorPosX(progressWidth - progressWidth/2);
+        ImGui::ProgressBar(texturesLoaded / textureCount, ImVec2(progressWidth, 60));
+        ImGui::PopStyleColor();
+        const ImVec2 cons = ImGui::CalcTextSize(lastLoaded.c_str(), NULL);
+        ImGui::NewLine();
+        ImGui::SetCursorPosX(progressWidth - cons.x/2);
+        ImGui::Text(lastLoaded.c_str());
 
         ImGui::End();
         ImGui::PopStyleColor();
+        ImGui::PopFont();
     }
 
     void DefaultLoadingScreenDisplay::update() {
@@ -347,18 +363,22 @@ namespace TD {
     }
 
     void DefaultLoadingScreenDisplay::modelRegistered(std::string ident, std::string path) {
-
+        modelCount++;
+        lastLoaded = "Registered Model " + ident + " @ " + path;
     }
 
     void DefaultLoadingScreenDisplay::textureRegisted(std::string ident, std::string path) {
-
+        textureCount++;
+        lastLoaded = "Registered Texture " + ident + " @ " + path;
     }
 
     void DefaultLoadingScreenDisplay::modelLoaded(std::string ident, std::string path) {
-
+        modelsLoaded++;
+        lastLoaded = "Loaded Model " + ident + " @ " + path;
     }
 
     void DefaultLoadingScreenDisplay::textureLoaded(std::string ident, std::string path) {
-
+        texturesLoaded++;
+        lastLoaded = "Loaded Texture " + ident + " @ " + path;
     }
 }
