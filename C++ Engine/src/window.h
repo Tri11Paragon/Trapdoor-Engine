@@ -51,7 +51,10 @@ namespace TD {
 
     class DefaultLoadingScreenDisplay : public Display {
     private:
+        TD::gifTexture lsTexture = TD::gifTexture("../assets/textures/closing-lots-of-doors-cartoon-closing-door.gif");
         float modelCount = 1, modelsLoaded = 0, textureCount = 1, texturesLoaded = 0;
+        int currentFrame = 0;
+        float currentTime = 0;
         std::string lastLoaded;
     public:
         DefaultLoadingScreenDisplay(std::string name);

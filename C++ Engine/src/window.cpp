@@ -236,11 +236,11 @@ namespace TD {
     DefaultLoadingScreenDisplay* defaultLoadDisplay = new DefaultLoadingScreenDisplay("_TD::LOADING_SCREEN_DISPLAY");
 
     void DisplayManager::init(std::string window) {
-        defaultLoadDisplay->onSwitch();
         TD::GameRegistry::registerThreaded();
         TD::fontContext::loadContexts(fonts);
         TD::window::initWindow(window);
         TD::IM_RegisterKeyListener(&keyCallBack);
+        defaultLoadDisplay->onSwitch();
 
         while (!TD::GameRegistry::loadingComplete()){
             TD::window::startRender();
@@ -318,12 +318,12 @@ namespace TD {
     }
 
     void DefaultLoadingScreenDisplay::onSwitch() {
-        TD::gifTexture lsTexture("../assets/textures/closing-lots-of-doors-cartoon-closing-door.gif");
+        lsTexture.loadGL();
     }
 
     void DefaultLoadingScreenDisplay::render() {
         constexpr int flags = ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar |
-                ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDecoration;
+                ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove;
 
         ImGui::PushFont(TD::fontContext::get("roboto"));
         ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.5444f, 0.62f, 0.69f, 1.0));
@@ -332,7 +332,25 @@ namespace TD {
         ImGui::Begin("Loading Screen", nullptr, flags);
 
         float progressWidth = (float)_display_w/2;
-        //tlog << modelsLoaded << " / " << modelCount;
+
+        // add the change in time to the time counter, when above the delay thresh, goto next frame.
+        currentTime += getFrameTimeMilliseconds();
+        if (currentTime >= lsTexture.getDelays()[currentFrame]) {
+            currentFrame++;
+            currentTime = 0;
+        }
+        // make sure we don't exceed the max frames
+        if (currentFrame >= lsTexture.getNumberOfFrames())
+            currentFrame = 0;
+
+        float aspect = (float)lsTexture.getWidth() / (float)lsTexture.getHeight();
+        const float padding = 10;
+        float remHe = _display_h/2 - padding*2;
+        float calcWidth = remHe * aspect;
+
+        ImGui::SetCursorPos(ImVec2(progressWidth - calcWidth/2, padding));
+        ImGui::Image(lsTexture.getTextures()[currentFrame], ImVec2(calcWidth, remHe));
+
         ImGui::SetCursorPos(ImVec2(progressWidth - progressWidth/2, (float)_display_h/2));
         // changes background of the progress bar
         //ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.270, 0.960, 0.0192, 1.0));

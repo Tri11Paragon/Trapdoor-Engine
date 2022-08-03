@@ -35,7 +35,8 @@ int main(int, char**){
         return nullptr;
     });
 
-    TD::DisplayManager::init("GLFW Test");
+    TD::DisplayManager::init("Trapdoor " + std::to_string(ENGINE_VERSION_MAJOR) + "." + std::to_string(ENGINE_VERSION_MINOR) + "."
+            + std::to_string(ENGINE_VERSION_PATCH) + " // C++ Test");
 
     // Standard Defered about 120fps @ 1024 lights (8.5ms)
 

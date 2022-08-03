@@ -414,8 +414,11 @@ namespace TD {
         stbi__context s;
         stbi__gif g;
         stbi__start_file(&s, file);
-        //stbi__load_gif_main(&s, &delays, &width, &height, &frames, &channels, 0);
-        unsigned char* two_back;
+        int* delay;
+        data = (unsigned char*) stbi__load_gif_main(&s, &delay, &width, &height, &frames, &channels, 0);
+        for (int i = 0; i < frames; i++)
+            delays.push_back(delay[i]);
+        /*unsigned char* two_back;
         unsigned char* data;
 
         do {
@@ -429,19 +432,60 @@ namespace TD {
                 delays.push_back(g.delay);
                 textureDatas.push_back(data);
             }
-        } while (data != 0);
+        } while (data != 0);*/
     }
 
     void gifTexture::bind(int frame) {
-
+        if (frame > frames)
+            throw std::runtime_error("Frame exceeds number of frames!");
+        if (loadedAsArray)
+            glBindTexture(GL_TEXTURE_2D_ARRAY, textures[frame]);
+        else
+            glBindTexture(GL_TEXTURE_2D, textures[frame]);
     }
 
     void gifTexture::unbind() {
-
+        if (loadedAsArray)
+            glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
+        else
+            glBindTexture(GL_TEXTURE_2D, 0);
     }
 
-    void gifTexture::loadGL() {
+    void gifTexture::loadGL(bool asArray) {
+        if (loadedToGL)
+            return;
+        if (asArray){
 
+        } else {
+            unsigned int textureIDs[frames];
+            glGenTextures(frames, textureIDs);
+            for (int i = 0; i < frames; i++) {
+                unsigned char localMem[channels * width * height];
+                // use memcopy?
+                for (int j = 0; j < channels * width * height; j++){
+                    localMem[j] = data[(i * channels * width * height) + j];
+                }
+                glBindTexture(GL_TEXTURE_2D, textureIDs[i]);
+
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+                int GL_RGB_SETTING = channels == 3 ? GL_RGB : GL_RGBA;
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB_SETTING, width, height, 0, GL_RGB_SETTING, GL_UNSIGNED_BYTE, localMem);
+                glGenerateMipmap(GL_TEXTURE_2D);
+
+                textures.push_back(textureIDs[i]);
+            }
+            stbi_image_free(data);
+        }
+        loadedToGL = true;
+    }
+
+    gifTexture::~gifTexture() {
+        for (int i = 0; i < textures.size(); i++)
+            glDeleteTextures(1, &textures[i]);
     }
 
     /***---------------{Model}---------------***/

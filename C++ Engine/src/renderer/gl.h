@@ -52,16 +52,24 @@ namespace TD {
     class gifTexture {
     private:
         std::vector<unsigned int> textures;
-        std::vector<unsigned char*> textureDatas;
+        //std::vector<unsigned char*> textureDatas;
+        unsigned char* data;
         std::vector<int> delays;
+        bool loadedAsArray = false, loadedToGL = false;
         int width = 0, height = 0, channels = 0, frames = 0;
     public:
-        gifTexture(std::string path);
-        void bind(int frame);
+        explicit gifTexture(std::string path);
+        void bind(int frame = 0);
         void unbind();
+        void loadGL(bool asArray = false);
+
         inline std::vector<unsigned int> getTextures() {return textures;}
         inline std::vector<int> getDelays() {return delays;}
-        void loadGL();
+        inline int getNumberOfFrames() const {return frames;}
+        inline int getWidth() {return width;}
+        inline int getHeight() {return height;}
+
+        ~gifTexture();
     };
 
     enum TEXTURE_TYPE {
