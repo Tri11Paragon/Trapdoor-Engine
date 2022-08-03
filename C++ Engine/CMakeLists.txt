@@ -3,6 +3,27 @@ project(engine VERSION "0.0.1")
 
 set(CMAKE_CXX_STANDARD 20)
 
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+    message("debug mode")
+    set(DEBUG_ENABLED true)
+    set(DEBUG_ENABLED_BOOL true)
+else()
+    message("release mode")
+    set(DEBUG_ENABLED false)
+    set(DEBUG_ENABLED_BOOL true)
+endif(CMAKE_BUILD_TYPE MATCHES Debug)
+set(ENGINE_VERSION_MAJOR " ${PROJECT_VERSION_MAJOR}")
+set(ENGINE_VERSION_MINOR " ${PROJECT_VERSION_MINOR}")
+set(ENGINE_VERSION_PATCH " ${PROJECT_VERSION_PATCH}")
+set(BUILD_DIR "${PROJECT_SOURCE_DIR}")
+if(WIN32)
+    set(RESOURCE_PATH "%userprofile%/Documents/Trapdoor/") # likely wrong and should be set from c++ but i'd rather it be set this way :(
+elseif(UNIX)
+    set(RESOURCE_PATH "~/.local/share/Trapdoor/")
+endif()
+configure_file(${PROJECT_SOURCE_DIR}/src/config.h.in config.h @ONLY)
+
+
 #Boost setup
 set(Boost_USE_STATIC_LIBS       ON)  # only find static libs
 set(Boost_USE_DEBUG_LIBS        OFF)  # ignore debug libs and

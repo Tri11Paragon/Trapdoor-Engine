@@ -15,8 +15,10 @@
 #include "world/World.h"
 #include "game/TestDisplay.h"
 #include "world/GameRegistry.h"
+#include <config.h>
 
 int main(int, char**){
+    tlog << DEBUG_ENABLED_BOOL;
     TD::profiler loadTimer("Load Time");
     loadTimer.start("Load Time");
     init_logging("output");

@@ -39,6 +39,13 @@ uniform float cascadePlaneDistances[16];
 uniform int cascadeCount;   // number of frusta - 1
 uniform float farPlane;
 
+mat4 ditherPattern = {
+    { 0.0f, 0.5f, 0.125f, 0.625f},
+    { 0.75f, 0.22f, 0.875f, 0.375f},
+    { 0.1875f, 0.6875f, 0.0625f, 0.5625},
+    { 0.9375f, 0.4375f, 0.8125f, 0.3125}
+};
+
 float ShadowCalculation(vec3 fragPosWorldSpace, vec3 Normal) {
     // select cascade layer
     vec4 fragPosViewSpace = viewMatrix * vec4(fragPosWorldSpace, 1.0);
@@ -110,28 +117,15 @@ vec3 calcDirLight(vec3 FragPos, vec3 Diffuse, vec3 Normal, float Specular){
     return vec3(diffuse + specular);
 }
 
-vec3 CalcDirLight(vec3 FragPos, vec3 Diffuse, vec3 normal, float Specular) {
-    vec3 viewDir = normalize(viewPos - FragPos);
-    vec3 lightDir = normalize(direction);
-    // diffuse shading
-    float diff = max(dot(normal, lightDir), 0.0);
-    // specular shading
-    vec3 reflectDir = reflect(-lightDir, normal);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 16);
-    // combine results
-    vec3 diffuse  = color.xyz  * diff * Diffuse;
-    vec3 specular = color.xyz * spec * vec3(Specular);
-    return (diffuse + specular);
-}
-
 const int NB_STEPS = 100;
-const float G_SCATTERING = 0.38f;
+const float G_SCATTERING = 0.001f; // 0.38f // 0.05
 const float G_POW = 1.5f;
+const float G_DIV = 0.5f; // 4.0f
 const float PI = 3.14159265359;
 
 float ComputeScattering(float lightDotView) {
     float result = 1.0f - G_SCATTERING * G_SCATTERING;
-    result /= (4.0f * PI * pow(1.0f + G_SCATTERING * G_SCATTERING - (2.0f * G_SCATTERING) * lightDotView, G_POW));
+    result /= (G_DIV * PI * pow(1.0f + G_SCATTERING * G_SCATTERING - (2.0f * G_SCATTERING) * lightDotView, G_POW));
     return result;
 }
 
@@ -148,6 +142,7 @@ vec3 accumFog(vec3 worldPos, vec3 startPosition){
     vec3 currentPosition = startPosition;
 
     vec3 accumFog = vec3(0.0f);
+    vec4 dith = (vec4(step, 1.0f) * ditherPattern);
 
     for (int i = 0; i < NB_STEPS; i++) {
         // select cascade layer
@@ -179,7 +174,7 @@ vec3 accumFog(vec3 worldPos, vec3 startPosition){
         if (shadowMapValue > currentDepth) { // worldByShadowCamera.z
             accumFog += vec3(ComputeScattering(dot(rayDirection, direction))) * color.xyz;
         }
-        currentPosition += step;
+        currentPosition += step * dith.rgb;
     }
     accumFog /= NB_STEPS;
     return accumFog;
