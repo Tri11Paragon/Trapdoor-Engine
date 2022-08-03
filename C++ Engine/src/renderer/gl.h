@@ -47,6 +47,23 @@ namespace TD {
         void unbind();
     };
 
+    // this needs very little from the texture base class and isn't necessarily compatible.
+    // as a result this is an independent class.
+    class gifTexture {
+    private:
+        std::vector<unsigned int> textures;
+        std::vector<unsigned char*> textureDatas;
+        std::vector<int> delays;
+        int width = 0, height = 0, channels = 0, frames = 0;
+    public:
+        gifTexture(std::string path);
+        void bind(int frame);
+        void unbind();
+        inline std::vector<unsigned int> getTextures() {return textures;}
+        inline std::vector<int> getDelays() {return delays;}
+        void loadGL();
+    };
+
     enum TEXTURE_TYPE {
         DIFFUSE,
         NORMAL,

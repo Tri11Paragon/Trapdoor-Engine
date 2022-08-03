@@ -319,7 +319,7 @@ namespace TD {
         data = loadTexture(path);
         if (data == nullptr){
             flog << "There was an error loading the image file " << path;
-            throw "Error loading image from file!";
+            throw std::runtime_error("Error loading image from file!");
         }
         if (loadGL)
             loadGLTexture();
@@ -403,6 +403,45 @@ namespace TD {
 
     void cubemapTexture::unbind() {
         glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+    }
+
+    /***---------------{GIF based Texture}---------------***/
+
+    gifTexture::gifTexture(std::string path) {
+        FILE* file = stbi__fopen(path.c_str(), "rb");
+        if (!file)
+            throw std::runtime_error("Unable to load GIF! " + path);
+        stbi__context s;
+        stbi__gif g;
+        stbi__start_file(&s, file);
+        //stbi__load_gif_main(&s, &delays, &width, &height, &frames, &channels, 0);
+        unsigned char* two_back;
+        unsigned char* data;
+
+        do {
+            data = stbi__gif_load_next(&s, &g, &channels, 0, two_back);
+            if (data == (stbi_uc *) &s) data = 0;  // end of animated gif marker
+
+            if (data){
+                this->width = g.w;
+                this->height = g.h;
+                frames++;
+                delays.push_back(g.delay);
+                textureDatas.push_back(data);
+            }
+        } while (data != 0);
+    }
+
+    void gifTexture::bind(int frame) {
+
+    }
+
+    void gifTexture::unbind() {
+
+    }
+
+    void gifTexture::loadGL() {
+
     }
 
     /***---------------{Model}---------------***/

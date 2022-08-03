@@ -236,6 +236,7 @@ namespace TD {
     DefaultLoadingScreenDisplay* defaultLoadDisplay = new DefaultLoadingScreenDisplay("_TD::LOADING_SCREEN_DISPLAY");
 
     void DisplayManager::init(std::string window) {
+        defaultLoadDisplay->onSwitch();
         TD::GameRegistry::registerThreaded();
         TD::fontContext::loadContexts(fonts);
         TD::window::initWindow(window);
@@ -248,6 +249,7 @@ namespace TD {
             //tlog << "Waiting for load!";
             TD::window::finishRender();
         }
+        defaultLoadDisplay->onLeave();
         tlog << "Loading Complete";
         TD::GameRegistry::loadToGPU();
         tlog << "GL Complete";
@@ -316,7 +318,7 @@ namespace TD {
     }
 
     void DefaultLoadingScreenDisplay::onSwitch() {
-
+        TD::gifTexture lsTexture("../assets/textures/closing-lots-of-doors-cartoon-closing-door.gif");
     }
 
     void DefaultLoadingScreenDisplay::render() {
@@ -329,9 +331,9 @@ namespace TD {
         ImGui::SetNextWindowSize(ImVec2((float)_display_w, (float)_display_h), ImGuiCond_Always);
         ImGui::Begin("Loading Screen", nullptr, flags);
 
-        float progressWidth = _display_w/2;
+        float progressWidth = (float)_display_w/2;
         //tlog << modelsLoaded << " / " << modelCount;
-        ImGui::SetCursorPos(ImVec2(progressWidth - progressWidth/2, _display_h/2));
+        ImGui::SetCursorPos(ImVec2(progressWidth - progressWidth/2, (float)_display_h/2));
         // changes background of the progress bar
         //ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.270, 0.960, 0.0192, 1.0));
         ImGui::PushStyleColor(ImGuiCol_PlotHistogram, ImVec4(0.225, 0.820, 0.00820, 1.0));
@@ -340,10 +342,10 @@ namespace TD {
         ImGui::SetCursorPosX(progressWidth - progressWidth/2);
         ImGui::ProgressBar(texturesLoaded / textureCount, ImVec2(progressWidth, 60));
         ImGui::PopStyleColor();
-        const ImVec2 cons = ImGui::CalcTextSize(lastLoaded.c_str(), NULL);
+        const ImVec2 cons = ImGui::CalcTextSize(lastLoaded.c_str(), nullptr);
         ImGui::NewLine();
         ImGui::SetCursorPosX(progressWidth - cons.x/2);
-        ImGui::Text(lastLoaded.c_str());
+        ImGui::Text("%s", lastLoaded.c_str());
 
         ImGui::End();
         ImGui::PopStyleColor();
