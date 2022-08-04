@@ -78,6 +78,11 @@ message("Backto BUILD: ${TD_BUILD_SETTING} // ${CMAKE_BUILD_TYPE}")
 #include_directories(${PROJECT_SOURCE_DIR}/include/nativefiledialog/src/include)
 add_subdirectory(include/nativefiledialog)
 
+# Zips
+find_package(ZLIB)
+find_package(GZIP)
+
+
 # Engine FS sources setup
 set(source_dir "${PROJECT_SOURCE_DIR}/src/")
 
@@ -101,6 +106,7 @@ target_link_libraries(${PROJECT_NAME} ${CMAKE_DL_LIBS})
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} Threads::Threads)
 target_link_libraries(${PROJECT_NAME} Boost::filesystem Boost::log)
+target_link_libraries(${PROJECT_NAME} ZLIB::ZLIB)
 
 #target_link_libraries(${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/include/nativefiledialog/build/lib/Debug/x64/libnfd_d.a)
 target_link_libraries(${PROJECT_NAME} nativefiledialog)
