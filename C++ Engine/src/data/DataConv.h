@@ -18,6 +18,20 @@ namespace TD {
         static short getShort(char* bytes){
             return short((unsigned char)(bytes[0]) << 8 | (unsigned char)(bytes[1]));
         }
+        static char* getShort(short sh) {
+            char sizeBytes[2];
+            sizeBytes[0] = (char) (unsigned char) ((sh >> 8) & 0xFF);
+            sizeBytes[1] = (char) (unsigned char) (sh & 0xFF );
+            return sizeBytes;
+        }
+        static char* getInt(int sh) {
+            char sizeBytes[2];
+            sizeBytes[0] = (char) (unsigned char) ((sh >> 24) & 0xFF);
+            sizeBytes[1] = (char) (unsigned char) ((sh >> 16) & 0xFF);
+            sizeBytes[2] = (char) (unsigned char) ((sh >> 8) & 0xFF);
+            sizeBytes[3] = (char) (unsigned char) (sh & 0xFF );
+            return sizeBytes;
+        }
         /*static long getLong(unsigned char* bytes){
             return long(bytes[0] << 56 | bytes[1] << 48 | bytes[2] << 40 | bytes[3] << 32 | bytes[4] << 24 | bytes[5] << 16 | bytes[6] << 8 | bytes[7]);
         }*/

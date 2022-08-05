@@ -31,7 +31,18 @@ int main(int, char**){
     for (int i = 0; i < size; i++){
         TD::TAG_COMPOUND root("rooterTagger");
         root.put(new TD::TAG_INT("Interino", 5));
-        root.put(new TD::TAG_INT("Intry", 25));
+        root.put(new TD::TAG_INT("Intry", 420));
+        TD::TAG_COMPOUND* byters = new TD::TAG_COMPOUND("byters");
+        byters->put(new TD::TAG_BYTE("Treaty", 53));
+        byters->put(new TD::TAG_BYTE_ARRAY("SUNNY", {23, 43, 2, 4, 50, 10, 04, 065, 94, 86, 49, 39, 95, 42, 68, 29, 24, 42, 21, 49, 23, 49}));
+        root.put(byters);
+        TD::TAG_COMPOUND* shortsAndMore = new TD::TAG_COMPOUND("shortsAndMore");
+        shortsAndMore->put(new TD::TAG_SHORT("ShortMenandWOMEN", 5230));
+        shortsAndMore->put(new TD::TAG_FLOAT("SuperFloat", 52304.04324));
+        shortsAndMore->put(new TD::TAG_DOUBLE("SuperDouble", 452340.593459234));
+        shortsAndMore->put(new TD::TAG_LONG("LongestLonger", 5024340304234));
+        shortsAndMore->put(new TD::TAG_STRING("Stringy Men", "HELPIMRUNNINGOUTOFCHARACTERSFORME"));
+        root.put(shortsAndMore);
         TD::NBTWriter::write(root, "superbased.nbt");
     }
     nbtloader.end("NBT Write Basic");

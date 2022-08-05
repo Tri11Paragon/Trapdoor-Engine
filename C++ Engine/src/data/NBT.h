@@ -37,10 +37,7 @@ namespace TD {
         inline unsigned char getType(){return type;}
 
         void writeName(std::ofstream &file) {
-            char sizeBytes[2];
-            sizeBytes[0] = (char) (unsigned char) (this->name.size() >> 8 << 8);
-            sizeBytes[1] = (char) (unsigned char) (this->name.size() & 0xFF );
-            file.write(sizeBytes, 2);
+            file.write(TD::DataConv::getShort(name.size()), 2);
             for (int i = 0; i < name.size(); i++)
                 file << this->name[i];
         }
@@ -58,7 +55,6 @@ namespace TD {
             char sizeArr[2];
             file.read(sizeArr, 2);
             size = TD::DataConv::getShort(sizeArr);
-            tlog << size << " " << std::to_string(sizeArr[0]) << " " << std::to_string(sizeArr[1]);
             char str[size];
             file.read(str, size);
             this->name = std::string(str, size);
@@ -155,17 +151,19 @@ namespace TD {
     public:
         TAG_STRING(): NBT_TAG(ID_TAG_STRING){}
         TAG_STRING(const std::string& name): NBT_TAG(name, ID_TAG_STRING){}
-        TAG_STRING(const std::string& name, std::string& payload) : NBT_TAG(name, ID_TAG_STRING) { this->payload = payload;}
+        TAG_STRING(const std::string& name, const std::string& payload) : NBT_TAG(name, ID_TAG_STRING) { this->payload = payload;}
 
         inline std::string getPayload(){return payload;}
         inline virtual void writePayload(std::ofstream &file) {
-            file << (short) this->payload.size();
+            file.write(TD::DataConv::getShort(this->payload.size()), 2);
             for (int i = 0; i < payload.size(); i++)
                 file << this->payload[i];
         }
         inline virtual void readPayload(std::ifstream &file) {
             short size = 0;
-            file >> size;
+            char sizeArr[2];
+            file.read(sizeArr, 2);
+            size = TD::DataConv::getShort(sizeArr);
             char str[size];
             file.read(str, size);
             this->payload = std::string(str, size);
@@ -191,9 +189,10 @@ namespace TD {
         }
         inline virtual void readPayload(std::ifstream &file) {
             file >> size;
-            payload[size];
+            signed char ptr[size];
             for (int i = 0; i < size; i++)
-                file >> payload[i];
+                file >> ptr[i];
+            this->payload = ptr;
         }
     };
 
@@ -273,7 +272,6 @@ namespace TD {
                 char sid;
                 file.read(&sid, 1);
                 id = (unsigned char) sid;
-                tlog << std::to_string(id + 0);
                 std::shared_ptr<NBT_TAG> taggers;
                 switch (id){
                     case ID_TAG_BYTE: {
@@ -353,8 +351,6 @@ namespace TD {
                 throw runtime_error("Error! File does not start with TAG_COMPOUND!");
             }
             root.readName(file);
-            tlog << root.getName();
-
             root.readPayload(file);
 
             file.close();
