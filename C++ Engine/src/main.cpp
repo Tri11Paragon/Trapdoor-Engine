@@ -33,19 +33,28 @@ int main(int, char**){
             TD::TAG_COMPOUND root("rooterTagger");
             root.put(new TD::TAG_INT("Interino", 5));
             root.put(new TD::TAG_INT("Intry", 420));
-            TD::TAG_COMPOUND *byters = new TD::TAG_COMPOUND("byters");
+            auto *byters = new TD::TAG_COMPOUND("byters");
             byters->put(new TD::TAG_BYTE("Treaty", 53));
             byters->put(new TD::TAG_BYTE_ARRAY("SUNNY",
                                                {23, 43, 2, 4, 50, 10, 04, 65, 94, 86, 49, 39, 95, 42, 68, 29, 24, 42,
                                                 21, 49, 23, 49}));
             root.put(byters);
-            TD::TAG_COMPOUND *shortsAndMore = new TD::TAG_COMPOUND("shortsAndMore");
+            auto *shortsAndMore = new TD::TAG_COMPOUND("shortsAndMore");
             shortsAndMore->put(new TD::TAG_SHORT("ShortMenandWOMEN", 5230));
             shortsAndMore->put(new TD::TAG_FLOAT("SuperFloat", 52304.04324f));
             shortsAndMore->put(new TD::TAG_DOUBLE("SuperDouble", 452340.593459234));
             shortsAndMore->put(new TD::TAG_LONG("LongestLonger", 5024340304234));
             shortsAndMore->put(new TD::TAG_STRING("Stringy Men", "HELPIMRUNNINGOUTOFCHARACTERSFORME"));
             root.put(shortsAndMore);
+            auto *listings = new TD::TAG_LIST("sexistListsy");
+            listings->put(new TD::TAG_INT("Doesn'tMatter", 5213));
+            listings->put(new TD::TAG_INT("Doesn'tMatter", 5223));
+            listings->put(new TD::TAG_INT("Doesn'tMatter", 6213));
+            listings->put(new TD::TAG_INT("Doesn'tMatter", 5234423));
+            listings->put(new TD::TAG_INT("Doesn'tMatter", 5993));
+            listings->put(new TD::TAG_INT("Doesn'tMatter", 9877));
+            listings->put(new TD::TAG_INT("Doesn'tMatter", 94835));
+            root.put(listings);
             //TD::NBTWriterThreaded threadWriter(root, "superbased.nbt");
             TD::NBTWriter::write(root, "superbased.nbt");
         }
@@ -88,6 +97,14 @@ int main(int, char**){
                     auto typer = shorts->get<TD::TAG_LONG>("LongestLonger")->getPayload();
                 if (shorts->hasTag("Stringy Men"))
                     auto typer = shorts->get<TD::TAG_STRING>("Stringy Men")->getPayload();
+            }
+            if (root.hasTag("sexistListsy")){
+                TD::TAG_LIST* listings = root.get<TD::TAG_LIST>("sexistListsy");
+                tlog << listings->getPayload().size();
+                for (auto tag : listings->getPayload()){
+                    auto ctag = static_cast<TD::TAG_INT*>(tag.get());
+                    tlog << ctag->getPayload();
+                }
             }
         }
     }
