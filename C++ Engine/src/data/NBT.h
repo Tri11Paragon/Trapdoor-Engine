@@ -37,7 +37,8 @@ namespace TD {
         inline unsigned char getType(){return type;}
 
         void writeName(std::ofstream &file) {
-            file.write(TD::DataConv::getShort(name.size()), 2);
+            std::vector<char> data = TD::DataConv::getShort(name.size());
+            file.write(data.data(), 2);
             for (int i = 0; i < name.size(); i++)
                 file << this->name[i];
         }
@@ -128,8 +129,15 @@ namespace TD {
         TAG_FLOAT(const std::string& name, const float payload) : NBT_TAG(name, ID_TAG_FLOAT) { this->payload = payload; }
 
         inline float getPayload(){return payload;}
-        inline virtual void writePayload(std::ofstream &file) {file << payload;}
-        inline virtual void readPayload(std::ifstream &file) {file >> payload;}
+        inline virtual void writePayload(std::ofstream &file) {
+            std:vector<char> data = TD::DataConv::getFloat(payload);
+            file.write(data.data(), data.size());
+        }
+        inline virtual void readPayload(std::ifstream &file) {
+            char data[4];
+            file.read(data, 4);
+            this->payload = TD::DataConv::getFloat(data);
+        }
     };
 
     class TAG_DOUBLE : public NBT_TAG {
@@ -141,8 +149,15 @@ namespace TD {
         TAG_DOUBLE(const std::string& name, const double payload) : NBT_TAG(name, ID_TAG_DOUBLE) { this->payload = payload; }
 
         inline double getPayload(){return payload;}
-        inline virtual void writePayload(std::ofstream &file) {file << payload;}
-        inline virtual void readPayload(std::ifstream &file) {file >> payload;}
+        inline virtual void writePayload(std::ofstream &file) {
+            std:vector<char> data = TD::DataConv::getDouble(payload);
+            file.write(data.data(), data.size());
+        }
+        inline virtual void readPayload(std::ifstream &file) {
+            char data[8];
+            file.read(data, 8);
+            this->payload = TD::DataConv::getDouble(data);
+        }
     };
 
     class TAG_STRING : public NBT_TAG {
@@ -155,7 +170,7 @@ namespace TD {
 
         inline std::string getPayload(){return payload;}
         inline virtual void writePayload(std::ofstream &file) {
-            file.write(TD::DataConv::getShort(this->payload.size()), 2);
+            file.write(TD::DataConv::getShort(this->payload.size()).data(), 2);
             for (int i = 0; i < payload.size(); i++)
                 file << this->payload[i];
         }
@@ -172,26 +187,31 @@ namespace TD {
 
     class TAG_BYTE_ARRAY : public NBT_TAG {
     private:
-        signed char* payload;
-        signed int size;
+        std::vector<signed char> payload;
     public:
         TAG_BYTE_ARRAY(): NBT_TAG(ID_TAG_BYTE_ARRAY){}
         TAG_BYTE_ARRAY(const std::string& name): NBT_TAG(name, ID_TAG_BYTE_ARRAY){}
-        TAG_BYTE_ARRAY(const std::string& name, signed char* payload, signed int size) : NBT_TAG(name, ID_TAG_BYTE_ARRAY) { this->payload = payload; this->size = size;}
-        TAG_BYTE_ARRAY(const std::string& name, std::vector<signed char> payload) : NBT_TAG(name, ID_TAG_BYTE_ARRAY) { this->payload = payload.data(); this->size = payload.size();}
+        TAG_BYTE_ARRAY(const std::string& name, std::vector<signed char> payload) : NBT_TAG(name, ID_TAG_BYTE_ARRAY) { this->payload = payload;}
 
-        inline signed int getSize(){return size;}
-        inline signed char* getPayload(){return payload;}
+        inline signed int getSize(){return payload.size();}
+        inline signed char* getPayload(){return payload.data();}
         inline virtual void writePayload(std::ofstream &file) {
-            file << size;
-            for (int i = 0; i < size; i++)
+            std::vector<char> data = TD::DataConv::getInt(payload.size());
+            file.write(data.data(), 4);
+            for (int i = 0; i < payload.size(); i++) {
                 file << payload[i];
+            }
         }
         inline virtual void readPayload(std::ifstream &file) {
-            file >> size;
-            signed char ptr[size];
-            for (int i = 0; i < size; i++)
-                file >> ptr[i];
+            char sizeData[4];
+            file.read(sizeData, 4);
+            int size = TD::DataConv::getInt(sizeData);
+            std::vector<signed char> ptr;
+            for (int i = 0; i < size; i++) {
+                char byt;
+                file.read(&byt, 1);
+                ptr.push_back(byt);
+            }
             this->payload = ptr;
         }
     };
@@ -330,6 +350,68 @@ namespace TD {
                 tags.push_back(taggers);
                 tagMap.insert(std::pair(taggers->getName(), taggers));
             } while (id != ID_TAG_END);
+        }
+    };
+
+    class TAG_INT_ARRAY : public NBT_TAG {
+    private:
+        std::vector<int> payload;
+    public:
+        TAG_INT_ARRAY(): NBT_TAG(ID_TAG_INT_ARRAY){}
+        TAG_INT_ARRAY(const std::string& name): NBT_TAG(name, ID_TAG_INT_ARRAY){}
+        TAG_INT_ARRAY(const std::string& name, std::vector<int> payload) : NBT_TAG(name, ID_TAG_INT_ARRAY) { this->payload = payload;}
+
+        inline std::vector<int> getPayload(){return payload;}
+        inline virtual void writePayload(std::ofstream &file) {
+            std::vector<char> data = TD::DataConv::getInt(payload.size());
+            file.write(data.data(), 4);
+            for (int i = 0; i < payload.size(); i++) {
+                std::vector<char> lData = TD::DataConv::getInt(payload[i]);
+                file.write(lData.data(), lData.size());
+            }
+        }
+        inline virtual void readPayload(std::ifstream &file) {
+            char sizeData[4];
+            file.read(sizeData, 4);
+            int size = TD::DataConv::getInt(sizeData);
+            std::vector<int> ptr;
+            for (int i = 0; i < size; i++) {
+                char byt[4];
+                file.read(byt, 4);
+                ptr.push_back(TD::DataConv::getInt(byt));
+            }
+            this->payload = ptr;
+        }
+    };
+
+    class TAG_LONG_ARRAY : public NBT_TAG {
+    private:
+        std::vector<long> payload;
+    public:
+        TAG_LONG_ARRAY(): NBT_TAG(ID_TAG_LONG_ARRAY){}
+        TAG_LONG_ARRAY(const std::string& name): NBT_TAG(name, ID_TAG_LONG_ARRAY){}
+        TAG_LONG_ARRAY(const std::string& name, std::vector<long> payload) : NBT_TAG(name, ID_TAG_LONG_ARRAY) { this->payload = payload;}
+
+        inline std::vector<long> getPayload(){return payload;}
+        inline virtual void writePayload(std::ofstream &file) {
+            std::vector<char> data = TD::DataConv::getInt(payload.size());
+            file.write(data.data(), 4);
+            for (int i = 0; i < payload.size(); i++) {
+                std::vector<char> lData = TD::DataConv::getLong(payload[i]);
+                file.write(lData.data(), lData.size());
+            }
+        }
+        inline virtual void readPayload(std::ifstream &file) {
+            char sizeData[4];
+            file.read(sizeData, 4);
+            int size = TD::DataConv::getInt(sizeData);
+            std::vector<long> ptr;
+            for (int i = 0; i < size; i++) {
+                char byt[8];
+                file.read(byt, 8);
+                ptr.push_back(TD::DataConv::getLong(byt));
+            }
+            this->payload = ptr;
         }
     };
 
