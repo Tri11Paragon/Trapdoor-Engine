@@ -80,8 +80,6 @@ add_subdirectory(include/nativefiledialog)
 
 # Zips
 find_package(ZLIB)
-find_package(GZIP)
-
 
 # Engine FS sources setup
 set(source_dir "${PROJECT_SOURCE_DIR}/src/")

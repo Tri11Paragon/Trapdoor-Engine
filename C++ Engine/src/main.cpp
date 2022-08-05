@@ -17,11 +17,35 @@
 #include "world/GameRegistry.h"
 #include <config.h>
 
+#include "data/NBT.h"
+
 int main(int, char**){
     tlog << DEBUG_ENABLED_BOOL;
     TD::profiler loadTimer("Load Time");
     loadTimer.start("Load Time");
     init_logging("output");
+
+    const int size = 1;
+    TD::profiler nbtloader("NBT Time");
+    nbtloader.start("NBT Write Basic");
+    for (int i = 0; i < size; i++){
+        TD::TAG_COMPOUND root("rooterTagger");
+        root.put(new TD::TAG_INT("Interino", 5));
+        root.put(new TD::TAG_INT("Intry", 25));
+        TD::NBTWriter::write(root, "superbased.nbt");
+    }
+    nbtloader.end("NBT Write Basic");
+    nbtloader.start("NBT Read Basic");
+    for (int i = 0; i < size; i++){
+        TD::TAG_COMPOUND root = TD::NBTRecursiveReader::read("superbased.nbt");
+        if (root.hasTag("Interino"))
+            tlog << root.get<TD::TAG_INT>("Interino")->getPayload();
+        if (root.hasTag("Intry"))
+            tlog << root.get<TD::TAG_INT>("Intry")->getPayload();
+    }
+    nbtloader.end("NBT Read Basic");
+    nbtloader.print();
+    return 0;
 
     TD::GameRegistry::registerRegistrationCallback([]() -> void* {
         // Register Models
