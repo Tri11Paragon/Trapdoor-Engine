@@ -5,8 +5,7 @@
 #ifndef ENGINE_NBT_H
 #define ENGINE_NBT_H
 
-#include "../std.h"
-#include "DataConv.h"
+#include "DataStreams.h"
 #include "../hashmaps.h"
 #include <thread>
 
@@ -31,21 +30,21 @@ namespace TD {
         std::string name;
         unsigned char type;
     public:
-        NBT_TAG(unsigned char type){this->type = type;}
+        explicit NBT_TAG(unsigned char type){this->type = type;}
         NBT_TAG(const std::string &name, const unsigned char &type) : name(name), type(type) {}
 
         inline std::string getName(){return name;}
-        inline unsigned char getType(){return type;}
+        [[nodiscard]] inline unsigned char getType() const {return type;}
 
         void writeName(std::ofstream &file) {
             char data[2];
-            TD::DataConv::getShort(name.size(), data);
+            TD::DataConv::getShort((short) name.size(), data);
             file.write(data, 2);
             for (int i = 0; i < name.size(); i++)
                 file << this->name[i];
         }
 
-        void writeType(std::ofstream &file) {
+        void writeType(std::ofstream &file) const {
             file << type;
         }
 
@@ -54,21 +53,20 @@ namespace TD {
         inline virtual void readPayload(std::ifstream &file) = 0;
 
         void readName(std::ifstream &file) {
-            short size = 0;
             char sizeArr[2];
             file.read(sizeArr, 2);
-            size = TD::DataConv::getShort(sizeArr);
+            short size = TD::DataConv::getShort(sizeArr);
             char str[size];
             file.read(str, size);
             this->name = std::string(str, size);
         }
 
         void readType(std::ifstream &file) {
-            char type;
-            file.read(&type, 1);
-            this->type = (unsigned char)type;
+            char typeT;
+            file.read(&typeT, 1);
+            this->type = (unsigned char)typeT;
         }
-        virtual ~NBT_TAG(){}
+        virtual ~NBT_TAG() = default;
     };
 
     class TAG_BYTE : public NBT_TAG {
@@ -80,6 +78,7 @@ namespace TD {
         TAG_BYTE(const std::string& name, const signed char payload) : NBT_TAG(name, ID_TAG_BYTE) { this->payload = payload; }
 
         inline signed char getPayload(){return payload;}
+        // this should be fine as file.write / file.read writes signed chars
         inline virtual void writePayload(std::ofstream &file){file << payload;}
         inline virtual void readPayload(std::ifstream &file) {file >> payload;}
     };
@@ -93,8 +92,16 @@ namespace TD {
         TAG_SHORT(const std::string& name, const signed short payload) : NBT_TAG(name, ID_TAG_SHORT) { this->payload = payload; }
 
         inline signed short getPayload(){return payload;}
-        inline virtual void writePayload(std::ofstream &file) {file << payload;}
-        inline virtual void readPayload(std::ifstream &file) {file >> payload;}
+        inline virtual void writePayload(std::ofstream &file) {
+            char data[2];
+            TD::DataConv::getShort(payload, data);
+            file.write(data, 2);
+        }
+        inline virtual void readPayload(std::ifstream &file) {
+            char data[2];
+            file.read(data, 2);
+            payload = TD::DataConv::getShort(data);
+        }
     };
 
     class TAG_INT : public NBT_TAG {
@@ -106,8 +113,16 @@ namespace TD {
         TAG_INT(const std::string& name, const signed int payload) : NBT_TAG(name, ID_TAG_INT) { this->payload = payload;}
 
         inline signed int getPayload(){return payload;}
-        inline virtual void writePayload(std::ofstream &file) {file << payload;}
-        inline virtual void readPayload(std::ifstream &file) {file >> payload;}
+        inline virtual void writePayload(std::ofstream &file) {
+            char data[4];
+            TD::DataConv::getInt(payload, data);
+            file.write(data, 4);
+        }
+        inline virtual void readPayload(std::ifstream &file) {
+            char data[4];
+            file.read(data, 4);
+            payload = TD::DataConv::getInt(data);
+        }
     };
 
     class TAG_LONG : public NBT_TAG {
@@ -119,8 +134,16 @@ namespace TD {
         TAG_LONG(const std::string& name, const signed long payload) : NBT_TAG(name, ID_TAG_LONG) { this->payload = payload; }
 
         inline long getPayload(){return payload;}
-        inline virtual void writePayload(std::ofstream &file) {file << payload;}
-        inline virtual void readPayload(std::ifstream &file) {file >> payload;}
+        inline virtual void writePayload(std::ofstream &file) {
+            char data[8];
+            TD::DataConv::getLong(payload, data);
+            file.write(data, 8);
+        }
+        inline virtual void readPayload(std::ifstream &file) {
+            char data[8];
+            file.read(data, 8);
+            payload = TD::DataConv::getLong(data);
+        }
     };
 
     class TAG_FLOAT : public NBT_TAG {
@@ -297,37 +320,37 @@ namespace TD {
         unsigned char lType = 0;
     public:
         TAG_LIST(): NBT_TAG(ID_TAG_LIST){}
-        TAG_LIST(const std::string& name): NBT_TAG(name, ID_TAG_LIST){}
+        explicit TAG_LIST(const std::string& name): NBT_TAG(name, ID_TAG_LIST){}
         TAG_LIST(const std::string& name, std::vector<std::shared_ptr<NBT_TAG>> payload) : NBT_TAG(name, ID_TAG_LIST) { this->payload = payload;}
 
         inline std::vector<std::shared_ptr<NBT_TAG>>& getPayload(){return payload;}
-        inline void put(NBT_TAG* tag){
-            if (lType == 0)
-                lType = tag->getType();
+        inline void put(NBT_TAG* tag) {
             std::shared_ptr<NBT_TAG> taggers = std::shared_ptr<NBT_TAG>(tag);
             payload.push_back(taggers);
+            this->lType = taggers->getType();
         }
 
         inline virtual void writePayload(std::ofstream &file) {
-            if (payload.size() <= 0) {
+            if (payload.empty()) {
                 file << ID_TAG_END;
+                file << (int) 0;
                 return;
             }
             file << lType;
             char data[4];
-            TD::DataConv::getInt(payload.size(), data);
+            TD::DataConv::getInt((int)payload.size(), data);
             file.write(data, 4);
-            for (int i = 0; i < payload.size(); i++)
-                payload[i]->writePayload(file);
+            for (auto& i : payload)
+                i->writePayload(file);
         }
         inline virtual void readPayload(std::ifstream &file) {
             char sid;
             file.read(&sid, 1);
             lType = (unsigned char) sid;
+
             char sizeData[4];
             file.read(sizeData, 4);
             int size = TD::DataConv::getInt(sizeData);
-            tlog << "Reading! " << std::to_string(lType) << " " << size;
             for (int i = 0; i < size; i++){
                 std::shared_ptr<NBT_TAG> taggers;
                 switch (lType){
@@ -380,7 +403,7 @@ namespace TD {
                         break;
                     }
                     default: {
-                        continue;
+                        return;
                     }
                 }
                 taggers->readPayload(file);
@@ -398,7 +421,7 @@ namespace TD {
         TAG_COMPOUND(const std::string& name): NBT_TAG(name, ID_TAG_COMPOUND){}
         TAG_COMPOUND(const std::string& name, std::vector<std::shared_ptr<NBT_TAG>> payload) : NBT_TAG(name, ID_TAG_COMPOUND) {
             this->tags = payload;
-            for (std::shared_ptr<NBT_TAG> t : payload)
+            for (const std::shared_ptr<NBT_TAG>& t : payload)
                 tagMap.insert(std::pair(t->getName(), t));
         }
 
@@ -408,12 +431,12 @@ namespace TD {
             tags.push_back(taggers);
             tagMap[tag->getName()] = taggers;
         }
-        inline void put(std::shared_ptr<NBT_TAG> tag){tags.push_back(tag); tagMap[tag->getName()] = tag;}
+        inline void put(const std::shared_ptr<NBT_TAG>& tag){tags.push_back(tag); tagMap[tag->getName()] = tag;}
         template<class T>
-        inline T* get(std::string tag){
+        inline T* get(const std::string& tag){
             return static_cast<T*>(tagMap[tag].get());
         }
-        inline bool hasTag(std::string tag){
+        inline bool hasTag(const std::string& tag){
             return tagMap.find(tag) != tagMap.end();
         }
 
@@ -430,6 +453,9 @@ namespace TD {
             do {
                 char sid;
                 file.read(&sid, 1);
+                //if (file.eof() || file.fail()) {
+                //    break;
+                //}
                 id = (unsigned char) sid;
                 std::shared_ptr<NBT_TAG> taggers;
                 switch (id){

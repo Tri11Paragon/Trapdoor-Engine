@@ -65,38 +65,38 @@ int main(int, char**){
         for (int i = 0; i < size; i++) {
             TD::TAG_COMPOUND root = TD::NBTRecursiveReader::read("superbased.nbt");
             if (root.hasTag("Interino"))
-                auto typer = root.get<TD::TAG_INT>("Interino")->getPayload();
+                tlog << root.get<TD::TAG_INT>("Interino")->getPayload();
             if (root.hasTag("Intry"))
-                auto typer = root.get<TD::TAG_INT>("Intry")->getPayload();
+                tlog << root.get<TD::TAG_INT>("Intry")->getPayload();
             if (root.hasTag("byters")) {
                 TD::TAG_COMPOUND *byters = root.get<TD::TAG_COMPOUND>("byters");
                 if (byters->hasTag("Treaty"))
-                    auto typer = std::to_string(byters->get<TD::TAG_BYTE>("Treaty")->getPayload());
+                    tlog << std::to_string(byters->get<TD::TAG_BYTE>("Treaty")->getPayload());
                 if (byters->hasTag("SUNNY")) {
                     TD::TAG_BYTE_ARRAY *tag = byters->get<TD::TAG_BYTE_ARRAY>("SUNNY");
-                    //tlog << "Size: " << tag->getPayload().size() << " First Element: " << std::to_string(tag->getPayload()[0]);
-                    //std::string str = "zBytes{";
-                    /*int sz = tag->getPayload().size();
+                    tlog << "Size: " << tag->getPayload().size() << " First Element: " << std::to_string(tag->getPayload()[0]);
+                    std::string str = "zBytes{";
+                    int sz = tag->getPayload().size();
                     for (int i = 0; i < sz; i++) {
                         str += std::to_string(tag->getPayload()[i]);
                         if (i < sz - 1)
                             str += ", ";
                     }
-                    tlog << str << "}";*/
+                    tlog << str << "}";
                 }
             }
             if (root.hasTag("shortsAndMore")) {
                 TD::TAG_COMPOUND *shorts = root.get<TD::TAG_COMPOUND>("shortsAndMore");
                 if (shorts->hasTag("ShortMenandWOMEN"))
-                    auto typer = shorts->get<TD::TAG_SHORT>("ShortMenandWOMEN")->getPayload();
+                    tlog << shorts->get<TD::TAG_SHORT>("ShortMenandWOMEN")->getPayload();
                 if (shorts->hasTag("SuperFloat"))
-                    auto typer = std::to_string(shorts->get<TD::TAG_FLOAT>("SuperFloat")->getPayload());
+                    tlog << std::to_string(shorts->get<TD::TAG_FLOAT>("SuperFloat")->getPayload());
                 if (shorts->hasTag("SuperDouble"))
-                    auto typer = std::to_string(shorts->get<TD::TAG_DOUBLE>("SuperDouble")->getPayload());
+                    tlog << std::to_string(shorts->get<TD::TAG_DOUBLE>("SuperDouble")->getPayload());
                 if (shorts->hasTag("LongestLonger"))
-                    auto typer = shorts->get<TD::TAG_LONG>("LongestLonger")->getPayload();
+                    tlog << shorts->get<TD::TAG_LONG>("LongestLonger")->getPayload();
                 if (shorts->hasTag("Stringy Men"))
-                    auto typer = shorts->get<TD::TAG_STRING>("Stringy Men")->getPayload();
+                    tlog << shorts->get<TD::TAG_STRING>("Stringy Men")->getPayload();
             }
             if (root.hasTag("sexistListsy")){
                 TD::TAG_LIST* listings = root.get<TD::TAG_LIST>("sexistListsy");

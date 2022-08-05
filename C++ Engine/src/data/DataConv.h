@@ -14,10 +14,10 @@ namespace TD {
     private:
         typedef char byte ;
     public:
-        static int getInt(char* bytes){
+        inline static int getInt(char* bytes){
             return int((unsigned char)(bytes[0]) << 24 | (unsigned char)(bytes[1]) << 16 | (unsigned char)(bytes[2]) << 8 | (unsigned char)(bytes[3]));
         }
-        static long getLong(char* bytes){
+        inline static long getLong(char* bytes){
             return long(
                     (unsigned long)((unsigned char)(bytes[0])) << 56 | (unsigned long)((unsigned char)(bytes[1])) << 48
                     | (unsigned long)((unsigned char)(bytes[2])) << 40 | (unsigned long)((unsigned char)(bytes[3])) << 32
@@ -25,22 +25,22 @@ namespace TD {
                     | (unsigned long)((unsigned char)(bytes[6])) << 8 | (unsigned long)((unsigned char)(bytes[7]))
                     );
         }
-        static short getShort(char* bytes){
+        inline static short getShort(char* bytes){
             return short((unsigned char)(bytes[0]) << 8 | (unsigned char)(bytes[1]));
         }
-        static char* getShort(short sh, char* bytes) {
+        inline static char* getShort(short sh, char* bytes) {
             bytes[0] = ((char) (unsigned char) ((sh >> 8) & 0xFF));
             bytes[1] = ((char) (unsigned char) (sh & 0xFF));
             return bytes;
         }
-        static char* getInt(int sh, char* bytes) {
+        inline static char* getInt(int sh, char* bytes) {
             bytes[0] = ((char) (unsigned char) ((sh >> 24) & 0xFF));
             bytes[1] = ((char) (unsigned char) ((sh >> 16) & 0xFF));
             bytes[2] = ((char) (unsigned char) ((sh >> 8) & 0xFF));
             bytes[3] = ((char) (unsigned char) (sh & 0xFF));
             return bytes;
         }
-        static char* getLong(long sh, char* bytes) {
+        inline static char* getLong(long sh, char* bytes) {
             bytes[0] = ((char) (unsigned char) ((sh >> 56) & 0xFF));
             bytes[1] = ((char) (unsigned char) ((sh >> 48) & 0xFF));
             bytes[2] = ((char) (unsigned char) ((sh >> 40) & 0xFF));
@@ -118,14 +118,13 @@ namespace TD {
         /*static long getLong(unsigned char* bytes){
             return long(bytes[0] << 56 | bytes[1] << 48 | bytes[2] << 40 | bytes[3] << 32 | bytes[4] << 24 | bytes[5] << 16 | bytes[6] << 8 | bytes[7]);
         }*/
-        static unsigned int getUInt(char* bytes){
+        inline static unsigned int getUInt(char* bytes){
             return (unsigned int)((unsigned char)(bytes[0]) << 24 | (unsigned char)(bytes[1]) << 16 | (unsigned char)(bytes[2]) << 8 | (unsigned char)(bytes[3]));
         }
         /*static unsigned long getULong(unsigned char* bytes){
             return (unsigned long)(bytes[0] << 56 | bytes[1] << 48 | bytes[2] << 40 | bytes[3] << 32 | bytes[4] << 24 | bytes[5] << 16 | bytes[6] << 8 | bytes[7]);
         }*/
     };
-
 }
 
 
