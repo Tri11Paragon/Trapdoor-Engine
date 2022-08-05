@@ -8,6 +8,7 @@
 #include "../std.h"
 #include "DataConv.h"
 #include "../hashmaps.h"
+#include <thread>
 
 namespace TD {
 
@@ -37,8 +38,9 @@ namespace TD {
         inline unsigned char getType(){return type;}
 
         void writeName(std::ofstream &file) {
-            std::vector<char> data = TD::DataConv::getShort(name.size());
-            file.write(data.data(), 2);
+            char data[2];
+            TD::DataConv::getShort(name.size(), data);
+            file.write(data, 2);
             for (int i = 0; i < name.size(); i++)
                 file << this->name[i];
         }
@@ -130,8 +132,9 @@ namespace TD {
 
         inline float getPayload(){return payload;}
         inline virtual void writePayload(std::ofstream &file) {
-            std:vector<char> data = TD::DataConv::getFloat(payload);
-            file.write(data.data(), data.size());
+            char data[4];
+            TD::DataConv::getFloat(payload, data);
+            file.write(data, 4);
         }
         inline virtual void readPayload(std::ifstream &file) {
             char data[4];
@@ -150,8 +153,9 @@ namespace TD {
 
         inline double getPayload(){return payload;}
         inline virtual void writePayload(std::ofstream &file) {
-            std:vector<char> data = TD::DataConv::getDouble(payload);
-            file.write(data.data(), data.size());
+            char data[8];
+            TD::DataConv::getDouble(payload, data);
+            file.write(data, 8);
         }
         inline virtual void readPayload(std::ifstream &file) {
             char data[8];
@@ -170,7 +174,9 @@ namespace TD {
 
         inline std::string getPayload(){return payload;}
         inline virtual void writePayload(std::ofstream &file) {
-            file.write(TD::DataConv::getShort(this->payload.size()).data(), 2);
+            char bytes[2];
+            TD::DataConv::getShort(this->payload.size(), bytes);
+            file.write(bytes, 2);
             for (int i = 0; i < payload.size(); i++)
                 file << this->payload[i];
         }
@@ -193,11 +199,11 @@ namespace TD {
         TAG_BYTE_ARRAY(const std::string& name): NBT_TAG(name, ID_TAG_BYTE_ARRAY){}
         TAG_BYTE_ARRAY(const std::string& name, std::vector<signed char> payload) : NBT_TAG(name, ID_TAG_BYTE_ARRAY) { this->payload = payload;}
 
-        inline signed int getSize(){return payload.size();}
-        inline signed char* getPayload(){return payload.data();}
+        inline std::vector<signed char>& getPayload(){return payload;}
         inline virtual void writePayload(std::ofstream &file) {
-            std::vector<char> data = TD::DataConv::getInt(payload.size());
-            file.write(data.data(), 4);
+            char data[4];
+            TD::DataConv::getInt(payload.size(), data);
+            file.write(data, 4);
             for (int i = 0; i < payload.size(); i++) {
                 file << payload[i];
             }
@@ -361,13 +367,15 @@ namespace TD {
         TAG_INT_ARRAY(const std::string& name): NBT_TAG(name, ID_TAG_INT_ARRAY){}
         TAG_INT_ARRAY(const std::string& name, std::vector<int> payload) : NBT_TAG(name, ID_TAG_INT_ARRAY) { this->payload = payload;}
 
-        inline std::vector<int> getPayload(){return payload;}
+        inline std::vector<int>& getPayload(){return payload;}
         inline virtual void writePayload(std::ofstream &file) {
-            std::vector<char> data = TD::DataConv::getInt(payload.size());
-            file.write(data.data(), 4);
+            char data[4];
+            TD::DataConv::getInt(payload.size(), data);
+            file.write(data, 4);
             for (int i = 0; i < payload.size(); i++) {
-                std::vector<char> lData = TD::DataConv::getInt(payload[i]);
-                file.write(lData.data(), lData.size());
+                char lData[4];
+                TD::DataConv::getInt(payload[i], lData);
+                file.write(lData, 4);
             }
         }
         inline virtual void readPayload(std::ifstream &file) {
@@ -392,13 +400,15 @@ namespace TD {
         TAG_LONG_ARRAY(const std::string& name): NBT_TAG(name, ID_TAG_LONG_ARRAY){}
         TAG_LONG_ARRAY(const std::string& name, std::vector<long> payload) : NBT_TAG(name, ID_TAG_LONG_ARRAY) { this->payload = payload;}
 
-        inline std::vector<long> getPayload(){return payload;}
+        inline std::vector<long>& getPayload(){return payload;}
         inline virtual void writePayload(std::ofstream &file) {
-            std::vector<char> data = TD::DataConv::getInt(payload.size());
-            file.write(data.data(), 4);
+            char data[4];
+            TD::DataConv::getInt(payload.size(), data);
+            file.write(data, 4);
             for (int i = 0; i < payload.size(); i++) {
-                std::vector<char> lData = TD::DataConv::getLong(payload[i]);
-                file.write(lData.data(), lData.size());
+                char lData[8];
+                TD::DataConv::getLong(payload[i], lData);
+                file.write(lData, 8);
             }
         }
         inline virtual void readPayload(std::ifstream &file) {
@@ -418,7 +428,7 @@ namespace TD {
     class NBTRecursiveReader {
     public:
         static TAG_COMPOUND read(std::string path){
-            const unsigned int length = 8192;
+            const unsigned int length = 128*1024;
             char buffer[length];
             std::ifstream file;
             file.rdbuf()->pubsetbuf(buffer, length);
@@ -444,8 +454,8 @@ namespace TD {
     class NBTWriter {
     private:
     public:
-        static void write(TAG_COMPOUND compound, std::string path){
-            const unsigned int length = 8192;
+        static void write(TAG_COMPOUND& compound, const std::string& path){
+            const unsigned int length = 256*1024;
             char buffer[length];
             std::ofstream file;
             file.rdbuf()->pubsetbuf(buffer, length);
@@ -456,6 +466,21 @@ namespace TD {
             compound.writePayload(file);
 
             file.close();
+        }
+    };
+
+    class NBTWriterThreaded{
+    private:
+        std::thread* thread;
+    public:
+        NBTWriterThreaded(TAG_COMPOUND& compound, const std::string& path){
+            thread = new std::thread([&]() -> void {
+                NBTWriter::write(compound, path);
+            });
+        }
+        ~NBTWriterThreaded(){
+            thread->join();
+            delete(thread);
         }
     };
 

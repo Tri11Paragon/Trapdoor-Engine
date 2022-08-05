@@ -28,31 +28,28 @@ namespace TD {
         static short getShort(char* bytes){
             return short((unsigned char)(bytes[0]) << 8 | (unsigned char)(bytes[1]));
         }
-        static std::vector<char> getShort(short sh) {
-            std::vector<char> sizeBytes;
-            sizeBytes.push_back((char) (unsigned char) ((sh >> 8) & 0xFF));
-            sizeBytes.push_back((char) (unsigned char) (sh & 0xFF));
-            return sizeBytes;
+        static char* getShort(short sh, char* bytes) {
+            bytes[0] = ((char) (unsigned char) ((sh >> 8) & 0xFF));
+            bytes[1] = ((char) (unsigned char) (sh & 0xFF));
+            return bytes;
         }
-        static std::vector<char> getInt(int sh) {
-            std::vector<char> sizeBytes;
-            sizeBytes.push_back((char) (unsigned char) ((sh >> 24) & 0xFF));
-            sizeBytes.push_back((char) (unsigned char) ((sh >> 16) & 0xFF));
-            sizeBytes.push_back((char) (unsigned char) ((sh >> 8) & 0xFF));
-            sizeBytes.push_back((char) (unsigned char) (sh & 0xFF));
-            return sizeBytes;
+        static char* getInt(int sh, char* bytes) {
+            bytes[0] = ((char) (unsigned char) ((sh >> 24) & 0xFF));
+            bytes[1] = ((char) (unsigned char) ((sh >> 16) & 0xFF));
+            bytes[2] = ((char) (unsigned char) ((sh >> 8) & 0xFF));
+            bytes[3] = ((char) (unsigned char) (sh & 0xFF));
+            return bytes;
         }
-        static std::vector<char> getLong(long sh) {
-            std::vector<char> sizeBytes;
-            sizeBytes.push_back((char) (unsigned char) ((sh >> 56) & 0xFF));
-            sizeBytes.push_back((char) (unsigned char) ((sh >> 48) & 0xFF));
-            sizeBytes.push_back((char) (unsigned char) ((sh >> 40) & 0xFF));
-            sizeBytes.push_back((char) (unsigned char) ((sh >> 32) & 0xFF));
-            sizeBytes.push_back((char) (unsigned char) ((sh >> 24) & 0xFF));
-            sizeBytes.push_back((char) (unsigned char) ((sh >> 16) & 0xFF));
-            sizeBytes.push_back((char) (unsigned char) ((sh >> 8) & 0xFF));
-            sizeBytes.push_back((char) (unsigned char) (sh & 0xFF));
-            return sizeBytes;
+        static char* getLong(long sh, char* bytes) {
+            bytes[0] = ((char) (unsigned char) ((sh >> 56) & 0xFF));
+            bytes[1] = ((char) (unsigned char) ((sh >> 48) & 0xFF));
+            bytes[2] = ((char) (unsigned char) ((sh >> 40) & 0xFF));
+            bytes[3] = ((char) (unsigned char) ((sh >> 32) & 0xFF));
+            bytes[4] = ((char) (unsigned char) ((sh >> 24) & 0xFF));
+            bytes[5] = ((char) (unsigned char) ((sh >> 16) & 0xFF));
+            bytes[6] = ((char) (unsigned char) ((sh >> 8) & 0xFF));
+            bytes[7] = ((char) (unsigned char) (sh & 0xFF));
+            return bytes;
         }
         static float getFloat(byte* data){
             union {
@@ -67,7 +64,7 @@ namespace TD {
 
             return floatToArray.f;
         }
-        static std::vector<byte> getFloat(float f){
+        static byte* getFloat(float f, byte* bytes){
             union {
                 float f;
                 byte a[4];
@@ -75,11 +72,10 @@ namespace TD {
 
             floatToArray.f = f;
 
-            std::vector<byte> bytes;
-            bytes.push_back(floatToArray.a[0]);
-            bytes.push_back(floatToArray.a[1]);
-            bytes.push_back(floatToArray.a[2]);
-            bytes.push_back(floatToArray.a[3]);
+            bytes[0] = (floatToArray.a[0]);
+            bytes[1] = (floatToArray.a[1]);
+            bytes[2] = (floatToArray.a[2]);
+            bytes[3] = (floatToArray.a[3]);
 
             return bytes;
         }
@@ -100,7 +96,7 @@ namespace TD {
 
             return doubleToArray.f;
         }
-        static std::vector<byte> getDouble(double f){
+        static byte* getDouble(double f, byte* bytes){
             union {
                 double f;
                 byte a[8];
@@ -108,15 +104,14 @@ namespace TD {
 
             doubleToArray.f = f;
 
-            std::vector<byte> bytes;
-            bytes.push_back(doubleToArray.a[0]);
-            bytes.push_back(doubleToArray.a[1]);
-            bytes.push_back(doubleToArray.a[2]);
-            bytes.push_back(doubleToArray.a[3]);
-            bytes.push_back(doubleToArray.a[4]);
-            bytes.push_back(doubleToArray.a[5]);
-            bytes.push_back(doubleToArray.a[6]);
-            bytes.push_back(doubleToArray.a[7]);
+            bytes[0] = (doubleToArray.a[0]);
+            bytes[1] = (doubleToArray.a[1]);
+            bytes[2] = (doubleToArray.a[2]);
+            bytes[3] = (doubleToArray.a[3]);
+            bytes[4] = (doubleToArray.a[4]);
+            bytes[5] = (doubleToArray.a[5]);
+            bytes[6] = (doubleToArray.a[6]);
+            bytes[7] = (doubleToArray.a[7]);
 
             return bytes;
         }

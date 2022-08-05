@@ -31,12 +31,12 @@ public class NBTImplTest {
 	@SuppressWarnings({ "unchecked", "unused" })
 	public static void main(String[] args) throws Exception {
 		
-		int timer = 5000;
-		int wtimer = 5000;
+		int timer = 10000;
+		int wtimer = 10000;
 		
 		long start = System.currentTimeMillis();
 		for (int i = 0; i < wtimer; i++) {
-			TagWriter writer = new TagWriter("based.nbt");
+			/*TagWriter writer = new TagWriter("based.nbt");
 			CompoundTag tag = new CompoundTag("Based");
 			
 			tag.put(new IntTag("Magic").put(5));
@@ -64,7 +64,26 @@ public class NBTImplTest {
 			tag.put(listTag);
 			
 			tag.writeTag(writer);
-			writer.close();
+			writer.close();*/
+			CompoundTag root = new CompoundTag("rooterTagger");
+            root.put(new IntTag("Interino").put(5));
+            root.put(new IntTag("Intry").put(420));
+            CompoundTag byters = new CompoundTag("byters");
+            byters.put(new ByteTag("Treaty").put((byte) 53));
+            byte[] bitsAndBytes = {23, 43, 2, 4, 50, 10, 04, 65, 94, 86, 49, 39, 95, 42, 68, 29, 24, 42,
+                    21, 49, 23, 49};
+            byters.put(new ByteArrayTag("SUNNY").put(bitsAndBytes));
+            root.put(byters);
+            CompoundTag shortsAndMore = new CompoundTag("shortsAndMore");
+            shortsAndMore.put(new ShortTag("ShortMenandWOMEN").put((short) 5230));
+            shortsAndMore.put(new FloatTag("SuperFloat").put(52304.04324f));
+            shortsAndMore.put(new DoubleTag("SuperDouble").put(452340.593459234));
+            shortsAndMore.put(new LongTag("LongestLonger").put(5024340304234l));
+            shortsAndMore.put(new StringTag("Stringy Men").put("HELPIMRUNNINGOUTOFCHARACTERSFORME"));
+            root.put(shortsAndMore);
+            TagWriter writer = new TagWriter("superbased.nbt");
+            root.writeTag(writer);
+            writer.close();
 		}
 		long end = System.currentTimeMillis();
 		System.out.println("My implementation took " + (end-start) + "ms to run.");
@@ -104,7 +123,7 @@ public class NBTImplTest {
 		
 		long rtstart = System.currentTimeMillis();
 		for (int j = 0; j < timer; j++) {
-			TagReader reader = new TagReader("based.nbt");
+			/*TagReader reader = new TagReader("based.nbt");
 			CompoundTag readTag = reader.readTags();
 			
 //			System.out.println(readTag.getName());
@@ -123,6 +142,44 @@ public class NBTImplTest {
 //				for (int i = 0; i < lister.size(); i++)
 //					System.out.println(lister.get(i).get());
 			}
+			reader.close();*/
+			TagReader reader = new TagReader("superbased.nbt");
+			CompoundTag readTag = reader.readTags();
+			
+			if (readTag.hasTag("Interino")) {
+				int t = (int) readTag.get("Interino").get();
+			}
+			if (readTag.hasTag("Intry")) {
+				int t = (int) (readTag.get("Intry").get());
+			}
+			if (readTag.hasTag("byters")) {
+				CompoundTag byters = readTag.get("byters");
+				if (readTag.hasTag("Treaty")) {
+					byte b = (byte) byters.get("Treaty").get();
+				}
+				if (readTag.hasTag("SUNNY")) {
+					ByteArrayTag tagger = byters.get("SUNNY");
+				}
+			}
+			if (readTag.hasTag("shortsAndMore")) {
+				CompoundTag shorts = readTag.get("shortsAndMore");
+                if (shorts.hasTag("ShortMenandWOMEN")) {
+                    short typer = (short) shorts.get("ShortMenandWOMEN").get();
+                }
+                if (shorts.hasTag("SuperFloat")) {
+                    float typer = (float) shorts.get("SuperFloat").get();
+                }
+                if (shorts.hasTag("SuperDouble")) {
+                    double typer = (double) shorts.get("SuperDouble").get();
+                }
+                if (shorts.hasTag("LongestLonger")) {
+                    long typer = (long) shorts.get("LongestLonger").get();
+                }
+                if (shorts.hasTag("Stringy Men")) {
+                    String typer = (String) shorts.get("Stringy Men").get();
+                }
+			}
+			
 			reader.close();
 		}
 		long rernd = System.currentTimeMillis();
