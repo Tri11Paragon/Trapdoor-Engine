@@ -25,9 +25,9 @@ int main(int, char**){
     loadTimer.start("Load Time");
     init_logging("output");
 
-    const int size = 10000;
+    const int size = 1;
     TD::profiler nbtloader("NBT Time");
-    nbtloader.start("NBT Write Basic");
+    /*nbtloader.start("NBT Write Basic");
     {
         for (int i = 0; i < size; i++) {
             TD::TAG_COMPOUND root("rooterTagger");
@@ -108,7 +108,22 @@ int main(int, char**){
             }
         }
     }
-    nbtloader.end("NBT Read Basic");
+    nbtloader.end("NBT Read Basic");*/
+
+    nbtloader.start("DataOutputStream");
+    TD::DataOutputStream dos("basic_data.dat");
+    dos.writeByte(52);
+    dos.writeByte(-39);
+    dos.writeShort(4532);
+    dos.writeShort(-5234);
+    dos.writeInt(42540456);
+    dos.writeInt(-9748964);
+    for (int i = 0; i < 128*1024; i++){
+        dos.writeInt(i);
+    }
+    dos.flush();
+    nbtloader.end("DataOutputStream");
+
     nbtloader.print();
     return 0;
 
