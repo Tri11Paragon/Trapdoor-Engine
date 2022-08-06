@@ -5,12 +5,15 @@
 #ifndef ENGINE_STD_H
 #define ENGINE_STD_H
 
+#include <memory>
 #include <vector>
 #include <map>
 #include <string>
 #include <queue>
 #include <ios>
 #include <fstream>
+#include <iostream>
+#include <memory>
 
 /**
  *
@@ -31,6 +34,56 @@
  */
 namespace TD {
 
+    /**
+     * A simple pointer container which returns nullptr if the stored ptr has been deleted
+     * Delete with the .free() command
+     * @tparam T
+     */
+    template<typename T>
+    class dPtr {
+    private:
+        T* data;
+        std::shared_ptr<bool> avail;
+    public:
+        dPtr(const dPtr& ptr){
+            this->data = ptr.data;
+            this->avail = ptr.avail;
+        }
+        explicit dPtr(T* ptr){
+            data = ptr;
+            avail = std::make_shared<bool>(true);
+        }
+        /**
+         * casts the internal pointer to a pointer of type C
+         * will return nullptr if pointer was deleted
+         */
+        template<typename C>
+        C* cast(){
+            if (!*avail)
+                return nullptr;
+            return static_cast<C*>(data);
+        }
+        T* get(){
+            if (!*avail)
+                return nullptr;
+            return data;
+        }
+        void free(){
+            delete(data);
+            *avail = false;
+            std::cout << *avail;
+        }
+        T operator *(){
+            if (!*avail)
+                return nullptr;
+            return *data;
+        }
+        T operator ->(){
+            if (!avail)
+                return nullptr;
+            return *data;
+        }
+    };
     //static inline void removeFromVector(std::vector<T> vector, T objectToRemove){
     //    vector.erase(std::remove(vector.begin(), vector.end(), objectToRemove), vector.end());
     //}

@@ -15,7 +15,49 @@
 
 namespace TD {
 
+    typedef unsigned long ID;
+
+    /**
+     * Entity is basically just a glorified struct
+     */
     class Entity {
+    private:
+        // ID is unique to every entity
+        const ID id;
+    public:
+        explicit Entity(ID id): id(id){}
+        ID getID() const {return id;}
+    };
+
+    /**
+     * Components are the data handlers of the trapdoor engine. They are to purely store the data of the entity.]
+     * There should be a corresponding system for the component.
+     */
+    class Component {
+    private:
+        // MAX 4bil components in the engine, that's enough right?
+        // these are not unique to every entity, they are unique to every component type.
+        const ID id;
+    public:
+        explicit Component(ID id): id(id){}
+        ID getID() const {return id;}
+    };
+
+    class World;
+
+    /**
+     * Systems define functions of what to do with entities
+     */
+    class System {
+        const World& world;
+    public:
+        // systems get a reference to the world.
+        explicit System(World& world): world(world) {}
+        virtual void render() = 0;
+        virtual void update() = 0;
+    };
+
+    /*class Entity {
     protected:
         // TODO: replace with bullet stuff,
         glm::vec3 position = glm::vec3(0, 0, 0);
@@ -69,10 +111,16 @@ namespace TD {
         virtual void update(){
 
         }
+    };*/
+
+    class ECSRegsitry {
+        
     };
 
     class World {
     private:
+        std::vector<TD::Entity*> entities;
+
         TD::camera* camera;
         TD::skyboxRenderer skyboxRenderer;
         parallel_flat_hash_map<std::string, TD::Entity*> entityMap;
