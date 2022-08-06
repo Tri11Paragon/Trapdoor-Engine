@@ -68,6 +68,9 @@ namespace TD {
                 return nullptr;
             return data;
         }
+        bool isValid(){
+            return *avail;
+        }
         void free(){
             delete(data);
             *avail = false;
@@ -78,10 +81,10 @@ namespace TD {
                 return nullptr;
             return *data;
         }
-        T operator ->(){
+        T* operator ->(){
             if (!avail)
                 return nullptr;
-            return *data;
+            return data;
         }
     };
     //static inline void removeFromVector(std::vector<T> vector, T objectToRemove){

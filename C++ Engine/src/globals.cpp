@@ -14,6 +14,7 @@
 #include "renderer/shader.h"
 #include "renderer/ui/debug.h"
 #include "hashmaps.h"
+#include "world/World.h"
 
 namespace TD {
     double lastTime;
@@ -64,4 +65,6 @@ namespace TD {
 
     vector<TD::font> fonts;
     bool queuesCreated = false;
+
+    // World
 }

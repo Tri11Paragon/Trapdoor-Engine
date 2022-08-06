@@ -5,6 +5,8 @@
 #ifndef ENGINE_WORLD_H
 #define ENGINE_WORLD_H
 
+#include <utility>
+
 #include "../std.h"
 #include "../renderer/gl.h"
 #include "../renderer/camera.h"
@@ -18,29 +20,55 @@ namespace TD {
     typedef unsigned long ID;
 
     /**
-     * Entity is basically just a glorified struct
-     */
-    class Entity {
-    private:
-        // ID is unique to every entity
-        const ID id;
-    public:
-        explicit Entity(ID id): id(id){}
-        ID getID() const {return id;}
-    };
-
-    /**
      * Components are the data handlers of the trapdoor engine. They are to purely store the data of the entity.]
      * There should be a corresponding system for the component.
      */
     class Component {
     private:
-        // MAX 4bil components in the engine, that's enough right?
-        // these are not unique to every entity, they are unique to every component type.
-        const ID id;
+        // the ID used to index the array containing the vectors of the component type.
+        const std::string name;
+        std::string associatedEntity;
     public:
-        explicit Component(ID id): id(id){}
-        ID getID() const {return id;}
+        explicit Component(std::string  name): name(std::move(name)) {}
+        const std::string& getName(){return name;}
+        const std::string& getAssociatedEntity(){return associatedEntity;}
+        void setAssociatedEntity(std::string assoEnt){this->associatedEntity = std::move(assoEnt);}
+    };
+
+    class MeshComponent : public Component {
+    private:
+        const std::string modelName;
+    public:
+        explicit MeshComponent(std::string  modelName): modelName(std::move(modelName)), Component("MeshRenderer") {}
+        inline std::string getModelName(){return modelName;}
+    };
+
+    /**
+     * Entity is basically just a glorified struct
+     */
+    class Entity {
+    private:
+        const std::string name;
+        std::vector<dPtr<Component>> entityComponents;
+    public:
+        explicit Entity(std::string name): name(std::move(name)) {}
+        void addComponent(dPtr<Component> ptr){
+            ptr->setAssociatedEntity(this->name);
+            entityComponents.push_back(ptr);
+        }
+        void removeAllComponentByName(const std::string& entName){
+            // likely not the best way to do this, but I needed to access the dPtr's data
+            for (int i = 0; i < entityComponents.size(); i++){
+                auto c = entityComponents[i];
+                if (c.isValid()) {
+                    if (c->getName() == entName) {
+                        entityComponents.erase(entityComponents.begin() + i);
+                    }
+                }
+            }
+        }
+        [[nodiscard]] const std::vector<dPtr<Component>>& getComponents() const {return entityComponents;}
+        [[nodiscard]] const std::string& getName() const {return name;}
     };
 
     class World;
@@ -53,8 +81,30 @@ namespace TD {
     public:
         // systems get a reference to the world.
         explicit System(World& world): world(world) {}
+        // called every time that the world needs to render something to the screen.
         virtual void render() = 0;
+        // only called once per render cycle, normally during the screen rendering proportion
+        // only use this if you need to draw something to the screen that doesn't need to go on extras
+        // like the shader buffer, you wouldn't want particles to show up in it,
+        // so render particles here. -- use a particle system btw just an example
+        virtual void renderOnce() = 0;
         virtual void update() = 0;
+    };
+
+    class MeshRendererSystem : public System {
+    private:
+
+    public:
+        explicit MeshRendererSystem(World& world): System(world) {}
+        void render() override{
+            tlog << "system render!";
+        }
+        virtual void renderOnce(){
+            tlog << "system render once!";
+        }
+        virtual void update(){
+            tlog << "system update!";
+        }
     };
 
     /*class Entity {
@@ -113,17 +163,13 @@ namespace TD {
         }
     };*/
 
-    class ECSRegsitry {
-        
-    };
-
     class World {
     private:
-        std::vector<TD::Entity*> entities;
+        parallel_flat_hash_map<std::string, dPtr<TD::Entity>> entityMap;
+        parallel_flat_hash_map<std::string, std::vector<dPtr<Component>>> components;
+        std::vector<dPtr<System>> systems;
 
-        TD::camera* camera;
         TD::skyboxRenderer skyboxRenderer;
-        parallel_flat_hash_map<std::string, TD::Entity*> entityMap;
         TD::gBufferFBO gBufferFbo;
         TD::shadowFBO shadowFbo;
         TD::shader fxaaShader = TD::shader("../assets/shaders/postprocessing/filter-fxaa.vert", "../assets/shaders/postprocessing/filter-fxaa.frag");
@@ -131,10 +177,16 @@ namespace TD {
         World();
         void render();
         void update();
+
+        inline std::vector<dPtr<Component>>& getComponents(const std::string& name){return components.at(name);}
+
+        void createSystem(System* system){dPtr<System> ptr(system); systems.push_back(ptr);}
+
         // the entity pointer should be a pointer to a *new* entity
         // this will be deleted when the world is deleted or
         // when deleteEntity(entityName) is called.
-        void spawnEntity(std::string entityName, Entity* entity);
+        void spawnEntity(Entity* entity);
+        void addComponentToEntity(const std::string& name, Component* component);
         void deleteEntity(std::string entityName);
         void updateLights(std::vector<TD::Light> lights);
         inline TD::shader* getFirstPassShader() { return gBufferFbo.getFirstPassShader(); }
