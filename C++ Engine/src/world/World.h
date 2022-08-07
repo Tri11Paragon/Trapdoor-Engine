@@ -42,17 +42,17 @@ namespace TD {
 
     class TransformComponent : public Component {
     private:
-        glm::vec3 translate{};
-        glm::vec3 rotation{};
-        glm::vec3 scale{1.0, 1.0, 1.0};
+        glm::vec3 translate = glm::vec3(0.0);
+        glm::vec3 rotation = glm::vec3(0.0);
+        glm::vec3 scale = glm::vec3(1.0);
     public:
         explicit TransformComponent(): Component(TRANSFORM_SYSTEM) {}
         void setTranslation(glm::vec3 vec){this->translate = vec;}
         void setRotation(glm::vec3 vec){this->rotation = vec;}
         void setScale(glm::vec3 vec){this->scale = vec;}
-        glm::vec3 getTranslation(){return translate;}
-        glm::vec3 getRotation(){return rotation;}
-        glm::vec3 getScale(){return scale;}
+        const glm::vec3& getTranslation(){return translate;}
+        const glm::vec3& getRotation(){return rotation;}
+        const glm::vec3& getScale(){return scale;}
     };
 
     class MeshComponent : public Component {
