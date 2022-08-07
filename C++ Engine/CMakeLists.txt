@@ -62,6 +62,7 @@ message("Assimp BUILD: ${TD_BUILD_SETTING} // ${CMAKE_BUILD_TYPE}")
 set(CMAKE_BUILD_TYPE ${TD_BUILD_SETTING})
 add_subdirectory(include/meshoptimizer)
 message("Meshoptimizer BUILD: ${TD_BUILD_SETTING} // ${CMAKE_BUILD_TYPE}")
+
 # Bullet Setup
 #set( BULLET_ROOT "include/bullet3/build" CACHE PATH "Bullet library path" )
 
@@ -101,6 +102,7 @@ target_link_libraries(${PROJECT_NAME} assimp)
 target_link_libraries(${PROJECT_NAME} ${BULLET_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} meshoptimizer)
 target_link_libraries(${PROJECT_NAME} ${CMAKE_DL_LIBS})
+target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} Threads::Threads)
 target_link_libraries(${PROJECT_NAME} Boost::filesystem Boost::log)
 target_link_libraries(${PROJECT_NAME} ZLIB::ZLIB)

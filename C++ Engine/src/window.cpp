@@ -260,6 +260,8 @@ namespace TD {
     static void keyCallBack(bool pressed, int code){
         if (code == GLFW_KEY_F3 && pressed)
             TD::debugUI::toggle();
+        if (code == GLFW_KEY_INSERT && pressed)
+            TD::Editor::toggle();
         if (code == GLFW_KEY_ESCAPE && pressed)
             TD::setMouseGrabbed(!TD::isMouseGrabbed());
     }
@@ -434,12 +436,7 @@ namespace TD {
 
     void DefaultLoadingScreenDisplay::modelLoaded(std::string ident, std::string path) {
         modelsLoaded++;
-        stringstream stream;
-        stream << "Loaded Model ";
-        stream << ident;
-        stream << " @ ";
-        stream << path;
-        lastLoaded = stream.str();
+        lastLoaded = "Loaded Model " + ident + " @ " + path;
     }
 
     void DefaultLoadingScreenDisplay::textureLoaded(std::string ident, std::string path) {
