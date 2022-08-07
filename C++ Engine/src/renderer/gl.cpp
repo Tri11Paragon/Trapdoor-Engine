@@ -512,10 +512,10 @@ namespace TD {
         }
     }
 
-    void model::loadModel(std::string path) {
+    void model::loadModel(std::string pth) {
         Assimp::Importer import;
 
-        const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs
+        const aiScene *scene = import.ReadFile(pth, aiProcess_Triangulate | aiProcess_FlipUVs
                                                             | aiProcess_ImproveCacheLocality | aiProcess_OptimizeMeshes);
 
         if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
@@ -590,10 +590,10 @@ namespace TD {
         unlVAO.indicesVec = indices;
         // copy it here where it will be loaded inside a thread.
         glm::mat4 glmTransform;
-        glmTransform[0] = glm::vec4(transform.a1, transform.a2, transform.a3, transform.a4);
-        glmTransform[1] = glm::vec4(transform.b1, transform.b2, transform.b3, transform.b4);
-        glmTransform[2] = glm::vec4(transform.c1, transform.c2, transform.c3, transform.c4);
-        glmTransform[3] = glm::vec4(transform.d1, transform.d2, transform.d3, transform.d4);
+        glmTransform[0] = glm::vec4(transform.a1, transform.b1, transform.c1, transform.d1);
+        glmTransform[1] = glm::vec4(transform.a2, transform.b2, transform.c2, transform.d2);
+        glmTransform[2] = glm::vec4(transform.a3, transform.b3, transform.c3, transform.d3);
+        glmTransform[3] = glm::vec4(transform.a4, transform.b4, transform.c4, transform.d4);
         unlVAO.transform = glmTransform;
         unlVAO.name = std::string(mesh->mName.C_Str());
         unloadedMeshes.emplace_back(unlVAO);

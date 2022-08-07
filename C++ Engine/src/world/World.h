@@ -114,7 +114,9 @@ namespace TD {
         // systems get a reference to the world.
         explicit System(World& world): world(world) {}
         // called every time that the world needs to render something to the screen.
-        virtual void render() = 0;
+        // the shader provided is the shader which should be used to render
+        // you are not required to use it however there is always a reason for using the supplied shader.
+        virtual void render(shader* shader) = 0;
         // only called once per render cycle, normally during the screen rendering proportion
         // only use this if you need to draw something to the screen that doesn't need to go on extras
         // like the shader buffer, you wouldn't want particles to show up in it,
@@ -215,7 +217,7 @@ namespace TD {
 
     public:
         explicit MeshRendererSystem(World& world): System(world) {}
-        virtual void render();
+        virtual void render(shader* shader);
         virtual void renderOnce();
         virtual void update();
     };

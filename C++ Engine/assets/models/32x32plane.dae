@@ -5,22 +5,22 @@
       <author>Blender User</author>
       <authoring_tool>Blender 3.1.2</authoring_tool>
     </contributor>
-    <created>2022-08-01T19:27:27</created>
-    <modified>2022-08-01T19:27:27</modified>
+    <created>2022-08-07T13:14:08</created>
+    <modified>2022-08-07T13:14:08</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
   <library_effects>
     <effect id="Material_001-effect">
       <profile_COMMON>
-        <newparam sid="taylor2_jpg-surface">
+        <newparam sid="taylor2_jpg_001-surface">
           <surface type="2D">
-            <init_from>taylor2_jpg</init_from>
+            <init_from>taylor2_jpg_001</init_from>
           </surface>
         </newparam>
-        <newparam sid="taylor2_jpg-sampler">
+        <newparam sid="taylor2_jpg_001-sampler">
           <sampler2D>
-            <source>taylor2_jpg-surface</source>
+            <source>taylor2_jpg_001-surface</source>
           </sampler2D>
         </newparam>
         <technique sid="common">
@@ -29,7 +29,7 @@
               <color sid="emission">0 0 0 1</color>
             </emission>
             <diffuse>
-              <texture texture="taylor2_jpg-sampler" texcoord="Cube_001-mesh-map-0"/>
+              <texture texture="taylor2_jpg_001-sampler" texcoord="Cube_001-mesh-map-0"/>
             </diffuse>
             <index_of_refraction>
               <float sid="ior">1.45</float>
@@ -40,8 +40,8 @@
     </effect>
   </library_effects>
   <library_images>
-    <image id="taylor2_jpg" name="taylor2_jpg">
-      <init_from>taylor2.jpg</init_from>
+    <image id="taylor2_jpg_001" name="taylor2_jpg_001">
+      <init_from>/home/brett/Documents/Brock/Gamers/Java%20Brock%202021%20Project/C++%20Engine/assets/textures/taylor2.jpg</init_from>
     </image>
   </library_images>
   <library_materials>
@@ -96,7 +96,7 @@
   <library_visual_scenes>
     <visual_scene id="Scene" name="Scene">
       <node id="Cube" name="Cube" type="NODE">
-        <matrix sid="transform">32 0 0 0 0 -2.18557e-9 32 0 0 -0.05000001 -1.39876e-6 0 0 0 0 1</matrix>
+        <matrix sid="transform">32 0 0 0 0 -0.05000001 -1.39876e-6 0 0 2.18557e-9 -32 0 0 0 0 1</matrix>
         <instance_geometry url="#Cube_001-mesh" name="Cube">
           <bind_material>
             <technique_common>

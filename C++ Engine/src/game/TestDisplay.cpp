@@ -36,7 +36,7 @@ namespace TD {
         world.spawnEntity(George);
 
         auto* Victor = new Entity("Victor");
-        static_cast<TransformComponent*>(Victor->getComponent(TRANSFORM_SYSTEM).get())->setTranslation(glm::vec3(0, -1, -20));
+        static_cast<TransformComponent*>(Victor->getComponent(TRANSFORM_SYSTEM).get())->setTranslation(glm::vec3(0, -1, 0));
         Victor->addComponent(dPtr<Component>(new MeshComponent("plane")));
         world.spawnEntity(Victor);
 

@@ -34,11 +34,11 @@ namespace TD {
     void World::render() {
         shadowFbo.bind();
         for (auto system : systems)
-            system->render();
+            system->render(shadowFbo.getShader());
         shadowFbo.finish();
         gBufferFbo.bindFirstPass();
         for (auto system : systems) {
-            system->render();
+            system->render(gBufferFbo.getFirstPassShader());
             system->renderOnce();
         }
         skyboxRenderer.render();
@@ -110,7 +110,7 @@ namespace TD {
         gBufferFbo.updateLights(lights);
     }
 
-    void MeshRendererSystem::render() {
+    void MeshRendererSystem::render(shader* shader) {
         auto &meshComponents = world.getComponents(MESH_RENDERER_SYSTEM);
         auto &transforms = world.getComponents(TRANSFORM_SYSTEM);
         for (auto mesh : meshComponents){
@@ -123,7 +123,7 @@ namespace TD {
                     auto *transform = static_cast<TransformComponent*>(transforms.at(meshPtr->getAssociatedEntity()).get());
                     glm::mat4 trans(1.0);
                     trans = glm::translate(trans, transform->getTranslation());
-                    tlog << meshPtr->getAssociatedEntity() << " " << transform->getTranslation().x << " " << transform->getTranslation().y << " " << transform->getTranslation().z;
+                    //tlog << meshPtr->getAssociatedEntity() << " " << transform->getTranslation().x << " " << transform->getTranslation().y << " " << transform->getTranslation().z;
                     // rotates are relatively expensive, so don't do them unless we have to.
                     glm::vec3 rotation = transform->getRotation();
                     if (rotation.x != 0)
@@ -133,7 +133,7 @@ namespace TD {
                     if (rotation.z != 0)
                         trans = glm::rotate(trans, glm::radians(rotation.z), glm::vec3(0, 0, 1));
                     trans = glm::scale(trans, transform->getScale());
-                    GameRegistry::getModel(model)->draw(*world.getFirstPassShader(), trans);
+                    GameRegistry::getModel(model)->draw(*shader, trans);
                 } catch (std::exception& e){
                     elog << e.what();
                 }
