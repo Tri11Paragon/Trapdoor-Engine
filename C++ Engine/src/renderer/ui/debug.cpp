@@ -7,6 +7,7 @@
 namespace TD {
     extern TD::camera *activeCamera;
     extern bool debugMenuEnabled;
+    extern bool editorMenuEnabled;
     extern unordered_map<string, DebugTab*> debugTabs;
 
     void TD::debugUI::toggle() {
@@ -65,4 +66,15 @@ namespace TD {
         }
     }
 
+    void Editor::init() {
+
+    }
+
+    void Editor::render() {
+
+    }
+
+    void Editor::toggle() {
+        editorMenuEnabled = !editorMenuEnabled;
+    }
 }

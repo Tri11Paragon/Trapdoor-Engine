@@ -11,6 +11,7 @@
 #include "input.h"
 #include "renderer/ui/debug.h"
 #include "world/World.h"
+#include <config.h>
 
 namespace TD {
 
@@ -21,7 +22,7 @@ namespace TD {
     extern double _dx, _dy, _lx, _ly, _mx, _my;
     extern glm::mat4 projectionMatrix;
     extern bool _isWindowOpen;
-    extern float camera_far_plane;
+    extern bool _listenToResize;
     extern float fov;
 
     void updateProjections(){
@@ -49,11 +50,12 @@ namespace TD {
         ilog << "GLFW Window Setup complete, using GL4.5" << "\n";
 
         // Create window with graphics context
-        _window = glfwCreateWindow(_display_w, _display_h, title.c_str(), NULL, NULL);
+        _window = glfwCreateWindow(_display_w, _display_h, title.c_str(), nullptr, NULL);
         if (_window == NULL) {
             flog << "Unable to create GLFW window\n";
             return;
         }
+        maximizeWindow();
         glfwMakeContextCurrent(_window);
         glfwSwapInterval(0); // Enable vsync
 
@@ -143,15 +145,9 @@ namespace TD {
             _dy = _ly - _my;
         }
 
-        int pastValueW = _display_w, pastValueH = _display_h;
-        glfwGetFramebufferSize(_window, &_display_w, &_display_h);
-        if (pastValueW != _display_w || pastValueH != _display_h) {
-            updateProjections();
-            for (int i = 0; i < windowResizeCallbacks.size(); i++)
-                windowResizeCallbacks[i]->windowResized(_display_w, _display_h);
-            dlog << "Changing Projection Matrix to " << _display_w << "w " << _display_h << "h\n";
+        if (_listenToResize) {
+            forceWindowUpdate();
         }
-
     }
 
     void window::finishRender() {
@@ -221,6 +217,43 @@ namespace TD {
         return _ly;
     }
 
+    void window::maximizeWindow() {
+        glfwMaximizeWindow(_window);
+    }
+
+    void window::restoreWindow() {
+        glfwRestoreWindow(_window);
+    }
+
+    void window::setListenToResize(bool state) {
+        _listenToResize = state;
+    }
+
+    void window::setRenderFrameBufferSize(int width, int height) {
+        int pastValueW = _display_w, pastValueH = _display_h;
+        if ((pastValueW != width || pastValueH != height)) {
+            updateProjections();
+            for (int i = 0; i < windowResizeCallbacks.size(); i++)
+                windowResizeCallbacks[i]->windowResized(width, height);
+            dlog << "Changing Projection Matrix to " << width << "w " << height << "h\n";
+        }
+    }
+
+    bool window::isListeningToResize() {
+        return _listenToResize;
+    }
+
+    void window::forceWindowUpdate() {
+        int pastValueW = _display_w, pastValueH = _display_h;
+        glfwGetFramebufferSize(_window, &_display_w, &_display_h);
+        if ((pastValueW != _display_w || pastValueH != _display_h)) {
+            updateProjections();
+            for (int i = 0; i < windowResizeCallbacks.size(); i++)
+                windowResizeCallbacks[i]->windowResized(_display_w, _display_h);
+            dlog << "Changing Projection Matrix to " << _display_w << "w " << _display_h << "h\n";
+        }
+    }
+
     extern vector<TD::font> fonts;
     extern TD::camera *activeCamera;
 
@@ -254,6 +287,9 @@ namespace TD {
         TD::GameRegistry::loadToGPU();
         tlog << "GL Complete";
         TD::GameRegistry::deleteThreads();
+#ifdef DEBUG_ENABLED
+        TD::Editor::init();
+#endif
     }
 
     void DisplayManager::update() {
@@ -261,8 +297,10 @@ namespace TD {
         while (!TD::window::isCloseRequested()) {
             TD::window::startRender();
 
-
             TD::debugUI::render();
+#ifdef DEBUG_ENABLED
+            TD::Editor::render();
+#endif
             //ImGui::ShowDemoWindow();
 
             if (activeDisplay != "NULL") {

@@ -753,7 +753,7 @@ namespace TD {
 
     fbo::~fbo() {
         delete(quad);
-        windowResizeCallbacks.erase(std::remove(windowResizeCallbacks.begin(), windowResizeCallbacks.end(), this), windowResizeCallbacks.end());
+        windowResizeCallbacks.erase(std::remove(windowResizeCallbacks.begin(), windowResizeCallbacks.end(), this));
         deleteFrameBuffer();
         dlog << "Deleting FBO " << _fboID;
     }

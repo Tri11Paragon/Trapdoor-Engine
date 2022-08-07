@@ -29,8 +29,10 @@ namespace TD {
     GLFWwindow *_window;
     volatile bool _isWindowOpen = true;
     bool _isMouseGrabbed = false;
-    int _display_w = 1280, _display_h = 720;
     bool _loadingComplete = false;
+    bool _listenToResize = true;
+    int _display_w = 1280, _display_h = 720;
+
     double _dx, _dy, _lx, _ly, _mx, _my;
     float camera_far_plane = 300.0f;
     float fov = 90;
@@ -43,6 +45,7 @@ namespace TD {
 
     // Developer / Debug
     bool debugMenuEnabled = false;
+    bool editorMenuEnabled = false;
     TD::camera* activeCamera;
 
     // IMGUI Fonts

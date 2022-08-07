@@ -37,6 +37,13 @@ namespace TD {
         static void deleteAllTabs();
     };
 
+    class Editor {
+    public:
+        static void init();
+        static void toggle();
+        static void render();
+    };
+
 }
 
 

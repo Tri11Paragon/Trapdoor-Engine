@@ -22,12 +22,27 @@ namespace TD {
         static void initWindow() {initWindow("Generic GLFW Window");};
         static void initWindow(string title);
 
+        /** Well you know this (SEXY FUNCTIONS TO MAKE IT WORK!) **/
         static void startRender();
         static void finishRender();
         static bool isCloseRequested();
-        static int width();
-        static int height();
-        static bool loadingCompleted();
+
+        /** Window Sizery **/
+        inline static int width();
+        inline static int height();
+        // maximizes the window (fullscreen with border)
+        inline static void maximizeWindow();
+        // restores the window to the size pre-maximization
+        inline static void restoreWindow();
+        inline static bool loadingCompleted();
+        // prevent resizing of the framebuffer as we want to render to a specific part of the screen.
+        // (this is for the editor window)
+        inline static void setListenToResize(bool state);
+        inline static void forceWindowUpdate();
+        inline static void setRenderFrameBufferSize(int width, int height);
+        inline static bool isListeningToResize();
+
+        /** Mousing About **/
         static bool isMouseGrabbed();
         static void setMouseGrabbed(bool grabbed);
         static double getMouseDX();
