@@ -88,6 +88,15 @@ namespace TD {
                 }
             }
         }
+        dPtr<Component> getComponent(std::string str) const {
+            for (auto i : entityComponents){
+                if (i->getName() == str)
+                    return i;
+            }
+            wlog << "Unable to find component!";
+            wlog << "Of Name: " << str;
+            return dPtr<Component>(nullptr);
+        }
         [[nodiscard]] const std::vector<dPtr<Component>>& getComponents() const {return entityComponents;}
         [[nodiscard]] const std::string& getName() const {return name;}
         [[nodiscard]] const ID getID() const {return id;}

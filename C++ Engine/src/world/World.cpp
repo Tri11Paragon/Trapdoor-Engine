@@ -63,7 +63,6 @@ namespace TD {
                     flat_hash_map<ID, dPtr<Component>> vtr;
                     components.insert(std::pair(c->getName(), vtr));
                 }
-                tlog << "Spawning " << entity->getName() << " C: " << c->getName();
                 components.at(c->getName()).insert(std::pair(entity->getID(), c));
             }
         } else
@@ -124,6 +123,7 @@ namespace TD {
                     auto *transform = static_cast<TransformComponent*>(transforms.at(meshPtr->getAssociatedEntity()).get());
                     glm::mat4 trans(1.0);
                     trans = glm::translate(trans, transform->getTranslation());
+                    tlog << meshPtr->getAssociatedEntity() << " " << transform->getTranslation().x << " " << transform->getTranslation().y << " " << transform->getTranslation().z;
                     // rotates are relatively expensive, so don't do them unless we have to.
                     glm::vec3 rotation = transform->getRotation();
                     if (rotation.x != 0)
