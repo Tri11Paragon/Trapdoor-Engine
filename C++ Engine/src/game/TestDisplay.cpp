@@ -16,7 +16,7 @@ namespace TD {
           * create our entities
           */
         Entity* e = new Entity("Lewis");
-        dPtr<Component> meshComponentKent = dPtr<Component>(new MeshComponent("Kent"));
+        dPtr<Component> meshComponentKent = dPtr<Component>(new MeshComponent("kent"));
         e->addComponent(meshComponentKent);
         world.spawnEntity(e);
         world.updateDirectionalLighting(direction, color, dirEnabled);

@@ -17,7 +17,12 @@
 
 namespace TD {
 
-    typedef unsigned long ID;
+#define MESH_RENDERER_SYSTEM "MeshComponent"
+#define TRANSFORM_SYSTEM "TransformComponent"
+
+    typedef unsigned int ID;
+
+    extern ID entityID;
 
     /**
      * Components are the data handlers of the trapdoor engine. They are to purely store the data of the entity.]
@@ -27,19 +32,34 @@ namespace TD {
     private:
         // the ID used to index the array containing the vectors of the component type.
         const std::string name;
-        std::string associatedEntity;
+        ID associatedEntity;
     public:
         explicit Component(std::string  name): name(std::move(name)) {}
         const std::string& getName(){return name;}
-        const std::string& getAssociatedEntity(){return associatedEntity;}
-        void setAssociatedEntity(std::string assoEnt){this->associatedEntity = std::move(assoEnt);}
+        const ID getAssociatedEntity() const {return associatedEntity;}
+        void setAssociatedEntity(ID id) {this->associatedEntity = id;}
+    };
+
+    class TransformComponent : public Component {
+    private:
+        glm::vec3 translate{};
+        glm::vec3 rotation{};
+        glm::vec3 scale{1.0, 1.0, 1.0};
+    public:
+        explicit TransformComponent(): Component(TRANSFORM_SYSTEM) {}
+        void setTranslation(glm::vec3 vec){this->translate = vec;}
+        void setRotation(glm::vec3 vec){this->rotation = vec;}
+        void setScale(glm::vec3 vec){this->scale = vec;}
+        glm::vec3 getTranslation(){return translate;}
+        glm::vec3 getRotation(){return rotation;}
+        glm::vec3 getScale(){return scale;}
     };
 
     class MeshComponent : public Component {
     private:
         const std::string modelName;
     public:
-        explicit MeshComponent(std::string  modelName): modelName(std::move(modelName)), Component("MeshRenderer") {}
+        explicit MeshComponent(std::string  modelName): modelName(std::move(modelName)), Component(MESH_RENDERER_SYSTEM) {}
         inline std::string getModelName(){return modelName;}
     };
 
@@ -48,12 +68,13 @@ namespace TD {
      */
     class Entity {
     private:
+        const ID id;
         const std::string name;
         std::vector<dPtr<Component>> entityComponents;
     public:
-        explicit Entity(std::string name): name(std::move(name)) {}
+        explicit Entity(std::string name): name(std::move(name)), id(entityID++) { dPtr<Component> ptr(new TransformComponent()); addComponent(ptr);}
         void addComponent(dPtr<Component> ptr){
-            ptr->setAssociatedEntity(this->name);
+            ptr->setAssociatedEntity(id);
             entityComponents.push_back(ptr);
         }
         void removeAllComponentByName(const std::string& entName){
@@ -69,6 +90,7 @@ namespace TD {
         }
         [[nodiscard]] const std::vector<dPtr<Component>>& getComponents() const {return entityComponents;}
         [[nodiscard]] const std::string& getName() const {return name;}
+        [[nodiscard]] const ID getID() const {return id;}
     };
 
     class World;
@@ -77,7 +99,8 @@ namespace TD {
      * Systems define functions of what to do with entities
      */
     class System {
-        const World& world;
+    protected:
+        World& world;
     public:
         // systems get a reference to the world.
         explicit System(World& world): world(world) {}
@@ -89,22 +112,6 @@ namespace TD {
         // so render particles here. -- use a particle system btw just an example
         virtual void renderOnce() = 0;
         virtual void update() = 0;
-    };
-
-    class MeshRendererSystem : public System {
-    private:
-
-    public:
-        explicit MeshRendererSystem(World& world): System(world) {}
-        void render() override{
-            tlog << "system render!";
-        }
-        virtual void renderOnce(){
-            tlog << "system render once!";
-        }
-        virtual void update(){
-            tlog << "system update!";
-        }
     };
 
     /*class Entity {
@@ -166,7 +173,7 @@ namespace TD {
     class World {
     private:
         parallel_flat_hash_map<std::string, dPtr<TD::Entity>> entityMap;
-        parallel_flat_hash_map<std::string, std::vector<dPtr<Component>>> components;
+        parallel_flat_hash_map<std::string, flat_hash_map<ID, dPtr<Component>>> components;
         std::vector<dPtr<System>> systems;
 
         TD::skyboxRenderer skyboxRenderer;
@@ -178,7 +185,7 @@ namespace TD {
         void render();
         void update();
 
-        inline std::vector<dPtr<Component>>& getComponents(const std::string& name){return components.at(name);}
+        inline flat_hash_map<ID, dPtr<Component>>& getComponents(const std::string& name){return components.at(name);}
 
         void createSystem(System* system){dPtr<System> ptr(system); systems.push_back(ptr);}
 
@@ -187,11 +194,21 @@ namespace TD {
         // when deleteEntity(entityName) is called.
         void spawnEntity(Entity* entity);
         void addComponentToEntity(const std::string& name, Component* component);
-        void deleteEntity(std::string entityName);
+        void deleteEntity(const std::string& entityName);
         void updateLights(std::vector<TD::Light> lights);
         inline TD::shader* getFirstPassShader() { return gBufferFbo.getFirstPassShader(); }
         inline void updateDirectionalLighting(glm::vec3 dir, glm::vec3 color, bool enabled) {shadowFbo.updateLightDirection(dir); gBufferFbo.updateDirLight(dir, color, enabled);}
         ~World();
+    };
+
+    class MeshRendererSystem : public System {
+    private:
+
+    public:
+        explicit MeshRendererSystem(World& world): System(world) {}
+        virtual void render();
+        virtual void renderOnce();
+        virtual void update();
     };
 
 }

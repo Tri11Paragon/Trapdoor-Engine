@@ -67,4 +67,5 @@ namespace TD {
     bool queuesCreated = false;
 
     // World
+    ID entityID = 0;
 }

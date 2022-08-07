@@ -271,7 +271,9 @@ namespace TD {
                     ptr->render();
                     ptr->update();
                 } catch (std::exception& e){
-                    elog << "ERROR RENDERING ACTIVE DISPLAY. DID YOU SET THE RIGHT IDENT?";
+                    elog << e.what();
+                    elog << "ERROR RENDERING ACTIVE DISPLAY.";
+                    break;
                 }
             }
 
@@ -394,7 +396,12 @@ namespace TD {
 
     void DefaultLoadingScreenDisplay::modelLoaded(std::string ident, std::string path) {
         modelsLoaded++;
-        lastLoaded = "Loaded Model " + ident + " @ " + path;
+        stringstream stream;
+        stream << "Loaded Model ";
+        stream << ident;
+        stream << " @ ";
+        stream << path;
+        lastLoaded = stream.str();
     }
 
     void DefaultLoadingScreenDisplay::textureLoaded(std::string ident, std::string path) {

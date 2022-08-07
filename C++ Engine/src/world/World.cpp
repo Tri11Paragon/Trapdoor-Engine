@@ -25,7 +25,7 @@ namespace TD {
             ptr.second.free();
         for (auto ptr : components){
             for (auto ele : ptr.second){
-                ele.free();
+                ele.second.free();
             }
         }
         tlog << "World Deleted";
@@ -60,10 +60,11 @@ namespace TD {
             entityMap.insert(std::pair(entity->getName(), entPtr));
             for (auto c : entity->getComponents()){
                 if (components.find(c->getName()) == components.end()){
-                    std::vector<dPtr<Component>> vtr;
+                    flat_hash_map<ID, dPtr<Component>> vtr;
                     components.insert(std::pair(c->getName(), vtr));
                 }
-                components.at(c->getName()).push_back(c);
+                tlog << "Spawning " << entity->getName() << " C: " << c->getName();
+                components.at(c->getName()).insert(std::pair(entity->getID(), c));
             }
         } else
             wlog << "Entity {" << entity->getName() << "} with name already exists, not adding to world!";
@@ -76,15 +77,16 @@ namespace TD {
             return;
         }
         dPtr<Component> compPtr(component);
-        entityMap.at(name)->addComponent(compPtr);
+        dPtr<Entity> entPtr = entityMap.at(name);
+        entPtr->addComponent(compPtr);
         if (components.find(component->getName()) == components.end()){
-            std::vector<dPtr<Component>> vtr;
+            flat_hash_map<ID, dPtr<Component>> vtr;
             components.insert(std::pair(component->getName(), vtr));
         }
-        components.at(component->getName()).push_back(compPtr);
+        components.at(component->getName()).insert(std::pair(entPtr->getID(), compPtr));
     }
 
-    void World::deleteEntity(std::string entityName) {
+    void World::deleteEntity(const std::string& entityName) {
         auto it = entityMap.find(entityName);
         // only remove the entity if it exists
         if (it != entityMap.end()) {
@@ -92,11 +94,10 @@ namespace TD {
 
             // free all the component memory
             for (auto c : ptr->getComponents()){
-                std::vector<dPtr<Component>>& vectorVtr = components.at(c->getName());
-                for (int i = 0; i < vectorVtr.size(); i++){
-                    if (vectorVtr[i]->getAssociatedEntity() == entityName){
-                        vectorVtr.erase(vectorVtr.begin() + i);
-                    }
+                flat_hash_map<ID, dPtr<Component>>& mapVtr = components.at(c->getName());
+                auto mapItr = mapVtr.find(ptr->getID());
+                if (mapItr != mapVtr.end()){
+                    mapVtr.erase(mapItr);
                 }
                 c.free();
             }
@@ -110,4 +111,48 @@ namespace TD {
         gBufferFbo.updateLights(lights);
     }
 
+    void MeshRendererSystem::render() {
+        auto &meshComponents = world.getComponents(MESH_RENDERER_SYSTEM);
+        auto &transforms = world.getComponents(TRANSFORM_SYSTEM);
+        for (auto mesh : meshComponents){
+            auto meshPtr = mesh.second.get();
+            if (meshPtr){
+                try {
+                    auto *castedMeshPtr = static_cast<MeshComponent *>(meshPtr);
+                    std::string model = castedMeshPtr->getModelName();
+                    // transform always exists on entity, no need to check.
+                    auto *transform = static_cast<TransformComponent*>(transforms.at(meshPtr->getAssociatedEntity()).get());
+                    glm::mat4 trans(1.0);
+                    trans = glm::translate(trans, transform->getTranslation());
+                    // rotates are relatively expensive, so don't do them unless we have to.
+                    glm::vec3 rotation = transform->getRotation();
+                    if (rotation.x != 0)
+                        trans = glm::rotate(trans, glm::radians(rotation.x), glm::vec3(1, 0, 0));
+                    if (rotation.y != 0)
+                        trans = glm::rotate(trans, glm::radians(rotation.y), glm::vec3(0, 1, 0));
+                    if (rotation.z != 0)
+                        trans = glm::rotate(trans, glm::radians(rotation.z), glm::vec3(0, 0, 1));
+                    trans = glm::scale(trans, transform->getScale());
+                    GameRegistry::getModel(model)->draw(*world.getFirstPassShader(), trans);
+                } catch (std::exception& e){
+                    elog << e.what();
+                }
+            } else {
+                flog << "Mesh isn't valid! Did you fail to delete it correctly?";
+                flog << "(if you are seeing this the engine has failed, please report this.)";
+                flog << "(use debugger tools to give a complete report, maybe even supply your project files UwU)";
+                flog << "The engine does not support furries.";
+                exit(-1);
+            }
+
+        }
+    }
+
+    void MeshRendererSystem::renderOnce() {
+
+    }
+
+    void MeshRendererSystem::update() {
+
+    }
 }
