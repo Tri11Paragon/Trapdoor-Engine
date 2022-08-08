@@ -37,10 +37,13 @@ namespace TD {
         inline static bool loadingCompleted();
         // prevent resizing of the framebuffer as we want to render to a specific part of the screen.
         // (this is for the editor window)
-        inline static void setListenToResize(bool state);
-        inline static void forceWindowUpdate();
-        inline static void setRenderFrameBufferSize(int width, int height);
-        inline static bool isListeningToResize();
+        static void setListenToResize(bool state);
+        static void forceWindowUpdate();
+        static void setRenderFrameBufferSize(int x, int y, int width, int height);
+        static bool isListeningToResize();
+        static void updateProjections(int width, int height);
+        static void updateProjections(int ox, int oy, int width, int height);
+        static void updateOnlyProjection(int width, int height);
 
         /** Mousing About **/
         static bool isMouseGrabbed();
@@ -53,6 +56,8 @@ namespace TD {
         static void deleteWindow();
     };
 
+    class World;
+
     class Display {
     private:
     public:
@@ -61,6 +66,7 @@ namespace TD {
         virtual void render() = 0;
         virtual void update() = 0;
         virtual void onLeave() = 0;
+        virtual World* getWorld() = 0;
         ~Display() {}
     };
 
@@ -81,6 +87,7 @@ namespace TD {
         virtual void textureRegisted(std::string ident, std::string path);
         virtual void modelLoaded(std::string ident, std::string path);
         virtual void textureLoaded(std::string ident, std::string path);
+        virtual World* getWorld(){return nullptr;}
         ~DefaultLoadingScreenDisplay();
     };
 

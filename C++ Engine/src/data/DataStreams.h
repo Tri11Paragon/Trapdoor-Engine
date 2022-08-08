@@ -103,8 +103,8 @@ namespace TD {
         }
         ~DataOutputStream(){
             flush();
-            delete(buffer);
-            delete(compressBuffer);
+            delete[] (buffer);
+            delete[] (compressBuffer);
         }
     };
 

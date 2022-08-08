@@ -39,8 +39,11 @@ namespace TD {
 
     class Editor {
     public:
-        static void init();
+        static void open();
+        static void close();
         static void toggle();
+        static bool isOpen();
+        static void init();
         static void render();
     };
 

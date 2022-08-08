@@ -91,7 +91,7 @@ namespace TD {
 
     class WindowResize {
     public:
-        virtual void windowResized(int width, int height) = 0;
+        virtual void windowResized(int x, int y, int width, int height) = 0;
     };
 
 } // TD

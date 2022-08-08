@@ -209,6 +209,11 @@ namespace TD {
         void updateLights(std::vector<TD::Light> lights);
         inline TD::shader* getFirstPassShader() { return gBufferFbo.getFirstPassShader(); }
         inline void updateDirectionalLighting(glm::vec3 dir, glm::vec3 color, bool enabled) {shadowFbo.updateLightDirection(dir); gBufferFbo.updateDirLight(dir, color, enabled);}
+        inline auto begin() noexcept { return entityMap.begin(); }
+        inline auto cbegin() const noexcept { return entityMap.cbegin(); }
+        inline auto end() noexcept { return entityMap.end(); }
+        inline auto cend() const noexcept { return entityMap.cend(); }
+        inline parallel_flat_hash_map<std::string, dPtr<TD::Entity>> getEntities(){return entityMap;}
         ~World();
     };
 

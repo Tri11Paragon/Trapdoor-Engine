@@ -230,7 +230,7 @@ namespace TD {
     protected:
         unsigned int _fboID;
         DEPTH_ATTACHMENT_TYPE _fboType;
-        int _width = 0, _height = 0;
+        int _width = 0, _height = 0, _x = 0, _y = 0;
         bool screenSized = false;
         vao* quad;
 
@@ -283,7 +283,7 @@ namespace TD {
         void renderToQuad(TD::shader& shader, glm::vec2 pos, glm::vec2 size);
         void renderToQuad(TD::shader& shader, int width, int height);
         void renderToQuad(TD::shader& shader, int x, int y, int width, int height);
-        virtual void windowResized(int width, int height);
+        virtual void windowResized(int x, int y, int width, int height);
 
         ~fbo();
     };

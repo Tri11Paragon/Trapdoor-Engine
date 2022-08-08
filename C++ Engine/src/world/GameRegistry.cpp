@@ -37,7 +37,7 @@ namespace TD {
 
             std::string ident = modelToLoad.first;
             std::string path = modelToLoad.second;
-            TD::model* model = new TD::model(path);
+            auto* model = new TD::model(path);
             loadedModels.insert(std::pair(ident, model));
             defaultLoadDisplay->modelLoaded(ident, path);
             dlog << "Loaded Model " << ident << " From " << path;
@@ -57,7 +57,7 @@ namespace TD {
                 if (ident.empty() || path.empty()) // issue only occurs sometimes, no clue why
                     continue; // TODO: figure out why only sometimes path / ident is null.
 
-                TD::texture *tex = new TD::texture(false, path);
+                auto *tex = new TD::texture(false, path);
                 loadedTextures.insert(std::pair(ident, TD::Texture(tex, DIFFUSE, path)));
                 defaultLoadDisplay->textureLoaded(ident, path);
                 dlog << "Loaded Texture " << ident << " From " << path;
@@ -78,8 +78,9 @@ namespace TD {
     void GameRegistry::deleteThreads() {
         tlog << "Deleting loader threads, complete? : " << loadingComplete();
         for (int i = 0; i < modelThreads.size(); i++) {
-            modelThreads[i]->join();
-            delete(modelThreads[i]);
+            if (modelThreads[i]->joinable())
+                modelThreads[i]->join();
+            delete (modelThreads[i]);
         }
     }
 

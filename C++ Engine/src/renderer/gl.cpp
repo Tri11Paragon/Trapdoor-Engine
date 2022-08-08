@@ -674,7 +674,7 @@ namespace TD {
     void fbo::validateFramebuffer() {
         if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
             flog << "Unable to create framebuffer! " << glCheckFramebufferStatus(GL_FRAMEBUFFER);
-            throw "Unable to create framebuffer!";
+            throw std::runtime_error("Unable to create framebuffer!");
         }
     }
 
@@ -738,7 +738,7 @@ namespace TD {
     }
 
     void fbo::renderToQuad(TD::shader& shader, int width, int height) {
-        renderToQuad(shader, 0,0, width, height);
+        renderToQuad(shader, this->_x,this->_y, width, height);
     }
 
     void fbo::renderToQuad(TD::shader& shader, int x, int y, int width, int height) {
@@ -798,11 +798,13 @@ namespace TD {
         _colorTextures = std::unordered_map<int, unsigned int>();
     }
 
-    void fbo::windowResized(int width, int height) {
+    void fbo::windowResized(int x, int y, int width, int height) {
         if (!screenSized)
             return;
         this->_width = width;
         this->_height = height;
+        this->_x = x;
+        this->_y = y;
         deleteFrameBuffer();
         createFrameBuffer();
     }

@@ -25,11 +25,19 @@ namespace TD {
     extern bool _listenToResize;
     extern float fov;
 
-    void updateProjections(){
-        glViewport(0, 0, _display_w, _display_h);
-        projectionMatrix = glm::perspective(glm::radians(fov), (float) _display_w / (float) _display_h, 0.1f, camera_far_plane);
+    void window::updateProjections(int width, int height){
+        updateProjections(0,0, width,height);
+    }
+
+    void window::updateProjections(int ox, int oy, int width, int height){
+        projectionMatrix = glm::perspective(glm::radians(fov), (float) width / (float) height, 0.1f, camera_far_plane);
         TD::updateProjectionMatrixUBO(projectionMatrix);
-        TD::updateOrthoMatrixUBO(glm::ortho(0.0f, (float)_display_w, 0.0f, (float)_display_h, 0.1f, 1000.0f));
+        TD::updateOrthoMatrixUBO(glm::ortho((float)ox, (float)width, (float)oy, (float)height, -5.0f, 5.0f));
+    }
+
+    void window::updateOnlyProjection(int width, int height){
+        projectionMatrix = glm::perspective(glm::radians(fov), (float) width / (float) height, 0.1f, camera_far_plane);
+        TD::updateProjectionMatrixUBO(projectionMatrix);
     }
 
     void window::initWindow(string title) {
@@ -107,12 +115,12 @@ namespace TD {
 
         TD::createMatrixUBO();
 
-        updateProjections();
+        updateProjections(_display_w, _display_h);
 
         _loadingComplete = true;
     }
 
-    extern std::vector<WindowResize*> windowResizeCallbacks;;
+    extern std::vector<WindowResize*> windowResizeCallbacks;
 
     void window::startRender() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -144,13 +152,10 @@ namespace TD {
             _dx = _lx - _mx;
             _dy = _ly - _my;
         }
-
-        if (_listenToResize) {
-            forceWindowUpdate();
-        }
     }
 
     void window::finishRender() {
+        forceWindowUpdate();
         // Rendering
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -229,14 +234,11 @@ namespace TD {
         _listenToResize = state;
     }
 
-    void window::setRenderFrameBufferSize(int width, int height) {
-        int pastValueW = _display_w, pastValueH = _display_h;
-        if ((pastValueW != width || pastValueH != height)) {
-            updateProjections();
-            for (int i = 0; i < windowResizeCallbacks.size(); i++)
-                windowResizeCallbacks[i]->windowResized(width, height);
-            dlog << "Changing Projection Matrix to " << width << "w " << height << "h\n";
-        }
+    void window::setRenderFrameBufferSize(int x, int y, int width, int height) {
+        updateOnlyProjection(width, height);
+        for (int i = 0; i < windowResizeCallbacks.size(); i++)
+            windowResizeCallbacks[i]->windowResized(x, y, width, height);
+        dlog << "Changing Projection Matrix to " << width << "w " << height << "h\n";
     }
 
     bool window::isListeningToResize() {
@@ -246,11 +248,16 @@ namespace TD {
     void window::forceWindowUpdate() {
         int pastValueW = _display_w, pastValueH = _display_h;
         glfwGetFramebufferSize(_window, &_display_w, &_display_h);
+        if (Editor::isOpen())
+            glViewport(0,0, _display_w, _display_h);
         if ((pastValueW != _display_w || pastValueH != _display_h)) {
-            updateProjections();
-            for (int i = 0; i < windowResizeCallbacks.size(); i++)
-                windowResizeCallbacks[i]->windowResized(_display_w, _display_h);
-            dlog << "Changing Projection Matrix to " << _display_w << "w " << _display_h << "h\n";
+            glViewport(0,0, _display_w, _display_h);
+            if (_listenToResize) {
+                updateProjections(_display_w, _display_h);
+                for (int i = 0; i < windowResizeCallbacks.size(); i++)
+                    windowResizeCallbacks[i]->windowResized(0, 0, _display_w, _display_h);
+                dlog << "Changing Projection Matrix to " << _display_w << "w " << _display_h << "h\n";
+            }
         }
     }
 

@@ -47,6 +47,7 @@ namespace TD {
         virtual void render();
         virtual void update();
         virtual void onLeave();
+        virtual World* getWorld(){return &world;}
         ~TestDisplay();
     };
 
