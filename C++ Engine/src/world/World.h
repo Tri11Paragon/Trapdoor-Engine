@@ -207,6 +207,19 @@ namespace TD {
         void addComponentToEntity(const std::string& name, Component* component);
         void deleteEntity(const std::string& entityName);
         void updateLights(std::vector<TD::Light> lights);
+        inline dPtr<Entity> getEntity(const std::string& entityName){return entityMap.at(entityName);}
+        template<class T>
+        inline T* getComponent(const std::string& cmpType, ID entID){
+            auto cmpMap = components.at(cmpType);
+            auto cmp = cmpMap.at(entID);
+            try {
+                if (cmp.isValid())
+                    return static_cast<T*>(cmp.getRaw());
+            } catch (std::exception& e) {
+                wlog << "Warning!! Error occurred trying to cast raw dPtr! Are your types correct? " << e.what();
+            }
+            return nullptr;
+        }
         inline TD::shader* getFirstPassShader() { return gBufferFbo.getFirstPassShader(); }
         inline void updateDirectionalLighting(glm::vec3 dir, glm::vec3 color, bool enabled) {shadowFbo.updateLightDirection(dir); gBufferFbo.updateDirLight(dir, color, enabled);}
         inline auto begin() noexcept { return entityMap.begin(); }

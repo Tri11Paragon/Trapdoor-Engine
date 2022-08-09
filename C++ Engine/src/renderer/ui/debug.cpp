@@ -90,7 +90,7 @@ namespace TD {
         glm::vec3 ndc = glm::vec3(clip.x / clip.w, clip.y / clip.w, clip.z / clip.w);
         float sx = (float) ((ndc.x + 1.0) / 2.0f) * (float)_display_w;
         float sy = (float) ((ndc.y + 1.0) / 2.0f) * (float)_display_h;
-        return {sx, sy};
+        return {sx, (float)_display_h - sy};
     }
 
     void updateWindowSizes(){
@@ -112,12 +112,21 @@ namespace TD {
         glViewport(0, 0, iWidth, iHeight);
     }
 
-    void Editor::init() {
+    static TD::model* arrowModel;
+    static TD::shader* arrowShader;
+    static std::string activeEntity;
+    static ID activeEntityID = 0;
 
+    void Editor::init() {
+        tlog << "Loading debug editor resources";
+        arrowModel = new TD::model("../assets/models/arrow.dae");
+        arrowModel->loadToGL();
+        arrowShader = new TD::shader("../assets/shaders/debugarrow.vert", "../assets/shaders/debugarrow.frag");
+        arrowShader->use();
+        arrowShader->setColor("color1", glm::vec3(255, 0, 0));
     }
 
     void Editor::render() {
-
         if (!editorMenuEnabled)
             return;
         updateWindowSizes();
@@ -131,18 +140,15 @@ namespace TD {
         ImGui::PushStyleColor(ImGuiCol_TitleBg, ImGui::GetStyleColorVec4(ImGuiCol_TitleBgActive));
         ImGui::Begin("SceneView", nullptr, flags);
 
+        auto* world = displays[activeDisplay]->getWorld();
         if (ImGui::CollapsingHeader(activeDisplay.c_str())){
-            auto* world = displays[activeDisplay]->getWorld();
             if (world != nullptr){
                 ImGui::BeginChild("_EntityDisplay");
-                    static int selected = -1;
-                    // unfortunate evil.
-                    int pos = 0;
-                    for (const auto& e : *world) {
-                        if (ImGui::Selectable(e.first.c_str(), pos == selected)) {
-                            selected = pos;
+                    for (auto& e : *world) {
+                        if (ImGui::Selectable(e.first.c_str(), e.first == activeEntity)) {
+                            activeEntity = e.first;
+                            activeEntityID = e.second->getID();
                         }
-                        pos++;
                     }
                 ImGui::EndChild();
             }
@@ -180,7 +186,24 @@ namespace TD {
             ImGui::EndMainMenuBar();
         }
 
+//        ImDrawList* draw_list = ImGui::GetWindowDrawList();
+//        auto entPos = world->getComponent<TransformComponent>(TRANSFORM_SYSTEM, activeEntityID);
+//        auto p1 = getScreenPos(entPos->getTranslation());
+//        auto p2 = getScreenPos(entPos->getTranslation() + glm::vec3(5, 0, 0));
+//        draw_list->AddRect(ImVec2(p1.x, p1.y), ImVec2(p2.x, p2.y), ImColor(255, 0, 0));
+
         ImGui::PopFont();
+    }
+
+    void Editor::renderGBuffer() {
+        if (!editorMenuEnabled)
+            return;
+        arrowShader->use();
+        auto* world = displays[activeDisplay]->getWorld();
+        auto entPos = world->getComponent<TransformComponent>(TRANSFORM_SYSTEM, activeEntityID);
+        glm::mat4 trans(1.0);
+        trans = glm::translate(trans, entPos->getTranslation());
+        arrowModel->draw(*arrowShader, trans);
     }
 
     void Editor::toggle() {
@@ -209,4 +232,10 @@ namespace TD {
     bool Editor::isOpen() {
         return editorMenuEnabled;
     }
+
+    void Editor::cleanup() {
+        delete(arrowModel);
+        delete(arrowShader);
+    }
+
 }

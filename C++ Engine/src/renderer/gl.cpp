@@ -493,7 +493,7 @@ namespace TD {
     void model::draw(shader &shader, glm::mat4 trans) {
         shader.use();
         for (modelVAO* mesh : meshes){
-            shader.setMatrix("transform", mesh->getTransform() * trans);
+            shader.setMatrix("transform", trans);
             mesh->bind();
             mesh->bindTextures();
             mesh->draw();
@@ -506,7 +506,7 @@ namespace TD {
             mesh->bind();
             mesh->bindTextures();
             for (glm::mat4 tran : trans) {
-                shader.setMatrix("transform", mesh->getTransform() * tran);
+                shader.setMatrix("transform", tran);
                 mesh->draw();
             }
         }
@@ -516,7 +516,7 @@ namespace TD {
         Assimp::Importer import;
 
         const aiScene *scene = import.ReadFile(pth, aiProcess_Triangulate | aiProcess_FlipUVs
-                                                            | aiProcess_ImproveCacheLocality | aiProcess_OptimizeMeshes);
+                                                            | aiProcess_ImproveCacheLocality | aiProcess_OptimizeMeshes | aiProcess_PreTransformVertices);
 
         if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
             flog << "Error loading model with Assimp.";

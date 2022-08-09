@@ -8,6 +8,7 @@
 #include "../../imgui/imgui.h"
 #include "../../font.h"
 #include "../camera.h"
+#include "../gl.h"
 
 namespace TD {
 
@@ -45,6 +46,8 @@ namespace TD {
         static bool isOpen();
         static void init();
         static void render();
+        static void renderGBuffer();
+        static void cleanup();
     };
 
 }

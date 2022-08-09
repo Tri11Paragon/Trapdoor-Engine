@@ -37,11 +37,13 @@ namespace TD {
 
         auto* Victor = new Entity("Victor");
         static_cast<TransformComponent*>(Victor->getComponent(TRANSFORM_SYSTEM).get())->setTranslation(glm::vec3(0, -1, 0));
+        static_cast<TransformComponent*>(Victor->getComponent(TRANSFORM_SYSTEM).get())->setRotation(glm::vec3(90, 0, 0));
         Victor->addComponent(dPtr<Component>(new MeshComponent("plane")));
         world.spawnEntity(Victor);
 
         auto* Alejandro = new Entity("Alejandro");
         static_cast<TransformComponent*>(Alejandro->getComponent(TRANSFORM_SYSTEM).get())->setTranslation(glm::vec3(0, 20, 0));
+        static_cast<TransformComponent*>(Alejandro->getComponent(TRANSFORM_SYSTEM).get())->setRotation(glm::vec3(90, 0, 0));
         Alejandro->addComponent(dPtr<Component>(new MeshComponent("taylor_plane")));
         world.spawnEntity(Alejandro);
 

@@ -68,6 +68,9 @@ namespace TD {
                 return nullptr;
             return data;
         }
+        T* getRaw(){
+            return data;
+        }
         bool isValid(){
             return *avail;
         }

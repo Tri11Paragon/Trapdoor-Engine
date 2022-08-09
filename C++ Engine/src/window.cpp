@@ -336,6 +336,9 @@ namespace TD {
     }
 
     void DisplayManager::close() {
+#ifdef DEBUG_ENABLED
+        TD::Editor::cleanup();
+#endif
         TD::window::deleteWindow();
         for (auto pa : displays)
             delete(pa.second);

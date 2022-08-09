@@ -3,6 +3,8 @@
 //
 
 #include "World.h"
+#include "../renderer/ui/debug.h"
+#include <config.h>
 
 namespace TD {
 
@@ -41,6 +43,9 @@ namespace TD {
             system->render(gBufferFbo.getFirstPassShader());
             system->renderOnce();
         }
+#ifdef DEBUG_ENABLED
+        TD::Editor::renderGBuffer();
+#endif
         skyboxRenderer.render();
         gBufferFbo.unbindFBO();
         // FBO is required
