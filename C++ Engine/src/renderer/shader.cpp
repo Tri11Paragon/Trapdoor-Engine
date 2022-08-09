@@ -6,17 +6,23 @@
 #include "gl.h"
 #include "../logging.h"
 #include <fstream>
+#include <utility>
 
 using namespace std;
 
 namespace TD {
 
-    shader::shader(string vertex, string fragment) {
-        vertexShaderID = loadShader(vertex, GL_VERTEX_SHADER);
-        fragmentShaderID = loadShader(fragment, GL_FRAGMENT_SHADER);
-        if (vertexShaderID <= 0 || fragmentShaderID <= 0) {
-            flog << "Failed to load shaders!";
-            throw SHADER_LOAD_FAILURE;
+    shader::shader(const std::string& vertex, const std::string& fragment, bool loadString) {
+        if (loadString){
+            vertexShaderID = loadShaderString(vertex, GL_VERTEX_SHADER);
+            checkCompileErrors(vertexShaderID, "VERTEX", vertex);
+            fragmentShaderID = loadShaderString(fragment, GL_FRAGMENT_SHADER);
+            checkCompileErrors(fragmentShaderID, "FRAGMENT", fragment);
+        } else {
+            vertexShaderID = loadShader(vertex, GL_VERTEX_SHADER);
+            checkCompileErrors(vertexShaderID, "VERTEX", vertex);
+            fragmentShaderID = loadShader(fragment, GL_FRAGMENT_SHADER);
+            checkCompileErrors(fragmentShaderID, "FRAGMENT", fragment);
         }
         programID = glCreateProgram();
         // attach the loaded shaders to the shader program
@@ -34,14 +40,22 @@ namespace TD {
         glUseProgram(0);
     }
 
-    shader::shader(std::string vertex, std::string geometry, std::string fragment) {
-        vertexShaderID = loadShader(vertex, GL_VERTEX_SHADER);
-        checkCompileErrors(vertexShaderID, "VERTEX", vertex);
-        geometryShaderID = loadShader(geometry, GL_GEOMETRY_SHADER);
-        checkCompileErrors(geometryShaderID, "GEOMETRY", geometry);
-        fragmentShaderID = loadShader(fragment, GL_FRAGMENT_SHADER);
-        checkCompileErrors(fragmentShaderID, "FRAGMENT", fragment);
-
+    shader::shader(const std::string& vertex, const std::string& geometry, const std::string& fragment, bool loadString) {
+        if (loadString){
+            vertexShaderID = loadShaderString(vertex, GL_VERTEX_SHADER);
+            checkCompileErrors(vertexShaderID, "VERTEX", vertex);
+            geometryShaderID = loadShaderString(geometry, GL_GEOMETRY_SHADER);
+            checkCompileErrors(geometryShaderID, "GEOMETRY", geometry);
+            fragmentShaderID = loadShaderString(fragment, GL_FRAGMENT_SHADER);
+            checkCompileErrors(fragmentShaderID, "FRAGMENT", fragment);
+        } else {
+            vertexShaderID = loadShader(vertex, GL_VERTEX_SHADER);
+            checkCompileErrors(vertexShaderID, "VERTEX", vertex);
+            geometryShaderID = loadShader(geometry, GL_GEOMETRY_SHADER);
+            checkCompileErrors(geometryShaderID, "GEOMETRY", geometry);
+            fragmentShaderID = loadShader(fragment, GL_FRAGMENT_SHADER);
+            checkCompileErrors(fragmentShaderID, "FRAGMENT", fragment);
+        }
         programID = glCreateProgram();
         // attach the loaded shaders to the shader program
         glAttachShader(programID, vertexShaderID);
@@ -55,6 +69,17 @@ namespace TD {
         setUniformBlockLocation("Matrices", 1);
         setUniformBlockLocation("LightSpaceMatrices", 3);
         glUseProgram(0);
+    }
+
+    unsigned int shader::loadShaderString(const std::string &str, int type) {
+        const char* shaderCode = str.c_str();
+        // creates a shader
+        unsigned int shaderID = glCreateShader(type);
+        // puts the loaded shader code into the graphics card
+        glShaderSource(shaderID, 1, &shaderCode, NULL);
+        // Compile it
+        glCompileShader(shaderID);
+        return shaderID;
     }
 
     unsigned int shader::loadShader(const string &file, int type) {
@@ -77,7 +102,7 @@ namespace TD {
             vShaderFile.close();
             // convert stream into string
             shaderSource = shaderStream.str();
-        } catch(std::ifstream::failure e) {
+        } catch(std::ifstream::failure& e) {
             fout << "Unable to read shader file! " << file << endl;
             return -1;
         }

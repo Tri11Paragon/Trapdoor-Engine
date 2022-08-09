@@ -894,7 +894,7 @@ namespace TD {
         this->_height = 2048;
         this->_fboType = DEPTH_NONE;
 
-        depthShader = new TD::shader("../assets/shaders/shadows/shadow.vert", "../assets/shaders/shadows/shadow.geom", "../assets/shaders/shadows/shadow.frag");
+        depthShader = new TD::shader("../assets/shaders/shadows/shadow.vert", "../assets/shaders/shadows/shadow.geom", "../assets/shaders/shadows/shadow.frag", false);
 
         glGenFramebuffers(1, &_fboID);
 

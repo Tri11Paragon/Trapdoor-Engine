@@ -62,11 +62,13 @@ namespace TD {
         unsigned int tessalationShaderID = 0;
         std::map<std::string, IntDefaultedToMinusOne> uniformVars;
         unsigned int loadShader(const std::string &file, int type);
+        // loads from a string rather than a file!
+        unsigned int loadShaderString(const std::string &str, int type);
         unsigned int getUniformLocation(const std::string &name);
         void checkCompileErrors(unsigned int shader, std::string type, std::string shaderPath);
     public:
-        shader(std::string vertex, std::string fragment);
-        shader(std::string vertex, std::string geometry, std::string fragment);
+        shader(const std::string& vertex, const std::string& fragment, bool loadString = false);
+        shader(const std::string& vertex, const std::string& geometry, const std::string& fragment, bool loadString = false);
         void bindAttribute(int attribute, std::string name);
         void setUniformBlockLocation(std::string name, int location);
         void setBool(const std::string &name, bool value);
