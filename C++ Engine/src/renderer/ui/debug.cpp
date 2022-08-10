@@ -5,6 +5,8 @@
 #include "debug.h"
 #include "../../window.h"
 #include "../../world/World.h"
+#include "../../imgui/ImGuizmo.h"
+#include <cmath>
 //#include "raycasting.h"
 
 namespace TD {
@@ -19,6 +21,7 @@ namespace TD {
     extern std::string activeDisplay;
     extern glm::mat4 viewMatrix;
     extern glm::mat4 projectionMatrix;
+    extern float fov;
 
     void TD::debugUI::toggle() {
         debugMenuEnabled = !debugMenuEnabled;
@@ -107,9 +110,9 @@ namespace TD {
             iHeight = lWindowHeight - menuBarHeight;
             iWidth = lWindowWidth - sceneHierarchyWidth;
 
-            TD::window::setRenderFrameBufferSize(offsetX, -offsetY, iWidth, iHeight);
+            TD::window::setRenderFrameBufferSize(offsetX, offsetY, iWidth, iHeight);
         }
-        glViewport(0, 0, iWidth, iHeight);
+        //glViewport(offsetX, offsetY, iWidth, iHeight);
     }
 
     static TD::model* arrowModel;
@@ -140,6 +143,8 @@ namespace TD {
         ImGui::PushStyleColor(ImGuiCol_TitleBg, ImGui::GetStyleColorVec4(ImGuiCol_TitleBgActive));
         ImGui::Begin("SceneView", nullptr, flags);
 
+        static glm::mat4 trans(1.0);
+
         auto* world = displays[activeDisplay]->getWorld();
         if (ImGui::CollapsingHeader(activeDisplay.c_str())){
             if (world != nullptr){
@@ -148,6 +153,7 @@ namespace TD {
                         if (ImGui::Selectable(e.first.c_str(), e.first == activeEntity)) {
                             activeEntity = e.first;
                             activeEntityID = e.second->getID();
+                            trans = world->getComponent<TransformComponent>(TRANSFORM_SYSTEM, activeEntityID)->getTranslationMatrix();
                         }
                     }
                 ImGui::EndChild();
@@ -186,6 +192,70 @@ namespace TD {
             ImGui::EndMainMenuBar();
         }
 
+        ImGuizmo::SetOrthographic(false);
+        ImGuizmo::SetDrawlist();
+        ImGuizmo::BeginFrame();
+
+        static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::ROTATE);
+        static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::WORLD);
+
+        if (ImGui::RadioButton("Translate", mCurrentGizmoOperation == ImGuizmo::TRANSLATE))
+            mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
+        ImGui::SameLine();
+        if (ImGui::RadioButton("Rotate", mCurrentGizmoOperation == ImGuizmo::ROTATE))
+            mCurrentGizmoOperation = ImGuizmo::ROTATE;
+        ImGui::SameLine();
+        if (ImGui::RadioButton("Scale", mCurrentGizmoOperation == ImGuizmo::SCALE))
+            mCurrentGizmoOperation = ImGuizmo::SCALE;
+        /*float matrixTranslation[3], matrixRotation[3], matrixScale[3];
+        ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(trans), matrixTranslation, matrixRotation, matrixScale);
+        ImGui::InputFloat3("Tr", matrixTranslation);
+        ImGui::InputFloat3("Rt", matrixRotation);
+        ImGui::InputFloat3("Sc", matrixScale);
+        ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, glm::value_ptr(trans));*/
+
+        if (mCurrentGizmoOperation != ImGuizmo::SCALE)
+        {
+            if (ImGui::RadioButton("Local", mCurrentGizmoMode == ImGuizmo::LOCAL))
+                mCurrentGizmoMode = ImGuizmo::LOCAL;
+            ImGui::SameLine();
+            if (ImGui::RadioButton("World", mCurrentGizmoMode == ImGuizmo::WORLD))
+                mCurrentGizmoMode = ImGuizmo::WORLD;
+        }
+        static bool useSnap(false);
+        if (ImGui::IsKeyPressed(83))
+            useSnap = !useSnap;
+        ImGui::Checkbox("Use Snap?", &useSnap);
+        ImGui::SameLine();
+        static glm::vec3 snap{5, 5, 5};
+        switch (mCurrentGizmoOperation) {
+            case ImGuizmo::TRANSLATE:
+                ImGui::InputFloat3("Snap", &snap.x);
+                break;
+            case ImGuizmo::ROTATE:
+                ImGui::InputFloat("Angle Snap", &snap.x);
+                break;
+            case ImGuizmo::SCALE:
+                ImGui::InputFloat("Scale Snap", &snap.x);
+                break;
+            default:
+                tlog << "Default Branch!";
+                break;
+        }
+        ImGuiIO& io = ImGui::GetIO();
+        ImGuizmo::SetRect((float)offsetX, (float)offsetY + (float)0, (float)_display_w, (float)_display_h);
+        //ImGuizmo::SetRect((float)0, (float)0, (float)io.DisplaySize.x, (float)io.DisplaySize.y);
+        // perspectiveWithCenter((float)iWidth, (float)iHeight, (float)offsetX, (float)offsetY - menuBarHeight)
+        auto per = glm::perspective(glm::radians(fov), (float)iWidth / (float)iHeight, 0.1f, camera_far_plane);
+        ImGuizmo::Manipulate(glm::value_ptr(viewMatrix), glm::value_ptr(per), mCurrentGizmoOperation, mCurrentGizmoMode, glm::value_ptr(trans), nullptr, useSnap ? &snap.x : nullptr);
+
+        float matrixTranslation[3], matrixRotation[3], matrixScale[3];
+        ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(trans), matrixTranslation, matrixRotation, matrixScale);
+        auto transformComp = world->getComponent<TransformComponent>(TRANSFORM_SYSTEM, activeEntityID);
+        transformComp->setTranslation(glm::vec3(matrixTranslation[0], matrixTranslation[1], matrixTranslation[2]));
+        transformComp->setRotation(glm::vec3(matrixRotation[0], matrixRotation[1], matrixRotation[2]));
+        transformComp->setScale(glm::vec3(matrixScale[0], matrixScale[1], matrixScale[2]));
+
 //        ImDrawList* draw_list = ImGui::GetWindowDrawList();
 //        auto entPos = world->getComponent<TransformComponent>(TRANSFORM_SYSTEM, activeEntityID);
 //        auto p1 = getScreenPos(entPos->getTranslation());
@@ -196,14 +266,14 @@ namespace TD {
     }
 
     void Editor::renderGBuffer() {
-        if (!editorMenuEnabled)
+        /*if (!editorMenuEnabled)
             return;
         arrowShader->use();
         auto* world = displays[activeDisplay]->getWorld();
         auto entPos = world->getComponent<TransformComponent>(TRANSFORM_SYSTEM, activeEntityID);
         glm::mat4 trans(1.0);
         trans = glm::translate(trans, entPos->getTranslation());
-        arrowModel->draw(*arrowShader, trans);
+        arrowModel->draw(*arrowShader, trans);*/
     }
 
     void Editor::toggle() {

@@ -13,6 +13,8 @@
 #include "world/World.h"
 #include <config.h>
 
+#include <utility>
+
 namespace TD {
 
     extern GLFWwindow *_window;
@@ -24,6 +26,34 @@ namespace TD {
     extern bool _isWindowOpen;
     extern bool _listenToResize;
     extern float fov;
+
+    glm::mat4 perspectiveWithCenter(float width, float height, float offsetX = 0, float offsetY = 0) {
+        float aspect = width / height;
+
+        // compute the top and bottom of the near plane of the view frustum
+        float top = (float) tan(glm::radians(fov) * 0.5) * 0.1f;
+        float bottom = -top;
+
+        // compute the left and right of the near plane of the view frustum
+        float left = aspect * bottom;
+        float right = aspect * top;
+
+        // compute width and height of the near plane of the view frustum
+        float nearWidth = right - left;
+        float nearHeight = top - bottom;
+
+        // convert the offset from canvas units to near plane units
+        float offX = (offsetX) * nearWidth / width;
+        float offY = (-offsetY) * nearHeight / height;
+
+        return glm::frustum(
+                left + offX,
+                right + offX,
+                bottom + offY,
+                top + offY,
+                0.1f,
+                camera_far_plane);
+    }
 
     void window::updateProjections(int width, int height){
         updateProjections(0,0, width,height);
@@ -39,6 +69,12 @@ namespace TD {
         projectionMatrix = glm::perspective(glm::radians(fov), (float) width / (float) height, 0.1f, camera_far_plane);
         TD::updateProjectionMatrixUBO(projectionMatrix);
     }
+
+    void window::updateOnlyProjection(int x, int y, int width, int height) {
+        projectionMatrix = glm::perspective(glm::radians(fov), (float) width / (float) height, 0.1f, camera_far_plane);
+        TD::updateProjectionMatrixUBO(projectionMatrix);
+    }
+
 
     void window::initWindow(string title) {
         // Setup window
@@ -235,7 +271,7 @@ namespace TD {
     }
 
     void window::setRenderFrameBufferSize(int x, int y, int width, int height) {
-        updateOnlyProjection(width, height);
+        updateOnlyProjection(x, y, width, height);
         for (int i = 0; i < windowResizeCallbacks.size(); i++)
             windowResizeCallbacks[i]->windowResized(x, y, width, height);
         dlog << "Changing Projection Matrix to " << width << "w " << height << "h\n";
@@ -280,7 +316,7 @@ namespace TD {
     void DisplayManager::init(std::string window) {
         TD::GameRegistry::registerThreaded();
         TD::fontContext::loadContexts(fonts);
-        TD::window::initWindow(window);
+        TD::window::initWindow(std::move(window));
         TD::IM_RegisterKeyListener(&keyCallBack);
         defaultLoadDisplay->onSwitch();
 
@@ -340,7 +376,7 @@ namespace TD {
         TD::Editor::cleanup();
 #endif
         TD::window::deleteWindow();
-        for (auto pa : displays)
+        for (const auto& pa : displays)
             delete(pa.second);
     }
 

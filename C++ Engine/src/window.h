@@ -44,6 +44,7 @@ namespace TD {
         static void updateProjections(int width, int height);
         static void updateProjections(int ox, int oy, int width, int height);
         static void updateOnlyProjection(int width, int height);
+        static void updateOnlyProjection(int x, int y, int width, int height);
 
         /** Mousing About **/
         static bool isMouseGrabbed();

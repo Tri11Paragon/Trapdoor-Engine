@@ -30,7 +30,9 @@ namespace TD {
     std::atomic<int> modelLoaded(0);
 
     void runModelThread(int threadID){
+        tlog << "Load Thread {" << threadID << "} Created!";
         std::queue<std::pair<std::string, std::string>>& modelQueue = unloadedModels[threadID];
+        tlog << "Load Thread {" << threadID << "} Beginning Model Loading!";
         // first load all the models
         while (!modelQueue.empty()){
             auto modelToLoad = modelQueue.front();
@@ -44,8 +46,10 @@ namespace TD {
 
             modelQueue.pop();
         }
+        tlog << "Load Thread {" << threadID << "} Model Loading Finished!";
         modelLoaded++;
         std::queue<std::pair<std::string, std::string>>& textureQueue = unloadedTextures[threadID];
+        tlog << "Load Thread {" << threadID << "} Beginning Texture Loading!";
         // then load all the textures
         while (!textureQueue.empty() || modelLoaded < modelThreads.size()){
             if (!textureQueue.empty()) {
@@ -54,8 +58,10 @@ namespace TD {
                 std::string ident = textureToLoad.first;
                 std::string path = textureToLoad.second;
 
-                if (ident.empty() || path.empty()) // issue only occurs sometimes, no clue why
+                if (ident.empty() || path.empty()) { // issue only occurs sometimes, no clue why
+                    textureQueue.pop();
                     continue; // TODO: figure out why only sometimes path / ident is null.
+                }
 
                 auto *tex = new TD::texture(false, path);
                 loadedTextures.insert(std::pair(ident, TD::Texture(tex, DIFFUSE, path)));
@@ -66,6 +72,7 @@ namespace TD {
             } else
                 std::this_thread::sleep_for(std::chrono::milliseconds(16));
         }
+        tlog << "Load Thread {" << threadID << "} Finished Texture Loading!";
         // finally then we are done and the loaded assets can be sent to the GPU.
         done++;
     }

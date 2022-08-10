@@ -50,6 +50,20 @@ namespace TD {
         void setTranslation(glm::vec3 vec){this->translate = vec;}
         void setRotation(glm::vec3 vec){this->rotation = vec;}
         void setScale(glm::vec3 vec){this->scale = vec;}
+        glm::mat4 getTranslationMatrix(){
+            glm::mat4 trans(1.0);
+            trans = glm::translate(trans, translate);
+            //tlog << meshPtr->getAssociatedEntity() << " " << transform->getTranslation().x << " " << transform->getTranslation().y << " " << transform->getTranslation().z;
+            // rotates are relatively expensive, so don't do them unless we have to.
+            if (rotation.x != 0)
+                trans = glm::rotate(trans, glm::radians(rotation.x), glm::vec3(1, 0, 0));
+            if (rotation.y != 0)
+                trans = glm::rotate(trans, glm::radians(rotation.y), glm::vec3(0, 1, 0));
+            if (rotation.z != 0)
+                trans = glm::rotate(trans, glm::radians(rotation.z), glm::vec3(0, 0, 1));
+            trans = glm::scale(trans, scale);
+            return trans;
+        }
         const glm::vec3& getTranslation(){return translate;}
         const glm::vec3& getRotation(){return rotation;}
         const glm::vec3& getScale(){return scale;}
