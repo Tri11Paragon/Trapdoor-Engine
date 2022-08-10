@@ -346,7 +346,17 @@ namespace TD {
         settings.inputWidth = _display_w;
         settings.inputHeight = _display_h;
         settings.hardwareEncoding = false;
+        settings.bitRate = 4500 * 1024; // 4500 KBS -- OBS setting
+        settings.inputAlpha = true;
         encoder.run(settings, 128 * 1024);
+    }
+
+    void runEncoder(){
+        auto* pixels = new uint8_t[4 * _display_w * _display_h];
+        glReadPixels(0, 0, _display_w, _display_h, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+        auto* fptr = encoder.newFrame();
+        fptr->m_rgb = pixels;
+        encoder.submitFrame();
     }
 
     void DisplayManager::update() {
@@ -371,12 +381,6 @@ namespace TD {
                     break;
                 }
             }
-            auto* pixels = new uint8_t[3 * _display_w * _display_h];
-            glReadPixels(0, 0, _display_w/2, _display_h/2, GL_RGB, GL_UNSIGNED_BYTE, pixels);
-            auto* fptr = encoder.newFrame();
-            fptr->m_rgb = pixels;
-            encoder.submitFrame();
-
 
 
             //fxaaFBO.bindFBODraw();
@@ -387,6 +391,7 @@ namespace TD {
             //fxaaFBO.renderToQuad(fxaaShader);
 
             TD::window::finishRender();
+            runEncoder();
         }
     }
 

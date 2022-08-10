@@ -120,6 +120,7 @@ namespace TD {
     }
 
     vao::~vao() {
+        tlog << "Deleting VAO {" << vaoID << "}";
         const unsigned int vao = vaoID;
         glDeleteVertexArrays(1, &vao);
         for (const unsigned int vbo : vbos){
@@ -356,6 +357,7 @@ namespace TD {
     }
 
     texture::~texture() {
+        tlog << "Deleting Texture {" << textureID << "}";
         glDeleteTextures(1, &textureID);
     }
 
