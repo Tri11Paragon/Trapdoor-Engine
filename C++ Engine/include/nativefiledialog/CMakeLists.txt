@@ -8,12 +8,6 @@ macro(REQUIRE_INCLUDE_FILE path name)
     endif ()
 endmacro()
 
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
-
-include_directories(${GTK3_INCLUDE_DIRS})
-link_directories(${GTK3_LIBRARY_DIRS})
-
 # add specific implementations
 if (WIN32)
     REQUIRE_INCLUDE_FILE(windows.h HAS_WINDOWS)
@@ -22,14 +16,23 @@ elseif (APPLE)
     REQUIRE_INCLUDE_FILE(AppKit/AppKit.h HAS_APPKIT)
     list(APPEND SOURCES src/nfd_cocoa.m)
 elseif (UNIX)
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
+
+    include_directories(${GTK3_INCLUDE_DIRS})
+    link_directories(${GTK3_LIBRARY_DIRS})
+
     list(APPEND SOURCES src/nfd_gtk.c)
+
+    add_definitions(${GTK3_CFLAGS_OTHER})
 elseif (UNIX)
     message(FATAL_ERROR "Cannot detect your system, please report to https://github.com/aarcangeli/nativefiledialog-cmake/issues")
 endif ()
 
-add_definitions(${GTK3_CFLAGS_OTHER})
-
 add_library(nativefiledialog ${SOURCES})
 
 target_include_directories(nativefiledialog PUBLIC src/include)
-target_link_libraries(nativefiledialog ${GTK3_LIBRARIES})
+
+if (UNIX)
+    target_link_libraries(nativefiledialog ${GTK3_LIBRARIES})
+endif()

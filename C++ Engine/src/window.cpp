@@ -341,21 +341,21 @@ namespace TD {
 #endif
         atg_dtv::Encoder::VideoSettings settings;
         settings.fname = "Test.mp4";
-        settings.width = 1920;
-        settings.height = 1080;
+        settings.width = 1280;
+        settings.height = 720;
         settings.inputWidth = _display_w;
         settings.inputHeight = _display_h;
         settings.hardwareEncoding = false;
         settings.bitRate = 4500 * 1024; // 4500 KBS -- OBS setting
         settings.inputAlpha = true;
-        encoder.run(settings, 128 * 1024);
+        encoder.run(settings, 16);
     }
 
     void runEncoder(){
-        auto* pixels = new uint8_t[4 * _display_w * _display_h];
-        glReadPixels(0, 0, _display_w, _display_h, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-        auto* fptr = encoder.newFrame();
-        fptr->m_rgb = pixels;
+        auto* fptr = encoder.newFrame(true);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        if (fptr != NULL)
+            glReadPixels(0, _display_h, _display_w, _display_h, GL_RGBA, GL_UNSIGNED_BYTE, fptr->m_rgb);
         encoder.submitFrame();
     }
 

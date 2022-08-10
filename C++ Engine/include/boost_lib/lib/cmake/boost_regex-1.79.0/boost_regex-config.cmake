@@ -15,10 +15,10 @@ mark_as_advanced(boost_regex_DIR)
 get_filename_component(_BOOST_CMAKEDIR "${CMAKE_CURRENT_LIST_DIR}/../" REALPATH)
 
 # If the computed and the original directories are symlink-equivalent, use original
-if(EXISTS "/home/brett/Documents/code/c++/engine/include/boost_lib/lib/cmake")
-  get_filename_component(_BOOST_CMAKEDIR_ORIGINAL "/home/brett/Documents/code/c++/engine/include/boost_lib/lib/cmake" REALPATH)
+if(EXISTS "/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/C++ Engine/include/boost_lib/lib/cmake")
+  get_filename_component(_BOOST_CMAKEDIR_ORIGINAL "/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/C++ Engine/include/boost_lib/lib/cmake" REALPATH)
   if(_BOOST_CMAKEDIR STREQUAL _BOOST_CMAKEDIR_ORIGINAL)
-    set(_BOOST_CMAKEDIR "/home/brett/Documents/code/c++/engine/include/boost_lib/lib/cmake")
+    set(_BOOST_CMAKEDIR "/home/brett/Documents/Brock/Gamers/Java Brock 2021 Project/C++ Engine/include/boost_lib/lib/cmake")
   endif()
   unset(_BOOST_CMAKEDIR_ORIGINAL)
 endif()

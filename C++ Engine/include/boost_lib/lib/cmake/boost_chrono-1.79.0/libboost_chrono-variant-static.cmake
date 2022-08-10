@@ -9,7 +9,7 @@ endif()
 
 # layout=system
 
-# toolset=gcc11
+# toolset=gcc12
 
 # link=static
 
