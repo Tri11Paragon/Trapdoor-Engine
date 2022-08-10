@@ -87,12 +87,12 @@ namespace TD {
     int sceneInspectorHeight = 0;
     // console window
     int sceneConsoleWidth = 0;
-    int sceneConsoleHeight = 255;
+    int sceneConsoleHeight = 320;
     // menu bar
     int menuBarWidth = 0;
     int menuBarHeight = 22;
     int lWindowWidth = 0, lWindowHeight = 0;
-    int iWidth = 0, iHeight = 0, offsetX=0, offsetY=0;
+    int iWidth = 0, iHeight = 0, offsetX=0, offsetY=0, offsetNegX = 0, offsetNegY = 0;
 
     glm::vec2 getScreenPos(glm::vec3 pos){
         glm::vec4 clip = projectionMatrix * viewMatrix * glm::vec4(pos.x, pos.y, pos.z, 1.0f);
@@ -108,13 +108,17 @@ namespace TD {
             lWindowHeight = _display_h;
 
             offsetX = sceneHierarchyWidth;
+            offsetNegX = sceneInspectorWidth;
+            offsetY = sceneConsoleHeight;
             //offsetY = menuBarHeight;
             sceneHierarchyHeight = lWindowHeight - menuBarHeight;
+            sceneInspectorHeight = lWindowHeight - menuBarHeight;
+            sceneConsoleWidth = lWindowWidth - offsetX - offsetNegX;
             menuBarWidth = lWindowWidth;
 
 
-            iHeight = lWindowHeight - menuBarHeight;
-            iWidth = lWindowWidth - sceneHierarchyWidth;
+            iHeight = lWindowHeight - menuBarHeight - sceneConsoleHeight;
+            iWidth = lWindowWidth - sceneHierarchyWidth - sceneInspectorWidth;
 
             TD::window::setRenderFrameBufferSize(offsetX, offsetY, iWidth, iHeight);
         }
@@ -140,12 +144,13 @@ namespace TD {
         ImGui::SetNextWindowSize(ImVec2((float)sceneHierarchyWidth, (float)sceneHierarchyHeight));
         constexpr auto flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse;
         ImGui::PushStyleColor(ImGuiCol_TitleBg, ImGui::GetStyleColorVec4(ImGuiCol_TitleBgActive));
+        ImGui::SetNextWindowBgAlpha(1.0);
         ImGui::Begin("SceneView", nullptr, flags);
 
         static glm::mat4 trans(1.0);
 
         auto* world = displays[activeDisplay]->getWorld();
-        if (ImGui::CollapsingHeader(activeDisplay.c_str())){
+        if (ImGui::CollapsingHeader(activeDisplay.c_str(), nullptr, ImGuiTreeNodeFlags_DefaultOpen)){
             if (world != nullptr){
                 ImGui::BeginChild("_EntityDisplay");
                     for (auto& e : *world) {
@@ -160,8 +165,24 @@ namespace TD {
         }
 
         ImGui::End();
-        ImGui::PopStyleColor();
 
+        /** Inspector! */
+        ImGui::SetNextWindowBgAlpha(1.0);
+        ImGui::SetNextWindowPos(ImVec2((float)(_display_w - sceneInspectorWidth),(float)menuBarHeight));
+        ImGui::SetNextWindowSize(ImVec2((float)sceneInspectorWidth, (float)sceneInspectorHeight));
+        ImGui::Begin("Inspector", nullptr, flags);
+
+        ImGui::End();
+
+        ImGui::SetNextWindowBgAlpha(1.0);
+        ImGui::SetNextWindowPos(ImVec2((float)(sceneHierarchyWidth),(float)(_display_h - sceneConsoleHeight)));
+        ImGui::SetNextWindowSize(ImVec2((float)sceneConsoleWidth, (float)sceneInspectorHeight));
+        ImGui::Begin("Console", nullptr, flags);
+
+        ImGui::End();
+
+        ImGui::PopStyleColor();
+        /** Menu Bar */
         if (ImGui::BeginMainMenuBar()){
             if (ImGui::BeginMenu("File")){
                 if (ImGui::BeginMenu("Open")){
@@ -242,7 +263,7 @@ namespace TD {
                 break;
         }
         ImGuiIO& io = ImGui::GetIO();
-        ImGuizmo::SetRect((float)offsetX, (float)offsetY, (float)_display_w, (float)_display_h);
+        ImGuizmo::SetRect((float)offsetX, (float)-offsetY, (float)(_display_w), (float)(_display_h));
         ImGuizmo::Manipulate(glm::value_ptr(viewMatrix), glm::value_ptr(projectionMatrix), mCurrentGizmoOperation, mCurrentGizmoMode, glm::value_ptr(trans), nullptr, useSnap ? &snap.x : nullptr);
 
         float matrixTranslation[3], matrixRotation[3], matrixScale[3];

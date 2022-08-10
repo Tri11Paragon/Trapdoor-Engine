@@ -16,6 +16,7 @@
 #include <boost/log/attributes/clock.hpp>
 #include <string>
 #include <iostream>
+#include <config.h>
 
 namespace logging = boost::log;
 namespace sinks = boost::log::sinks;
@@ -41,6 +42,10 @@ namespace keywords = boost::log::keywords;
 BOOST_LOG_ATTRIBUTE_KEYWORD(a_timestamp, "TimeStamp", attrs::local_clock::value_type)
 BOOST_LOG_ATTRIBUTE_KEYWORD(a_thread_id, "ThreadID", attrs::current_thread_id::value_type)
 
+#ifdef DEBUG_ENABLED
+    extern std::stringstream td_logStream;
+#endif
+
 static void td_coloring_formatter(logging::record_view const& rec, logging::formatting_ostream& strm){
     auto severity = rec[logging::trivial::severity];
     if (severity) {
@@ -48,21 +53,39 @@ static void td_coloring_formatter(logging::record_view const& rec, logging::form
         switch (severity.get()) {
             case logging::trivial::severity_level::trace:
                 strm << "\033[97m"; // 37
+#ifdef DEBUG_ENABLED
+                td_logStream << "\033[97m"; // 37
+#endif
                 break;
             case logging::trivial::severity_level::debug:
                 strm << "\033[36m";
+#ifdef DEBUG_ENABLED
+                td_logStream << "\033[36m";
+#endif
                 break;
             case logging::trivial::severity_level::info:
                 strm << "\033[92m";
+#ifdef DEBUG_ENABLED
+                td_logStream << "\033[92m";
+#endif
                 break;
             case logging::trivial::severity_level::warning:
                 strm << "\033[93m";
+#ifdef DEBUG_ENABLED
+                td_logStream << "\033[93m";
+#endif
                 break;
             case logging::trivial::severity_level::error:
                 strm << "\033[91m";
+#ifdef DEBUG_ENABLED
+                td_logStream << "\033[91m";
+#endif
                 break;
             case logging::trivial::severity_level::fatal:
                 strm << "\033[97;41m";
+#ifdef DEBUG_ENABLED
+                td_logStream << "\033[97;41m";
+#endif
                 break;
             default:
                 break;
@@ -111,17 +134,33 @@ static void td_coloring_formatter(logging::record_view const& rec, logging::form
     strm << strBuild.str();
     strm << "[" << rec[a_thread_id] << "] ";
     strm << "[" << severity << "]: ";
+#ifdef DEBUG_ENABLED
+    td_logStream << strBuild.str();
+    td_logStream << "[" << rec[a_thread_id] << "] ";
+    td_logStream << "[" << severity << "]: ";
+#endif
 
     auto theMessage = rec[logging::expressions::smessage];
-    if (theMessage->ends_with('\n'))
-        strm << theMessage->substr(0, theMessage->size()-1);
-    else
+    if (theMessage->ends_with('\n')) {
+        strm << theMessage->substr(0, theMessage->size() - 1);
+#ifdef DEBUG_ENABLED
+        td_logStream << theMessage;
+#endif
+    } else {
         strm << theMessage;
+#ifdef DEBUG_ENABLED
+        td_logStream << theMessage << '\n';
+#endif
+    }
 
     if (severity) {
         // Restore the default color
         strm << "\033[0m";
+#ifdef DEBUG_ENABLED
+        td_logStream << "\033[0m";
+#endif
     }
+
 }
 
 

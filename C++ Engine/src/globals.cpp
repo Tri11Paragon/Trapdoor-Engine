@@ -16,6 +16,11 @@
 #include "hashmaps.h"
 #include "world/World.h"
 #include <encoder.h>
+#include <config.h>
+
+#ifdef DEBUG_ENABLED
+std::stringstream td_logStream;
+#endif
 
 namespace TD {
     double lastTime;

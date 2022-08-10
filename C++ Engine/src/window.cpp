@@ -348,7 +348,7 @@ namespace TD {
         settings.hardwareEncoding = false;
         settings.bitRate = 4500 * 1024; // 4500 KBS -- OBS setting
         settings.inputAlpha = true;
-        encoder.run(settings, 16);
+        //encoder.run(settings, 16);
     }
 
     void runEncoder(){
@@ -391,7 +391,7 @@ namespace TD {
             //fxaaFBO.renderToQuad(fxaaShader);
 
             TD::window::finishRender();
-            runEncoder();
+            //runEncoder();
         }
     }
 
@@ -399,8 +399,8 @@ namespace TD {
 #ifdef DEBUG_ENABLED
         TD::Editor::cleanup();
 #endif
-        encoder.commit();
-        encoder.stop();
+        //encoder.commit();
+        //encoder.stop();
         TD::window::deleteWindow();
         for (const auto& pa : displays)
             delete(pa.second);
