@@ -15,6 +15,7 @@
 #include "renderer/ui/debug.h"
 #include "hashmaps.h"
 #include "world/World.h"
+#include <encoder.h>
 
 namespace TD {
     double lastTime;
@@ -42,6 +43,7 @@ namespace TD {
     std::vector<WindowResize*> windowResizeCallbacks;
     std::unordered_map<std::string, TD::Display*> displays;
     std::string activeDisplay = "NULL";
+    atg_dtv::Encoder encoder;
 
     // Developer / Debug
     bool debugMenuEnabled = false;

@@ -12,6 +12,7 @@
 #include "renderer/ui/debug.h"
 #include "world/World.h"
 #include <config.h>
+#include <encoder.h>
 
 #include <utility>
 
@@ -26,6 +27,7 @@ namespace TD {
     extern bool _isWindowOpen;
     extern bool _listenToResize;
     extern float fov;
+    extern atg_dtv::Encoder encoder;
 
     glm::mat4 perspectiveWithCenter(float width, float height, float offsetX = 0, float offsetY = 0) {
         float aspect = width / height;
@@ -151,6 +153,7 @@ namespace TD {
 
         TD::createMatrixUBO();
 
+        glfwGetFramebufferSize(_window, &_display_w, &_display_h);
         updateProjections(_display_w, _display_h);
 
         _loadingComplete = true;
@@ -299,6 +302,7 @@ namespace TD {
 
     extern vector<TD::font> fonts;
     extern TD::camera *activeCamera;
+    extern atg_dtv::Encoder encoder;
 
     static void keyCallBack(bool pressed, int code){
         if (code == GLFW_KEY_F3 && pressed)
@@ -335,6 +339,14 @@ namespace TD {
 #ifdef DEBUG_ENABLED
         TD::Editor::init();
 #endif
+        atg_dtv::Encoder::VideoSettings settings;
+        settings.fname = "Test.mp4";
+        settings.width = 1920;
+        settings.height = 1080;
+        settings.inputWidth = _display_w;
+        settings.inputHeight = _display_h;
+        settings.hardwareEncoding = false;
+        encoder.run(settings, 128 * 1024);
     }
 
     void DisplayManager::update() {
@@ -359,6 +371,13 @@ namespace TD {
                     break;
                 }
             }
+            auto* pixels = new uint8_t[3 * _display_w * _display_h];
+            glReadPixels(0, 0, _display_w/2, _display_h/2, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+            auto* fptr = encoder.newFrame();
+            fptr->m_rgb = pixels;
+            encoder.submitFrame();
+
+
 
             //fxaaFBO.bindFBODraw();
 
@@ -375,6 +394,8 @@ namespace TD {
 #ifdef DEBUG_ENABLED
         TD::Editor::cleanup();
 #endif
+        encoder.commit();
+        encoder.stop();
         TD::window::deleteWindow();
         for (const auto& pa : displays)
             delete(pa.second);

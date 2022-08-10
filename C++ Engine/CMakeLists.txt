@@ -62,6 +62,9 @@ message("Assimp BUILD: ${TD_BUILD_SETTING} // ${CMAKE_BUILD_TYPE}")
 set(CMAKE_BUILD_TYPE ${TD_BUILD_SETTING})
 add_subdirectory(include/meshoptimizer)
 message("Meshoptimizer BUILD: ${TD_BUILD_SETTING} // ${CMAKE_BUILD_TYPE}")
+# DTV setup
+add_subdirectory(include/direct-to-video)
+include_directories(include/direct-to-video/include)
 
 # Bullet Setup
 #set( BULLET_ROOT "include/bullet3/build" CACHE PATH "Bullet library path" )
@@ -106,6 +109,7 @@ target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} Threads::Threads)
 target_link_libraries(${PROJECT_NAME} Boost::filesystem Boost::log)
 target_link_libraries(${PROJECT_NAME} ZLIB::ZLIB)
+target_link_libraries(${PROJECT_NAME} direct-to-video)
 
 #target_link_libraries(${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/include/nativefiledialog/build/lib/Debug/x64/libnfd_d.a)
 target_link_libraries(${PROJECT_NAME} nativefiledialog)

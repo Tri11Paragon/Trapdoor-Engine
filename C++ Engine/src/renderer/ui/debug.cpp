@@ -82,6 +82,12 @@ namespace TD {
     // for entity view
     int sceneHierarchyWidth = 255;
     int sceneHierarchyHeight = 0;
+    // for inspector view
+    int sceneInspectorWidth = 275;
+    int sceneInspectorHeight = 0;
+    // console window
+    int sceneConsoleWidth = 0;
+    int sceneConsoleHeight = 255;
     // menu bar
     int menuBarWidth = 0;
     int menuBarHeight = 22;
@@ -115,18 +121,11 @@ namespace TD {
         //glViewport(offsetX, offsetY, iWidth, iHeight);
     }
 
-    static TD::model* arrowModel;
-    static TD::shader* arrowShader;
     static std::string activeEntity;
     static ID activeEntityID = 0;
 
     void Editor::init() {
         tlog << "Loading debug editor resources";
-        arrowModel = new TD::model("../assets/models/arrow.dae");
-        arrowModel->loadToGL();
-        arrowShader = new TD::shader("../assets/shaders/debugarrow.vert", "../assets/shaders/debugarrow.frag");
-        arrowShader->use();
-        arrowShader->setColor("color1", glm::vec3(255, 0, 0));
     }
 
     void Editor::render() {
@@ -243,11 +242,8 @@ namespace TD {
                 break;
         }
         ImGuiIO& io = ImGui::GetIO();
-        ImGuizmo::SetRect((float)offsetX, (float)offsetY + (float)0, (float)_display_w, (float)_display_h);
-        //ImGuizmo::SetRect((float)0, (float)0, (float)io.DisplaySize.x, (float)io.DisplaySize.y);
-        // perspectiveWithCenter((float)iWidth, (float)iHeight, (float)offsetX, (float)offsetY - menuBarHeight)
-        auto per = glm::perspective(glm::radians(fov), (float)iWidth / (float)iHeight, 0.1f, camera_far_plane);
-        ImGuizmo::Manipulate(glm::value_ptr(viewMatrix), glm::value_ptr(per), mCurrentGizmoOperation, mCurrentGizmoMode, glm::value_ptr(trans), nullptr, useSnap ? &snap.x : nullptr);
+        ImGuizmo::SetRect((float)offsetX, (float)offsetY, (float)_display_w, (float)_display_h);
+        ImGuizmo::Manipulate(glm::value_ptr(viewMatrix), glm::value_ptr(projectionMatrix), mCurrentGizmoOperation, mCurrentGizmoMode, glm::value_ptr(trans), nullptr, useSnap ? &snap.x : nullptr);
 
         float matrixTranslation[3], matrixRotation[3], matrixScale[3];
         ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(trans), matrixTranslation, matrixRotation, matrixScale);
@@ -255,25 +251,12 @@ namespace TD {
         transformComp->setTranslation(glm::vec3(matrixTranslation[0], matrixTranslation[1], matrixTranslation[2]));
         transformComp->setRotation(glm::vec3(matrixRotation[0], matrixRotation[1], matrixRotation[2]));
         transformComp->setScale(glm::vec3(matrixScale[0], matrixScale[1], matrixScale[2]));
-
-//        ImDrawList* draw_list = ImGui::GetWindowDrawList();
-//        auto entPos = world->getComponent<TransformComponent>(TRANSFORM_SYSTEM, activeEntityID);
-//        auto p1 = getScreenPos(entPos->getTranslation());
-//        auto p2 = getScreenPos(entPos->getTranslation() + glm::vec3(5, 0, 0));
-//        draw_list->AddRect(ImVec2(p1.x, p1.y), ImVec2(p2.x, p2.y), ImColor(255, 0, 0));
-
         ImGui::PopFont();
     }
 
     void Editor::renderGBuffer() {
-        /*if (!editorMenuEnabled)
+        if (!editorMenuEnabled)
             return;
-        arrowShader->use();
-        auto* world = displays[activeDisplay]->getWorld();
-        auto entPos = world->getComponent<TransformComponent>(TRANSFORM_SYSTEM, activeEntityID);
-        glm::mat4 trans(1.0);
-        trans = glm::translate(trans, entPos->getTranslation());
-        arrowModel->draw(*arrowShader, trans);*/
     }
 
     void Editor::toggle() {
@@ -304,8 +287,7 @@ namespace TD {
     }
 
     void Editor::cleanup() {
-        delete(arrowModel);
-        delete(arrowShader);
+
     }
 
 }

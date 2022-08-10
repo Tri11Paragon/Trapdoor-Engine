@@ -68,7 +68,7 @@ namespace TD {
         virtual void update() = 0;
         virtual void onLeave() = 0;
         virtual World* getWorld() = 0;
-        ~Display() {}
+        virtual ~Display() {}
     };
 
     class DefaultLoadingScreenDisplay : public Display {

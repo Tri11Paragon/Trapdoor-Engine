@@ -16,6 +16,7 @@
 #include "game/TestDisplay.h"
 #include "world/GameRegistry.h"
 #include <config.h>
+#include <encoder.h>
 
 #include "data/NBT.h"
 
@@ -45,8 +46,6 @@ int main(int, char**){
     // will automatically be cleaned up when the display manager exits
     new TD::TestDisplay("TestDisplay");
     TD::DisplayManager::changeDisplay("TestDisplay");
-
-
     loadTimer.end("Load Time");
     loadTimer.print();
     TD::DisplayManager::update();
