@@ -17,9 +17,11 @@
 #include "world/World.h"
 #include <encoder.h>
 #include <config.h>
+#include <mutex>
 
 #ifdef DEBUG_ENABLED
-std::stringstream td_logStream;
+std::mutex td_logItemsMut;
+std::vector<td_logItem> td_logItems;
 #endif
 
 namespace TD {

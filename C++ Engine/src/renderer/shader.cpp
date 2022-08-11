@@ -103,7 +103,7 @@ namespace TD {
             // convert stream into string
             shaderSource = shaderStream.str();
         } catch(std::ifstream::failure& e) {
-            fout << "Unable to read shader file! " << file << endl;
+            flog << "Unable to read shader file! " << file << endl;
             return -1;
         }
 

@@ -15,23 +15,29 @@
 #include "shader.h"
 #include "camera.h"
 #include <assimp/Importer.hpp>
+#include <utility>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
 namespace TD {
 
     class texture {
+    private:
+        texture(const texture& that); // Disable Copy Constructor
+        texture& operator=(const texture& that); // Disable Copy Assignment
     protected:
         unsigned int textureID;
         int width, height, channels;
         unsigned char* loadTexture(std::string path);
 
-        bool loadGL = true;
         bool loadedToGpu = false;
         unsigned char* data;
+
     public:
+        texture(texture &&) noexcept = delete; // Disable move constructor.
+        texture& operator=(texture &&) noexcept = delete; // Disable Move Assignment
         texture();
-        texture(std::string path) : texture(true, path) {}
+        explicit texture(std::string path) : texture(true, std::move(path)) {}
         texture(bool loadGL, std::string path);
         ~texture();
         virtual void bind();
@@ -41,10 +47,16 @@ namespace TD {
     };
 
     class cubemapTexture : public texture {
+    private:
+        cubemapTexture(const cubemapTexture& that); // Disable Copy Constructor
+        cubemapTexture& operator=(const cubemapTexture& that); // Disable Copy Assignment
     public:
-        cubemapTexture(std::vector<std::string> paths);
-        void bind();
-        void unbind();
+        cubemapTexture(cubemapTexture &&) noexcept = delete; // Disable move constructor.
+        cubemapTexture& operator=(cubemapTexture &&) noexcept = delete; // Disable Move Assignment
+        explicit cubemapTexture(std::vector<std::string> paths);
+        void bind() override;
+        void unbind() override;
+        ~cubemapTexture() = default;
     };
 
     // this needs very little from the texture base class and isn't necessarily compatible.
@@ -57,7 +69,12 @@ namespace TD {
         std::vector<int> delays;
         bool loadedAsArray = false, loadedToGL = false;
         int width = 0, height = 0, channels = 0, frames = 0;
+
+        gifTexture(const gifTexture& that); // Disable Copy Constructor
+        gifTexture& operator=(const gifTexture& that); // Disable Copy Assignment
     public:
+        gifTexture(gifTexture &&) noexcept = delete; // Disable move constructor.
+        gifTexture& operator=(gifTexture &&) noexcept = delete; // Disable Move Assignment
         explicit gifTexture(std::string path);
         void bind(int frame = 0);
         void unbind();
@@ -65,9 +82,9 @@ namespace TD {
 
         inline std::vector<unsigned int> getTextures() {return textures;}
         inline std::vector<int> getDelays() {return delays;}
-        inline int getNumberOfFrames() const {return frames;}
-        inline int getWidth() {return width;}
-        inline int getHeight() {return height;}
+        [[nodiscard]] inline int getNumberOfFrames() const {return frames;}
+        [[nodiscard]] inline int getWidth() const {return width;}
+        [[nodiscard]] inline int getHeight() const {return height;}
 
         ~gifTexture();
     };
@@ -97,8 +114,11 @@ namespace TD {
     };
 
     class vao {
+    private:
+        vao(const vao& that); // Disable Copy Constructor
+        vao& operator=(const vao& that); // Disable Copy Assignment
     protected:
-        unsigned int vaoID;
+        unsigned int vaoID{0};
         std::vector<unsigned int> vbos;
         std::vector<Texture> textures;
         int drawCount = -1;
@@ -106,8 +126,10 @@ namespace TD {
         unsigned int storeData(int attrNumber, int coordSize, int stride, long offset, int length, const float* data);
         unsigned int storeData(int length, const unsigned int* data);
         unsigned int storeData(const std::vector<Vertex> &vertices);
+        vao() = default;
     public:
-        vao() {}
+        vao(vao &&) noexcept = delete; // Disable move constructor.
+        vao& operator=(vao &&) noexcept = delete; // Disable Move Assignment
         vao(const std::vector<float> &verts, const std::vector<unsigned int> &indicies, int attributeCount);
         vao(const std::vector<float> &verts, const std::vector<float> &uvs, const std::vector<unsigned int> &indicies, int attributeCount);
         ~vao();
@@ -127,11 +149,11 @@ namespace TD {
                 glEnableVertexArrayAttrib(vaoID, i);
             }
 
-            storeData(0, dimensions, dimensions * sizeof(float), 0, verts.size(), verts.data());
+            storeData(0, dimensions, dimensions * (int)sizeof(float), 0, (int)verts.size(), verts.data());
 
             unbind();
         }
-        virtual void draw(){
+        void draw() override {
             glDrawArrays(GL_TRIANGLES, 0, drawCount);
         }
     };
@@ -151,6 +173,9 @@ namespace TD {
     };
 
     class instancedVAO {
+    private:
+        instancedVAO(const instancedVAO& that); // Disable Copy Constructor
+        instancedVAO& operator=(const instancedVAO& that); // Disable Copy Assignment
     protected:
         unsigned int vaoID;
         unsigned int instanceVarsVBO;
@@ -163,6 +188,8 @@ namespace TD {
         unsigned int createInstanceVBO(int bytePerInstance);
         void addInstancedAttribute(int attribute, int size, int dataLength, int offset);
     public:
+        instancedVAO(instancedVAO &&) noexcept = delete; // Disable move constructor.
+        instancedVAO& operator=(instancedVAO &&) noexcept = delete; // Disable Move Assignment
         instancedVAO(int max_transforms, const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices);
         void bind();
         void draw(int count);
@@ -172,6 +199,8 @@ namespace TD {
 
     class instancedLightVAO : public instancedVAO {
     private:
+        instancedLightVAO(const instancedLightVAO& that); // Disable Copy Constructor
+        instancedLightVAO& operator=(const instancedLightVAO& that); // Disable Copy Assignment
         struct LightData {
             glm::mat4 transform;
             glm::vec3 position;
@@ -181,14 +210,21 @@ namespace TD {
             float Radius;
         };
     public:
+        instancedLightVAO(instancedLightVAO &&) noexcept = delete; // Disable move constructor.
+        instancedLightVAO& operator=(instancedLightVAO &&) noexcept = delete; // Disable Move Assignment
         instancedLightVAO(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices);
         void updateLightData(TD::camera &camera, const std::vector<Light> &lights);
         ~instancedLightVAO();
     };
 
     class model {
+    private:
+        model(const model& that); // Disable Copy Constructor
+        model& operator=(const model& that); // Disable Copy Assignment
     public:
-        model(std::string path) {
+        model(model &&) noexcept = delete; // Disable move constructor.
+        model& operator=(model &&) noexcept = delete; // Disable Move Assignment
+        explicit model(const std::string& path) {
             this->path = path;
             loadModel(path);
         }
@@ -227,6 +263,9 @@ namespace TD {
     };
 
     class fbo : public WindowResize {
+    private:
+        fbo(const fbo& that); // Disable Copy Constructor
+        fbo& operator=(const fbo& that); // Disable Copy Assignment
     protected:
         unsigned int _fboID;
         DEPTH_ATTACHMENT_TYPE _fboType;
@@ -242,8 +281,10 @@ namespace TD {
         virtual void createAttachments() {}
         void deleteFrameBuffer();
     public:
+        fbo(fbo &&) noexcept = delete; // Disable move constructor.
+        fbo& operator=(fbo &&) noexcept = delete; // Disable Move Assignment
         fbo();
-        fbo(DEPTH_ATTACHMENT_TYPE type);
+        explicit fbo(DEPTH_ATTACHMENT_TYPE type);
         fbo(int width, int height);
         fbo(int width, int height, DEPTH_ATTACHMENT_TYPE type);
 
@@ -258,7 +299,7 @@ namespace TD {
             glGenTextures(1, &colorTextureID);
             glBindTexture(GL_TEXTURE_2D, colorTextureID);
 
-            glTexImage2D(GL_TEXTURE_2D, 0, format, _width, _height, 0, formatInternal, type, NULL);
+            glTexImage2D(GL_TEXTURE_2D, 0, format, _width, _height, 0, formatInternal, type, nullptr);
 
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
@@ -290,12 +331,17 @@ namespace TD {
 
     class gBufferFBO : public fbo {
     private:
+        gBufferFBO(const gBufferFBO& that); // Disable Copy Constructor
+        gBufferFBO& operator=(const gBufferFBO& that); // Disable Copy Assignment
+
         TD::shader* firstPassShader;
         TD::shader* secondPassShader;
 
 
         virtual void createAttachments();
     public:
+        gBufferFBO(gBufferFBO &&) noexcept = delete; // Disable move constructor.
+        gBufferFBO& operator=(gBufferFBO &&) noexcept = delete; // Disable Move Assignment
         gBufferFBO();
 
         inline TD::shader* getFirstPassShader() {return firstPassShader;}
@@ -313,6 +359,9 @@ namespace TD {
 
     class shadowFBO : public fbo {
     private:
+        shadowFBO(const shadowFBO& that); // Disable Copy Constructor
+        shadowFBO& operator=(const shadowFBO& that); // Disable Copy Assignment
+
         TD::shader* depthShader;
         unsigned int matricesUBO;
 
@@ -323,9 +372,12 @@ namespace TD {
         virtual void createAttachments();
         static std::vector<glm::vec4> getFrustumCornersWorldSpace(glm::mat4 projectView);
         static std::vector<glm::vec4> getFrustumCornersWorldSpace(glm::mat4 project, glm::mat4 view);
-        glm::mat4 getLightSpaceMatrix(const float nearPlane, const float farPlane);
+        glm::mat4 getLightSpaceMatrix(float nearPlane, float farPlane);
         std::vector<glm::mat4> generateLightMatrix();
     public:
+        shadowFBO(shadowFBO &&) noexcept = delete; // Disable move constructor.
+        shadowFBO& operator=(shadowFBO &&) noexcept = delete; // Disable Move Assignment
+
         std::vector<float> shadowCascadeLevels{ camera_far_plane / 50.0f, camera_far_plane / 25.0f, camera_far_plane / 10.0f, camera_far_plane / 2.0f };
         shadowFBO();
         ~shadowFBO();

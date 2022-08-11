@@ -38,6 +38,7 @@ namespace TD {
         static void deleteAllTabs();
     };
 
+#ifdef DEBUG_ENABLED
     class Editor {
     public:
         static void open();
@@ -49,7 +50,7 @@ namespace TD {
         static void renderGBuffer();
         static void cleanup();
     };
-
+#endif
 }
 
 

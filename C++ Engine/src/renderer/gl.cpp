@@ -316,7 +316,6 @@ namespace TD {
     }
 
     texture::texture(bool loadGL, std::string path) {
-        this->loadGL = loadGL;
         data = loadTexture(path);
         if (data == nullptr){
             flog << "There was an error loading the image file " << path;

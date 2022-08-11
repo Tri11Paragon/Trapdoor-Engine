@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.22)
 project(engine VERSION "0.0.1")
 
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -g")
+add_compile_options(-fsanitize=address)
+add_link_options(-fsanitize=address)
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
     message("debug mode")

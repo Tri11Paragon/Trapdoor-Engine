@@ -205,7 +205,12 @@ namespace TD {
         TD::gBufferFBO gBufferFbo;
         TD::shadowFBO shadowFbo;
         TD::shader fxaaShader = TD::shader("../assets/shaders/postprocessing/filter-fxaa.vert", "../assets/shaders/postprocessing/filter-fxaa.frag");
+
+        World(const World& that); // Disable Copy Constructor
+        World& operator=(const World& that); // Disable Copy Assignment
     public:
+        World(World &&) noexcept = delete; // Disable move constructor.
+        World& operator=(World &&) noexcept = delete; // Disable Move Assignment
         World();
         void render();
         void update();

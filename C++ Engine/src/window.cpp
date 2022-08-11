@@ -287,8 +287,10 @@ namespace TD {
     void window::forceWindowUpdate() {
         int pastValueW = _display_w, pastValueH = _display_h;
         glfwGetFramebufferSize(_window, &_display_w, &_display_h);
+#ifdef DEBUG_ENABLED
         if (Editor::isOpen())
             glViewport(0,0, _display_w, _display_h);
+#endif
         if ((pastValueW != _display_w || pastValueH != _display_h)) {
             glViewport(0,0, _display_w, _display_h);
             if (_listenToResize) {
@@ -307,8 +309,10 @@ namespace TD {
     static void keyCallBack(bool pressed, int code){
         if (code == GLFW_KEY_F3 && pressed)
             TD::debugUI::toggle();
+#ifdef DEBUG_ENABLED
         if (code == GLFW_KEY_INSERT && pressed)
             TD::Editor::toggle();
+#endif
         if (code == GLFW_KEY_ESCAPE && pressed)
             TD::setMouseGrabbed(!TD::isMouseGrabbed());
     }
@@ -492,26 +496,24 @@ namespace TD {
 
     }
 
-    DefaultLoadingScreenDisplay::~DefaultLoadingScreenDisplay() {
+    DefaultLoadingScreenDisplay::~DefaultLoadingScreenDisplay() = default;
 
-    }
-
-    void DefaultLoadingScreenDisplay::modelRegistered(std::string ident, std::string path) {
+    void DefaultLoadingScreenDisplay::modelRegistered(const std::string& ident, const std::string& path) {
         modelCount++;
         lastLoaded = "Registered Model " + ident + " @ " + path;
     }
 
-    void DefaultLoadingScreenDisplay::textureRegisted(std::string ident, std::string path) {
+    void DefaultLoadingScreenDisplay::textureRegisted(const std::string& ident, const std::string& path) {
         textureCount++;
         lastLoaded = "Registered Texture " + ident + " @ " + path;
     }
 
-    void DefaultLoadingScreenDisplay::modelLoaded(std::string ident, std::string path) {
+    void DefaultLoadingScreenDisplay::modelLoaded(const std::string& ident, const std::string& path) {
         modelsLoaded++;
         lastLoaded = "Loaded Model " + ident + " @ " + path;
     }
 
-    void DefaultLoadingScreenDisplay::textureLoaded(std::string ident, std::string path) {
+    void DefaultLoadingScreenDisplay::textureLoaded(const std::string& ident, const std::string& path) {
         texturesLoaded++;
         lastLoaded = "Loaded Texture " + ident + " @ " + path;
     }

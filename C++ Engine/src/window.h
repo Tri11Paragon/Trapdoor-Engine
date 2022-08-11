@@ -79,15 +79,15 @@ namespace TD {
         float currentTime = 0;
         std::string lastLoaded;
     public:
-        DefaultLoadingScreenDisplay(std::string name);
+        explicit DefaultLoadingScreenDisplay(std::string name);
         virtual void onSwitch();
         virtual void render();
         virtual void update();
         virtual void onLeave();
-        virtual void modelRegistered(std::string ident, std::string path);
-        virtual void textureRegisted(std::string ident, std::string path);
-        virtual void modelLoaded(std::string ident, std::string path);
-        virtual void textureLoaded(std::string ident, std::string path);
+        virtual void modelRegistered(const std::string& ident, const std::string& path);
+        virtual void textureRegisted(const std::string& ident, const std::string& path);
+        virtual void modelLoaded(const std::string& ident, const std::string& path);
+        virtual void textureLoaded(const std::string& ident, const std::string& path);
         virtual World* getWorld(){return nullptr;}
         ~DefaultLoadingScreenDisplay();
     };

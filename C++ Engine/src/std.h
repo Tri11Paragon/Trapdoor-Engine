@@ -77,7 +77,6 @@ namespace TD {
         void free(){
             delete(data);
             *avail = false;
-            std::cout << *avail;
         }
         T operator *(){
             if (!*avail)

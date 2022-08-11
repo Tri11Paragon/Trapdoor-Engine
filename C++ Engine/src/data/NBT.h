@@ -149,6 +149,7 @@ namespace TD {
             file.read(&typeT, 1);
             this->type = (unsigned char)typeT;
         }
+        // TODO: Rule of 3/5
         virtual ~NBT_TAG() = default;
     };
 
@@ -659,6 +660,7 @@ namespace TD {
                 NBTWriter::write(compound, path);
             });
         }
+        // TODO: rule of 3 / 5
         ~NBTWriterThreaded(){
             thread->join();
             delete(thread);

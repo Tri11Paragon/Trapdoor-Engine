@@ -16,6 +16,7 @@
 #include <boost/log/attributes/clock.hpp>
 #include <string>
 #include <iostream>
+#include <utility>
 #include <config.h>
 
 namespace logging = boost::log;
@@ -32,59 +33,71 @@ namespace keywords = boost::log::keywords;
 #define elog BOOST_LOG_TRIVIAL(error)
 #define flog BOOST_LOG_TRIVIAL(fatal)
 
-#define tout tlog
-#define dout dlog
-#define iout ilog
-#define wout wlog
-#define eout elog
-#define fout flog
-
 BOOST_LOG_ATTRIBUTE_KEYWORD(a_timestamp, "TimeStamp", attrs::local_clock::value_type)
 BOOST_LOG_ATTRIBUTE_KEYWORD(a_thread_id, "ThreadID", attrs::current_thread_id::value_type)
 
 #ifdef DEBUG_ENABLED
-    extern std::stringstream td_logStream;
+    // TODO: move this to globals?
+    const static std::vector<std::vector<float>> colorArray = {
+            {1.0f, 1.0f, 1.0f},             // Trace
+            {0.0f, 0.639f, 0.639f},         // Debug
+            {0.3098f, 0.7686f, 0.07843f},   // Info
+            {0.898f, 0.749f, 0.0f},         // Warn
+            {1.0f, 0.2509f, 0.3137f},       // Error
+            {0.4666f, 0.18039f, 0.1725f}    // Fatal (should never occur since fatal should exit the program, however, I sometimes use it for quick testing.)
+    };
+    struct td_logItem{
+        std::string log;
+        unsigned char color{0};
+        td_logItem(std::string log, unsigned char color): log(std::move(log)), color(color) {}
+    };
+    extern std::mutex td_logItemsMut;
+    extern std::vector<td_logItem> td_logItems;
 #endif
 
 static void td_coloring_formatter(logging::record_view const& rec, logging::formatting_ostream& strm){
     auto severity = rec[logging::trivial::severity];
+#ifdef DEBUG_ENABLED
+    unsigned char color = 0;
+    std::stringstream td_logStream;
+#endif
     if (severity) {
         // Set the color
         switch (severity.get()) {
             case logging::trivial::severity_level::trace:
                 strm << "\033[97m"; // 37
 #ifdef DEBUG_ENABLED
-                td_logStream << "\033[97m"; // 37
+                color = 0;
 #endif
                 break;
             case logging::trivial::severity_level::debug:
                 strm << "\033[36m";
 #ifdef DEBUG_ENABLED
-                td_logStream << "\033[36m";
+                color = 1;
 #endif
                 break;
             case logging::trivial::severity_level::info:
                 strm << "\033[92m";
 #ifdef DEBUG_ENABLED
-                td_logStream << "\033[92m";
+                color = 2;
 #endif
                 break;
             case logging::trivial::severity_level::warning:
                 strm << "\033[93m";
 #ifdef DEBUG_ENABLED
-                td_logStream << "\033[93m";
+                color = 3;
 #endif
                 break;
             case logging::trivial::severity_level::error:
                 strm << "\033[91m";
 #ifdef DEBUG_ENABLED
-                td_logStream << "\033[91m";
+                color = 4;
 #endif
                 break;
             case logging::trivial::severity_level::fatal:
                 strm << "\033[97;41m";
 #ifdef DEBUG_ENABLED
-                td_logStream << "\033[97;41m";
+                color = 5;
 #endif
                 break;
             default:
@@ -136,7 +149,7 @@ static void td_coloring_formatter(logging::record_view const& rec, logging::form
     strm << "[" << severity << "]: ";
 #ifdef DEBUG_ENABLED
     td_logStream << strBuild.str();
-    td_logStream << "[" << rec[a_thread_id] << "] ";
+    //td_logStream << "[" << rec[a_thread_id] << "] ";
     td_logStream << "[" << severity << "]: ";
 #endif
 
@@ -156,15 +169,18 @@ static void td_coloring_formatter(logging::record_view const& rec, logging::form
     if (severity) {
         // Restore the default color
         strm << "\033[0m";
-#ifdef DEBUG_ENABLED
-        td_logStream << "\033[0m";
-#endif
     }
+#ifdef DEBUG_ENABLED
+    // TODO: Find way of logging to console without having to wait between threads.
+    td_logItemsMut.lock();
+        td_logItems.emplace_back(td_logStream.str(), color);
+    td_logItemsMut.unlock();
+#endif
 
 }
 
 
-static void init_logging(std::string file){
+static void init_logging(const std::string& file){
 #ifndef ENGINE_LOGGING_INIT_COMPLETE
     logging::register_simple_formatter_factory<logging::trivial::severity_level, char>("Severity");
 

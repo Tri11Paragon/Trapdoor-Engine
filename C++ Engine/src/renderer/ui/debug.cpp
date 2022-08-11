@@ -79,6 +79,8 @@ namespace TD {
         }
     }
 
+#ifdef DEBUG_ENABLED
+
     // for entity view
     int sceneHierarchyWidth = 255;
     int sceneHierarchyHeight = 0;
@@ -176,8 +178,37 @@ namespace TD {
 
         ImGui::SetNextWindowBgAlpha(1.0);
         ImGui::SetNextWindowPos(ImVec2((float)(sceneHierarchyWidth),(float)(_display_h - sceneConsoleHeight)));
-        ImGui::SetNextWindowSize(ImVec2((float)sceneConsoleWidth, (float)sceneInspectorHeight));
+        ImGui::SetNextWindowSize(ImVec2((float)sceneConsoleWidth, (float)sceneConsoleHeight));
         ImGui::Begin("Console", nullptr, flags);
+
+        const float footer_height_to_reserve = ImGui::GetStyle().ItemSpacing.y + ImGui::GetFrameHeightWithSpacing();
+        ImGui::BeginChild("ScrollingRegion", ImVec2(0, -footer_height_to_reserve), false, ImGuiWindowFlags_HorizontalScrollbar);
+        bool copyToClip = false;
+        static bool autoScroll = true;
+        if (ImGui::BeginPopupContextWindow()) {
+            if (ImGui::Selectable("Clear")) td_logItems.clear();
+            copyToClip = ImGui::SmallButton("Copy");
+            ImGui::EndPopup();
+        }
+
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 1)); // Tighten spacing
+        if (copyToClip)
+            ImGui::LogToClipboard();
+        for (auto item : td_logItems){
+            auto colorData = colorArray[item.color];
+            ImVec4 color(colorData[0], colorData[1], colorData[2], 1.0f);
+            ImGui::PushStyleColor(ImGuiCol_Text, color);
+            ImGui::TextUnformatted(item.log.c_str());
+            ImGui::PopStyleColor();
+        }
+        if (copyToClip)
+            ImGui::LogFinish();
+        if ((autoScroll && ImGui::GetScrollY() >= ImGui::GetScrollMaxY()))
+            ImGui::SetScrollHereY(1.0f);
+
+        ImGui::PopStyleVar();
+        ImGui::EndChild();
+        ImGui::Separator();
 
         ImGui::End();
 
@@ -310,5 +341,6 @@ namespace TD {
     void Editor::cleanup() {
 
     }
+#endif
 
 }
