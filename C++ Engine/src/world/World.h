@@ -31,13 +31,13 @@ namespace TD {
     class Component {
     private:
         // the ID used to index the array containing the vectors of the component type.
-        const std::string name;
-        ID associatedEntity;
+        ID associatedEntity{0};
     public:
-        explicit Component(std::string  name): name(std::move(name)) {}
-        const std::string& getName(){return name;}
-        const ID getAssociatedEntity() const {return associatedEntity;}
+        Component() = default;
+        virtual constexpr std::string getName() = 0;
+        [[nodiscard]] ID getAssociatedEntity() const {return associatedEntity;}
         void setAssociatedEntity(ID id) {this->associatedEntity = id;}
+        virtual ~Component() = default;
     };
 
     class TransformComponent : public Component {
@@ -46,7 +46,7 @@ namespace TD {
         glm::vec3 rotation = glm::vec3(0.0);
         glm::vec3 scale = glm::vec3(1.0);
     public:
-        explicit TransformComponent(): Component(TRANSFORM_SYSTEM) {}
+        TransformComponent() = default;
         void setTranslation(glm::vec3 vec){this->translate = vec;}
         void setRotation(glm::vec3 vec){this->rotation = vec;}
         void setScale(glm::vec3 vec){this->scale = vec;}
@@ -67,14 +67,16 @@ namespace TD {
         const glm::vec3& getTranslation(){return translate;}
         const glm::vec3& getRotation(){return rotation;}
         const glm::vec3& getScale(){return scale;}
+        virtual constexpr std::string getName(){return TRANSFORM_SYSTEM;}
     };
 
     class MeshComponent : public Component {
     private:
         const std::string modelName;
     public:
-        explicit MeshComponent(std::string  modelName): modelName(std::move(modelName)), Component(MESH_RENDERER_SYSTEM) {}
+        explicit MeshComponent(std::string  modelName): modelName(std::move(modelName)) {}
         inline std::string getModelName(){return modelName;}
+        virtual constexpr std::string getName(){return MESH_RENDERER_SYSTEM;}
     };
 
     /**
@@ -102,7 +104,7 @@ namespace TD {
                 }
             }
         }
-        dPtr<Component> getComponent(std::string str) const {
+        [[nodiscard]] dPtr<Component> getComponent(std::string str) const {
             for (auto i : entityComponents){
                 if (i->getName() == str)
                     return i;
@@ -113,7 +115,7 @@ namespace TD {
         }
         [[nodiscard]] const std::vector<dPtr<Component>>& getComponents() const {return entityComponents;}
         [[nodiscard]] const std::string& getName() const {return name;}
-        [[nodiscard]] const ID getID() const {return id;}
+        [[nodiscard]] ID getID() const {return id;}
     };
 
     class World;
@@ -137,63 +139,9 @@ namespace TD {
         // so render particles here. -- use a particle system btw just an example
         virtual void renderOnce() = 0;
         virtual void update() = 0;
+
+        virtual ~System() = default;
     };
-
-    /*class Entity {
-    protected:
-        // TODO: replace with bullet stuff,
-        glm::vec3 position = glm::vec3(0, 0, 0);
-        glm::vec3 rotation = glm::vec3(0, 0, 0);
-        glm::vec3 scale = glm::vec3(1, 1, 1);
-        std::string modelName;
-    public:
-        Entity(std::string modelName) { this->modelName = modelName; }
-
-        inline glm::mat4 getTranslationMatrix() {
-            glm::mat4 trans(1.0);
-            trans = glm::translate(trans, position);
-            // rotates are relatively expensive, so don't do them unless we have to.
-            if (rotation.x != 0)
-                trans = glm::rotate(trans, glm::radians(rotation.x), glm::vec3(1,0,0));
-            if (rotation.y != 0)
-                trans = glm::rotate(trans, glm::radians(rotation.y), glm::vec3(0,1,0));
-            if (rotation.z != 0)
-                trans = glm::rotate(trans, glm::radians(rotation.z), glm::vec3(0,0,1));
-            trans = glm::scale(trans, scale);
-            return trans;
-        }
-
-        // called when the entity is rendered
-        virtual void render() = 0;
-
-        // called when the entity is updated, world;
-        virtual void update() = 0;
-
-        inline glm::vec3 getPosition() { return position; }
-
-        inline glm::vec3 getRotation() { return rotation; }
-
-        inline glm::vec3 getScale() { return scale; }
-
-        inline std::string getModelName() { return modelName; }
-    };
-
-    class StaticEntity : public Entity {
-    public:
-        StaticEntity(std::string modelName, glm::vec3 pos): StaticEntity(modelName, pos, glm::vec3(0), glm::vec3(1)){}
-        StaticEntity(std::string modelName, glm::vec3 pos, glm::vec3 scale): StaticEntity(modelName, pos, glm::vec3(0), scale) {}
-        StaticEntity(std::string modelName, glm::vec3 pos, glm::vec3 rotation, glm::vec3 scale): Entity(modelName) {
-            this->position = pos;
-            this->rotation = rotation;
-            this->scale = scale;
-        }
-        virtual void render(){
-
-        }
-        virtual void update(){
-
-        }
-    };*/
 
     class World {
     private:
@@ -227,15 +175,39 @@ namespace TD {
         void deleteEntity(const std::string& entityName);
         void updateLights(std::vector<TD::Light> lights);
         inline dPtr<Entity> getEntity(const std::string& entityName){return entityMap.at(entityName);}
+        /**
+         * This version of getComponent will return the dPtr to the entity component in question
+         * will throw an exception if T isn't a component or entity ID doesn't have said component
+         * @tparam T
+         * @param entID
+         * @return
+         */
         template<class T>
-        inline T* getComponent(const std::string& cmpType, ID entID){
-            auto cmpMap = components.at(cmpType);
-            auto cmp = cmpMap.at(entID);
+        inline dPtr<Component> getComponent(ID entID){
+            T t {};
+            return components.at(t.getName()).at(entID);
+        }
+        /**
+         * this version of get component will return a raw ptr to the component, if it exists
+         * otherwise will return a nullptr.
+         * @tparam T
+         * @param entID
+         * @return
+         */
+        template<class T>
+        inline T* getComponentRaw(ID entID){
             try {
-                if (cmp.isValid())
-                    return static_cast<T*>(cmp.getRaw());
-            } catch (std::exception& e) {
-                wlog << "Warning!! Error occurred trying to cast raw dPtr! Are your types correct? " << e.what();
+                T t {};
+                auto cmpMap = components.at(t.getName());
+                auto cmp = cmpMap.at(entID);
+                try {
+                    if (cmp.isValid())
+                        return static_cast<T *>(cmp.getRaw());
+                } catch (std::exception &e) {
+                    wlog << "Warning!! Error occurred trying to cast raw dPtr! Are your types correct? " << e.what();
+                }
+            } catch (std::exception &e){
+                wlog << "Warning!! Error occurred trying to get component. Does entID have this component? Does this component exist?" << e.what();
             }
             return nullptr;
         }

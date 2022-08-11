@@ -500,21 +500,29 @@ namespace TD {
 
     void DefaultLoadingScreenDisplay::modelRegistered(const std::string& ident, const std::string& path) {
         modelCount++;
+        loadLocked.lock();
         lastLoaded = "Registered Model " + ident + " @ " + path;
+        loadLocked.unlock();
     }
 
     void DefaultLoadingScreenDisplay::textureRegisted(const std::string& ident, const std::string& path) {
         textureCount++;
+        loadLocked.lock();
         lastLoaded = "Registered Texture " + ident + " @ " + path;
+        loadLocked.unlock();
     }
 
     void DefaultLoadingScreenDisplay::modelLoaded(const std::string& ident, const std::string& path) {
         modelsLoaded++;
+        loadLocked.lock();
         lastLoaded = "Loaded Model " + ident + " @ " + path;
+        loadLocked.unlock();
     }
 
     void DefaultLoadingScreenDisplay::textureLoaded(const std::string& ident, const std::string& path) {
         texturesLoaded++;
+        loadLocked.lock();
         lastLoaded = "Loaded Texture " + ident + " @ " + path;
+        loadLocked.unlock();
     }
 }

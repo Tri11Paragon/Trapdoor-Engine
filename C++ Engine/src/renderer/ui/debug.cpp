@@ -159,7 +159,7 @@ namespace TD {
                         if (ImGui::Selectable(e.first.c_str(), e.first == activeEntity)) {
                             activeEntity = e.first;
                             activeEntityID = e.second->getID();
-                            trans = world->getComponent<TransformComponent>(TRANSFORM_SYSTEM, activeEntityID)->getTranslationMatrix();
+                            trans = world->getComponentRaw<TransformComponent>(activeEntityID)->getTranslationMatrix();
                         }
                     }
                 ImGui::EndChild();
@@ -299,7 +299,7 @@ namespace TD {
 
         float matrixTranslation[3], matrixRotation[3], matrixScale[3];
         ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(trans), matrixTranslation, matrixRotation, matrixScale);
-        auto transformComp = world->getComponent<TransformComponent>(TRANSFORM_SYSTEM, activeEntityID);
+        auto transformComp = world->getComponentRaw<TransformComponent>(activeEntityID);
         transformComp->setTranslation(glm::vec3(matrixTranslation[0], matrixTranslation[1], matrixTranslation[2]));
         transformComp->setRotation(glm::vec3(matrixRotation[0], matrixRotation[1], matrixRotation[2]));
         transformComp->setScale(glm::vec3(matrixScale[0], matrixScale[1], matrixScale[2]));

@@ -75,9 +75,9 @@ namespace TD {
     public:
         gifTexture(gifTexture &&) noexcept = delete; // Disable move constructor.
         gifTexture& operator=(gifTexture &&) noexcept = delete; // Disable Move Assignment
-        explicit gifTexture(std::string path);
+        explicit gifTexture(const std::string& path);
         void bind(int frame = 0);
-        void unbind();
+        void unbind() const;
         void loadGL(bool asArray = false);
 
         inline std::vector<unsigned int> getTextures() {return textures;}

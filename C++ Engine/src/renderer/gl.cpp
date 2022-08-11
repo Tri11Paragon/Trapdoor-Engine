@@ -144,17 +144,16 @@ namespace TD {
 
     /***---------------{Model VAO}---------------***/
 
-    modelVAO::modelVAO(const unloadedVAO& vaoInfo, const std::vector<Texture> &textures) {
+    modelVAO::modelVAO(const unloadedVAO& vaoInfo, const std::vector<Texture> &textures): localModelTransform(vaoInfo.transform) {
         this->textures = textures;
-        this->drawCount = vaoInfo.indicesVec.size();
+        this->drawCount = (int)vaoInfo.indicesVec.size();
         this->name = vaoInfo.name;
-        this->localModelTransform = vaoInfo.transform;
         vaoID = createVAO();
         for (int i = 0; i < 3; i++) {
             glEnableVertexAttribArray(i);
             glEnableVertexArrayAttrib(vaoID, i);
         }
-        storeData(vaoInfo.indicesVec.size(), vaoInfo.indicesVec.data());
+        storeData((int)vaoInfo.indicesVec.size(), vaoInfo.indicesVec.data());
 
         storeData(vaoInfo.vertexVec);
 
@@ -328,12 +327,12 @@ namespace TD {
     unsigned char *texture::loadTexture(std::string path) {
         // TODO: add more image processing options
         stbi_set_flip_vertically_on_load(true);
-        unsigned char *data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+        unsigned char *dta = stbi_load(path.c_str(), &width, &height, &channels, 0);
         //if (stbi__g_failure_reason) {
         //    flog << "STB Error Reason: ";
         //    flog << stbi__g_failure_reason;
         //}
-        return data;
+        return dta;
     }
 
     void texture::loadGLTexture() {
@@ -352,12 +351,16 @@ namespace TD {
         glGenerateMipmap(GL_TEXTURE_2D);
 
         stbi_image_free(data);
+        data = nullptr;
         loadedToGpu = true;
     }
 
     texture::~texture() {
         tlog << "Deleting Texture {" << textureID << "}";
         glDeleteTextures(1, &textureID);
+        if (data != nullptr)
+            stbi_image_free(data);
+        data = nullptr;
     }
 
     void texture::bind() {
@@ -408,7 +411,7 @@ namespace TD {
 
     /***---------------{GIF based Texture}---------------***/
 
-    gifTexture::gifTexture(std::string path) {
+    gifTexture::gifTexture(const std::string& path) {
         FILE* file = stbi__fopen(path.c_str(), "rb");
         if (!file)
             throw std::runtime_error("Unable to load GIF! " + path);
@@ -419,21 +422,7 @@ namespace TD {
         data = (unsigned char*) stbi__load_gif_main(&s, &delay, &width, &height, &frames, &channels, 0);
         for (int i = 0; i < frames; i++)
             delays.push_back(delay[i]);
-        /*unsigned char* two_back;
-        unsigned char* data;
-
-        do {
-            data = stbi__gif_load_next(&s, &g, &channels, 0, two_back);
-            if (data == (stbi_uc *) &s) data = 0;  // end of animated gif marker
-
-            if (data){
-                this->width = g.w;
-                this->height = g.h;
-                frames++;
-                delays.push_back(g.delay);
-                textureDatas.push_back(data);
-            }
-        } while (data != 0);*/
+        fclose(file);
     }
 
     void gifTexture::bind(int frame) {
@@ -445,7 +434,7 @@ namespace TD {
             glBindTexture(GL_TEXTURE_2D, textures[frame]);
     }
 
-    void gifTexture::unbind() {
+    void gifTexture::unbind() const {
         if (loadedAsArray)
             glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
         else
@@ -479,12 +468,16 @@ namespace TD {
 
                 textures.push_back(textureIDs[i]);
             }
-            stbi_image_free(data);
         }
+        stbi_image_free(data);
+        data = nullptr;
         loadedToGL = true;
     }
 
     gifTexture::~gifTexture() {
+        if (data != nullptr)
+            stbi_image_free(data);
+        data = nullptr;
         for (int i = 0; i < textures.size(); i++)
             glDeleteTextures(1, &textures[i]);
     }
@@ -622,14 +615,14 @@ namespace TD {
     }
 
     model::~model(){
-        for (vao* m : meshes)
+        for (modelVAO* m : meshes)
             delete(m);
     }
 
     void model::loadToGL() {
-        for (auto ul : unloadedTextures)
+        for (const auto& ul : unloadedTextures)
             uvs.push_back(TD::GameRegistry::getTexture(ul.first));
-        for (auto ul : unloadedMeshes)
+        for (const auto& ul : unloadedMeshes)
             meshes.push_back(new modelVAO(ul, uvs));
         unloadedMeshes = std::vector<unloadedVAO>();
         unloadedTextures = std::vector<std::pair<std::string, TEXTURE_TYPE>>();
