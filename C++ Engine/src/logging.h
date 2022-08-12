@@ -18,6 +18,7 @@
 #include <iostream>
 #include <utility>
 #include <config.h>
+#include <mutex>
 
 namespace logging = boost::log;
 namespace sinks = boost::log::sinks;

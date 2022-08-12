@@ -26,9 +26,11 @@ set(ENGINE_VERSION_MINOR " ${PROJECT_VERSION_MINOR}")
 set(ENGINE_VERSION_PATCH " ${PROJECT_VERSION_PATCH}")
 set(BUILD_DIR "${PROJECT_SOURCE_DIR}")
 if(WIN32)
-    set(RESOURCE_PATH "%userprofile%/Documents/Trapdoor/") # likely wrong and should be set from c++ but i'd rather it be set this way :(
+    set(RESOURCE_PATH "%appdata%\\Trapdoor\\") # likely wrong and should be set from c++ but i'd rather it be set this way :(
+    set(PATH_SEPARATOR "\\")
 elseif(UNIX)
     set(RESOURCE_PATH "~/.local/share/Trapdoor/")
+    set(PATH_SEPARATOR "/")
 endif()
 configure_file(${PROJECT_SOURCE_DIR}/src/config.h.in config.h @ONLY)
 
@@ -46,15 +48,41 @@ if (UNIX)
     set( BOOST_ROOT "include/boost_lib/" CACHE PATH "Boost library path" )
     set( BOOST_INCLUDEDIR "include/boost_lib/include" CACHE PATH "Boost library path" )
     set( BOOST_LIBRARYDIR "include/boost_lib/lib" CACHE PATH "Boost library path" )
-elseif(WIN32)
-    set( BOOST_ROOT "include/boost_lib_windows/" CACHE PATH "Boost library path" )
-    set( BOOST_INCLUDEDIR "include/boost_lib_windows/include" CACHE PATH "Boost library path" )
-    set( BOOST_LIBRARYDIR "include/boost_lib_windows/lib" CACHE PATH "Boost library path" )
-    set(Boost_ARCHITECTURE "-x64")
-endif()
-set( Boost_NO_SYSTEM_PATHS on CACHE BOOL "Do not search system for Boost" )
+    set( Boost_NO_SYSTEM_PATHS on CACHE BOOL "Do not search system for Boost" )
 
-find_package(Boost REQUIRED COMPONENTS filesystem log)
+    find_package(Boost REQUIRED COMPONENTS filesystem log)
+elseif(WIN32)
+    #set( BOOST_ROOT "include/boost_lib_windows/" CACHE PATH "Boost library path" )
+    #set( BOOST_INCLUDEDIR "include/boost_lib_windows/include" CACHE PATH "Boost library path" )
+    #set( BOOST_LIBRARYDIR "include/boost_lib_windows/lib" CACHE PATH "Boost library path" )
+    #set(Boost_ARCHITECTURE "-x64")
+    set(Boost_INCLUDE_DIRS include/boost_lib_windows/include/boost-1_79)
+    if(CMAKE_BUILD_TYPE MATCHES Debug)
+        set(Boost_LIBRARIES 
+            "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_atomic-vc143-mt-gd-x64-1_79.lib"
+            "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_chrono-vc143-mt-gd-x64-1_79.lib"
+            "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_filesystem-vc143-mt-gd-x64-1_79.lib"
+            "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_log_setup-vc143-mt-gd-x64-1_79.lib"
+            "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_log-vc143-mt-gd-x64-1_79.lib"
+            "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_regex-vc143-mt-gd-x64-1_79.lib"
+            "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_thread-vc143-mt-gd-x64-1_79.lib"
+        )
+        set(bfilesystem "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_filesystem-vc143-mt-gd-x64-1_79.lib")
+        set(blog "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_log-vc143-mt-gd-x64-1_79.lib")
+    else()
+        set(Boost_LIBRARIES 
+            "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_atomic-vc143-mt-x64-1_79.lib"
+            "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_chrono-vc143-mt-x64-1_79.lib"
+            "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_filesystem-vc143-mt-x64-1_79.lib"
+            "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_log_setup-vc143-mt-x64-1_79.lib"
+            "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_log-vc143-mt-x64-1_79.lib"
+            "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_regex-vc143-mt-x64-1_79.lib"
+            "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_thread-vc143-mt-x64-1_79.lib"
+        )
+        set(bfilesystem "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_filesystem-vc143-mt-x64-1_79.lib")
+        set(blog "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_log-vc143-mt-x64-1_79.lib")
+    endif()
+endif()
 
 include_directories(${Boost_INCLUDE_DIRS})
 
@@ -132,7 +160,11 @@ target_link_libraries(${PROJECT_NAME} meshoptimizer)
 target_link_libraries(${PROJECT_NAME} ${CMAKE_DL_LIBS})
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} Threads::Threads)
-target_link_libraries(${PROJECT_NAME} Boost::filesystem Boost::log)
+if (UNIX)
+    target_link_libraries(${PROJECT_NAME} Boost::filesystem Boost::log)
+elseif(WIN32)
+    target_link_libraries(${PROJECT_NAME} ${bfilesystem} ${blog})
+endif()
 target_link_libraries(${PROJECT_NAME} direct-to-video)
 
 #target_link_libraries(${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/include/nativefiledialog/build/lib/Debug/x64/libnfd_d.a)
