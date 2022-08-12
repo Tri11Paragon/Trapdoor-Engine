@@ -447,14 +447,15 @@ namespace TD {
         if (asArray){
 
         } else {
-            unsigned int textureIDs[frames];
+            unsigned int* textureIDs = new unsigned int[frames];
             glGenTextures(frames, textureIDs);
             for (int i = 0; i < frames; i++) {
-                unsigned char localMem[channels * width * height];
+                unsigned char* localMem = new unsigned char[channels * width * height];
                 // use memcopy?
-                for (int j = 0; j < channels * width * height; j++){
-                    localMem[j] = data[(i * channels * width * height) + j];
-                }
+                //for (int j = 0; j < channels * width * height; j++){
+                //    localMem[j] = data[(i * channels * width * height) + j];
+                //}
+                memcpy(localMem, (void*) data[i * channels * width * height], channels * width * height);
                 glBindTexture(GL_TEXTURE_2D, textureIDs[i]);
 
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -467,7 +468,9 @@ namespace TD {
                 glGenerateMipmap(GL_TEXTURE_2D);
 
                 textures.push_back(textureIDs[i]);
+                delete[](localMem);
             }
+            delete[](textureIDs);
         }
         stbi_image_free(data);
         data = nullptr;

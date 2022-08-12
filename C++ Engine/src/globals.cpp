@@ -35,7 +35,7 @@ namespace TD {
 
     // Window / GLFW
     GLFWwindow *_window;
-    volatile bool _isWindowOpen = true;
+    bool _isWindowOpen = true;
     bool _isMouseGrabbed = false;
     bool _loadingComplete = false;
     bool _listenToResize = true;

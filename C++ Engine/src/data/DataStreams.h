@@ -8,7 +8,6 @@
 #include "../std.h"
 #include "DataConv.h"
 
-#include <zlib.h>
 
 #if defined(MSDOS) || defined(OS2) || defined(WIN32) || defined(__CYGWIN__)
 #  include <fcntl.h>
@@ -17,6 +16,8 @@
 #else
 #  define SET_BINARY_MODE(file)
 #endif
+
+#ifdef DATA_STREAM_TEST
 
 namespace TD {
 
@@ -109,5 +110,6 @@ namespace TD {
     };
 
 } // TD
+#endif
 
 #endif //ENGINE_DATASTREAMS_H
