@@ -80,5 +80,6 @@ namespace TD {
 
     // World
     ID entityID = 0;
-    //parallel_flat_hash_map<std::string, std::function<Component*(Args... args)>> componentAllocators;
+    // pointers deallocated at the closing of the window.
+    parallel_flat_hash_map<std::string, Component*> componentAllocators;
 }

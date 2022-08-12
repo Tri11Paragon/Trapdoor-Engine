@@ -28,6 +28,7 @@ namespace TD {
     extern bool _listenToResize;
     extern float fov;
     extern atg_dtv::Encoder encoder;
+    extern parallel_flat_hash_map<std::string, Component*> componentAllocators;
 
     glm::mat4 perspectiveWithCenter(float width, float height, float offsetX = 0, float offsetY = 0) {
         float aspect = width / height;
@@ -225,6 +226,8 @@ namespace TD {
     void window::deleteWindow() {
         TD::GameRegistry::deleteResources();
         TD::debugUI::deleteAllTabs();
+        for (auto o : componentAllocators)
+            delete(o.second);
         // Cleanup
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();
@@ -328,6 +331,7 @@ namespace TD {
         TD::IM_RegisterKeyListener(&keyCallBack);
         defaultLoadDisplay->onSwitch();
 
+        TD::registerAllocators();
         while (!TD::GameRegistry::loadingComplete()){
             TD::window::startRender();
             defaultLoadDisplay->render();

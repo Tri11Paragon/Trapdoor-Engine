@@ -38,6 +38,8 @@ namespace TD {
         virtual constexpr std::string getName() = 0;
         // use this function to add your variables to the imgui inspector.
         virtual void drawImGuiVariables() = 0;
+        virtual Component* allocateDefault() = 0;
+        virtual Component* allocateData() = 0;
         void setAssociatedEntity(ID id) {this->associatedEntity = id;}
         [[nodiscard]] ID getAssociatedEntity() const {return associatedEntity;}
         virtual ~Component() = default;
@@ -49,7 +51,7 @@ namespace TD {
         glm::vec3 rotation = glm::vec3(0.0);
         glm::vec3 scale = glm::vec3(1.0);
     public:
-        TransformComponent() = default;
+        TransformComponent() {};
         void setTranslation(glm::vec3 vec){this->translate = vec;}
         void setRotation(glm::vec3 vec){this->rotation = vec;}
         void setScale(glm::vec3 vec){this->scale = vec;}
@@ -57,6 +59,12 @@ namespace TD {
             ImGui::InputFloat3("Translation", glm::value_ptr(translate));
             ImGui::InputFloat3("Rotation", glm::value_ptr(rotation));
             ImGui::InputFloat3("Scale", glm::value_ptr(scale));
+        }
+        virtual Component* allocateDefault() {
+            return new TransformComponent();
+        }
+        virtual Component* allocateData() {
+            return new TransformComponent();
         }
         glm::mat4 getTranslationMatrix(){
             glm::mat4 trans(1.0);
@@ -96,9 +104,22 @@ namespace TD {
                 modelName = std::string(stringBuffer);
             }
         }
+        virtual Component* allocateDefault() {
+            return new MeshComponent("");
+        }
+        virtual Component* allocateData() {
+            return new MeshComponent(modelName);
+        }
         inline std::string getModelName(){return modelName;}
         virtual constexpr std::string getName(){return MESH_RENDERER_SYSTEM;}
     };
+
+    // deallocated at the closing of the window.
+    extern parallel_flat_hash_map<std::string, Component*> componentAllocators;
+
+    static void registerAllocators(){
+        componentAllocators.insert(std::pair(MESH_RENDERER_SYSTEM, new MeshComponent("")));
+    }
 
     /**
      * Entity is basically just a glorified struct

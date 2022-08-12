@@ -173,6 +173,7 @@ namespace TD {
         ImGui::SetNextWindowPos(ImVec2((float)(_display_w - sceneInspectorWidth),(float)menuBarHeight));
         ImGui::SetNextWindowSize(ImVec2((float)sceneInspectorWidth, (float)sceneInspectorHeight));
         ImGui::Begin("Inspector", nullptr, flags);
+        ImGui::BeginChild("__Components", ImVec2((float)sceneInspectorWidth, (float)sceneInspectorHeight - 50));
 
         static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
         static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::WORLD);
@@ -237,6 +238,10 @@ namespace TD {
                     wlog << e.what();
                 }
             }
+        }
+        ImGui::EndChild();
+        if (ImGui::Button("Add Component", ImVec2((float)sceneInspectorWidth - 20, 35))){
+            tlog << "Hello!";
         }
 
         ImGui::End();
