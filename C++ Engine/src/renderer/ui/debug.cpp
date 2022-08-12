@@ -174,42 +174,117 @@ namespace TD {
         ImGui::SetNextWindowSize(ImVec2((float)sceneInspectorWidth, (float)sceneInspectorHeight));
         ImGui::Begin("Inspector", nullptr, flags);
 
+        static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
+        static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::WORLD);
+
+        if (ImGui::RadioButton("Translate", mCurrentGizmoOperation == ImGuizmo::TRANSLATE))
+            mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
+        ImGui::SameLine();
+        if (ImGui::RadioButton("Rotate", mCurrentGizmoOperation == ImGuizmo::ROTATE))
+            mCurrentGizmoOperation = ImGuizmo::ROTATE;
+        ImGui::SameLine();
+        if (ImGui::RadioButton("Scale", mCurrentGizmoOperation == ImGuizmo::SCALE))
+            mCurrentGizmoOperation = ImGuizmo::SCALE;
+
+        if (mCurrentGizmoOperation != ImGuizmo::SCALE)
+        {
+            if (ImGui::RadioButton("Local", mCurrentGizmoMode == ImGuizmo::LOCAL))
+                mCurrentGizmoMode = ImGuizmo::LOCAL;
+            ImGui::SameLine();
+            if (ImGui::RadioButton("World", mCurrentGizmoMode == ImGuizmo::WORLD))
+                mCurrentGizmoMode = ImGuizmo::WORLD;
+        }
+        static bool useSnap(false);
+        ImGui::Checkbox("Use Snap?", &useSnap);
+        ImGui::SameLine();
+        static glm::vec3 snap{5, 5, 5};
+        static int snapPos = 0;
+        switch (mCurrentGizmoOperation) {
+            case ImGuizmo::TRANSLATE:
+                ImGui::InputFloat3("Snap", &snap.x);
+                snapPos = 0;
+                break;
+            case ImGuizmo::ROTATE:
+                ImGui::InputFloat("Angle Snap", &snap.y);
+                snapPos = 1;
+                break;
+            case ImGuizmo::SCALE:
+                ImGui::InputFloat("Scale Snap", &snap.z);
+                snapPos = 2;
+                break;
+            default:
+                snapPos = 0;
+                tlog << "Default Branch!";
+                break;
+        }
+        ImGui::NewLine();
+
+        if (world != nullptr) {
+            if (activeEntity.empty())
+                activeEntity = world->getEntityNameByID(activeEntityID);
+            if (!activeEntity.empty()) {
+                try {
+                    auto localEnt = world->getEntity(activeEntity);
+                    if (localEnt.isValid()) {
+                        for (auto c: localEnt->getComponents()) {
+                            if (ImGui::CollapsingHeader(c->getName().c_str(), nullptr, ImGuiTreeNodeFlags_DefaultOpen)) {
+                                c->drawImGuiVariables();
+                            }
+                            ImGui::NewLine();
+                        }
+                    }
+                } catch (std::exception &e) {
+                    wlog << e.what();
+                }
+            }
+        }
+
         ImGui::End();
 
         ImGui::SetNextWindowBgAlpha(1.0);
         ImGui::SetNextWindowPos(ImVec2((float)(sceneHierarchyWidth),(float)(_display_h - sceneConsoleHeight)));
         ImGui::SetNextWindowSize(ImVec2((float)sceneConsoleWidth, (float)sceneConsoleHeight));
-        ImGui::Begin("Console", nullptr, flags);
+        ImGui::Begin("Console", nullptr, flags | ImGuiWindowFlags_NoTitleBar);
+            if(ImGui::BeginTabBar("bar")) {
+                if (ImGui::BeginTabItem("Console")) {
+                    const float footer_height_to_reserve = ImGui::GetStyle().ItemSpacing.y + ImGui::GetFrameHeightWithSpacing();
+                    ImGui::BeginChild("ScrollingRegion", ImVec2(0, -footer_height_to_reserve), false, ImGuiWindowFlags_HorizontalScrollbar);
+                        bool copyToClip = false;
+                        static bool autoScroll = true;
+                        if (ImGui::BeginPopupContextWindow()) {
+                            if (ImGui::Selectable("Clear")) td_logItems.clear();
+                            copyToClip = ImGui::SmallButton("Copy");
+                            ImGui::EndPopup();
+                        }
 
-        const float footer_height_to_reserve = ImGui::GetStyle().ItemSpacing.y + ImGui::GetFrameHeightWithSpacing();
-        ImGui::BeginChild("ScrollingRegion", ImVec2(0, -footer_height_to_reserve), false, ImGuiWindowFlags_HorizontalScrollbar);
-        bool copyToClip = false;
-        static bool autoScroll = true;
-        if (ImGui::BeginPopupContextWindow()) {
-            if (ImGui::Selectable("Clear")) td_logItems.clear();
-            copyToClip = ImGui::SmallButton("Copy");
-            ImGui::EndPopup();
-        }
+                        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 1)); // Tighten spacing
+                            if (copyToClip)
+                                ImGui::LogToClipboard();
+                            for (const auto &item: td_logItems) {
+                                auto colorData = colorArray[item.color];
+                                ImVec4 color(colorData[0], colorData[1], colorData[2], 1.0f);
+                                ImGui::PushStyleColor(ImGuiCol_Text, color);
+                                ImGui::TextUnformatted(item.log.c_str());
+                                ImGui::PopStyleColor();
+                            }
+                            if (copyToClip)
+                                ImGui::LogFinish();
+                            if ((autoScroll && ImGui::GetScrollY() >= ImGui::GetScrollMaxY()))
+                                ImGui::SetScrollHereY(1.0f);
 
-        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 1)); // Tighten spacing
-        if (copyToClip)
-            ImGui::LogToClipboard();
-        for (auto item : td_logItems){
-            auto colorData = colorArray[item.color];
-            ImVec4 color(colorData[0], colorData[1], colorData[2], 1.0f);
-            ImGui::PushStyleColor(ImGuiCol_Text, color);
-            ImGui::TextUnformatted(item.log.c_str());
-            ImGui::PopStyleColor();
-        }
-        if (copyToClip)
-            ImGui::LogFinish();
-        if ((autoScroll && ImGui::GetScrollY() >= ImGui::GetScrollMaxY()))
-            ImGui::SetScrollHereY(1.0f);
-
-        ImGui::PopStyleVar();
-        ImGui::EndChild();
-        ImGui::Separator();
-
+                        ImGui::PopStyleVar();
+                    ImGui::EndChild();
+                    ImGui::EndTabItem();
+                }
+                if (ImGui::BeginTabItem("Assets")) {
+                    ImGui::BeginChild("AssetsBrowser");
+                        ImGui::Text("Not implemented yet.");
+                    ImGui::EndChild();
+                    ImGui::EndTabItem();
+                }
+                ImGui::EndTabBar();
+                ImGui::Separator();
+            }
         ImGui::End();
 
         ImGui::PopStyleColor();
@@ -247,55 +322,8 @@ namespace TD {
         ImGuizmo::SetDrawlist();
         ImGuizmo::BeginFrame();
 
-        static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::ROTATE);
-        static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::WORLD);
-
-        if (ImGui::RadioButton("Translate", mCurrentGizmoOperation == ImGuizmo::TRANSLATE))
-            mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
-        ImGui::SameLine();
-        if (ImGui::RadioButton("Rotate", mCurrentGizmoOperation == ImGuizmo::ROTATE))
-            mCurrentGizmoOperation = ImGuizmo::ROTATE;
-        ImGui::SameLine();
-        if (ImGui::RadioButton("Scale", mCurrentGizmoOperation == ImGuizmo::SCALE))
-            mCurrentGizmoOperation = ImGuizmo::SCALE;
-        /*float matrixTranslation[3], matrixRotation[3], matrixScale[3];
-        ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(trans), matrixTranslation, matrixRotation, matrixScale);
-        ImGui::InputFloat3("Tr", matrixTranslation);
-        ImGui::InputFloat3("Rt", matrixRotation);
-        ImGui::InputFloat3("Sc", matrixScale);
-        ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, glm::value_ptr(trans));*/
-
-        if (mCurrentGizmoOperation != ImGuizmo::SCALE)
-        {
-            if (ImGui::RadioButton("Local", mCurrentGizmoMode == ImGuizmo::LOCAL))
-                mCurrentGizmoMode = ImGuizmo::LOCAL;
-            ImGui::SameLine();
-            if (ImGui::RadioButton("World", mCurrentGizmoMode == ImGuizmo::WORLD))
-                mCurrentGizmoMode = ImGuizmo::WORLD;
-        }
-        static bool useSnap(false);
-        if (ImGui::IsKeyPressed(83))
-            useSnap = !useSnap;
-        ImGui::Checkbox("Use Snap?", &useSnap);
-        ImGui::SameLine();
-        static glm::vec3 snap{5, 5, 5};
-        switch (mCurrentGizmoOperation) {
-            case ImGuizmo::TRANSLATE:
-                ImGui::InputFloat3("Snap", &snap.x);
-                break;
-            case ImGuizmo::ROTATE:
-                ImGui::InputFloat("Angle Snap", &snap.x);
-                break;
-            case ImGuizmo::SCALE:
-                ImGui::InputFloat("Scale Snap", &snap.x);
-                break;
-            default:
-                tlog << "Default Branch!";
-                break;
-        }
-        ImGuiIO& io = ImGui::GetIO();
         ImGuizmo::SetRect((float)offsetX, (float)-offsetY, (float)(_display_w), (float)(_display_h));
-        ImGuizmo::Manipulate(glm::value_ptr(viewMatrix), glm::value_ptr(projectionMatrix), mCurrentGizmoOperation, mCurrentGizmoMode, glm::value_ptr(trans), nullptr, useSnap ? &snap.x : nullptr);
+        ImGuizmo::Manipulate(glm::value_ptr(viewMatrix), glm::value_ptr(projectionMatrix), mCurrentGizmoOperation, mCurrentGizmoMode, glm::value_ptr(trans), nullptr, useSnap ? &snap[snapPos] : nullptr);
 
         float matrixTranslation[3], matrixRotation[3], matrixScale[3];
         ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(trans), matrixTranslation, matrixRotation, matrixScale);

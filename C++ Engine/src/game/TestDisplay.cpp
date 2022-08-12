@@ -5,6 +5,7 @@
 #include "TestDisplay.h"
 
 namespace TD {
+
     TestDisplay::TestDisplay(std::string name) : Display(name) {
         TD::DisplayManager::changeActiveCamera(&camera);
         world.updateLights(lights);

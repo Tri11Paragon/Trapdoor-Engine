@@ -2,9 +2,13 @@ cmake_minimum_required(VERSION 3.22)
 project(engine VERSION "0.0.1")
 
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -g")
-add_compile_options(-fsanitize=address)
-add_link_options(-fsanitize=address)
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -g")
+#add_compile_options(-fsanitize=address)
+#add_link_options(-fsanitize=address)
+
+#set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+#set(BUILD_SHARED_LIBS OFF)
+#set(CMAKE_EXE_LINKER_FLAGS "-static")
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
     message("debug mode")
@@ -49,12 +53,14 @@ find_package(Threads REQUIRED)
 
 #GL Setup
 find_package(OpenGL REQUIRED)
-find_package(glfw3 3.3 REQUIRED)
+#find_package(glfw3 3.3 REQUIRED)
+add_subdirectory(include/glfw)
+include_directories(include/glfw/include)
 
 add_subdirectory(include/glad/cmake)
 add_subdirectory(include/glm)
 
-glad_add_library(glad_gl_core SHARED API gl:core=4.5)
+glad_add_library(glad_gl_core STATIC API gl:core=4.5)
 
 set(TD_BUILD_SETTING ${CMAKE_BUILD_TYPE})
 message("Cached BUILD: ${TD_BUILD_SETTING} // ${CMAKE_BUILD_TYPE}")
@@ -86,7 +92,6 @@ message("Backto BUILD: ${TD_BUILD_SETTING} // ${CMAKE_BUILD_TYPE}")
 add_subdirectory(include/nativefiledialog)
 
 # Zips
-find_package(ZLIB)
 
 # Engine FS sources setup
 set(source_dir "${PROJECT_SOURCE_DIR}/src/")
@@ -100,8 +105,8 @@ add_executable(${PROJECT_NAME} ${source_files})
 
 #Linking
 
-target_link_libraries(${PROJECT_NAME} glfw)
 target_link_libraries(${PROJECT_NAME} OpenGL::GL)
+target_link_libraries(${PROJECT_NAME} glfw)
 target_link_libraries(${PROJECT_NAME} glad_gl_core)
 target_link_libraries(${PROJECT_NAME} glm)
 target_link_libraries(${PROJECT_NAME} assimp)
@@ -111,7 +116,6 @@ target_link_libraries(${PROJECT_NAME} ${CMAKE_DL_LIBS})
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} Threads::Threads)
 target_link_libraries(${PROJECT_NAME} Boost::filesystem Boost::log)
-target_link_libraries(${PROJECT_NAME} ZLIB::ZLIB)
 target_link_libraries(${PROJECT_NAME} direct-to-video)
 
 #target_link_libraries(${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/include/nativefiledialog/build/lib/Debug/x64/libnfd_d.a)

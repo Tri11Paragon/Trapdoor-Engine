@@ -9,6 +9,7 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <string.h>
 #include <queue>
 #include <ios>
 #include <fstream>
@@ -89,6 +90,7 @@ namespace TD {
             return data;
         }
     };
+    static void  Strtrim(char* s) { char* str_end = s + strlen(s); while (str_end > s && str_end[-1] == ' ') str_end--; *str_end = 0; }
     //static inline void removeFromVector(std::vector<T> vector, T objectToRemove){
     //    vector.erase(std::remove(vector.begin(), vector.end(), objectToRemove), vector.end());
     //}

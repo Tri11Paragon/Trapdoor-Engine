@@ -14,6 +14,7 @@
 #include "../renderer/renderer.h"
 #include "../hashmaps.h"
 #include "GameRegistry.h"
+#include "../imgui/imgui.h"
 
 namespace TD {
 
@@ -35,8 +36,10 @@ namespace TD {
     public:
         Component() = default;
         virtual constexpr std::string getName() = 0;
-        [[nodiscard]] ID getAssociatedEntity() const {return associatedEntity;}
+        // use this function to add your variables to the imgui inspector.
+        virtual void drawImGuiVariables() = 0;
         void setAssociatedEntity(ID id) {this->associatedEntity = id;}
+        [[nodiscard]] ID getAssociatedEntity() const {return associatedEntity;}
         virtual ~Component() = default;
     };
 
@@ -50,6 +53,11 @@ namespace TD {
         void setTranslation(glm::vec3 vec){this->translate = vec;}
         void setRotation(glm::vec3 vec){this->rotation = vec;}
         void setScale(glm::vec3 vec){this->scale = vec;}
+        virtual void drawImGuiVariables(){
+            ImGui::InputFloat3("Translation", glm::value_ptr(translate));
+            ImGui::InputFloat3("Rotation", glm::value_ptr(rotation));
+            ImGui::InputFloat3("Scale", glm::value_ptr(scale));
+        }
         glm::mat4 getTranslationMatrix(){
             glm::mat4 trans(1.0);
             trans = glm::translate(trans, translate);
@@ -72,9 +80,22 @@ namespace TD {
 
     class MeshComponent : public Component {
     private:
-        const std::string modelName;
+        std::string modelName;
+        char stringBuffer[512]{};
     public:
-        explicit MeshComponent(std::string  modelName): modelName(std::move(modelName)) {}
+        explicit MeshComponent(const std::string&  modelName): modelName(modelName) {
+            strcpy(stringBuffer, modelName.c_str());
+        }
+        virtual void drawImGuiVariables(){
+            ImGui::Text("Model Path: ");
+            ImGui::SameLine();
+
+            ImGui::InputText("Model Path: ", stringBuffer, 512, ImGuiInputTextFlags_EnterReturnsTrue);
+            Strtrim(stringBuffer);
+            if (stringBuffer[0]){
+                modelName = std::string(stringBuffer);
+            }
+        }
         inline std::string getModelName(){return modelName;}
         virtual constexpr std::string getName(){return MESH_RENDERER_SYSTEM;}
     };
@@ -174,6 +195,15 @@ namespace TD {
         void addComponentToEntity(const std::string& name, Component* component);
         void deleteEntity(const std::string& entityName);
         void updateLights(std::vector<TD::Light> lights);
+        inline std::string getEntityNameByID(ID id){
+            for (auto e : entityMap){
+                if (e.second.isValid()){
+                    if(e.second->getID() == id)
+                        return e.second->getName();
+                }
+            }
+            return "";
+        }
         inline dPtr<Entity> getEntity(const std::string& entityName){return entityMap.at(entityName);}
         /**
          * This version of getComponent will return the dPtr to the entity component in question
