@@ -10,43 +10,63 @@ endif()
 
 if(WIN32)
   find_path(AVCODEC_INCLUDE_DIR libavcodec/avcodec.h
+      PATHS
+          "C:/ffmpeg"
       PATH_SUFFIXES
           "${VC_LIB_PATH_SUFFIX}/include")
   find_library(AVCODEC_LIBRARY avcodec
+          PATHS
+          "C:/ffmpeg"
       PATH_SUFFIXES
           "${VC_LIB_PATH_SUFFIX}/bin"
           "${VC_LIB_PATH_SUFFIX}/lib")
 
   find_path(AVFORMAT_INCLUDE_DIR libavformat/avformat.h
+          PATHS
+          "C:/ffmpeg"
       PATH_SUFFIXES
           "${VC_LIB_PATH_SUFFIX}/include")
   find_library(AVFORMAT_LIBRARY avformat
+          PATHS
+          "C:/ffmpeg"
       PATH_SUFFIXES
           "${VC_LIB_PATH_SUFFIX}/bin"
           "${VC_LIB_PATH_SUFFIX}/lib")
 
   find_path(AVUTIL_INCLUDE_DIR libavutil/avutil.h
+          PATHS
+          "C:/ffmpeg"
       PATH_SUFFIXES
           "${VC_LIB_PATH_SUFFIX}/include")
   find_library(AVUTIL_LIBRARY avutil
+          PATHS
+          "C:/ffmpeg"
       PATH_SUFFIXES
           "${VC_LIB_PATH_SUFFIX}/bin"
           "${VC_LIB_PATH_SUFFIX}/lib")
 
   find_path(AVDEVICE_INCLUDE_DIR libavdevice/avdevice.h
+          PATHS
+          "C:/ffmpeg"
       PATH_SUFFIXES
           "${VC_LIB_PATH_SUFFIX}/include")
   find_library(AVDEVICE_LIBRARY avdevice
+          PATHS
+          "C:/ffmpeg"
       PATH_SUFFIXES
           "${VC_LIB_PATH_SUFFIX}/bin"
           "${VC_LIB_PATH_SUFFIX}/lib")
 
   find_library(SWSCALE_LIBRARY swscale
+          PATHS
+          "C:/ffmpeg"
       PATH_SUFFIXES
           "${VC_LIB_PATH_SUFFIX}/bin"
           "${VC_LIB_PATH_SUFFIX}/lib")
 
   find_library(SWRESAMPLE_LIBRARY swresample
+          PATHS
+          "C:/ffmpeg"
       PATH_SUFFIXES
           "${VC_LIB_PATH_SUFFIX}/bin"
           "${VC_LIB_PATH_SUFFIX}/lib")
