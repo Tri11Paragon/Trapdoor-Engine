@@ -20,6 +20,7 @@ namespace TD {
 
 #define MESH_RENDERER_SYSTEM "MeshComponent"
 #define TRANSFORM_SYSTEM "TransformComponent"
+#define AUDIO_PLAYER_SYSTEM "AudioPlayerComponent"
 
     typedef unsigned int ID;
 
@@ -98,7 +99,7 @@ namespace TD {
             ImGui::Text("Model Path: ");
             ImGui::SameLine();
 
-            ImGui::InputText("Model Path: ", stringBuffer, 512, ImGuiInputTextFlags_EnterReturnsTrue);
+            ImGui::InputText("##", stringBuffer, 512, ImGuiInputTextFlags_EnterReturnsTrue);
             Strtrim(stringBuffer);
             if (stringBuffer[0]){
                 modelName = std::string(stringBuffer);
@@ -114,11 +115,40 @@ namespace TD {
         virtual constexpr std::string getName(){return MESH_RENDERER_SYSTEM;}
     };
 
+    class AudioPlayerComponent : public Component {
+    private:
+        std::string audioFile;
+        char stringBuffer[512]{};
+    public:
+        explicit AudioPlayerComponent(const std::string&  audioFile): audioFile(audioFile) {
+            strcpy(stringBuffer, audioFile.c_str());
+        }
+        virtual void drawImGuiVariables(){
+            ImGui::Text("Audio Path: ");
+            ImGui::SameLine();
+
+            ImGui::InputText("##", stringBuffer, 512, ImGuiInputTextFlags_EnterReturnsTrue);
+            Strtrim(stringBuffer);
+            if (stringBuffer[0]){
+                audioFile = std::string(stringBuffer);
+            }
+        }
+        virtual Component* allocateDefault() {
+            return new AudioPlayerComponent("");
+        }
+        virtual Component* allocateData() {
+            return new AudioPlayerComponent(audioFile);
+        }
+        inline std::string getAudioFile(){return audioFile;}
+        virtual constexpr std::string getName(){return AUDIO_PLAYER_SYSTEM;}
+    };
+
     // deallocated at the closing of the window.
     extern parallel_flat_hash_map<std::string, Component*> componentAllocators;
 
     static void registerAllocators(){
         componentAllocators.insert(std::pair(MESH_RENDERER_SYSTEM, new MeshComponent("")));
+        componentAllocators.insert(std::pair(AUDIO_PLAYER_SYSTEM, new AudioPlayerComponent("")));
     }
 
     /**
