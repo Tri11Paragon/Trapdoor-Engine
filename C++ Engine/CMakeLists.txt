@@ -97,11 +97,12 @@ add_subdirectory(include/nativefiledialog)
 set(source_dir "${PROJECT_SOURCE_DIR}/src/")
 
 file(GLOB_RECURSE source_files "${source_dir}/*.cpp")
+file(GLOB_RECURSE source_c_files "${source_dir}/*.c")
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${PROJECT_SOURCE_DIR}/include/stb)
 
-add_executable(${PROJECT_NAME} ${source_files})
+add_executable(${PROJECT_NAME} ${source_files} ${source_c_files})
 
 #Linking
 
