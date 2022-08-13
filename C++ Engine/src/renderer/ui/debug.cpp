@@ -143,65 +143,121 @@ namespace TD {
 
         ImGui::ShowDemoWindow();
 
-        ImGui::SetNextWindowPos(ImVec2(0,(float)menuBarHeight));
-        ImGui::SetNextWindowSize(ImVec2((float)sceneHierarchyWidth, (float)sceneHierarchyHeight));
-        constexpr auto flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse;
-        ImGui::PushStyleColor(ImGuiCol_TitleBg, ImGui::GetStyleColorVec4(ImGuiCol_TitleBgActive));
+        renderHiearchyScene();
+        renderInspector();
+        renderConsole();
+        renderMenuBar();
+        renderGuizmo();
+        ImGui::PopFont();
+    }
+
+    void Editor::renderGBuffer() {
+        if (!editorMenuEnabled)
+            return;
+    }
+
+    void Editor::toggle() {
+        if (editorMenuEnabled)
+            close();
+        else
+            open();
+    }
+
+    void Editor::open() {
+        editorMenuEnabled = true;
+        TD::window::setListenToResize(false);
+
+        lWindowWidth = 0;
+        lWindowHeight = 0;
+        updateWindowSizes();
+    }
+
+    void Editor::close() {
+        editorMenuEnabled = false;
+        TD::window::setListenToResize(true);
+        TD::window::setRenderFrameBufferSize(0, 0, _display_w, _display_h);
+        TD::window::forceWindowUpdate();
+    }
+
+    bool Editor::isOpen() {
+        return editorMenuEnabled;
+    }
+
+    void Editor::cleanup() {
+
+    }
+
+    constexpr auto flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse;
+    static glm::mat4 trans(1.0);
+    static World* world;
+    static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
+    static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::WORLD);
+    static bool useSnap(false);
+    static glm::vec3 snap{5, 5, 5};
+    static int snapPos = 0;
+
+    void Editor::renderConsole() {
         ImGui::SetNextWindowBgAlpha(1.0);
-        ImGui::Begin("SceneView", nullptr, flags);
-
-        static glm::mat4 trans(1.0);
-
-        auto* world = displays[activeDisplay]->getWorld();
-        if (ImGui::CollapsingHeader(activeDisplay.c_str(), nullptr, ImGuiTreeNodeFlags_DefaultOpen)){
-            if (world != nullptr){
-                ImGui::BeginChild("_EntityDisplay", ImVec2(0,(float)sceneHierarchyHeight - 120));
-                    ImGuiListClipper entityClipper;
-                    auto entityList = world->getEntitiesList();
-                    entityClipper.Begin((int)entityList.size());
-                    while (entityClipper.Step()) {
-                        for (int row_n = entityClipper.DisplayStart; row_n < entityClipper.DisplayEnd; row_n++) {
-                            auto& e = entityList.at(row_n);
-                            auto mEName = e->getName();
-                            if (ImGui::Selectable(mEName.c_str(), mEName == activeEntity)) {
-                                activeEntity = mEName;
-                                activeEntityID = e->getID();
-                            }
-                        }
-                    }
-                ImGui::EndChild();
-                    // TODO: clean this up.
-                static char stringBuffer[512]{};
-                std::string name;
-                bool reclaim_focus = false;
-                ImGui::Text("Name: ");
-                ImGui::SameLine();
-                if(ImGui::InputText("##", stringBuffer, 512, ImGuiInputTextFlags_EnterReturnsTrue)) {reclaim_focus = true;}
-                Strtrim(stringBuffer);
-                if (stringBuffer[0]){name = std::string(stringBuffer);}
-                ImGui::SetItemDefaultFocus();
-                if (reclaim_focus)
-                    ImGui::SetKeyboardFocusHere(-1); // Auto focus previous widget
-                if (ImGui::Button("Add Entity", ImVec2((float)sceneHierarchyWidth - 16, 25))){
-                    if (name.empty())
-                        wlog << "Entity name cannot be empty!";
-                    else
-                        world->spawnEntity(new Entity(name));
+        ImGui::SetNextWindowPos(ImVec2((float)(sceneHierarchyWidth),(float)(_display_h - sceneConsoleHeight)));
+        ImGui::SetNextWindowSize(ImVec2((float)sceneConsoleWidth, (float)sceneConsoleHeight));
+        ImGui::Begin("Console", nullptr, flags | ImGuiWindowFlags_NoTitleBar);
+        if(ImGui::BeginTabBar("bar")) {
+            if (ImGui::BeginTabItem("Console")) {
+                const float footer_height_to_reserve = ImGui::GetStyle().ItemSpacing.y + ImGui::GetFrameHeightWithSpacing();
+                ImGui::BeginChild("ScrollingRegion", ImVec2(0, -footer_height_to_reserve), false, ImGuiWindowFlags_HorizontalScrollbar);
+                bool copyToClip = false;
+                static bool autoScroll = true;
+                if (ImGui::BeginPopupContextWindow()) {
+                    if (ImGui::Selectable("Clear")) td_logItems.clear();
+                    copyToClip = ImGui::SmallButton("Copy");
+                    ImGui::EndPopup();
                 }
-            }
-        }
 
+                ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 1)); // Tighten spacing
+                ImGuiListClipper clipper;
+                clipper.Begin((int)td_logItems.size());
+                if (copyToClip)
+                    ImGui::LogToClipboard();
+                while (clipper.Step()) {
+                    for (int row_n = clipper.DisplayStart; row_n < clipper.DisplayEnd; row_n++) {
+                        auto item = td_logItems[row_n];
+                        auto colorData = colorArray[item.color];
+                        ImVec4 color(colorData[0], colorData[1], colorData[2], 1.0f);
+                        ImGui::PushStyleColor(ImGuiCol_Text, color);
+                        ImGui::TextUnformatted(item.log.c_str());
+                        ImGui::PopStyleColor();
+                    }
+                }
+                if (copyToClip)
+                    ImGui::LogFinish();
+                if ((autoScroll && ImGui::GetScrollY() >= ImGui::GetScrollMaxY()))
+                    ImGui::SetScrollHereY(1.0f);
+
+                ImGui::PopStyleVar();
+                ImGui::EndChild();
+                ImGui::EndTabItem();
+            }
+            if (ImGui::BeginTabItem("Assets")) {
+                ImGui::BeginChild("AssetsBrowser");
+                ImGui::Text("Not implemented yet.");
+                ImGui::EndChild();
+                ImGui::EndTabItem();
+            }
+            ImGui::EndTabBar();
+            ImGui::Separator();
+        }
         ImGui::End();
 
+        ImGui::PopStyleColor();
+    }
+
+    void Editor::renderInspector() {
         /** Inspector! */
         ImGui::SetNextWindowBgAlpha(1.0);
         ImGui::SetNextWindowPos(ImVec2((float)(_display_w - sceneInspectorWidth),(float)menuBarHeight));
         ImGui::SetNextWindowSize(ImVec2((float)sceneInspectorWidth, (float)sceneInspectorHeight));
         ImGui::Begin("Inspector", nullptr, flags);
         ImGui::BeginChild("__Components", ImVec2((float)sceneInspectorWidth, (float)sceneInspectorHeight - 340));
-
-        static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
-        static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::WORLD);
 
         if (ImGui::RadioButton("Translate", mCurrentGizmoOperation == ImGuizmo::TRANSLATE))
             mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
@@ -220,11 +276,8 @@ namespace TD {
             if (ImGui::RadioButton("World", mCurrentGizmoMode == ImGuizmo::WORLD))
                 mCurrentGizmoMode = ImGuizmo::WORLD;
         }
-        static bool useSnap(false);
         ImGui::Checkbox("Use Snap?", &useSnap);
         ImGui::SameLine();
-        static glm::vec3 snap{5, 5, 5};
-        static int snapPos = 0;
         switch (mCurrentGizmoOperation) {
             case ImGuizmo::TRANSLATE:
                 ImGui::InputFloat3("Snap", &snap.x);
@@ -266,86 +319,81 @@ namespace TD {
         }
         ImGui::EndChild();
         ImGui::BeginChild("__ComponentsAllocator", ImVec2(0, 290), false, ImGuiWindowFlags_NoScrollbar);
-            //static char stringBuffer[512]{};
-            static ImGuiTextFilter filter;
-            static std::string selectedCompAlloc;
-            static Component* allocator = nullptr;
-            //ImGui::Text("Filter: ");
-            //ImGui::InputText("##", stringBuffer, 512, ImGuiInputTextFlags_EnterReturnsTrue);
-            //Strtrim(stringBuffer);
-            filter.Draw();
-            ImGui::BeginChild("__ComAllocPart", ImVec2(0,235), true, ImGuiWindowFlags_AlwaysAutoResize);
-            for (const auto& compAlloc : componentAllocators) {
-                if (filter.PassFilter(compAlloc.first.c_str())){
-                    if (ImGui::Selectable(compAlloc.first.c_str(), selectedCompAlloc == compAlloc.first)){
-                        selectedCompAlloc = compAlloc.first;
-                        allocator = compAlloc.second;
-                    }
+        static ImGuiTextFilter filter;
+        static std::string selectedCompAlloc;
+        static Component* allocator = nullptr;
+        filter.Draw();
+        ImGui::BeginChild("__ComAllocPart", ImVec2(0,235), true, ImGuiWindowFlags_AlwaysAutoResize);
+        for (const auto& compAlloc : componentAllocators) {
+            if (filter.PassFilter(compAlloc.first.c_str())){
+                if (ImGui::Selectable(compAlloc.first.c_str(), selectedCompAlloc == compAlloc.first)){
+                    selectedCompAlloc = compAlloc.first;
+                    allocator = compAlloc.second;
                 }
             }
-            ImGui::EndChild();
-            if (ImGui::Button("Add Component", ImVec2((float)sceneInspectorWidth - 16, 25))){
-                if (allocator != nullptr && !world->hasComponent(allocator->getName(), activeEntityID)) {
-                    world->addComponentToEntity(activeEntity, allocator->allocateDefault());
-                } else
-                    wlog << "Entity already has component!";
-            }
-            sceneComponentAddHeight = (int) ImGui::GetWindowHeight();
+        }
+        ImGui::EndChild();
+        if (ImGui::Button("Add Component", ImVec2((float)sceneInspectorWidth - 16, 25))){
+            if (allocator != nullptr && !world->hasComponent(allocator->getName(), activeEntityID)) {
+                world->addComponentToEntity(activeEntity, allocator->allocateDefault());
+            } else
+                wlog << "Entity already has component!";
+        }
+        sceneComponentAddHeight = (int) ImGui::GetWindowHeight();
         ImGui::EndChild();
         ImGui::End();
+    }
 
+    void Editor::renderHiearchyScene() {
+        ImGui::SetNextWindowPos(ImVec2(0,(float)menuBarHeight));
+        ImGui::SetNextWindowSize(ImVec2((float)sceneHierarchyWidth, (float)sceneHierarchyHeight));
+        ImGui::PushStyleColor(ImGuiCol_TitleBg, ImGui::GetStyleColorVec4(ImGuiCol_TitleBgActive));
         ImGui::SetNextWindowBgAlpha(1.0);
-        ImGui::SetNextWindowPos(ImVec2((float)(sceneHierarchyWidth),(float)(_display_h - sceneConsoleHeight)));
-        ImGui::SetNextWindowSize(ImVec2((float)sceneConsoleWidth, (float)sceneConsoleHeight));
-        ImGui::Begin("Console", nullptr, flags | ImGuiWindowFlags_NoTitleBar);
-            if(ImGui::BeginTabBar("bar")) {
-                if (ImGui::BeginTabItem("Console")) {
-                    const float footer_height_to_reserve = ImGui::GetStyle().ItemSpacing.y + ImGui::GetFrameHeightWithSpacing();
-                    ImGui::BeginChild("ScrollingRegion", ImVec2(0, -footer_height_to_reserve), false, ImGuiWindowFlags_HorizontalScrollbar);
-                        bool copyToClip = false;
-                        static bool autoScroll = true;
-                        if (ImGui::BeginPopupContextWindow()) {
-                            if (ImGui::Selectable("Clear")) td_logItems.clear();
-                            copyToClip = ImGui::SmallButton("Copy");
-                            ImGui::EndPopup();
+        ImGui::Begin("SceneView", nullptr, flags);
+
+        world = displays[activeDisplay]->getWorld();
+        if (ImGui::CollapsingHeader(activeDisplay.c_str(), nullptr, ImGuiTreeNodeFlags_DefaultOpen)){
+            if (world != nullptr){
+                ImGui::BeginChild("_EntityDisplay", ImVec2(0,(float)sceneHierarchyHeight - 120));
+                ImGuiListClipper entityClipper;
+                auto entityList = world->getEntitiesList();
+                entityClipper.Begin((int)entityList.size());
+                while (entityClipper.Step()) {
+                    for (int row_n = entityClipper.DisplayStart; row_n < entityClipper.DisplayEnd; row_n++) {
+                        auto& e = entityList.at(row_n);
+                        auto mEName = e->getName();
+                        if (ImGui::Selectable(mEName.c_str(), mEName == activeEntity)) {
+                            activeEntity = mEName;
+                            activeEntityID = e->getID();
                         }
-
-                        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 1)); // Tighten spacing
-                            ImGuiListClipper clipper;
-                            clipper.Begin((int)td_logItems.size());
-                            if (copyToClip)
-                                ImGui::LogToClipboard();
-                            while (clipper.Step()) {
-                                for (int row_n = clipper.DisplayStart; row_n < clipper.DisplayEnd; row_n++) {
-                                    auto item = td_logItems[row_n];
-                                    auto colorData = colorArray[item.color];
-                                    ImVec4 color(colorData[0], colorData[1], colorData[2], 1.0f);
-                                    ImGui::PushStyleColor(ImGuiCol_Text, color);
-                                    ImGui::TextUnformatted(item.log.c_str());
-                                    ImGui::PopStyleColor();
-                                }
-                            }
-                            if (copyToClip)
-                                ImGui::LogFinish();
-                            if ((autoScroll && ImGui::GetScrollY() >= ImGui::GetScrollMaxY()))
-                                ImGui::SetScrollHereY(1.0f);
-
-                        ImGui::PopStyleVar();
-                    ImGui::EndChild();
-                    ImGui::EndTabItem();
+                    }
                 }
-                if (ImGui::BeginTabItem("Assets")) {
-                    ImGui::BeginChild("AssetsBrowser");
-                        ImGui::Text("Not implemented yet.");
-                    ImGui::EndChild();
-                    ImGui::EndTabItem();
+                ImGui::EndChild();
+                // TODO: clean this up.
+                static char stringBuffer[512]{};
+                std::string name;
+                bool reclaim_focus = false;
+                ImGui::Text("Name: ");
+                ImGui::SameLine();
+                if(ImGui::InputText("##", stringBuffer, 512, ImGuiInputTextFlags_EnterReturnsTrue)) {reclaim_focus = true;}
+                Strtrim(stringBuffer);
+                if (stringBuffer[0]){name = std::string(stringBuffer);}
+                ImGui::SetItemDefaultFocus();
+                if (reclaim_focus)
+                    ImGui::SetKeyboardFocusHere(-1); // Auto focus previous widget
+                if (ImGui::Button("Add Entity", ImVec2((float)sceneHierarchyWidth - 16, 25))){
+                    if (name.empty())
+                        wlog << "Entity name cannot be empty!";
+                    else
+                        world->spawnEntity(new Entity(name));
                 }
-                ImGui::EndTabBar();
-                ImGui::Separator();
             }
-        ImGui::End();
+        }
 
-        ImGui::PopStyleColor();
+        ImGui::End();
+    }
+
+    void Editor::renderMenuBar() {
         /** Menu Bar */
         if (ImGui::BeginMainMenuBar()){
             if (ImGui::BeginMenu("File")){
@@ -375,7 +423,9 @@ namespace TD {
             menuBarHeight = (int)ImGui::GetWindowSize().y;
             ImGui::EndMainMenuBar();
         }
+    }
 
+    void Editor::renderGuizmo() {
         ImGuizmo::SetOrthographic(false);
         ImGuizmo::BeginFrame();
         trans = world->getComponentRaw<TransformComponent>(activeEntityID)->getTranslationMatrix();
@@ -389,44 +439,8 @@ namespace TD {
         transformComp->setTranslation(glm::vec3(matrixTranslation[0], matrixTranslation[1], matrixTranslation[2]));
         transformComp->setRotation(glm::vec3(matrixRotation[0], matrixRotation[1], matrixRotation[2]));
         transformComp->setScale(glm::vec3(matrixScale[0], matrixScale[1], matrixScale[2]));
-        ImGui::PopFont();
     }
 
-    void Editor::renderGBuffer() {
-        if (!editorMenuEnabled)
-            return;
-    }
-
-    void Editor::toggle() {
-        if (editorMenuEnabled)
-            close();
-        else
-            open();
-    }
-
-    void Editor::open() {
-        editorMenuEnabled = true;
-        TD::window::setListenToResize(false);
-
-        lWindowWidth = 0;
-        lWindowHeight = 0;
-        updateWindowSizes();
-    }
-
-    void Editor::close() {
-        editorMenuEnabled = false;
-        TD::window::setListenToResize(true);
-        TD::window::setRenderFrameBufferSize(0, 0, _display_w, _display_h);
-        TD::window::forceWindowUpdate();
-    }
-
-    bool Editor::isOpen() {
-        return editorMenuEnabled;
-    }
-
-    void Editor::cleanup() {
-
-    }
 #endif
 
 }

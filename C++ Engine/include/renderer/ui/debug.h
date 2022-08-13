@@ -40,6 +40,12 @@ namespace TD {
 
 #ifdef DEBUG_ENABLED
     class Editor {
+    private:
+        static void renderConsole();
+        static void renderInspector();
+        static void renderHiearchyScene();
+        static void renderMenuBar();
+        static void renderGuizmo();
     public:
         static void open();
         static void close();
