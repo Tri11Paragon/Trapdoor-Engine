@@ -148,6 +148,7 @@ file(GLOB_RECURSE source_c_files "${source_dir}/*.c")
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${PROJECT_SOURCE_DIR}/libs/stb)
 include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(${PROJECT_SOURCE_DIR}/include/imgui)
 
 add_executable(${PROJECT_NAME} ${source_files} ${source_c_files})
 
