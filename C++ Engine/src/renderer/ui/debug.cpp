@@ -6,6 +6,7 @@
 #include "../../window.h"
 #include "../../world/World.h"
 #include "../../imgui/ImGuizmo.h"
+#include "../../imgui/imgui_internal.h"
 #include <cmath>
 //#include "raycasting.h"
 
@@ -38,29 +39,26 @@ namespace TD {
         //        ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
         ImGuiWindowFlags window_flags = ImGuiWindowFlags_AlwaysAutoResize;
         //ImGui::SetNextWindowBgAlpha(0.35f);
-        if (!ImGui::Begin("Debug Menu", nullptr, window_flags)) {
-            ImGui::End();
-            return;
-        }
-        if (ImGui::BeginTabBar("debugTabs")) {
-            if (ImGui::BeginTabItem("General")) {
-                ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate,
-                            ImGui::GetIO().Framerate);
-                ImGui::Text("Camera Position: %f, %f, %f", activeCamera->getPosition().x, activeCamera->getPosition().y,
-                            activeCamera->getPosition().z);
-                ImGui::EndTabItem();
-            }
-
-            for (std::pair<string, DebugTab *> tab: debugTabs) {
-                if (ImGui::BeginTabItem(tab.first.c_str())) {
-                    tab.second->render();
+        if (ImGui::Begin("Debug Menu", nullptr, window_flags)) {
+            if (ImGui::BeginTabBar("debugTabs")) {
+                if (ImGui::BeginTabItem("General")) {
+                    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate,
+                                ImGui::GetIO().Framerate);
+                    ImGui::Text("Camera Position: %f, %f, %f", activeCamera->getPosition().x, activeCamera->getPosition().y,
+                                activeCamera->getPosition().z);
                     ImGui::EndTabItem();
                 }
+
+                for (std::pair<string, DebugTab *> tab: debugTabs) {
+                    if (ImGui::BeginTabItem(tab.first.c_str())) {
+                        tab.second->render();
+                        ImGui::EndTabItem();
+                    }
+                }
+
+                ImGui::EndTabBar();
             }
-
-            ImGui::EndTabBar();
         }
-
         ImGui::End();
         ImGui::PopFont();
     }
@@ -90,6 +88,8 @@ namespace TD {
     // console window
     int sceneConsoleWidth = 0;
     int sceneConsoleHeight = 320;
+    // component add size
+    int sceneComponentAddHeight = 0;
     // menu bar
     int menuBarWidth = 0;
     int menuBarHeight = 22;
@@ -154,7 +154,7 @@ namespace TD {
         auto* world = displays[activeDisplay]->getWorld();
         if (ImGui::CollapsingHeader(activeDisplay.c_str(), nullptr, ImGuiTreeNodeFlags_DefaultOpen)){
             if (world != nullptr){
-                ImGui::BeginChild("_EntityDisplay");
+                ImGui::BeginChild("_EntityDisplay", ImVec2(0,(float)sceneHierarchyHeight - 120));
                     for (auto& e : *world) {
                         if (ImGui::Selectable(e.first.c_str(), e.first == activeEntity)) {
                             activeEntity = e.first;
@@ -163,6 +163,19 @@ namespace TD {
                         }
                     }
                 ImGui::EndChild();
+                static char stringBuffer[512]{};
+                std::string name;
+                ImGui::Text("Name: ");
+                ImGui::SameLine();
+                ImGui::InputText("##", stringBuffer, 512, ImGuiInputTextFlags_EnterReturnsTrue);
+                Strtrim(stringBuffer);
+                if (stringBuffer[0]){name = std::string(stringBuffer);}
+                if (ImGui::Button("Add Entity", ImVec2((float)sceneHierarchyWidth - 16, 25))){
+                    if (name.empty())
+                        wlog << "Entity name cannot be empty!";
+                    else
+                        world->spawnEntity(new Entity(name));
+                }
             }
         }
 
@@ -173,7 +186,7 @@ namespace TD {
         ImGui::SetNextWindowPos(ImVec2((float)(_display_w - sceneInspectorWidth),(float)menuBarHeight));
         ImGui::SetNextWindowSize(ImVec2((float)sceneInspectorWidth, (float)sceneInspectorHeight));
         ImGui::Begin("Inspector", nullptr, flags);
-        ImGui::BeginChild("__Components", ImVec2((float)sceneInspectorWidth, (float)sceneInspectorHeight - 80));
+        ImGui::BeginChild("__Components", ImVec2((float)sceneInspectorWidth, (float)sceneInspectorHeight - 340));
 
         static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
         static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::WORLD);
@@ -240,10 +253,33 @@ namespace TD {
             }
         }
         ImGui::EndChild();
-        if (ImGui::Button("Add Component", ImVec2((float)sceneInspectorWidth - 16, 35))){
-
-        }
-
+        ImGui::BeginChild("__ComponentsAllocator", ImVec2(0, 290), false, ImGuiWindowFlags_NoScrollbar);
+            //static char stringBuffer[512]{};
+            static ImGuiTextFilter filter;
+            static std::string selectedCompAlloc;
+            static Component* allocator = nullptr;
+            //ImGui::Text("Filter: ");
+            //ImGui::InputText("##", stringBuffer, 512, ImGuiInputTextFlags_EnterReturnsTrue);
+            //Strtrim(stringBuffer);
+            filter.Draw();
+            ImGui::BeginChild("__ComAllocPart", ImVec2(0,235), true, ImGuiWindowFlags_AlwaysAutoResize);
+            for (const auto& compAlloc : componentAllocators) {
+                if (filter.PassFilter(compAlloc.first.c_str())){
+                    if (ImGui::Selectable(compAlloc.first.c_str(), selectedCompAlloc == compAlloc.first)){
+                        selectedCompAlloc = compAlloc.first;
+                        allocator = compAlloc.second;
+                    }
+                }
+            }
+            ImGui::EndChild();
+            if (ImGui::Button("Add Component", ImVec2((float)sceneInspectorWidth - 16, 25))){
+                if (allocator != nullptr && !world->hasComponent(allocator->getName(), activeEntityID)) {
+                    world->addComponentToEntity(activeEntity, allocator->allocateDefault());
+                } else
+                    wlog << "Entity already has component!";
+            }
+            sceneComponentAddHeight = (int) ImGui::GetWindowHeight();
+        ImGui::EndChild();
         ImGui::End();
 
         ImGui::SetNextWindowBgAlpha(1.0);
@@ -263,14 +299,19 @@ namespace TD {
                         }
 
                         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 1)); // Tighten spacing
+                            ImGuiListClipper clipper;
+                            clipper.Begin((int)td_logItems.size());
                             if (copyToClip)
                                 ImGui::LogToClipboard();
-                            for (const auto &item: td_logItems) {
-                                auto colorData = colorArray[item.color];
-                                ImVec4 color(colorData[0], colorData[1], colorData[2], 1.0f);
-                                ImGui::PushStyleColor(ImGuiCol_Text, color);
-                                ImGui::TextUnformatted(item.log.c_str());
-                                ImGui::PopStyleColor();
+                            while (clipper.Step()) {
+                                for (int row_n = clipper.DisplayStart; row_n < clipper.DisplayEnd; row_n++) {
+                                    auto item = td_logItems[row_n];
+                                    auto colorData = colorArray[item.color];
+                                    ImVec4 color(colorData[0], colorData[1], colorData[2], 1.0f);
+                                    ImGui::PushStyleColor(ImGuiCol_Text, color);
+                                    ImGui::TextUnformatted(item.log.c_str());
+                                    ImGui::PopStyleColor();
+                                }
                             }
                             if (copyToClip)
                                 ImGui::LogFinish();
@@ -324,7 +365,6 @@ namespace TD {
         }
 
         ImGuizmo::SetOrthographic(false);
-        ImGuizmo::SetDrawlist();
         ImGuizmo::BeginFrame();
 
         ImGuizmo::SetRect((float)offsetX, (float)-offsetY, (float)(_display_w), (float)(_display_h));

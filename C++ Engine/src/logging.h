@@ -27,12 +27,12 @@ namespace expr = boost::log::expressions;
 namespace attrs = boost::log::attributes;
 namespace keywords = boost::log::keywords;
 
-#define tlog BOOST_LOG_TRIVIAL(trace)
-#define dlog BOOST_LOG_TRIVIAL(debug)
-#define ilog BOOST_LOG_TRIVIAL(info)
-#define wlog BOOST_LOG_TRIVIAL(warning)
-#define elog BOOST_LOG_TRIVIAL(error)
-#define flog BOOST_LOG_TRIVIAL(fatal)
+#define tlog BOOST_LOG_TRIVIAL(trace) << "[" << __FUNCTION__ << ":" << __LINE__ << "]: "
+#define dlog BOOST_LOG_TRIVIAL(debug) << "[" << __FUNCTION__ << ":" << __LINE__ << "]: "
+#define ilog BOOST_LOG_TRIVIAL(info) << "[" << __FUNCTION__ << ":" << __LINE__ << "]: "
+#define wlog BOOST_LOG_TRIVIAL(warning) << "[" << __FUNCTION__ << ":" << __LINE__ << "]: "
+#define elog BOOST_LOG_TRIVIAL(error) << "[" << __FUNCTION__ << ":" << __LINE__ << "]: "
+#define flog BOOST_LOG_TRIVIAL(fatal) << "[" << __FUNCTION__ << ":" << __LINE__ << "]: "
 
 BOOST_LOG_ATTRIBUTE_KEYWORD(a_timestamp, "TimeStamp", attrs::local_clock::value_type)
 BOOST_LOG_ATTRIBUTE_KEYWORD(a_thread_id, "ThreadID", attrs::current_thread_id::value_type)
@@ -142,16 +142,15 @@ static void td_coloring_formatter(logging::record_view const& rec, logging::form
         strBuild << "0";
     strBuild << seconds;
     strBuild << ".";
-    strBuild << time.ticks();
+    strBuild << time.fractional_seconds();
     strBuild << "] ";
 
     strm << strBuild.str();
     strm << "[" << rec[a_thread_id] << "] ";
-    strm << "[" << severity << "]: ";
+    strm << "[" << severity << "] ";
 #ifdef DEBUG_ENABLED
     td_logStream << strBuild.str();
-    //td_logStream << "[" << rec[a_thread_id] << "] ";
-    td_logStream << "[" << severity << "]: ";
+    td_logStream << "[" << severity << "] ";
 #endif
 
     auto theMessage = rec[logging::expressions::smessage];
@@ -166,7 +165,6 @@ static void td_coloring_formatter(logging::record_view const& rec, logging::form
         td_logStream << theMessage << '\n';
 #endif
     }
-
     if (severity) {
         // Restore the default color
         strm << "\033[0m";
@@ -180,12 +178,14 @@ static void td_coloring_formatter(logging::record_view const& rec, logging::form
 
 }
 
-
 static void init_logging(const std::string& file){
 #ifndef ENGINE_LOGGING_INIT_COMPLETE
+    //logging::core::get()->add_global_attribute("Line", attrs::make_constant<int>(5));
+    //logging::core::get()->add_global_attribute("File", attrs::make_constant<std::string>(""));
+    //logging::core::get()->add_global_attribute("Function", attrs::make_constant<std::string>(""));
     logging::register_simple_formatter_factory<logging::trivial::severity_level, char>("Severity");
 
-    std::string _format = "[%TimeStamp%] [%ThreadID%] [%Severity%]: %Message%";
+    std::string _format = "[%TimeStamp%] [%ThreadID%] [%Severity%] %Message%";
 
     logging::add_file_log(
             keywords::file_name = "logs/%Y-%m-%d_%H:%M:%S_%N-" + file + ".log",

@@ -52,14 +52,21 @@ namespace TD {
         glm::vec3 rotation = glm::vec3(0.0);
         glm::vec3 scale = glm::vec3(1.0);
     public:
-        TransformComponent() {};
+        TransformComponent() = default;
         void setTranslation(glm::vec3 vec){this->translate = vec;}
         void setRotation(glm::vec3 vec){this->rotation = vec;}
         void setScale(glm::vec3 vec){this->scale = vec;}
         virtual void drawImGuiVariables(){
-            ImGui::InputFloat3("Translation", glm::value_ptr(translate));
-            ImGui::InputFloat3("Rotation", glm::value_ptr(rotation));
-            ImGui::InputFloat3("Scale", glm::value_ptr(scale));
+            static float transFloat[3], rotFloat[3], scaleFloat[3];
+//            transFloat[0] = translate.x;transFloat[1] = translate.y;transFloat[2] = translate.z;
+//            rotFloat[0] = rotation.x;rotFloat[1] = rotation.y;rotFloat[2] = rotation.z;
+//            scaleFloat[0] = scale.x;scaleFloat[1] = scale.y;scaleFloat[2] = scale.z;
+            ImGui::InputFloat3("Translation", transFloat);
+            ImGui::InputFloat3("Rotation", rotFloat);
+            ImGui::InputFloat3("Scale", scaleFloat);
+            translate = glm::vec3(transFloat[0], transFloat[1], transFloat[2]);
+            rotation = glm::vec3(rotFloat[0], rotFloat[1], rotFloat[2]);
+            scale = glm::vec3(scaleFloat[0], scaleFloat[1], scaleFloat[2]);
         }
         virtual Component* allocateDefault() {
             return new TransformComponent();
@@ -246,6 +253,18 @@ namespace TD {
         void addComponentToEntity(const std::string& name, Component* component);
         void deleteEntity(const std::string& entityName);
         void updateLights(std::vector<TD::Light> lights);
+        inline bool hasComponent(const std::string& componentName, ID entID){
+            try {
+                auto comp = components.at(componentName);
+                return comp.find(entID) != comp.end();
+            } catch (std::exception& e){}
+            return false;
+        }
+        template<class T>
+        inline bool hasComponent(ID entID){
+            T t {};
+            return hasComponent(t.getName(), entID);
+        }
         inline std::string getEntityNameByID(ID id){
             for (auto e : entityMap){
                 if (e.second.isValid()){

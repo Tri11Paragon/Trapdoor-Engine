@@ -139,9 +139,7 @@ namespace TD {
                         trans = glm::rotate(trans, glm::radians(rotation.z), glm::vec3(0, 0, 1));
                     trans = glm::scale(trans, transform->getScale());
                     GameRegistry::getModel(model)->draw(*shader, trans);
-                } catch (std::exception& e){
-                    elog << e.what();
-                }
+                } catch (std::exception& e){}
             } else {
                 flog << "Mesh isn't valid! Did you fail to delete it correctly?";
                 flog << "(if you are seeing this the engine has failed, please report this.)";

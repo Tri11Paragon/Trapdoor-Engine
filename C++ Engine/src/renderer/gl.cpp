@@ -380,7 +380,7 @@ namespace TD {
 
     cubemapTexture::cubemapTexture(std::vector<std::string> paths) {
         if (paths.size() < 6)
-            throw "Cubemap must have 6 paths provided!";
+            throw std::runtime_error("Cubemap must have 6 paths provided!");
         glGenTextures(1, &textureID);
         glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
@@ -447,15 +447,12 @@ namespace TD {
         if (asArray){
 
         } else {
-            unsigned int* textureIDs = new unsigned int[frames];
+            auto* textureIDs = new unsigned int[frames];
+            const unsigned int frameSize = channels * width * height;
+            auto* localMem = new unsigned char[frameSize];
             glGenTextures(frames, textureIDs);
             for (int i = 0; i < frames; i++) {
-                unsigned char* localMem = new unsigned char[channels * width * height];
-                // use memcopy?
-                //for (int j = 0; j < channels * width * height; j++){
-                //    localMem[j] = data[(i * channels * width * height) + j];
-                //}
-                memcpy(localMem, (void*) data[i * channels * width * height], channels * width * height);
+                memcpy(localMem, (void*) (size_t) (data + (i * frameSize)), frameSize);
                 glBindTexture(GL_TEXTURE_2D, textureIDs[i]);
 
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -468,8 +465,8 @@ namespace TD {
                 glGenerateMipmap(GL_TEXTURE_2D);
 
                 textures.push_back(textureIDs[i]);
-                delete[](localMem);
             }
+            delete[](localMem);
             delete[](textureIDs);
         }
         stbi_image_free(data);

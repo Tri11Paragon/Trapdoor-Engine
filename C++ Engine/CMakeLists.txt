@@ -26,7 +26,7 @@ set(ENGINE_VERSION_MINOR " ${PROJECT_VERSION_MINOR}")
 set(ENGINE_VERSION_PATCH " ${PROJECT_VERSION_PATCH}")
 set(BUILD_DIR "${PROJECT_SOURCE_DIR}")
 if(WIN32)
-    set(RESOURCE_PATH "%appdata%\\Trapdoor\\") # likely wrong and should be set from c++ but i'd rather it be set this way :(
+    set(RESOURCE_PATH "%appdata%/Trapdoor/") # likely wrong and should be set from c++ but i'd rather it be set this way :(
     set(PATH_SEPARATOR "\\")
 elseif(UNIX)
     set(RESOURCE_PATH "~/.local/share/Trapdoor/")
@@ -45,42 +45,42 @@ set(Boost_NO_WARN_NEW_VERSIONS  ON)
 
 # Boost Dirs
 if (UNIX)
-    set( BOOST_ROOT "include/boost_lib/" CACHE PATH "Boost library path" )
-    set( BOOST_INCLUDEDIR "include/boost_lib/include" CACHE PATH "Boost library path" )
-    set( BOOST_LIBRARYDIR "include/boost_lib/lib" CACHE PATH "Boost library path" )
+    set( BOOST_ROOT "libs/boost_lib/" CACHE PATH "Boost library path" )
+    set( BOOST_INCLUDEDIR "libs/boost_lib/include" CACHE PATH "Boost library path" )
+    set( BOOST_LIBRARYDIR "libs/boost_lib/lib" CACHE PATH "Boost library path" )
     set( Boost_NO_SYSTEM_PATHS on CACHE BOOL "Do not search system for Boost" )
 
     find_package(Boost REQUIRED COMPONENTS filesystem log)
 elseif(WIN32)
-    #set( BOOST_ROOT "include/boost_lib_windows/" CACHE PATH "Boost library path" )
-    #set( BOOST_INCLUDEDIR "include/boost_lib_windows/include" CACHE PATH "Boost library path" )
-    #set( BOOST_LIBRARYDIR "include/boost_lib_windows/lib" CACHE PATH "Boost library path" )
+    #set( BOOST_ROOT "libs/boost_lib_windows/" CACHE PATH "Boost library path" )
+    #set( BOOST_INCLUDEDIR "libs/boost_lib_windows/include" CACHE PATH "Boost library path" )
+    #set( BOOST_LIBRARYDIR "libs/boost_lib_windows/lib" CACHE PATH "Boost library path" )
     #set(Boost_ARCHITECTURE "-x64")
-    set(Boost_INCLUDE_DIRS include/boost_lib_windows/include/boost-1_79)
+    set(Boost_INCLUDE_DIRS libs/boost_lib_windows/include/boost-1_79)
     if(CMAKE_BUILD_TYPE MATCHES Debug)
         set(Boost_LIBRARIES 
-            "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_atomic-vc143-mt-gd-x64-1_79.lib"
-            "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_chrono-vc143-mt-gd-x64-1_79.lib"
-            "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_filesystem-vc143-mt-gd-x64-1_79.lib"
-            "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_log_setup-vc143-mt-gd-x64-1_79.lib"
-            "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_log-vc143-mt-gd-x64-1_79.lib"
-            "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_regex-vc143-mt-gd-x64-1_79.lib"
-            "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_thread-vc143-mt-gd-x64-1_79.lib"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_atomic-vc143-mt-gd-x64-1_79.lib"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_chrono-vc143-mt-gd-x64-1_79.lib"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_filesystem-vc143-mt-gd-x64-1_79.lib"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_log_setup-vc143-mt-gd-x64-1_79.lib"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_log-vc143-mt-gd-x64-1_79.lib"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_regex-vc143-mt-gd-x64-1_79.lib"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_thread-vc143-mt-gd-x64-1_79.lib"
         )
-        set(bfilesystem "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_filesystem-vc143-mt-gd-x64-1_79.lib")
-        set(blog "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_log-vc143-mt-gd-x64-1_79.lib")
+        set(bfilesystem "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_filesystem-vc143-mt-gd-x64-1_79.lib")
+        set(blog "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_log-vc143-mt-gd-x64-1_79.lib")
     else()
         set(Boost_LIBRARIES 
-            "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_atomic-vc143-mt-x64-1_79.lib"
-            "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_chrono-vc143-mt-x64-1_79.lib"
-            "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_filesystem-vc143-mt-x64-1_79.lib"
-            "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_log_setup-vc143-mt-x64-1_79.lib"
-            "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_log-vc143-mt-x64-1_79.lib"
-            "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_regex-vc143-mt-x64-1_79.lib"
-            "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_thread-vc143-mt-x64-1_79.lib"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_atomic-vc143-mt-x64-1_79.lib"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_chrono-vc143-mt-x64-1_79.lib"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_filesystem-vc143-mt-x64-1_79.lib"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_log_setup-vc143-mt-x64-1_79.lib"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_log-vc143-mt-x64-1_79.lib"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_regex-vc143-mt-x64-1_79.lib"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_thread-vc143-mt-x64-1_79.lib"
         )
-        set(bfilesystem "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_filesystem-vc143-mt-x64-1_79.lib")
-        set(blog "${PROJECT_SOURCE_DIR}/include/boost_lib_windows/lib/libboost_log-vc143-mt-x64-1_79.lib")
+        set(bfilesystem "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_filesystem-vc143-mt-x64-1_79.lib")
+        set(blog "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_log-vc143-mt-x64-1_79.lib")
     endif()
 endif()
 
@@ -91,11 +91,11 @@ find_package(Threads REQUIRED)
 #GL Setup
 find_package(OpenGL REQUIRED)
 #find_package(glfw3 3.3 REQUIRED)
-add_subdirectory(include/glfw)
-include_directories(include/glfw/include)
+add_subdirectory(libs/glfw)
+include_directories(libs/glfw/include)
 
-add_subdirectory(include/glad/cmake)
-add_subdirectory(include/glm)
+add_subdirectory(libs/glad/cmake)
+add_subdirectory(libs/glm)
 
 glad_add_library(glad_gl_core STATIC API gl:core=4.5)
 
@@ -111,30 +111,30 @@ if (WIN32)
 elseif(UNIX)
     set(CMAKE_BUILD_TYPE "Debug")
 endif()
-add_subdirectory(include/assimp)
+add_subdirectory(libs/assimp)
 message("Assimp BUILD: ${TD_BUILD_SETTING} // ${CMAKE_BUILD_TYPE}")
 set(CMAKE_BUILD_TYPE ${TD_BUILD_SETTING})
-add_subdirectory(include/meshoptimizer)
+add_subdirectory(libs/meshoptimizer)
 message("Meshoptimizer BUILD: ${TD_BUILD_SETTING} // ${CMAKE_BUILD_TYPE}")
 # DTV setup
-add_subdirectory(include/direct-to-video)
-include_directories(include/direct-to-video/include)
+add_subdirectory(libs/direct-to-video)
+include_directories(libs/direct-to-video/include)
 
 # Bullet Setup
-#set( BULLET_ROOT "include/bullet3/build" CACHE PATH "Bullet library path" )
+#set( BULLET_ROOT "libs/bullet3/build" CACHE PATH "Bullet library path" )
 
 #find_package(Bullet REQUIRED)
 #include_directories(${BULLET_INCLUDE_DIRS})
 set(CMAKE_BUILD_TYPE "Release")
-add_subdirectory(${PROJECT_SOURCE_DIR}/include/bullet3)
-include_directories(${PROJECT_SOURCE_DIR}/include/bullet3/src)
+add_subdirectory(${PROJECT_SOURCE_DIR}/libs/bullet3)
+include_directories(${PROJECT_SOURCE_DIR}/libs/bullet3/src)
 message("Bullet BUILD: ${TD_BUILD_SETTING} // ${CMAKE_BUILD_TYPE}")
 set(CMAKE_BUILD_TYPE ${TD_BUILD_SETTING})
 message("Backto BUILD: ${TD_BUILD_SETTING} // ${CMAKE_BUILD_TYPE}")
 
 # NFD Setup
-#include_directories(${PROJECT_SOURCE_DIR}/include/nativefiledialog/src/include)
-add_subdirectory(include/nativefiledialog)
+#include_directories(${PROJECT_SOURCE_DIR}/libs/nativefiledialog/src/include)
+add_subdirectory(libs/nativefiledialog)
 
 # Zips
 
@@ -145,7 +145,8 @@ file(GLOB_RECURSE source_files "${source_dir}/*.cpp")
 file(GLOB_RECURSE source_c_files "${source_dir}/*.c")
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
-include_directories(${PROJECT_SOURCE_DIR}/include/stb)
+include_directories(${PROJECT_SOURCE_DIR}/libs/stb)
+include_directories(${PROJECT_SOURCE_DIR}/include)
 
 add_executable(${PROJECT_NAME} ${source_files} ${source_c_files})
 
@@ -168,5 +169,5 @@ elseif(WIN32)
 endif()
 target_link_libraries(${PROJECT_NAME} direct-to-video)
 
-#target_link_libraries(${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/include/nativefiledialog/build/lib/Debug/x64/libnfd_d.a)
+#target_link_libraries(${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/libs/nativefiledialog/build/lib/Debug/x64/libnfd_d.a)
 target_link_libraries(${PROJECT_NAME} nativefiledialog)
