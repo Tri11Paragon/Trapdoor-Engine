@@ -107,12 +107,7 @@ namespace TD {
             ImGui::Text("Model Path: ");
             ImGui::SameLine();
 
-            bool focus = false;
-            if(ImGui::InputText("##", stringBuffer, 512, ImGuiInputTextFlags_EnterReturnsTrue))
-                focus = true;
-            ImGui::SetItemDefaultFocus();
-            if (focus)
-                ImGui::SetKeyboardFocusHere(-1); // Auto focus previous widget
+            ImGui::InputText("01", stringBuffer, 512);
             Strtrim(stringBuffer);
             if (stringBuffer[0]){
                 modelName = std::string(stringBuffer);
@@ -140,7 +135,7 @@ namespace TD {
             ImGui::Text("Audio Path: ");
             ImGui::SameLine();
 
-            ImGui::InputText("##", stringBuffer, 512, ImGuiInputTextFlags_EnterReturnsTrue);
+            ImGui::InputText("02", stringBuffer, 512, ImGuiInputTextFlags_EnterReturnsTrue);
             Strtrim(stringBuffer);
             if (stringBuffer[0]){
                 audioFile = std::string(stringBuffer);
