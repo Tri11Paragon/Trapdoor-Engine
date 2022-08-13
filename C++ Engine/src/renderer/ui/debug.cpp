@@ -122,6 +122,7 @@ namespace TD {
             iHeight = lWindowHeight - menuBarHeight - sceneConsoleHeight;
             iWidth = lWindowWidth - sceneHierarchyWidth - sceneInspectorWidth;
 
+            TD::window::updateOnlyOrtho(_display_w, _display_h);
             TD::window::setRenderFrameBufferSize(offsetX, offsetY, iWidth, iHeight);
         }
         glViewport(offsetX, offsetY, iWidth, iHeight);
@@ -155,10 +156,17 @@ namespace TD {
         if (ImGui::CollapsingHeader(activeDisplay.c_str(), nullptr, ImGuiTreeNodeFlags_DefaultOpen)){
             if (world != nullptr){
                 ImGui::BeginChild("_EntityDisplay", ImVec2(0,(float)sceneHierarchyHeight - 120));
-                    for (auto& e : *world) {
-                        if (ImGui::Selectable(e.first.c_str(), e.first == activeEntity)) {
-                            activeEntity = e.first;
-                            activeEntityID = e.second->getID();
+                    ImGuiListClipper entityClipper;
+                    auto entityList = world->getEntitiesList();
+                    entityClipper.Begin((int)entityList.size());
+                    while (entityClipper.Step()) {
+                        for (int row_n = entityClipper.DisplayStart; row_n < entityClipper.DisplayEnd; row_n++) {
+                            auto& e = entityList.at(row_n);
+                            auto mEName = e->getName();
+                            if (ImGui::Selectable(mEName.c_str(), mEName == activeEntity)) {
+                                activeEntity = mEName;
+                                activeEntityID = e->getID();
+                            }
                         }
                     }
                 ImGui::EndChild();

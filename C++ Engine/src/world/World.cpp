@@ -62,6 +62,7 @@ namespace TD {
     void World::spawnEntity(Entity *entity) {
         if (entityMap.find(entity->getName()) == entityMap.end()) {
             dPtr<Entity> entPtr(entity);
+            entityList.push_back(entPtr);
             entityMap.insert(std::pair(entity->getName(), entPtr));
             for (auto c : entity->getComponents()){
                 if (components.find(c->getName()) == components.end()){

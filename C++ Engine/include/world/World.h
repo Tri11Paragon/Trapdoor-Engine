@@ -227,6 +227,7 @@ namespace TD {
     private:
         parallel_flat_hash_map<std::string, dPtr<TD::Entity>> entityMap;
         parallel_flat_hash_map<std::string, flat_hash_map<ID, dPtr<Component>>> components;
+        std::vector<dPtr<TD::Entity>> entityList;
         std::vector<dPtr<System>> systems;
 
         TD::skyboxRenderer skyboxRenderer;
@@ -319,6 +320,7 @@ namespace TD {
         inline auto end() noexcept { return entityMap.end(); }
         inline auto cend() const noexcept { return entityMap.cend(); }
         inline parallel_flat_hash_map<std::string, dPtr<TD::Entity>> getEntities(){return entityMap;}
+        inline std::vector<dPtr<Entity>> getEntitiesList(){return entityList;}
         ~World();
     };
 

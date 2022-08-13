@@ -59,13 +59,11 @@ namespace TD {
                 camera_far_plane);
     }
 
-    void window::updateProjections(int width, int height){
-        updateProjections(0,0, width,height);
+    void window::updateOnlyOrtho(int width, int height){
+        updateOnlyOrtho(0,0, width,height);
     }
 
-    void window::updateProjections(int ox, int oy, int width, int height){
-        projectionMatrix = glm::perspective(glm::radians(fov), (float) width / (float) height, 0.1f, camera_far_plane);
-        TD::updateProjectionMatrixUBO(projectionMatrix);
+    void window::updateOnlyOrtho(int ox, int oy, int width, int height){
         TD::updateOrthoMatrixUBO(glm::ortho((float)ox, (float)width, (float)oy, (float)height, -5.0f, 5.0f));
     }
 
@@ -156,7 +154,8 @@ namespace TD {
         TD::createMatrixUBO();
 
         glfwGetFramebufferSize(_window, &_display_w, &_display_h);
-        updateProjections(_display_w, _display_h);
+        updateOnlyProjection(_display_w, _display_h);
+        updateOnlyOrtho(_display_w, _display_h);
 
         _loadingComplete = true;
     }
@@ -227,7 +226,7 @@ namespace TD {
     void window::deleteWindow() {
         TD::GameRegistry::deleteResources();
         TD::debugUI::deleteAllTabs();
-        for (auto o : componentAllocators)
+        for (const auto& o : componentAllocators)
             delete(o.second);
         // Cleanup
         ImGui_ImplOpenGL3_Shutdown();
@@ -279,8 +278,8 @@ namespace TD {
 
     void window::setRenderFrameBufferSize(int x, int y, int width, int height) {
         updateOnlyProjection(x, y, width, height);
-        for (int i = 0; i < windowResizeCallbacks.size(); i++)
-            windowResizeCallbacks[i]->windowResized(x, y, width, height);
+        for (auto & windowResizeCallback : windowResizeCallbacks)
+            windowResizeCallback->windowResized(x, y, width, height);
         dlog << "Changing Projection Matrix to " << width << "w " << height << "h\n";
     }
 
@@ -298,10 +297,8 @@ namespace TD {
         if ((pastValueW != _display_w || pastValueH != _display_h)) {
             glViewport(0,0, _display_w, _display_h);
             if (_listenToResize) {
-                updateProjections(_display_w, _display_h);
-                for (int i = 0; i < windowResizeCallbacks.size(); i++)
-                    windowResizeCallbacks[i]->windowResized(0, 0, _display_w, _display_h);
-                dlog << "Changing Projection Matrix to " << _display_w << "w " << _display_h << "h\n";
+                updateOnlyOrtho(_display_w, _display_h);
+                setRenderFrameBufferSize(0, 0, _display_w, _display_h);
             }
         }
     }
