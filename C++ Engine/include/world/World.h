@@ -57,16 +57,17 @@ namespace TD {
         void setRotation(glm::vec3 vec){this->rotation = vec;}
         void setScale(glm::vec3 vec){this->scale = vec;}
         virtual void drawImGuiVariables(){
-            static float transFloat[3], rotFloat[3], scaleFloat[3];
-//            transFloat[0] = translate.x;transFloat[1] = translate.y;transFloat[2] = translate.z;
-//            rotFloat[0] = rotation.x;rotFloat[1] = rotation.y;rotFloat[2] = rotation.z;
-//            scaleFloat[0] = scale.x;scaleFloat[1] = scale.y;scaleFloat[2] = scale.z;
-            ImGui::InputFloat3("Translation", transFloat);
-            ImGui::InputFloat3("Rotation", rotFloat);
-            ImGui::InputFloat3("Scale", scaleFloat);
-            translate = glm::vec3(transFloat[0], transFloat[1], transFloat[2]);
-            rotation = glm::vec3(rotFloat[0], rotFloat[1], rotFloat[2]);
-            scale = glm::vec3(scaleFloat[0], scaleFloat[1], scaleFloat[2]);
+            float transFloat[3], rotFloat[3], scaleFloat[3];
+            transFloat[0] = translate.x;transFloat[1] = translate.y;transFloat[2] = translate.z;
+            rotFloat[0] = rotation.x;rotFloat[1] = rotation.y;rotFloat[2] = rotation.z;
+            scaleFloat[0] = scale.x;scaleFloat[1] = scale.y;scaleFloat[2] = scale.z;
+            if (ImGui::InputFloat3("Translation", transFloat, nullptr, ImGuiInputTextFlags_EnterReturnsTrue)) {
+                translate = glm::vec3(transFloat[0], transFloat[1], transFloat[2]);
+            }
+            if(ImGui::InputFloat3("Rotation", rotFloat, nullptr, ImGuiInputTextFlags_EnterReturnsTrue))
+                rotation = glm::vec3(rotFloat[0], rotFloat[1], rotFloat[2]);
+            if(ImGui::InputFloat3("Scale", scaleFloat, nullptr, ImGuiInputTextFlags_EnterReturnsTrue))
+                scale = glm::vec3(scaleFloat[0], scaleFloat[1], scaleFloat[2]);
         }
         virtual Component* allocateDefault() {
             return new TransformComponent();
@@ -106,7 +107,12 @@ namespace TD {
             ImGui::Text("Model Path: ");
             ImGui::SameLine();
 
-            ImGui::InputText("##", stringBuffer, 512, ImGuiInputTextFlags_EnterReturnsTrue);
+            bool focus = false;
+            if(ImGui::InputText("##", stringBuffer, 512, ImGuiInputTextFlags_EnterReturnsTrue))
+                focus = true;
+            ImGui::SetItemDefaultFocus();
+            if (focus)
+                ImGui::SetKeyboardFocusHere(-1); // Auto focus previous widget
             Strtrim(stringBuffer);
             if (stringBuffer[0]){
                 modelName = std::string(stringBuffer);

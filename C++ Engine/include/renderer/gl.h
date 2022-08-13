@@ -132,7 +132,7 @@ namespace TD {
         vao& operator=(vao &&) noexcept = delete; // Disable Move Assignment
         vao(const std::vector<float> &verts, const std::vector<unsigned int> &indicies, int attributeCount);
         vao(const std::vector<float> &verts, const std::vector<float> &uvs, const std::vector<unsigned int> &indicies, int attributeCount);
-        ~vao();
+        virtual ~vao();
         void bind();
         virtual void bindTextures();
         virtual void draw();
@@ -326,7 +326,7 @@ namespace TD {
         void renderToQuad(TD::shader& shader, int x, int y, int width, int height);
         virtual void windowResized(int x, int y, int width, int height);
 
-        ~fbo();
+        virtual ~fbo();
     };
 
     class gBufferFBO : public fbo {
@@ -388,6 +388,7 @@ namespace TD {
         void bind();
         void bindDepthTextureArray();
         void finish();
+        virtual void windowResized(int x, int y, int width, int height);
     };
 
     void createMatrixUBO();

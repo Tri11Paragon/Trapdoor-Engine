@@ -1055,6 +1055,10 @@ namespace TD {
         glBindTexture(GL_TEXTURE_2D_ARRAY, _depthAttachment);
     }
 
+    // shadows don't need to be resized.
+    void shadowFBO::windowResized(int x, int y, int width, int height) {
+    }
+
     /***---------------{Static Stuff}---------------***/
 
     unsigned int matrixUBO;

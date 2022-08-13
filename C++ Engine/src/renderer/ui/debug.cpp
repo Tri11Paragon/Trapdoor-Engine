@@ -124,7 +124,7 @@ namespace TD {
 
             TD::window::setRenderFrameBufferSize(offsetX, offsetY, iWidth, iHeight);
         }
-        //glViewport(offsetX, offsetY, iWidth, iHeight);
+        glViewport(offsetX, offsetY, iWidth, iHeight);
     }
 
     static std::string activeEntity;
@@ -159,17 +159,21 @@ namespace TD {
                         if (ImGui::Selectable(e.first.c_str(), e.first == activeEntity)) {
                             activeEntity = e.first;
                             activeEntityID = e.second->getID();
-                            trans = world->getComponentRaw<TransformComponent>(activeEntityID)->getTranslationMatrix();
                         }
                     }
                 ImGui::EndChild();
+                    // TODO: clean this up.
                 static char stringBuffer[512]{};
                 std::string name;
+                bool reclaim_focus = false;
                 ImGui::Text("Name: ");
                 ImGui::SameLine();
-                ImGui::InputText("##", stringBuffer, 512, ImGuiInputTextFlags_EnterReturnsTrue);
+                if(ImGui::InputText("##", stringBuffer, 512, ImGuiInputTextFlags_EnterReturnsTrue)) {reclaim_focus = true;}
                 Strtrim(stringBuffer);
                 if (stringBuffer[0]){name = std::string(stringBuffer);}
+                ImGui::SetItemDefaultFocus();
+                if (reclaim_focus)
+                    ImGui::SetKeyboardFocusHere(-1); // Auto focus previous widget
                 if (ImGui::Button("Add Entity", ImVec2((float)sceneHierarchyWidth - 16, 25))){
                     if (name.empty())
                         wlog << "Entity name cannot be empty!";
@@ -366,6 +370,7 @@ namespace TD {
 
         ImGuizmo::SetOrthographic(false);
         ImGuizmo::BeginFrame();
+        trans = world->getComponentRaw<TransformComponent>(activeEntityID)->getTranslationMatrix();
 
         ImGuizmo::SetRect((float)offsetX, (float)-offsetY, (float)(_display_w), (float)(_display_h));
         ImGuizmo::Manipulate(glm::value_ptr(viewMatrix), glm::value_ptr(projectionMatrix), mCurrentGizmoOperation, mCurrentGizmoMode, glm::value_ptr(trans), nullptr, useSnap ? &snap[snapPos] : nullptr);

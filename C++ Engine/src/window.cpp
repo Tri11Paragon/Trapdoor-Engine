@@ -13,6 +13,7 @@
 #include "world/World.h"
 #include <config.h>
 #include <encoder.h>
+#include <cmath>
 
 #include <utility>
 
@@ -456,8 +457,8 @@ namespace TD {
         float progressWidth = (float)_display_w/2;
 
         // add the change in time to the time counter, when above the delay thresh, goto next frame.
-        currentTime += getFrameTimeMilliseconds();
-        if (currentTime >= lsTexture.getDelays()[currentFrame]) {
+        currentTime += (float)getFrameTimeMilliseconds();
+        if (currentTime >= (float)lsTexture.getDelays()[currentFrame]) {
             currentFrame++;
             currentTime = 0;
         }
@@ -467,7 +468,7 @@ namespace TD {
 
         float aspect = (float)lsTexture.getWidth() / (float)lsTexture.getHeight();
         const float padding = 10;
-        float remHe = _display_h/2 - padding*2;
+        float remHe = (float)_display_h/2 - padding*2;
         float calcWidth = remHe * aspect;
 
         ImGui::SetCursorPos(ImVec2(progressWidth - calcWidth/2, padding));
@@ -477,10 +478,10 @@ namespace TD {
         // changes background of the progress bar
         //ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.270, 0.960, 0.0192, 1.0));
         ImGui::PushStyleColor(ImGuiCol_PlotHistogram, ImVec4(0.225, 0.820, 0.00820, 1.0));
-        ImGui::ProgressBar(modelsLoaded / modelCount, ImVec2(progressWidth, 60));
+        ImGui::ProgressBar(min((float)modelsLoaded / (float)(modelCount - 1), 1.0f), ImVec2(progressWidth, 60));
         ImGui::NewLine();
         ImGui::SetCursorPosX(progressWidth - progressWidth/2);
-        ImGui::ProgressBar(texturesLoaded / textureCount, ImVec2(progressWidth, 60));
+        ImGui::ProgressBar(min((float)texturesLoaded / (float)(textureCount - 1), 1.0f), ImVec2(progressWidth, 60));
         ImGui::PopStyleColor();
         const ImVec2 cons = ImGui::CalcTextSize(lastLoaded.c_str(), nullptr);
         ImGui::NewLine();

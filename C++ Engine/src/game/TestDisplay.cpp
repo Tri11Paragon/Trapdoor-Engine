@@ -4,9 +4,11 @@
 
 #include "game/TestDisplay.h"
 
+#include <utility>
+
 namespace TD {
 
-    TestDisplay::TestDisplay(std::string name) : Display(name) {
+    TestDisplay::TestDisplay(std::string name) : Display(std::move(name)) {
         TD::DisplayManager::changeActiveCamera(&camera);
         world.updateLights(lights);
         /**
