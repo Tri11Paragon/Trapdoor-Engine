@@ -24,14 +24,14 @@
 // SOFTWARE.
 //
 
-#include "imgui.h"
+#include "imgui/imgui.h"
 #define IMGUI_DEFINE_MATH_OPERATORS
-#include "imgui_internal.h"
+#include "imgui/imgui_internal.h"
 #include <math.h>
 #include <vector>
 #include <float.h>
 #include <array>
-#include "GraphEditor.h"
+#include "imgui/GraphEditor.h"
 
 namespace GraphEditor {
 

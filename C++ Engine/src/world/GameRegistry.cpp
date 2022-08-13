@@ -2,14 +2,14 @@
 // Created by brett on 01/08/22.
 //
 
-#include "GameRegistry.h"
-#include "../logging.h"
-#include "../hashmaps.h"
-#include "../font.h"
+#include "world/GameRegistry.h"
+#include "logging.h"
+#include "hashmaps.h"
+#include "font.h"
 #include <chrono>
 #include <thread>
 #include <atomic>
-#include "../window.h"
+#include "window.h"
 
 namespace TD {
 

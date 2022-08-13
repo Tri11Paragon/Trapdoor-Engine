@@ -2,12 +2,12 @@
 // Created by brett on 23/07/22.
 //
 
-#include "camera.h"
-#include "../input.h"
-#include "../window.h"
-#include "gl.h"
+#include "renderer/camera.h"
+#include "input.h"
+#include "window.h"
+#include "renderer/gl.h"
 #include <math.h>
-#include "../clock.h"
+#include "clock.h"
 #include <cmath>
 
 namespace TD {

@@ -2,8 +2,8 @@
 // Created by brett on 29/07/22.
 //
 
-#include "World.h"
-#include "../renderer/ui/debug.h"
+#include "world/World.h"
+#include "renderer/ui/debug.h"
 #include <config.h>
 
 namespace TD {

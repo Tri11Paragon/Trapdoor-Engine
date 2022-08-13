@@ -2,9 +2,9 @@
 // Created by brett on 22/07/22.
 //
 
-#include "shader.h"
-#include "gl.h"
-#include "../logging.h"
+#include "renderer/shader.h"
+#include "renderer/gl.h"
+#include "logging.h"
 #include <fstream>
 #include <utility>
 

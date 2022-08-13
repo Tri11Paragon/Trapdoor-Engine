@@ -2,11 +2,11 @@
 // Created by brett on 21/07/22.
 //
 
-#include "debug.h"
-#include "../../window.h"
-#include "../../world/World.h"
-#include "../../imgui/ImGuizmo.h"
-#include "../../imgui/imgui_internal.h"
+#include "renderer/ui/debug.h"
+#include "window.h"
+#include "world/World.h"
+#include "imgui/ImGuizmo.h"
+#include "imgui/imgui_internal.h"
 #include <cmath>
 //#include "raycasting.h"
 

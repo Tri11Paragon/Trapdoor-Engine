@@ -23,9 +23,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-#include "ImGradient.h"
-#include "imgui.h"
-#include "imgui_internal.h"
+#include "imgui/ImGradient.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_internal.h"
 
 namespace ImGradient
 {

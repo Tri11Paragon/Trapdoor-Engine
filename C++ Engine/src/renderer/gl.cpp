@@ -1,11 +1,11 @@
 //
 // Created by brett on 22/07/22.
 //
-#include "gl.h"
+#include "renderer/gl.h"
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_FAILURE_USERMSG
 #include <stb_image.h>
-#include "../world/World.h"
+#include "world/World.h"
 
 namespace TD {
 
