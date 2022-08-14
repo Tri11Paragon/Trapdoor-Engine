@@ -30,19 +30,21 @@ namespace TD {
         static void glfw_MonitorCallback(GLFWmonitor* monitor, int event);
         static void update();
         static bool state();
+        static void IM_RegisterKeyListener(pkeyfunc_t fun);
+        static void IM_RegisterMouseListener(pmousefunc_t fun);
+        static bool isMouseDown(int code);
+        static bool isKeyDown(int code);
+        static bool isMouseGrabbed();
+        static void setMouseGrabbed(bool grabbed);
+        static double getMouseDX();
+        static double getMouseDY();
+        static double getMouseX();
+        static double getMouseY();
+        static double getMouseScrollYLastFrame();
+        static double getMouseScrollXLastFrame();
+        static double getMouseScrollY();
+        static double getMouseScrollX();
     };
-    void IM_RegisterKeyListener(pkeyfunc_t fun);
-    void IM_RegisterMouseListener(pmousefunc_t fun);
-    bool isMouseDown(int code);
-    bool isKeyDown(int code);
-
-    // for static versions
-    bool isMouseGrabbed();
-    void setMouseGrabbed(bool grabbed);
-    double getMouseDX();
-    double getMouseDY();
-    double getMouseX();
-    double getMouseY();
 
 }
 

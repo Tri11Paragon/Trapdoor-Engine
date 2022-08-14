@@ -142,9 +142,9 @@ namespace TD {
 
     void Editor::render() {
         if (isSetToOpen){open(); isSetToOpen = false;}
+        _editorCamera->update();
         if (!editorMenuEnabled)
             return;
-        _editorCamera->update();
         updateWindowSizes();
         ImGui::PushFont(TD::fontContext::get("roboto"));
 

@@ -328,7 +328,7 @@ namespace TD {
             TD::Editor::toggle();
 #endif
         if (code == GLFW_KEY_ESCAPE && pressed)
-            TD::setMouseGrabbed(!TD::isMouseGrabbed());
+            TD::Input::setMouseGrabbed(!TD::Input::isMouseGrabbed());
     }
 
     extern std::unordered_map<std::string, TD::Display*> displays;
@@ -342,7 +342,7 @@ namespace TD {
         TD::GameRegistry::registerThreaded();
         TD::fontContext::loadContexts(fonts);
         TD::window::initWindow(std::move(window));
-        TD::IM_RegisterKeyListener(&keyCallBack);
+        TD::Input::IM_RegisterKeyListener(&keyCallBack);
         defaultLoadDisplay->onSwitch();
 
         TD::registerAllocators();

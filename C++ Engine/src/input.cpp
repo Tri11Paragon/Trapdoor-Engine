@@ -12,43 +12,45 @@ namespace TD {
     extern bool mouseDown[512];
     static bool _state = false;
 
-    void IM_RegisterKeyListener(pkeyfunc_t fun){
+    static double mouseScrollX=0, mouseScrollY=0, mouseScrollXLast=0, mouseScrollYLast=0;
+
+    void Input::IM_RegisterKeyListener(pkeyfunc_t fun){
         keyListeners.push_back(fun);
     }
 
-    void IM_RegisterMouseListener(pmousefunc_t fun){
+    void Input::IM_RegisterMouseListener(pmousefunc_t fun){
         mouseListeners.push_back(fun);
     }
 
-    bool isMouseDown(int code){
+    bool Input::isMouseDown(int code){
         return mouseDown[code];
     }
 
-    bool isKeyDown(int code){
+    bool Input::isKeyDown(int code){
         return keyDown[code];
     }
 
-    bool isMouseGrabbed() {
+    bool Input::isMouseGrabbed() {
         return TD::window::isMouseGrabbed();
     }
 
-    void setMouseGrabbed(bool grabbed) {
+    void Input::setMouseGrabbed(bool grabbed) {
         TD::window::setMouseGrabbed(grabbed);
     }
 
-    double getMouseDX() {
+    double Input::getMouseDX() {
         return TD::window::getMouseDX();
     }
 
-    double getMouseDY() {
+    double Input::getMouseDY() {
         return TD::window::getMouseDY();
     }
 
-    double getMouseX() {
+    double Input::getMouseX() {
         return TD::window::getMouseX();
     }
 
-    double getMouseY() {
+    double Input::getMouseY() {
         return TD::window::getMouseY();
     }
 
@@ -79,7 +81,10 @@ namespace TD {
     }
 
     void Input::glfw_ScrollCallback(GLFWwindow *window, double xoffset, double yoffset) {
-
+        mouseScrollX = xoffset;
+        mouseScrollY = yoffset;
+        mouseScrollXLast = xoffset;
+        mouseScrollYLast = yoffset;
     }
 
     void Input::glfw_KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
@@ -106,10 +111,28 @@ namespace TD {
     }
 
     void Input::update() {
+        mouseScrollXLast = 0;
+        mouseScrollYLast = 0;
         _state = false;
     }
 
     bool Input::state() {
         return _state;
+    }
+
+    double Input::getMouseScrollYLastFrame() {
+        return mouseScrollYLast;
+    }
+
+    double Input::getMouseScrollXLastFrame() {
+        return mouseScrollXLast;
+    }
+
+    double Input::getMouseScrollY() {
+        return mouseScrollY;
+    }
+
+    double Input::getMouseScrollX() {
+        return mouseScrollX;
     }
 }

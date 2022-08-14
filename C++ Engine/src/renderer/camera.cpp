@@ -13,19 +13,19 @@
 namespace TD {
 
     void firstPersonCamera::update() {
-        if (TD::isMouseGrabbed()) {
-            _pitch += TD::getMouseDY() * (turnSpeedY) / 100;
-            _yaw += TD::getMouseDX() * (turnSpeedX) / 100;
+        if (TD::Input::isMouseGrabbed()) {
+            _pitch += TD::Input::getMouseDY() * (turnSpeedY) / 100;
+            _yaw += TD::Input::getMouseDX() * (turnSpeedX) / 100;
 
             constexpr double speedd = 30.0f;
 
-            if (TD::isKeyDown(KEY_LEFT))
+            if (TD::Input::isKeyDown(KEY_LEFT))
                 _yaw += -speedd * turnSpeedX * TD::getFrameTimeSeconds();
-            if (TD::isKeyDown(KEY_RIGHT))
+            if (TD::Input::isKeyDown(KEY_RIGHT))
                 _yaw += speedd * turnSpeedX * TD::getFrameTimeSeconds();
-            if (TD::isKeyDown(KEY_UP))
+            if (TD::Input::isKeyDown(KEY_UP))
                 _pitch += -speedd * turnSpeedY * TD::getFrameTimeSeconds();
-            if (TD::isKeyDown(KEY_DOWN))
+            if (TD::Input::isKeyDown(KEY_DOWN))
                 _pitch += speedd * turnSpeedY * TD::getFrameTimeSeconds();
 
             if (_pitch > 90)
@@ -37,34 +37,34 @@ namespace TD {
             if (_yaw > 360)
                 _yaw = 0;
 
-            if (TD::isKeyDown(GLFW_KEY_LEFT_ALT))
+            if (TD::Input::isKeyDown(GLFW_KEY_LEFT_ALT))
                 speed = 5.0f;
-            else if (TD::isKeyDown(KEY_L_CONTROL))
+            else if (TD::Input::isKeyDown(KEY_L_CONTROL))
                 speed = 150.0f;
             else
                 speed = 40.0f;
 
-            if (TD::isKeyDown(KEY_W))
+            if (TD::Input::isKeyDown(KEY_W))
                 _moveAtX = (-speed * TD::getFrameTimeSeconds());
 
-            else if (TD::isKeyDown(KEY_S))
+            else if (TD::Input::isKeyDown(KEY_S))
                 _moveAtX = (speed * TD::getFrameTimeSeconds());
             else
                 _moveAtX = 0;
 
-            if (TD::isKeyDown(KEY_A))
+            if (TD::Input::isKeyDown(KEY_A))
                 _moveAtZ = (speed * TD::getFrameTimeSeconds());
-            else if (TD::isKeyDown(KEY_D))
+            else if (TD::Input::isKeyDown(KEY_D))
                 _moveAtZ = (-speed * TD::getFrameTimeSeconds());
             else
                 _moveAtZ = 0;
 
-            if (TD::isKeyDown(KEY_SPACE))
+            if (TD::Input::isKeyDown(KEY_SPACE))
                 _moveAtY = (speed * TD::getFrameTimeSeconds());
             else
                 _moveAtY = 0;
 
-            if (TD::isKeyDown(KEY_LEFT_SHIFT))
+            if (TD::Input::isKeyDown(KEY_LEFT_SHIFT))
                 _moveAtY = (-speed * TD::getFrameTimeSeconds());
 
             // TODO: remove this shit
@@ -87,19 +87,19 @@ namespace TD {
     }
 
     void editorCamera::update() {
-        if (TD::isMouseGrabbed()) {
-            _pitch += TD::getMouseDY() * (turnSpeedY) / 100;
-            _yaw += TD::getMouseDX() * (turnSpeedX) / 100;
+        if (TD::Input::isMouseGrabbed()) {
+            _pitch += TD::Input::getMouseDY() * (turnSpeedY) / 100;
+            _yaw += TD::Input::getMouseDX() * (turnSpeedX) / 100;
 
             const float speedd = 30.0f;
 
-            if (TD::isKeyDown(KEY_LEFT))
+            if (TD::Input::isKeyDown(KEY_LEFT))
                 _yaw += -speedd * turnSpeedX * TD::getFrameTimeSeconds();
-            if (TD::isKeyDown(KEY_RIGHT))
+            if (TD::Input::isKeyDown(KEY_RIGHT))
                 _yaw += speedd * turnSpeedX * TD::getFrameTimeSeconds();
-            if (TD::isKeyDown(KEY_UP))
+            if (TD::Input::isKeyDown(KEY_UP))
                 _pitch += -speedd * turnSpeedY * TD::getFrameTimeSeconds();
-            if (TD::isKeyDown(KEY_DOWN))
+            if (TD::Input::isKeyDown(KEY_DOWN))
                 _pitch += speedd * turnSpeedY * TD::getFrameTimeSeconds();
 
             if (_pitch > 90)
@@ -111,34 +111,34 @@ namespace TD {
             if (_yaw > 360)
                 _yaw = 0;
 
-            if (TD::isKeyDown(GLFW_KEY_LEFT_ALT))
+            if (TD::Input::isKeyDown(GLFW_KEY_LEFT_ALT))
                 speed = 5.0f;
-            else if (TD::isKeyDown(KEY_L_CONTROL))
+            else if (TD::Input::isKeyDown(KEY_L_CONTROL))
                 speed = 150.0f;
             else
                 speed = 40.0f;
 
-            if (TD::isKeyDown(KEY_W))
+            if (TD::Input::isKeyDown(KEY_W))
                 _moveAtX = (float) (-speed * TD::getFrameTimeSeconds());
 
-            else if (TD::isKeyDown(KEY_S))
+            else if (TD::Input::isKeyDown(KEY_S))
                 _moveAtX = (float) (speed * TD::getFrameTimeSeconds());
             else
                 _moveAtX = 0;
 
-            if (TD::isKeyDown(KEY_A))
+            if (TD::Input::isKeyDown(KEY_A))
                 _moveAtZ = (float) (speed * TD::getFrameTimeSeconds());
-            else if (TD::isKeyDown(KEY_D))
+            else if (TD::Input::isKeyDown(KEY_D))
                 _moveAtZ = (float) (-speed * TD::getFrameTimeSeconds());
             else
                 _moveAtZ = 0;
 
-            if (TD::isKeyDown(KEY_SPACE))
+            if (TD::Input::isKeyDown(KEY_SPACE))
                 _moveAtY = (float) (speed * TD::getFrameTimeSeconds());
             else
                 _moveAtY = 0;
 
-            if (TD::isKeyDown(KEY_LEFT_SHIFT))
+            if (TD::Input::isKeyDown(KEY_LEFT_SHIFT))
                 _moveAtY = (float) (-speed * TD::getFrameTimeSeconds());
 
             // TODO: remove this shit
@@ -150,7 +150,17 @@ namespace TD {
             _cameraPos.y += (float)dy;
             _cameraPos.z += (float)dz;
 
+        }
+        if (TD::Input::getMouseScrollYLastFrame() != 0){
+            tlog << "Hello!";
+            double movingScroll = TD::Input::getMouseScrollYLastFrame() * speed * TD::getFrameTimeSeconds();
+            dx = -movingScroll * sin(glm::radians(_yaw));
+            dy = movingScroll * sin(glm::radians(_roll));
+            dz = movingScroll * cos(glm::radians(_yaw));
 
+            _cameraPos.x += (float)dx;
+            _cameraPos.y += (float)dy;
+            _cameraPos.z += (float)dz;
         }
 
         glm::mat4 viewMatrix = glm::mat4(1.0);
