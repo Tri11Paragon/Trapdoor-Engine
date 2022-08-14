@@ -79,8 +79,6 @@
 #define GLFW_HAS_GAMEPAD_API          (GLFW_VERSION_MAJOR * 1000 + GLFW_VERSION_MINOR * 100 >= 3300) // 3.3+ glfwGetGamepadState() new api
 #define GLFW_HAS_GET_KEY_NAME         (GLFW_VERSION_MAJOR * 1000 + GLFW_VERSION_MINOR * 100 >= 3200) // 3.2+ glfwGetKeyName()
 
-#include "input.h"
-
 // GLFW data
 enum GlfwClientApi
 {
@@ -272,11 +270,6 @@ static void ImGui_ImplGlfw_UpdateKeyModifiers(int mods)
 
 void ImGui_ImplGlfw_MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
-    if (action == GLFW_RELEASE){
-        TD::IM_MouseReleased(button);
-    } else {
-        TD::IM_MousePressed(button);
-    }
     ImGui_ImplGlfw_Data* bd = ImGui_ImplGlfw_GetBackendData();
     if (bd->PrevUserCallbackMousebutton != NULL && window == bd->Window)
         bd->PrevUserCallbackMousebutton(window, button, action, mods);
@@ -334,12 +327,6 @@ void ImGui_ImplGlfw_KeyCallback(GLFWwindow* window, int keycode, int scancode, i
 
     if (action != GLFW_PRESS && action != GLFW_RELEASE)
         return;
-
-    if (action == GLFW_RELEASE){
-        TD::IM_KeyReleased(keycode);
-    } else {
-        TD::IM_KeyPressed(keycode);
-    }
 
     // Workaround: X11 does not include current pressed/released modifier key in 'mods' flags. https://github.com/glfw/glfw/issues/1630
     if (int keycode_to_mod = ImGui_ImplGlfw_KeyToModifier(keycode))

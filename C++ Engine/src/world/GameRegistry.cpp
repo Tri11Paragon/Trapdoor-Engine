@@ -30,7 +30,6 @@ namespace TD {
     std::atomic<int> modelLoaded(0);
 
     void runModelThread(int threadID){
-        tlog << "Load Thread {" << threadID << "} Created!";
         std::queue<std::pair<std::string, std::string>>& modelQueue = unloadedModels[threadID];
         tlog << "Load Thread {" << threadID << "} Beginning Model Loading!";
         // first load all the models
@@ -78,6 +77,7 @@ namespace TD {
     }
 
     void GameRegistry::createThreadPool() {
+        TD::GameRegistry::createQueues();
         for (int i = 0; i < processor_count; i++)
             modelThreads.push_back(new std::thread(runModelThread, i));
     }
@@ -111,7 +111,7 @@ namespace TD {
         callbacks.push_back(funcion);
     }
 
-    void GameRegistry::registerModel(std::string unlocalizedName, std::string modelPath) {
+    void GameRegistry::registerModel(const std::string& unlocalizedName, const std::string& modelPath) {
         if (!queuesCreated)
             TD::GameRegistry::createQueues();
         int smallest = 1073741824;
@@ -126,7 +126,7 @@ namespace TD {
         defaultLoadDisplay->modelRegistered(unlocalizedName, modelPath);
     }
 
-    void GameRegistry::registerTexture(std::string unlocalizedName, std::string texturePath) {
+    void GameRegistry::registerTexture(const std::string& unlocalizedName, const std::string& texturePath) {
         if (!queuesCreated)
             TD::GameRegistry::createQueues();
         int smallest = 1073741824;

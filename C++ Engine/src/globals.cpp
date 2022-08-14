@@ -55,7 +55,7 @@ namespace TD {
     // Developer / Debug
     bool debugMenuEnabled = false;
     bool editorMenuEnabled = false;
-    TD::camera* activeCamera;
+    TD::camera* activeCamera = nullptr;
 
     // IMGUI Fonts
     unordered_map<string, ImFont*> loadedFonts;

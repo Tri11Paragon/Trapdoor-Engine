@@ -23,8 +23,8 @@ namespace TD {
         // local registration is coming soom, likely in the form of 'regions'
         // which will contain assets required for function, all of which can be multithreaded and preloaded as the player gets close.
         static void registerRegistrationCallback(void* (*funcion)());
-        static void registerModel(std::string id, std::string modelPath);
-        static void registerTexture(std::string id, std::string texturePath);
+        static void registerModel(const std::string& id, const std::string& modelPath);
+        static void registerTexture(const std::string& id, const std::string& texturePath);
         static void registerFont(std::string id, std::string path, float size);
         static void registerThreaded();
         static void loadToGPU();

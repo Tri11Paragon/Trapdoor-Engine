@@ -10,9 +10,9 @@
 namespace TD {
     class camera {
     protected:
-        glm::vec3 _cameraPos = glm::vec3(0.0f);
-        float _moveAtX = 0, _moveAtY = 0, _moveAtZ = 0;
-        float _yaw = 0, _pitch = 0, _roll = 0;
+        glm::vec3 _cameraPos = glm::vec3(0.0);
+        double _moveAtX = 0, _moveAtY = 0, _moveAtZ = 0;
+        double _yaw = 0, _pitch = 0, _roll = 0;
         float clippingPlanes[16];
         double m_Frustum[6][4];
         static inline float getInMatrix(glm::mat4 mat,int pos){
@@ -21,6 +21,7 @@ namespace TD {
         void normalizePlane(double frustum[6][4], int side);
         void calculateFrustum();
     public:
+        virtual ~camera() = default;
         virtual void update() {}
         glm::vec3 getPosition();
         glm::vec3 getRotation();
@@ -41,6 +42,17 @@ namespace TD {
         constexpr static const float turnSpeedY = 5.0f;
         constexpr static const float turnSpeedX = 4.5f;
     public:
+        virtual ~firstPersonCamera() = default;
+        void update();
+    };
+
+    class editorCamera : public camera {
+    protected:
+        float speed = 0.0f;
+        constexpr static const float turnSpeedY = 5.0f;
+        constexpr static const float turnSpeedX = 4.5f;
+    public:
+        virtual ~editorCamera() = default;
         void update();
     };
 

@@ -25,12 +25,20 @@ namespace TD {
      */
     class Project {
     private:
+        // called when the engine loads, used to create the blank screen.
         static void newProject();
+        // loads a project from disk
         static void loadProject(const std::string& folderPath);
     public:
-        static void init();
-        static void saveDisplays();
-        static void loadDisplays();
+        // init the project system, call before most things, including window creation.
+        // if it finds a project it will queue resources to be loaded.
+        static bool init();
+        static void close();
+        static bool setProjectLocationDialog(std::string& out);
+        static bool showNewProjectDialog();
+        static bool showNewScreenDialog();
+        static bool saveDisplays();
+        static bool loadDisplays();
         static std::string getResourcePath();
         static std::string getDisplaysPath();
     };

@@ -12,8 +12,11 @@
 
 namespace TD {
     extern TD::camera *activeCamera;
+    TD::camera* _editorCamera;
+    TD::camera* savedCamera;
     extern bool debugMenuEnabled;
     extern bool editorMenuEnabled;
+    bool isSetToOpen = false;
     extern unordered_map<string, DebugTab*> debugTabs;
     extern int _display_w, _display_h;
     extern GLFWwindow *_window;
@@ -44,8 +47,9 @@ namespace TD {
                 if (ImGui::BeginTabItem("General")) {
                     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate,
                                 ImGui::GetIO().Framerate);
-                    ImGui::Text("Camera Position: %f, %f, %f", activeCamera->getPosition().x, activeCamera->getPosition().y,
-                                activeCamera->getPosition().z);
+                    if (activeCamera != nullptr)
+                        ImGui::Text("Camera Position: %f, %f, %f", activeCamera->getPosition().x, activeCamera->getPosition().y,
+                                    activeCamera->getPosition().z);
                     ImGui::EndTabItem();
                 }
 
@@ -132,12 +136,15 @@ namespace TD {
     static ID activeEntityID = 0;
 
     void Editor::init() {
+        _editorCamera = new editorCamera();
         tlog << "Loading debug editor resources";
     }
 
     void Editor::render() {
+        if (isSetToOpen){open(); isSetToOpen = false;}
         if (!editorMenuEnabled)
             return;
+        _editorCamera->update();
         updateWindowSizes();
         ImGui::PushFont(TD::fontContext::get("roboto"));
 
@@ -164,6 +171,8 @@ namespace TD {
     }
 
     void Editor::open() {
+        savedCamera = activeCamera;
+        activeCamera = _editorCamera;
         editorMenuEnabled = true;
         TD::window::setListenToResize(false);
 
@@ -173,6 +182,7 @@ namespace TD {
     }
 
     void Editor::close() {
+        activeCamera = savedCamera;
         editorMenuEnabled = false;
         TD::window::setListenToResize(true);
         TD::window::setRenderFrameBufferSize(0, 0, _display_w, _display_h);
@@ -184,7 +194,7 @@ namespace TD {
     }
 
     void Editor::cleanup() {
-
+        delete(_editorCamera);
     }
 
     constexpr auto flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse;
@@ -351,7 +361,9 @@ namespace TD {
         ImGui::SetNextWindowBgAlpha(1.0);
         ImGui::Begin("SceneView", nullptr, flags);
 
-        world = displays[activeDisplay]->getWorld();
+        if (activeDisplay != "NULL") {
+            world = displays[activeDisplay]->getWorld();
+        }
         if (ImGui::CollapsingHeader(activeDisplay.c_str(), nullptr, ImGuiTreeNodeFlags_DefaultOpen)){
             if (world != nullptr){
                 ImGui::BeginChild("_EntityDisplay", ImVec2(0,(float)sceneHierarchyHeight - 120));
@@ -426,6 +438,8 @@ namespace TD {
     }
 
     void Editor::renderGuizmo() {
+        if (world == nullptr)
+            return;
         ImGuizmo::SetOrthographic(false);
         ImGuizmo::BeginFrame();
         trans = world->getComponentRaw<TransformComponent>(activeEntityID)->getTranslationMatrix();
@@ -439,6 +453,10 @@ namespace TD {
         transformComp->setTranslation(glm::vec3(matrixTranslation[0], matrixTranslation[1], matrixTranslation[2]));
         transformComp->setRotation(glm::vec3(matrixRotation[0], matrixRotation[1], matrixRotation[2]));
         transformComp->setScale(glm::vec3(matrixScale[0], matrixScale[1], matrixScale[2]));
+    }
+
+    void Editor::setToOpen() {
+        isSetToOpen = true;
     }
 
 #endif

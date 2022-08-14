@@ -47,6 +47,8 @@ namespace TD {
         static void renderMenuBar();
         static void renderGuizmo();
     public:
+        // used to be called before the display is setup
+        static void setToOpen();
         static void open();
         static void close();
         static void toggle();

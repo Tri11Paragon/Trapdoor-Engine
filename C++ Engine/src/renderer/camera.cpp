@@ -17,6 +17,80 @@ namespace TD {
             _pitch += TD::getMouseDY() * (turnSpeedY) / 100;
             _yaw += TD::getMouseDX() * (turnSpeedX) / 100;
 
+            constexpr double speedd = 30.0f;
+
+            if (TD::isKeyDown(KEY_LEFT))
+                _yaw += -speedd * turnSpeedX * TD::getFrameTimeSeconds();
+            if (TD::isKeyDown(KEY_RIGHT))
+                _yaw += speedd * turnSpeedX * TD::getFrameTimeSeconds();
+            if (TD::isKeyDown(KEY_UP))
+                _pitch += -speedd * turnSpeedY * TD::getFrameTimeSeconds();
+            if (TD::isKeyDown(KEY_DOWN))
+                _pitch += speedd * turnSpeedY * TD::getFrameTimeSeconds();
+
+            if (_pitch > 90)
+                _pitch = 90;
+            if (_pitch < -90)
+                _pitch = -90;
+            if (_yaw < -360)
+                _yaw = 0;
+            if (_yaw > 360)
+                _yaw = 0;
+
+            if (TD::isKeyDown(GLFW_KEY_LEFT_ALT))
+                speed = 5.0f;
+            else if (TD::isKeyDown(KEY_L_CONTROL))
+                speed = 150.0f;
+            else
+                speed = 40.0f;
+
+            if (TD::isKeyDown(KEY_W))
+                _moveAtX = (-speed * TD::getFrameTimeSeconds());
+
+            else if (TD::isKeyDown(KEY_S))
+                _moveAtX = (speed * TD::getFrameTimeSeconds());
+            else
+                _moveAtX = 0;
+
+            if (TD::isKeyDown(KEY_A))
+                _moveAtZ = (speed * TD::getFrameTimeSeconds());
+            else if (TD::isKeyDown(KEY_D))
+                _moveAtZ = (-speed * TD::getFrameTimeSeconds());
+            else
+                _moveAtZ = 0;
+
+            if (TD::isKeyDown(KEY_SPACE))
+                _moveAtY = (speed * TD::getFrameTimeSeconds());
+            else
+                _moveAtY = 0;
+
+            if (TD::isKeyDown(KEY_LEFT_SHIFT))
+                _moveAtY = (-speed * TD::getFrameTimeSeconds());
+
+            // TODO: remove this shit
+            double dx = (-(_moveAtX * sin(glm::radians(_yaw))) + -(_moveAtZ * cos(glm::radians(_yaw))));
+            double dy = (_moveAtX * (sin(glm::radians(_roll)))) + _moveAtY;
+            double dz = (((_moveAtX * cos(glm::radians(_yaw))) + -(_moveAtZ * sin(glm::radians(_yaw)))));
+
+            _cameraPos.x += (float)dx;
+            _cameraPos.y += (float)dy;
+            _cameraPos.z += (float)dz;
+        }
+
+        glm::mat4 viewMatrix = glm::mat4(1.0);
+        viewMatrix = glm::rotate(viewMatrix, glm::radians((float)_pitch), glm::vec3(1, 0, 0));
+        viewMatrix = glm::rotate(viewMatrix, glm::radians((float)_yaw), glm::vec3(0, 1, 0));
+        viewMatrix = glm::translate(viewMatrix, -_cameraPos);
+
+        TD::updateViewMatrixUBO(viewMatrix);
+        calculateFrustum();
+    }
+
+    void editorCamera::update() {
+        if (TD::isMouseGrabbed()) {
+            _pitch += TD::getMouseDY() * (turnSpeedY) / 100;
+            _yaw += TD::getMouseDX() * (turnSpeedX) / 100;
+
             const float speedd = 30.0f;
 
             if (TD::isKeyDown(KEY_LEFT))
@@ -68,18 +142,20 @@ namespace TD {
                 _moveAtY = (float) (-speed * TD::getFrameTimeSeconds());
 
             // TODO: remove this shit
-            float dx = (float) (-(_moveAtX * sin(glm::radians(_yaw))) + -(_moveAtZ * cos(glm::radians(_yaw))));
-            float dy = (float) (_moveAtX * (sin(glm::radians(_roll)))) + _moveAtY;
-            float dz = (float) (((_moveAtX * cos(glm::radians(_yaw))) + -(_moveAtZ * sin(glm::radians(_yaw)))));
+            double dx = (-(_moveAtX * sin(glm::radians(_yaw))) + -(_moveAtZ * cos(glm::radians(_yaw))));
+            double dy = (_moveAtX * (sin(glm::radians(_roll)))) + _moveAtY;
+            double dz = (((_moveAtX * cos(glm::radians(_yaw))) + -(_moveAtZ * sin(glm::radians(_yaw)))));
 
-            _cameraPos.x += dx;
-            _cameraPos.y += dy;
-            _cameraPos.z += dz;
+            _cameraPos.x += (float)dx;
+            _cameraPos.y += (float)dy;
+            _cameraPos.z += (float)dz;
+
+
         }
 
         glm::mat4 viewMatrix = glm::mat4(1.0);
-        viewMatrix = glm::rotate(viewMatrix, glm::radians(_pitch), glm::vec3(1, 0, 0));
-        viewMatrix = glm::rotate(viewMatrix, glm::radians(_yaw), glm::vec3(0, 1, 0));
+        viewMatrix = glm::rotate(viewMatrix, glm::radians((float)_pitch), glm::vec3(1, 0, 0));
+        viewMatrix = glm::rotate(viewMatrix, glm::radians((float)_yaw), glm::vec3(0, 1, 0));
         viewMatrix = glm::translate(viewMatrix, -_cameraPos);
 
         TD::updateViewMatrixUBO(viewMatrix);

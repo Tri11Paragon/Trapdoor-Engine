@@ -6,6 +6,8 @@
 #define ENGINE_INPUT_H
 
 #include <vector>
+#include "gladsources/glad_gl_core/include/glad/gl.h"
+#include <GLFW/glfw3.h>
 
 namespace TD {
 
@@ -16,10 +18,19 @@ namespace TD {
     typedef void mousefunc_t(bool, int);
     typedef keyfunc_t* pmousefunc_t;
 
-    void IM_KeyPressed(int keycode);
-    void IM_KeyReleased(int keycode);
-    void IM_MousePressed(int mousecode);
-    void IM_MouseReleased(int mousecode);
+    class Input {
+    public:
+        static void glfw_WindowFocusCallback(GLFWwindow* window, int focused);
+        static void glfw_CursorEnterCallback(GLFWwindow* window, int entered);
+        static void glfw_CursorPosCallback(GLFWwindow* window, double x, double y);
+        static void glfw_MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+        static void glfw_ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
+        static void glfw_KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+        static void glfw_CharCallback(GLFWwindow* window, unsigned int c);
+        static void glfw_MonitorCallback(GLFWmonitor* monitor, int event);
+        static void update();
+        static bool state();
+    };
     void IM_RegisterKeyListener(pkeyfunc_t fun);
     void IM_RegisterMouseListener(pmousefunc_t fun);
     bool isMouseDown(int code);

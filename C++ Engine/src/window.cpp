@@ -130,6 +130,19 @@ namespace TD {
         ImGui::StyleColorsDark();
         //ImGui::StyleColorsLight();
 
+        // setup input handling
+        // yes I am including window changes as a form of input
+        // perhaps I shouldn't, yet I am.
+        glfwSetWindowFocusCallback(_window, TD::Input::glfw_WindowFocusCallback);
+        glfwSetCursorEnterCallback(_window, TD::Input::glfw_CursorEnterCallback);
+        glfwSetCursorPosCallback(_window, TD::Input::glfw_CursorPosCallback);
+        glfwSetMouseButtonCallback(_window, TD::Input::glfw_MouseButtonCallback);
+        glfwSetScrollCallback(_window, TD::Input::glfw_ScrollCallback);
+        glfwSetKeyCallback(_window, TD::Input::glfw_KeyCallback);
+        glfwSetCharCallback(_window, TD::Input::glfw_CharCallback);
+        glfwSetMonitorCallback(TD::Input::glfw_MonitorCallback);
+        TD::Input::update();
+
         // Setup Platform/Renderer backends
         ImGui_ImplGlfw_InitForOpenGL(_window, true);
         ImGui_ImplOpenGL3_Init(glsl_version);
@@ -182,7 +195,6 @@ namespace TD {
         _lx = _mx;
         _ly = _my;
         glfwGetCursorPos(_window, &_mx, &_my);
-
         if (_isMouseGrabbed) {
             _dx = _mx - (double)_display_w/2.0;
             _dy = _my - (double)_display_h/2.0;
@@ -203,6 +215,7 @@ namespace TD {
         TD::updateClock(glfwGetTime() * 1000.0);
 
         glfwSwapBuffers(_window);
+        TD::Input::update();
     }
 
     bool window::isCloseRequested() {
@@ -323,6 +336,9 @@ namespace TD {
     DefaultLoadingScreenDisplay* defaultLoadDisplay = new DefaultLoadingScreenDisplay("_TD::LOADING_SCREEN_DISPLAY");
 
     void DisplayManager::init(std::string window) {
+        // we use these and are therefore required. The TODO: is to change the paths
+        TD::GameRegistry::registerFont("quicksand", "../assets/fonts/quicksand/Quicksand-Regular.ttf", 16.0f);
+        TD::GameRegistry::registerFont("roboto", "../assets/fonts/roboto/Roboto-Regular.ttf", 16.0f);
         TD::GameRegistry::registerThreaded();
         TD::fontContext::loadContexts(fonts);
         TD::window::initWindow(std::move(window));
