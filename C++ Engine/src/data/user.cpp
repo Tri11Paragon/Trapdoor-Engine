@@ -30,31 +30,38 @@ SOFTWARE.
 #include <iostream>
 #include <string>
 
-#ifdef linux
-#include <unistd.h>
-#include <pwd.h>
-#endif
+namespace TD {
 
-#ifdef _WIN32
-#include<Windows.h>
-#endif
+    std::string getUserName() {
+        #if defined linux
+            uid_t userid;
+            struct passwd *pwd;
+            userid = getuid();
+            pwd = getpwuid(userid);
+            return pwd->pw_name;
+        #elif defined _WIN32
+            const int MAX_LEN = 100;
+            char szBuffer[MAX_LEN];
+            DWORD len = MAX_LEN;
+            if (GetUserName(szBuffer, &len))
+                return szBuffer;
 
-std::string getUserName() {
-#if defined linux
-    uid_t userid;
-    struct passwd* pwd;
-    userid = getuid();
-    pwd = getpwuid(userid);
-    return pwd->pw_name;
+        #else
+            return "";
+        #endif
+    }
 
-#elif defined _WIN32
-    const int MAX_LEN = 100;
-    char szBuffer[MAX_LEN];
-    DWORD len = MAX_LEN;
-    if (GetUserName(szBuffer, &len))
-        return szBuffer;
-
-#else
-    return "";
-#endif
+    std::string getUserHome() {
+        #if defined linux
+            const char* homedir;
+            if ((homedir = getenv("HOME")) == nullptr) {
+                homedir = getpwuid(getuid())->pw_dir;
+            }
+            return homedir;
+        #elif defined _WIN32
+            return "C:/Users/" + getUserName();
+        #else
+            return "";
+        #endif
+    }
 }

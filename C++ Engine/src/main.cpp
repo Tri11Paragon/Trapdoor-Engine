@@ -17,14 +17,42 @@
 #include "world/GameRegistry.h"
 #include <config.h>
 #include <encoder.h>
+#include <data/resources.h>
 
 #include "data/NBT.h"
 
+#include "sqlite/sqlite3.h"
+static int callback(void *NotUsed, int argc, char **argv, char **azColName){
+    int i;
+    for(i=0; i<argc; i++){
+        printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+    }
+    printf("\n");
+    return 0;
+}
+
 int main(int, char**){
-    tlog << DEBUG_ENABLED_BOOL;
     TD::profiler loadTimer("Load Time");
     loadTimer.start("Load Time");
     init_logging("output");
+    TD::Resources::init();
+    tlog << DEBUG_ENABLED_BOOL;
+
+//    sqlite3 *db;
+//    char *zErrMsg = nullptr;
+//    int rc;
+//    rc = sqlite3_open("trapdoor.profile", &db);
+//    if (rc){
+//        tlog << "Can't open database! " << db;
+//        sqlite3_close(db);
+//        return 1;
+//    }
+//    rc = sqlite3_exec(db, "CREATE TABLE ducks(id int, name varchar(255)); INSERT INTO ducks VALUES (5, 'Duckers'); SELECT * FROM ducks;", callback, 0, &zErrMsg);
+//    if (rc != SQLITE_OK){
+//        tlog << "Error executing querry: " << zErrMsg;
+//        sqlite3_free(zErrMsg);
+//    }
+//    sqlite3_close(db);
 
     TD::GameRegistry::registerRegistrationCallback([]() -> void* {
         // Register Models

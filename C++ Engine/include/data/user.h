@@ -8,13 +8,19 @@
 #include <iostream>
 #include <string>
 
-#ifdef _POSIX_
-#include <unistd.h>
-#include <pwd.h>
+#ifdef linux
+    #include <unistd.h>
+    #include <pwd.h>
+    #include <sys/types.h>
 #endif
 
 #ifdef _WIN32
-#include <Windows.h>
+    #include <Windows.h>
 #endif
+
+namespace TD {
+    std::string getUserName();
+    std::string getUserHome();
+}
 
 #endif //ENGINE_USER_H
