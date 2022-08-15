@@ -14,6 +14,7 @@
 #include <config.h>
 #include <encoder.h>
 #include <cmath>
+#include <discord.h>
 
 #include <utility>
 
@@ -336,7 +337,9 @@ namespace TD {
 
     extern std::unordered_map<std::string, TD::Display*> displays;
     extern std::string activeDisplay;
+    extern std::string projectName;
     DefaultLoadingScreenDisplay* defaultLoadDisplay = new DefaultLoadingScreenDisplay("_TD::LOADING_SCREEN_DISPLAY");
+    discord::Core* discore{};
 
     void DisplayManager::init(std::string window) {
         // we use these and are therefore required. The TODO: is to change the paths
@@ -373,6 +376,13 @@ namespace TD {
         settings.bitRate = 4500 * 1024; // 4500 KBS -- OBS setting
         settings.inputAlpha = true;
         //encoder.run(settings, 16);
+        auto result = discord::Core::Create(1008769434187476995, DiscordCreateFlags_Default, &discore);
+        discord::Activity activity{};
+        activity.SetState("Making a game");
+        activity.SetDetails(projectName.c_str());
+        activity.GetAssets().SetLargeImage("ben");
+        activity.GetAssets().SetSmallImage("character_texture");
+        discore->ActivityManager().UpdateActivity(activity, [](discord::Result result) {});
     }
 
     void runEncoder(){
@@ -387,6 +397,7 @@ namespace TD {
         // Main loop
         while (!TD::window::isCloseRequested()) {
             TD::window::startRender();
+            discore->RunCallbacks();
 
             TD::debugUI::render();
 #ifdef DEBUG_ENABLED
@@ -447,32 +458,8 @@ namespace TD {
         }
     }
 
-    Display::Display(std::string name) {
+    Display::Display(const std::string& name) {
         displays.insert(std::pair(name, this));
-    }
-
-    void Display::onSwitch() {
-        for (auto d : displayObjects)
-            d->onSwitch();
-    }
-
-    void Display::render() {
-        for (auto d : displayObjects)
-            d->render();
-    }
-
-    void Display::update() {
-        for (auto d : displayObjects)
-            d->update();
-    }
-
-    void Display::onLeave() {
-        for (auto d : displayObjects)
-            d->onLeave();
-    }
-
-    World *Display::getWorld() {
-        return nullptr;
     }
 
     DefaultLoadingScreenDisplay::DefaultLoadingScreenDisplay(std::string name) : Display(name) {
@@ -569,4 +556,8 @@ namespace TD {
         lastLoaded = "Loaded Texture " + ident + " @ " + path;
         loadLocked.unlock();
     }
+
+    void DefaultLoadingScreenDisplay::onSave() {}
+
+    void DefaultLoadingScreenDisplay::onLoad() {}
 }

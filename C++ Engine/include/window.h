@@ -59,30 +59,20 @@ namespace TD {
 
     class World;
 
-    class DisplayObject {
+    class Display {
+    private:
     public:
-        virtual ~DisplayObject() = default;
+        Display(const std::string& name);
+        virtual ~Display() {}
+        // required functions
+        virtual void onSave() = 0;
+        virtual void onLoad() = 0;
         virtual void onSwitch() = 0;
         virtual void render() = 0;
         virtual void update() = 0;
         virtual void onLeave() = 0;
+        //** getters
         virtual World* getWorld() = 0;
-    };
-
-    class Display {
-    private:
-        std::vector<DisplayObject*> displayObjects;
-    public:
-        Display(std::string name);
-        virtual void onSwitch();
-        virtual void render();
-        virtual void update();
-        virtual void onLeave();
-        virtual World* getWorld();
-        virtual ~Display() {
-            for (auto d : displayObjects)
-                delete(d);
-        }
     };
 
     class DefaultLoadingScreenDisplay : public Display {
@@ -95,6 +85,8 @@ namespace TD {
         std::mutex loadLocked;
     public:
         explicit DefaultLoadingScreenDisplay(std::string name);
+        virtual void onSave();
+        virtual void onLoad();
         virtual void onSwitch();
         virtual void render();
         virtual void update();

@@ -69,4 +69,12 @@ namespace TD {
     TestDisplay::~TestDisplay() {
 
     }
+
+    void TestDisplay::onSave() {
+
+    }
+
+    void TestDisplay::onLoad() {
+
+    }
 } // TD

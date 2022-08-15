@@ -147,8 +147,8 @@ namespace TD {
     }
 
     void MeshRendererSystem::render(shader* shader) {
-        auto &meshComponents = world.getComponents(MESH_RENDERER_COMPONENT);
-        auto &transforms = world.getComponents(TRANSFORM_COMPONENT);
+        auto &meshComponents = world->getComponents(MESH_RENDERER_COMPONENT);
+        auto &transforms = world->getComponents(TRANSFORM_COMPONENT);
         for (auto mesh : meshComponents){
             auto meshPtr = mesh.second.get();
             if (meshPtr){

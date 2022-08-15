@@ -136,6 +136,8 @@ message("Backto BUILD: ${TD_BUILD_SETTING} // ${CMAKE_BUILD_TYPE}")
 # NFD Setup
 #include_directories(${PROJECT_SOURCE_DIR}/libs/nativefiledialog/src/include)
 add_subdirectory(libs/nativefiledialog)
+#discord
+add_subdirectory(libs/discord)
 
 # Zips
 
@@ -173,3 +175,4 @@ target_link_libraries(${PROJECT_NAME} direct-to-video)
 
 #target_link_libraries(${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/libs/nativefiledialog/build/lib/Debug/x64/libnfd_d.a)
 target_link_libraries(${PROJECT_NAME} nativefiledialog)
+target_link_libraries(${PROJECT_NAME} discord)

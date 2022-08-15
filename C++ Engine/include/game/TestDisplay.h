@@ -43,6 +43,8 @@ namespace TD {
         TD::World world;
     public:
         TestDisplay(std::string name);
+        virtual void onSave();
+        virtual void onLoad();
         virtual void onSwitch();
         virtual void render();
         virtual void update();

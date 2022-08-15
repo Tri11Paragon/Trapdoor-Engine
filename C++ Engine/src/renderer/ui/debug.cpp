@@ -206,7 +206,7 @@ namespace TD {
     static bool useSnap(false);
     static glm::vec3 snap{5, 5, 5};
     static int snapPos = 0;
-    static bool newProjectDialogOpen = false, newDisplayDialogOpen = false;
+    bool newProjectDialogOpen = false, newDisplayDialogOpen = false;
 
     void Editor::renderConsole() {
         ImGui::SetNextWindowBgAlpha(1.0);

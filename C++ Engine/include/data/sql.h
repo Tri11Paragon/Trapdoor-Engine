@@ -8,10 +8,8 @@
 #include <logging.h>
 #include <sqlite/sqlite3.h>
 
-class SQLite3{
-private:
-public:
-    SQLite3(std::string filename);
+class SQLTransaction {
+
 };
 
 

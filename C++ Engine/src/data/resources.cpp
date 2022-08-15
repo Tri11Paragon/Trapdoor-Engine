@@ -47,11 +47,13 @@ namespace TD {
     std::string Resources::getUserHome() {return user_home;}
 
     /** ============{ Project }============ **/
+    PropertiesFormat properties(trapdoor_home + "/trapdoor.profile");
     sqlite3 *db;
     char *zErrMsg = nullptr;
     int rc;
 
     sqlite3 *projectDB;
+    std::string projectDBLocation {};
     char *projectErrMsg = nullptr;
     int projectRC;
 
@@ -88,6 +90,8 @@ namespace TD {
     bool Project::init() {
         TD::registerAllocators();
         if (exists(trapdoor_home + "/trapdoor.profile")) {
+            properties.open(trapdoor_home + "/trapdoor.profile");
+            properties.load();
             rc = sqlite3_open((trapdoor_home + "/trapdoor.profile").c_str(), &db);
             if (rc) {
                 flog << "Can't open database! " << db;
@@ -109,8 +113,11 @@ namespace TD {
         return false;
     }
 
+    extern bool newProjectDialogOpen;
+
     void Project::newProject() {
         TD::Editor::setToOpen();
+        newProjectDialogOpen = true;
     }
 
     void Project::loadProject(const std::string& folderPath) {
@@ -212,9 +219,124 @@ namespace TD {
 
     bool Project::saveProject() {
         int count;
-        if (projectHome.empty())
-            while (!setProjectLocationDialog(projectHome)) {wlog << "You must set a path to save!"; count++; if (count > 2){elog << "Fine, I'm not going to save then!"; return false;}}
-        if (!exists(trapdoor_home + "/trapdoor.profile") || !db){
+        if (projectHome.empty()){
+            newProjectDialogOpen = true;
+            return false;
+        }
+        if (!properties.hasPath())
+            properties.open(projectHome + "/trapdoor.profile");
+
+        properties.setOverrideProperty("lastOpenProject", projectHome);
+        properties.setOverrideProperty("lastOpenFolder", lastFolderOpen);
+        properties.save();
+
+        path displaysPath (projectHome + "/displays");
+        if (!exists(displaysPath))
+            create_directories(displaysPath);
+        path resourcesPath (projectHome + "/resources");
+        if (!exists(resourcesPath))
+            create_directories(resourcesPath);
+        path savesPath (projectHome + "/saves");
+        if (!exists(savesPath))
+            create_directories(savesPath);
+        /*if (projectDBLocation != projectHome || !projectDB){
+            if (projectDB)
+                sqlite3_close(projectDB);
+            projectDBLocation = projectHome;
+            projectRC = sqlite3_open((projectDBLocation + "/project.profile").c_str(), &projectDB);
+            if (rc) {
+                flog << "Can't open database! " << db;
+                sqlite3_close(projectDB);
+                exit(124);
+            }
+            rc = sqlite3_exec(db, "SELECT * FROM settings;", qLastProject, nullptr, &zErrMsg);
+            if (rc != SQLITE_OK) {
+                elog << "Error executing querry: " << zErrMsg;
+                sqlite3_free(zErrMsg);
+            }
+        }*/
+        return saveDisplays();
+    }
+
+    void PropertiesFormat::load() {
+        if (path.empty()){
+            wlog << "Path is empty!";
+            return;
+        }
+        const unsigned int length = 128*1024;
+        char buffer[length];
+        std::ifstream file(path);
+        file.rdbuf()->pubsetbuf(buffer, length);
+
+        int currentLine = 0;
+        std::string line;
+        while (std::getline(file, line)){
+            if (line.starts_with("#") || line.starts_with("//") || line.starts_with("--")){
+                comments.insert(std::pair(currentLine, line));
+                currentLine++;
+                continue;
+            }
+            std::vector<std::string> splitStrs;
+            boost::split(splitStrs, line, boost::is_any_of("="));
+
+            if (splitStrs.size() < 2){
+                currentLine++;
+                continue;
+            }
+            std::string property = splitStrs[0];
+            std::string value = splitStrs[1];
+            boost::trim(property);
+            boost::trim(value);
+
+            properties.insert(std::pair(property, value));
+            currentLine++;
+            wlog << line;
+        }
+        file.close();
+    }
+
+    void PropertiesFormat::save() {
+        if (path.empty()){
+            wlog << "Path is empty!";
+            return;
+        }
+        const unsigned int length = 128*1024;
+        char buffer[length];
+        std::ofstream file (path);
+        file.rdbuf()->pubsetbuf(buffer, length);
+
+        int currentLine = 0;
+        auto itr = properties.begin();
+        const auto end = properties.end();
+        while(itr != end){
+            // we have a comment at this current line.
+            tlog << "writing properties " << path;
+            if (comments.find(currentLine) != comments.end()){
+                comments.erase(currentLine);
+                file << comments.at(currentLine);
+                currentLine++;
+                tlog << "new line!";
+                continue;
+            }
+            // otherwise write the next property
+            auto property = itr->first;
+            auto value = itr->second;
+            file << property << " = " << value << "\n";
+            tlog << property << " = " << value << " prop";
+            currentLine++;
+            itr++;
+        }
+        if (!comments.empty())
+            for (auto c : comments)
+                file << c.second;
+        file.flush();
+        file.close();
+    }
+}
+
+/**
+ *
+ * if (!exists(trapdoor_home + "/trapdoor.profile") || !db){
             tlog << "saving " << db;
             if (!db) {
                 rc = sqlite3_open((trapdoor_home + "/trapdoor.profile").c_str(), &db);
@@ -235,15 +357,6 @@ namespace TD {
             elog << "Error executing querry: " << zErrMsg;
             sqlite3_free(zErrMsg);
         }
-        path displaysPath (projectHome + "/displays");
-        if (!exists(displaysPath))
-            create_directories(displaysPath);
-        path resourcesPath (projectName + "/resources");
-        if (!exists(resourcesPath))
-            create_directories(resourcesPath);
-        path savesPath (projectName + "/saves");
-        if (!exists(savesPath))
-            create_directories(savesPath);
-        return saveDisplays();
-    }
-}
+ *
+ *
+ */
