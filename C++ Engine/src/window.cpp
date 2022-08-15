@@ -339,7 +339,7 @@ namespace TD {
     extern std::string activeDisplay;
     extern std::string projectName;
     DefaultLoadingScreenDisplay* defaultLoadDisplay = new DefaultLoadingScreenDisplay("_TD::LOADING_SCREEN_DISPLAY");
-    discord::Core* discore{};
+    discord::Core* discore;
 
     void DisplayManager::init(std::string window) {
         // we use these and are therefore required. The TODO: is to change the paths
@@ -376,10 +376,9 @@ namespace TD {
         settings.bitRate = 4500 * 1024; // 4500 KBS -- OBS setting
         settings.inputAlpha = true;
         //encoder.run(settings, 16);
-        auto result = discord::Core::Create(1008769434187476995, DiscordCreateFlags_Default, &discore);
         discord::Activity activity{};
-        activity.SetState("Making a game");
-        activity.SetDetails(projectName.c_str());
+        activity.SetState(projectName.c_str());
+        activity.SetDetails("Making a game");
         activity.GetAssets().SetLargeImage("ben");
         activity.GetAssets().SetSmallImage("character_texture");
         discore->ActivityManager().UpdateActivity(activity, [](discord::Result result) {});
@@ -388,7 +387,7 @@ namespace TD {
     void runEncoder(){
         auto* fptr = encoder.newFrame(true);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        if (fptr != NULL)
+        if (fptr != nullptr)
             glReadPixels(0, _display_h, _display_w, _display_h, GL_RGBA, GL_UNSIGNED_BYTE, fptr->m_rgb);
         encoder.submitFrame();
     }

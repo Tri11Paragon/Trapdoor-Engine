@@ -11,6 +11,8 @@
 #include <boost/algorithm/string.hpp>
 #include "window.h"
 #include "world/World.h"
+#include <discord.h>
+#include <config.h>
 using namespace boost::filesystem;
 
 namespace TD {
@@ -18,6 +20,7 @@ namespace TD {
     extern int _display_w, _display_h;
     extern std::unordered_map<std::string, TD::Display*> displays;
     extern std::string activeDisplay;
+    extern discord::Core* discore;
 
     /** ============{ Resources }============ **/
     std::string trapdoor_home;
@@ -89,20 +92,20 @@ namespace TD {
 
     bool Project::init() {
         TD::registerAllocators();
+        auto result = discord::Core::Create(1008769434187476995, DiscordCreateFlags_Default, &discore);
         if (exists(trapdoor_home + "/trapdoor.profile")) {
             properties.open(trapdoor_home + "/trapdoor.profile");
             properties.load();
-            rc = sqlite3_open((trapdoor_home + "/trapdoor.profile").c_str(), &db);
-            if (rc) {
-                flog << "Can't open database! " << db;
-                sqlite3_close(db);
-                exit(124);
+
+            if (properties.hasProperty("lastOpenProject")) {
+                ilog << "Loading project at " << properties.getProperty("lastOpenProject");
+                projectHome = properties.getProperty("lastOpenProject");
             }
-            rc = sqlite3_exec(db, "SELECT * FROM settings;", qLastProject, nullptr, &zErrMsg);
-            if (rc != SQLITE_OK) {
-                elog << "Error executing querry: " << zErrMsg;
-                sqlite3_free(zErrMsg);
+            if (properties.hasProperty("lastOpenFolder")) {
+                ilog << "Setting last folder opened at " << properties.getProperty("lastOpenFolder");
+                lastFolderOpen = properties.getProperty("lastOpenFolder");
             }
+
             TD::Editor::setToOpen();
             if (!projectHome.empty()) {
                 loadProject(projectHome);
@@ -121,6 +124,12 @@ namespace TD {
     }
 
     void Project::loadProject(const std::string& folderPath) {
+        if (exists(projectHome + "/project.profile")){
+            PropertiesFormat project(projectHome + "/project.profile");
+            project.load();
+            if (project.hasProperty("projectName"))
+                projectName = project.getProperty("projectName");
+        }
         loadDisplays();
     }
 
@@ -223,9 +232,9 @@ namespace TD {
             newProjectDialogOpen = true;
             return false;
         }
-        if (!properties.hasPath())
-            properties.open(projectHome + "/trapdoor.profile");
-
+        properties = PropertiesFormat(trapdoor_home + "/trapdoor.profile");
+        if (exists(trapdoor_home + "/trapdoor.profile"))
+            properties.load();
         properties.setOverrideProperty("lastOpenProject", projectHome);
         properties.setOverrideProperty("lastOpenFolder", lastFolderOpen);
         properties.save();
@@ -239,6 +248,15 @@ namespace TD {
         path savesPath (projectHome + "/saves");
         if (!exists(savesPath))
             create_directories(savesPath);
+
+        PropertiesFormat project (projectHome + "/project.profile");
+        if (exists(projectHome + "/project.profile")){
+            // load it so we don't override other data
+            project.load();
+        }
+        project.setOverrideProperty("projectName", projectName);
+        project.save();
+
         /*if (projectDBLocation != projectHome || !projectDB){
             if (projectDB)
                 sqlite3_close(projectDB);
@@ -255,6 +273,12 @@ namespace TD {
                 sqlite3_free(zErrMsg);
             }
         }*/
+        discord::Activity activity{};
+        activity.SetState(projectName.c_str());
+        activity.SetDetails("Making a game");
+        activity.GetAssets().SetLargeImage("ben");
+        activity.GetAssets().SetSmallImage("character_texture");
+        discore->ActivityManager().UpdateActivity(activity, [](discord::Result result) {});
         return saveDisplays();
     }
 
@@ -272,7 +296,7 @@ namespace TD {
         std::string line;
         while (std::getline(file, line)){
             if (line.starts_with("#") || line.starts_with("//") || line.starts_with("--")){
-                comments.insert(std::pair(currentLine, line));
+                comments.insert(std::pair(currentLine, line + "\n"));
                 currentLine++;
                 continue;
             }
@@ -280,6 +304,9 @@ namespace TD {
             boost::split(splitStrs, line, boost::is_any_of("="));
 
             if (splitStrs.size() < 2){
+                // nulls out lines that aren't valid
+                // but keeps the spacing.
+                comments.insert(std::pair(currentLine, "\n"));
                 currentLine++;
                 continue;
             }
@@ -290,7 +317,6 @@ namespace TD {
 
             properties.insert(std::pair(property, value));
             currentLine++;
-            wlog << line;
         }
         file.close();
     }
@@ -310,24 +336,21 @@ namespace TD {
         const auto end = properties.end();
         while(itr != end){
             // we have a comment at this current line.
-            tlog << "writing properties " << path;
             if (comments.find(currentLine) != comments.end()){
-                comments.erase(currentLine);
                 file << comments.at(currentLine);
+                comments.erase(currentLine);
                 currentLine++;
-                tlog << "new line!";
                 continue;
             }
             // otherwise write the next property
             auto property = itr->first;
             auto value = itr->second;
             file << property << " = " << value << "\n";
-            tlog << property << " = " << value << " prop";
             currentLine++;
             itr++;
         }
         if (!comments.empty())
-            for (auto c : comments)
+            for (const auto& c : comments)
                 file << c.second;
         file.flush();
         file.close();
@@ -357,6 +380,17 @@ namespace TD {
             elog << "Error executing querry: " << zErrMsg;
             sqlite3_free(zErrMsg);
         }
+        rc = sqlite3_open((trapdoor_home + "/trapdoor.profile").c_str(), &db);
+            if (rc) {
+                flog << "Can't open database! " << db;
+                sqlite3_close(db);
+                exit(124);
+            }
+            rc = sqlite3_exec(db, "SELECT * FROM settings;", qLastProject, nullptr, &zErrMsg);
+            if (rc != SQLITE_OK) {
+                elog << "Error executing querry: " << zErrMsg;
+                sqlite3_free(zErrMsg);
+            }
  *
  *
  */

@@ -8,6 +8,7 @@
 #include <std.h>
 #include <logging.h>
 #include <hashmaps.h>
+#include <boost/algorithm/string.hpp>
 
 #include <utility>
 
@@ -15,7 +16,6 @@ namespace TD {
     class PropertiesFormat {
     private:
         std::string path;
-        std::queue<std::string> lines;
         flat_hash_map<int, std::string> comments;
         flat_hash_map<std::string, std::string> properties;
     public:
@@ -23,7 +23,7 @@ namespace TD {
         explicit PropertiesFormat(std::string&& path): path(std::move(path)) {}
         explicit PropertiesFormat(const std::string& path): path(path) {}
         inline void open(const std::string& p){ this->path = p;}
-        inline bool hasPath(){return !path.empty();}
+        inline bool hasPath(){boost::trim(path); return !path.empty();}
         void load();
         void save();
         inline bool hasProperty(const std::string& pFind){return properties.find(pFind) != properties.end();}
