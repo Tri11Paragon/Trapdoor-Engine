@@ -451,6 +451,30 @@ namespace TD {
         displays.insert(std::pair(name, this));
     }
 
+    void Display::onSwitch() {
+        for (auto d : displayObjects)
+            d->onSwitch();
+    }
+
+    void Display::render() {
+        for (auto d : displayObjects)
+            d->render();
+    }
+
+    void Display::update() {
+        for (auto d : displayObjects)
+            d->update();
+    }
+
+    void Display::onLeave() {
+        for (auto d : displayObjects)
+            d->onLeave();
+    }
+
+    World *Display::getWorld() {
+        return nullptr;
+    }
+
     DefaultLoadingScreenDisplay::DefaultLoadingScreenDisplay(std::string name) : Display(name) {
 
     }

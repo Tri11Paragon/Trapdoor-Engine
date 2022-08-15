@@ -59,16 +59,30 @@ namespace TD {
 
     class World;
 
-    class Display {
-    private:
+    class DisplayObject {
     public:
-        Display(std::string name);
+        virtual ~DisplayObject() = default;
         virtual void onSwitch() = 0;
         virtual void render() = 0;
         virtual void update() = 0;
         virtual void onLeave() = 0;
         virtual World* getWorld() = 0;
-        virtual ~Display() {}
+    };
+
+    class Display {
+    private:
+        std::vector<DisplayObject*> displayObjects;
+    public:
+        Display(std::string name);
+        virtual void onSwitch();
+        virtual void render();
+        virtual void update();
+        virtual void onLeave();
+        virtual World* getWorld();
+        virtual ~Display() {
+            for (auto d : displayObjects)
+                delete(d);
+        }
     };
 
     class DefaultLoadingScreenDisplay : public Display {

@@ -228,6 +228,7 @@ namespace TD {
         parallel_flat_hash_map<std::string, flat_hash_map<ID, dPtr<Component>>> components;
         std::vector<dPtr<TD::Entity>> entityList;
         std::vector<System*> systems;
+        flat_hash_map<std::string, System*> systemMap;
 
         TD::skyboxRenderer skyboxRenderer;
         TD::gBufferFBO gBufferFbo;

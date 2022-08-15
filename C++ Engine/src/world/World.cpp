@@ -72,6 +72,22 @@ namespace TD {
                     components.insert(std::pair(c->getName(), vtr));
                 }
                 components.at(c->getName()).insert(std::pair(entity->getID(), c));
+                for (const auto& s : c->getAssociatedSystems()){
+                    // systems always exist for the lifetime of the world
+                    // if the world is deleted they are deleted.
+                    // therefore there is no need for them to be stored as dptrs
+                    // especially since they **SHOULD ONLY** be internal to the world.
+                    if (systemMap.find(s) == systemMap.end()) {
+                        auto systemPtr = systemAllocators.at(s)->allocateDefault(this);
+                        try {
+                            systems.push_back(systemPtr);
+                            systemMap.insert(std::pair(s, systemPtr));
+                        } catch (exception& e){
+                            elog << "Unable to create system! " << s;
+                            delete(systemPtr);
+                        }
+                    }
+                }
             }
         } else
             wlog << "Entity {" << entity->getName() << "} with name already exists, not adding to world!";
@@ -91,6 +107,18 @@ namespace TD {
             components.insert(std::pair(component->getName(), vtr));
         }
         components.at(component->getName()).insert(std::pair(entPtr->getID(), compPtr));
+        for (const auto& s : component->getAssociatedSystems()) {
+            if (systemMap.find(s) == systemMap.end()) {
+                auto systemPtr = systemAllocators.at(s)->allocateDefault(this);
+                try {
+                    systems.push_back(systemPtr);
+                    systemMap.insert(std::pair(s, systemPtr));
+                } catch (exception& e){
+                    elog << "Unable to create system! " << s;
+                    delete(systemPtr);
+                }
+            }
+        }
     }
 
     void World::deleteEntity(const std::string& entityName) {
