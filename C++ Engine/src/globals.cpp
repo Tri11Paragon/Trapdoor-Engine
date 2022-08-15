@@ -82,4 +82,5 @@ namespace TD {
     ID entityID = 0;
     // pointers deallocated at the closing of the window.
     parallel_flat_hash_map<std::string, Component*> componentAllocators;
+    parallel_flat_hash_map<std::string, System*> systemAllocators;
 }

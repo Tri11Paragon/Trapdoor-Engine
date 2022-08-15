@@ -8,6 +8,7 @@
 #include "imgui/ImGuizmo.h"
 #include "imgui/imgui_internal.h"
 #include <cmath>
+#include <data/resources.h>
 //#include "raycasting.h"
 
 namespace TD {
@@ -150,10 +151,10 @@ namespace TD {
 
         ImGui::ShowDemoWindow();
 
+        renderMenuBar();
         renderHiearchyScene();
         renderInspector();
         renderConsole();
-        renderMenuBar();
         renderGuizmo();
         ImGui::PopFont();
     }
@@ -205,6 +206,7 @@ namespace TD {
     static bool useSnap(false);
     static glm::vec3 snap{5, 5, 5};
     static int snapPos = 0;
+    static bool newProjectDialogOpen = false, newDisplayDialogOpen = false;
 
     void Editor::renderConsole() {
         ImGui::SetNextWindowBgAlpha(1.0);
@@ -406,10 +408,15 @@ namespace TD {
     }
 
     void Editor::renderMenuBar() {
+        if (newProjectDialogOpen)
+            newProjectDialogOpen = TD::Project::showNewProjectDialog();
+        if (newDisplayDialogOpen)
+            newDisplayDialogOpen = TD::Project::showNewScreenDialog();
         /** Menu Bar */
         if (ImGui::BeginMainMenuBar()){
             if (ImGui::BeginMenu("File")){
-                if (ImGui::BeginMenu("Open")){
+                if (ImGui::MenuItem("New Project")){newProjectDialogOpen = true;}
+                if (ImGui::BeginMenu("Open Project")){
                     for (const auto& p : displays){
                         if (p.first == activeDisplay)
                             continue;
@@ -417,9 +424,11 @@ namespace TD {
                     }
                     ImGui::EndMenu();
                 }
-                if (ImGui::MenuItem("New")){}
-                if (ImGui::MenuItem("Save")){}
-                if (ImGui::MenuItem("Save As..")){}
+                if (ImGui::MenuItem("Save Project")){TD::Project::saveProject();}
+                if (ImGui::MenuItem("Save Project As..")){}
+                //ImGui::MenuItem("-----------");
+                ImGui::NewLine();
+                if (ImGui::MenuItem("New Display")){newDisplayDialogOpen = true;}
                 ImGui::EndMenu();
             }
             if (ImGui::BeginMenu("Edit")){

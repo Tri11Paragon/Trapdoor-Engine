@@ -152,11 +152,10 @@ namespace TD {
 
         }
         if (TD::Input::getMouseScrollYLastFrame() != 0){
-            tlog << "Hello!";
             double movingScroll = TD::Input::getMouseScrollYLastFrame() * speed * TD::getFrameTimeSeconds();
-            dx = -movingScroll * sin(glm::radians(_yaw));
-            dy = movingScroll * sin(glm::radians(_roll));
-            dz = movingScroll * cos(glm::radians(_yaw));
+            double dx = -movingScroll * sin(glm::radians(_yaw));
+            double dy = movingScroll * sin(glm::radians(_roll));
+            double dz = movingScroll * cos(glm::radians(_yaw));
 
             _cameraPos.x += (float)dx;
             _cameraPos.y += (float)dy;

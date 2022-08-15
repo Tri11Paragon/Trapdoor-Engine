@@ -18,9 +18,11 @@
 
 namespace TD {
 
-#define MESH_RENDERER_SYSTEM "MeshComponent"
-#define TRANSFORM_SYSTEM "TransformComponent"
-#define AUDIO_PLAYER_SYSTEM "AudioPlayerComponent"
+#define MESH_RENDERER_COMPONENT "MeshComponent"
+#define TRANSFORM_COMPONENT "TransformComponent"
+#define AUDIO_PLAYER_COMPONENT "AudioPlayerComponent"
+
+#define MESH_RENDERER_SYSTEM "MeshSystem"
 
     typedef unsigned int ID;
 
@@ -34,8 +36,10 @@ namespace TD {
     private:
         // the ID used to index the array containing the vectors of the component type.
         ID associatedEntity{0};
+        std::vector<std::string> associatedSystems {};
     public:
         Component() = default;
+        explicit Component(std::vector<std::string> associatedSystems): associatedSystems(std::move(associatedSystems)) {}
         virtual constexpr std::string getName() = 0;
         // use this function to add your variables to the imgui inspector.
         virtual void drawImGuiVariables() = 0;
@@ -43,6 +47,7 @@ namespace TD {
         virtual Component* allocateData() = 0;
         void setAssociatedEntity(ID id) {this->associatedEntity = id;}
         [[nodiscard]] ID getAssociatedEntity() const {return associatedEntity;}
+        [[nodiscard]] std::vector<std::string> getAssociatedSystems(){return associatedSystems;}
         virtual ~Component() = default;
     };
 
@@ -92,7 +97,7 @@ namespace TD {
         const glm::vec3& getTranslation(){return translate;}
         const glm::vec3& getRotation(){return rotation;}
         const glm::vec3& getScale(){return scale;}
-        virtual constexpr std::string getName(){return TRANSFORM_SYSTEM;}
+        virtual constexpr std::string getName(){return TRANSFORM_COMPONENT;}
     };
 
     class MeshComponent : public Component {
@@ -100,7 +105,7 @@ namespace TD {
         std::string modelName;
         char stringBuffer[512]{};
     public:
-        explicit MeshComponent(const std::string&  modelName): modelName(modelName) {
+        explicit MeshComponent(const std::string&  modelName): modelName(modelName), Component({MESH_RENDERER_SYSTEM}) {
             strcpy(stringBuffer, modelName.c_str());
         }
         virtual void drawImGuiVariables(){
@@ -120,7 +125,7 @@ namespace TD {
             return new MeshComponent(modelName);
         }
         inline std::string getModelName(){return modelName;}
-        virtual constexpr std::string getName(){return MESH_RENDERER_SYSTEM;}
+        virtual constexpr std::string getName(){return MESH_RENDERER_COMPONENT;}
     };
 
     class AudioPlayerComponent : public Component {
@@ -148,16 +153,8 @@ namespace TD {
             return new AudioPlayerComponent(audioFile);
         }
         inline std::string getAudioFile(){return audioFile;}
-        virtual constexpr std::string getName(){return AUDIO_PLAYER_SYSTEM;}
+        virtual constexpr std::string getName(){return AUDIO_PLAYER_COMPONENT;}
     };
-
-    // deallocated at the closing of the window.
-    extern parallel_flat_hash_map<std::string, Component*> componentAllocators;
-
-    static void registerAllocators(){
-        componentAllocators.insert(std::pair(MESH_RENDERER_SYSTEM, new MeshComponent("")));
-        componentAllocators.insert(std::pair(AUDIO_PLAYER_SYSTEM, new AudioPlayerComponent("")));
-    }
 
     /**
      * Entity is basically just a glorified struct
@@ -205,10 +202,10 @@ namespace TD {
      */
     class System {
     protected:
-        World& world;
+        World* world;
     public:
         // systems get a reference to the world.
-        explicit System(World& world): world(world) {}
+        explicit System(World* world): world(world) {}
         // called every time that the world needs to render something to the screen.
         // the shader provided is the shader which should be used to render
         // you are not required to use it however there is always a reason for using the supplied shader.
@@ -220,6 +217,8 @@ namespace TD {
         virtual void renderOnce() = 0;
         virtual void update() = 0;
 
+        virtual System* allocateDefault(World* world) = 0;
+
         virtual ~System() = default;
     };
 
@@ -228,7 +227,7 @@ namespace TD {
         parallel_flat_hash_map<std::string, dPtr<TD::Entity>> entityMap;
         parallel_flat_hash_map<std::string, flat_hash_map<ID, dPtr<Component>>> components;
         std::vector<dPtr<TD::Entity>> entityList;
-        std::vector<dPtr<System>> systems;
+        std::vector<System*> systems;
 
         TD::skyboxRenderer skyboxRenderer;
         TD::gBufferFBO gBufferFbo;
@@ -245,8 +244,6 @@ namespace TD {
         void update();
 
         inline flat_hash_map<ID, dPtr<Component>>& getComponents(const std::string& name){return components.at(name);}
-
-        void createSystem(System* system){dPtr<System> ptr(system); systems.push_back(ptr);}
 
         // the entity pointer should be a pointer to a *new* entity
         // this will be deleted when the world is deleted or
@@ -328,11 +325,25 @@ namespace TD {
     private:
 
     public:
-        explicit MeshRendererSystem(World& world): System(world) {}
+        explicit MeshRendererSystem(World* world): System(world) {}
         virtual void render(shader* shader);
         virtual void renderOnce();
         virtual void update();
+        virtual System* allocateDefault(World* wrld){
+            return new MeshRendererSystem(wrld);
+        }
     };
+
+    // deallocated at the closing of the window.
+    extern parallel_flat_hash_map<std::string, Component*> componentAllocators;
+    extern parallel_flat_hash_map<std::string, System*> systemAllocators;
+
+    static void registerAllocators(){
+        componentAllocators.insert(std::pair(MESH_RENDERER_COMPONENT, new MeshComponent("")));
+        componentAllocators.insert(std::pair(AUDIO_PLAYER_COMPONENT, new AudioPlayerComponent("")));
+
+        systemAllocators.insert(std::pair(MESH_RENDERER_SYSTEM, new MeshRendererSystem(nullptr)));
+    }
 
 }
 

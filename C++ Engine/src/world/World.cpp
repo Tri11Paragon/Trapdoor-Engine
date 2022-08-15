@@ -25,11 +25,13 @@ namespace TD {
     World::~World() {
         for (auto ptr : entityMap)
             ptr.second.free();
-        for (auto ptr : components){
+        for (const auto& ptr : components){
             for (auto ele : ptr.second){
                 ele.second.free();
             }
         }
+        for (auto ptr : systems)
+            delete(ptr);
         tlog << "World Deleted";
     }
 
@@ -117,8 +119,8 @@ namespace TD {
     }
 
     void MeshRendererSystem::render(shader* shader) {
-        auto &meshComponents = world.getComponents(MESH_RENDERER_SYSTEM);
-        auto &transforms = world.getComponents(TRANSFORM_SYSTEM);
+        auto &meshComponents = world.getComponents(MESH_RENDERER_COMPONENT);
+        auto &transforms = world.getComponents(TRANSFORM_COMPONENT);
         for (auto mesh : meshComponents){
             auto meshPtr = mesh.second.get();
             if (meshPtr){
