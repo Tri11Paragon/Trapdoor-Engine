@@ -74,6 +74,7 @@ namespace TD {
     // final loaded resources
     parallel_node_hash_map<std::string, TD::model*> loadedModels;
     parallel_node_hash_map<std::string, TD::Texture> loadedTextures;
+    parallel_flat_hash_map<std::string, Display*> displayAllocators;
 
     vector<TD::font> fonts;
     bool queuesCreated = false;

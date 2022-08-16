@@ -19,6 +19,7 @@ namespace TD {
     extern volatile bool _isWindowOpen;
     extern std::vector<std::queue<std::pair<std::string, std::string>>> unloadedModels;
     extern std::vector<std::queue<std::pair<std::string, std::string>>> unloadedTextures;
+    extern parallel_flat_hash_map<std::string, Display*> displayAllocators;
     extern parallel_node_hash_map<std::string, TD::model*> loadedModels;
     extern parallel_node_hash_map<std::string, TD::Texture> loadedTextures;
     extern bool queuesCreated;
@@ -142,8 +143,8 @@ namespace TD {
     }
 
     void GameRegistry::registerThreaded() {
-        for (int i = 0; i < callbacks.size(); i++){
-            callbacks[i]();
+        for (auto & callback : callbacks){
+            callback();
         }
         TD::GameRegistry::createThreadPool();
     }
@@ -161,7 +162,7 @@ namespace TD {
         return loadedModels.at(unlocalizedName);
     }
 
-    TD::Texture GameRegistry::getTexture(std::string unlocalizedName) {
+    TD::Texture GameRegistry::getTexture(const std::string& unlocalizedName) {
         return loadedTextures.at(unlocalizedName);
     }
 
@@ -172,8 +173,16 @@ namespace TD {
             pair.second.texture->loadGLTexture();
     }
 
-    void GameRegistry::registerFont(std::string id, std::string path, float size) {
+    void GameRegistry::registerFont(const std::string& id, std::string path, float size) {
         fonts.emplace_back(id, path, size);
+    }
+
+    void GameRegistry::registerDisplayType(const std::string& id, Display *display) {
+        displayAllocators.insert({id, display});
+    }
+
+    Display *GameRegistry::getDisplayByID(const std::string& id) {
+        return displayAllocators.at(id);
     }
 
 } // TD

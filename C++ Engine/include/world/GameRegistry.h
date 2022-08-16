@@ -8,6 +8,7 @@
 #include "../std.h"
 #include "../glm.h"
 #include "../renderer/gl.h"
+#include "window.h"
 
 namespace TD {
 
@@ -25,12 +26,14 @@ namespace TD {
         static void registerRegistrationCallback(void* (*funcion)());
         static void registerModel(const std::string& id, const std::string& modelPath);
         static void registerTexture(const std::string& id, const std::string& texturePath);
-        static void registerFont(std::string id, std::string path, float size);
+        static void registerFont(const std::string& id, std::string path, float size);
+        static void registerDisplayType(const std::string& id, Display* display);
+        static Display* getDisplayByID(const std::string& id);
         static void registerThreaded();
         static void loadToGPU();
         // Getting
         static TD::model* getModel(std::string unlocalizedName);
-        static TD::Texture getTexture(std::string unlocalizedName);
+        static TD::Texture getTexture(const std::string& unlocalizedName);
         // Deleting
         static void deleteResources();
     };

@@ -13,7 +13,7 @@
 
 namespace TD {
 
-    class TestDisplay : Display {
+    class TestDisplay : public Display {
     private:
         glm::vec3 direction = glm::vec3(0.5f, 1.0f, 0.6f);
         //glm::vec3 direction = glm::vec3(0.2f, 1.0f, 0.3f);
@@ -42,7 +42,8 @@ namespace TD {
         };
         TD::World world;
     public:
-        TestDisplay(std::string name);
+        TestDisplay(): Display() {}
+        explicit TestDisplay(std::string name);
         virtual void onSave();
         virtual void onLoad();
         virtual void onSwitch();
@@ -50,6 +51,9 @@ namespace TD {
         virtual void update();
         virtual void onLeave();
         virtual World* getWorld(){return &world;}
+        virtual Display* allocate(const std::string& name){
+            return new TestDisplay(name);
+        }
         ~TestDisplay();
     };
 

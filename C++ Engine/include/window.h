@@ -62,8 +62,9 @@ namespace TD {
     class Display {
     private:
     public:
-        Display(const std::string& name);
-        virtual ~Display() {}
+        Display()= default;
+        explicit Display(const std::string& name);
+        virtual ~Display() = default;
         // required functions
         virtual void onSave() = 0;
         virtual void onLoad() = 0;
@@ -73,6 +74,7 @@ namespace TD {
         virtual void onLeave() = 0;
         //** getters
         virtual World* getWorld() = 0;
+        virtual Display* allocate(const std::string& name) = 0;
     };
 
     class DefaultLoadingScreenDisplay : public Display {
@@ -84,6 +86,7 @@ namespace TD {
         std::string lastLoaded;
         std::mutex loadLocked;
     public:
+        DefaultLoadingScreenDisplay(): Display(){}
         explicit DefaultLoadingScreenDisplay(std::string name);
         virtual void onSave();
         virtual void onLoad();
@@ -96,6 +99,9 @@ namespace TD {
         virtual void modelLoaded(const std::string& ident, const std::string& path);
         virtual void textureLoaded(const std::string& ident, const std::string& path);
         virtual World* getWorld(){return nullptr;}
+        virtual Display* allocate(const std::string& name){
+            return new DefaultLoadingScreenDisplay(name);
+        }
         ~DefaultLoadingScreenDisplay();
     };
 

@@ -176,9 +176,11 @@ namespace TD {
         return false;
     }
 
+    extern int offsetY;
+
     bool Project::showNewProjectDialog() {
         bool stayOpen = true;
-        ImGui::SetNextWindowPos(ImVec2((float)_display_w /2, (float)_display_h / 2), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+        ImGui::SetNextWindowPos(ImVec2((float)_display_w /2, (float)_display_h / 2 - (float)offsetY/2), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
         ImGui::Begin("New Project", &stayOpen, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoSavedSettings);
 
         static char stringBuffer[512]{};
@@ -211,8 +213,50 @@ namespace TD {
         return stayOpen;
     }
 
+    extern parallel_flat_hash_map<std::string, Display*> displayAllocators;
+
     bool Project::showNewScreenDialog() {
-        return false;
+        bool stayOpen = true;
+        ImGui::SetNextWindowPos(ImVec2((float)_display_w /2, (float)_display_h / 2 - (float)offsetY/2), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+        ImGui::Begin("New Project", &stayOpen, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoSavedSettings);
+
+        static char stringBuffer[512]{};
+        std::string displayName;
+
+        ImGui::Text("Display Name: ");
+        ImGui::InputText("##DisName", stringBuffer, 512, ImGuiInputTextFlags_EnterReturnsTrue);
+        Strtrim(stringBuffer);
+        if (stringBuffer[0]){
+            displayName = std::string(stringBuffer);
+            boost::trim(displayName);
+        }
+
+        static std::string displayType;
+
+        if (ImGui::BeginMenu("Display Type")){
+            for (const auto& d : displayAllocators) {
+                if (ImGui::MenuItem(d.first.c_str())){
+                    displayType = d.first;
+                }
+            }
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::Button("Create Display")) {
+            if (!displayName.empty() && !displayType.empty()) {
+                try {
+                    GameRegistry::getDisplayByID(displayType)->allocate(displayName);
+                    stayOpen = false;
+                    displayType = {};
+                } catch (std::exception& e) {
+                    elog << e.what();
+                }
+            } else
+                wlog << "Must specify display name and type!";
+        }
+
+        ImGui::End();
+        return stayOpen;
     }
 
     void Project::createNewProject() {
@@ -349,9 +393,13 @@ namespace TD {
             currentLine++;
             itr++;
         }
-        if (!comments.empty())
-            for (const auto& c : comments)
-                file << c.second;
+        while (!comments.empty()) {
+            if (comments.find(currentLine) != comments.end()) {
+                file << comments.at(currentLine);
+                comments.erase(currentLine);
+            }
+            currentLine++;
+        }
         file.flush();
         file.close();
     }
