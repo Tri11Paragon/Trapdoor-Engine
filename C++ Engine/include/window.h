@@ -62,7 +62,7 @@ namespace TD {
     class Display {
     private:
     public:
-        Display()= default;
+        Display() = default;
         explicit Display(const std::string& name);
         virtual ~Display() = default;
         // required functions

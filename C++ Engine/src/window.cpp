@@ -216,8 +216,8 @@ namespace TD {
 
         TD::updateClock(glfwGetTime() * 1000.0);
 
-        glfwSwapBuffers(_window);
         TD::Input::update();
+        glfwSwapBuffers(_window);
     }
 
     bool window::isCloseRequested() {
@@ -405,6 +405,7 @@ namespace TD {
             //ImGui::ShowDemoWindow();
 
             if (activeDisplay != "NULL") {
+                flog << "Updating display!";
                 try {
                     Display* ptr = displays.at(activeDisplay);
                     ptr->render();
@@ -458,6 +459,7 @@ namespace TD {
     }
 
     Display::Display(const std::string& name) {
+        flog << "Adding display!!! " << name;
         displays.insert(std::pair(name, this));
     }
 
