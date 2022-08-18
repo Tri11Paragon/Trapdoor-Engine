@@ -58,6 +58,6 @@ void TD::SQLTransaction::createEntityTable() {
 }
 
 void TD::SQLTransaction::createComponentTable() {
-    insert("CREATE TABLE IF NOT EXISTS components (entityName MEDIUMTEXT PRIMARY KEY, componentName MEDIUMTEXT, componentTable MEDIUMTEXT);")
+    insert("CREATE TABLE IF NOT EXISTS components (entityName MEDIUMTEXT PRIMARY KEY, componentName MEDIUMTEXT, componentTable MEDIUMTEXT);");
     firstC = false;
 }

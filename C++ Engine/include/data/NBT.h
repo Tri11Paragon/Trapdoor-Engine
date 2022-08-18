@@ -5,9 +5,15 @@
 #ifndef ENGINE_NBT_H
 #define ENGINE_NBT_H
 
-#include "DataStreams.h"
+#include "data/DataConv.h"
+#include "std.h"
 #include "../hashmaps.h"
 #include <thread>
+#include <fstream>
+#include <iostream>
+#include <boost/iostreams/filtering_streambuf.hpp>
+#include <boost/iostreams/copy.hpp>
+#include <boost/iostreams/filter/gzip.hpp>
 
 namespace TD {
 
@@ -109,576 +115,651 @@ namespace TD {
     constexpr unsigned char ID_TAG_LONG_ARRAY = 12;
 
     class NBT_TAG {
-    protected:
-        std::string name;
-        unsigned char type;
-    public:
-        explicit NBT_TAG(unsigned char type){this->type = type;}
-        NBT_TAG(const std::string &name, const unsigned char &type) : name(name), type(type) {}
+        protected:
+            std::string name;
+            unsigned char type;
+        public:
+            explicit NBT_TAG(unsigned char type) { this->type = type; }
 
-        inline std::string getName(){return name;}
-        [[nodiscard]] inline unsigned char getType() const {return type;}
+            NBT_TAG(const std::string &name, const unsigned char &type) : name(name), type(type) {}
 
-        void writeName(std::ofstream &file) {
-            char data[2];
-            TD::DataConv::getShort((short) name.size(), data);
-            file.write(data, 2);
-            for (int i = 0; i < name.size(); i++)
-                file << this->name[i];
-        }
+            inline std::string getName() { return name; }
 
-        void writeType(std::ofstream &file) const {
-            file << type;
-        }
+            [[nodiscard]] inline unsigned char getType() const { return type; }
 
-        inline virtual void writePayload(std::ofstream &file) = 0;
+            void writeName(std::ofstream &file) {
+                char data[2];
+                TD::DataConv::getShort((short) name.size(), data);
+                file.write(data, 2);
+                for (int i = 0; i < name.size(); i++)
+                    file << this->name[i];
+            }
 
-        inline virtual void readPayload(std::ifstream &file) = 0;
+            void writeType(std::ofstream &file) const {
+                file << type;
+            }
 
-        void readName(std::ifstream &file) {
-            char sizeArr[2];
-            file.read(sizeArr, 2);
-            short size = TD::DataConv::getShort(sizeArr);
+            inline virtual void writePayload(std::ofstream &file) = 0;
+
+            inline virtual void readPayload(std::ifstream &file) = 0;
+
+            void readName(std::ifstream &file) {
+                char sizeArr[2];
+                file.read(sizeArr, 2);
+                short size = TD::DataConv::getShort(sizeArr);
 #if defined(__GNUC__) || defined(__GNUG__)
-            char str[size];
+                char str[size];
 #else
-            char* str = new char[size];
+                char* str = new char[size];
 #endif
-            file.read(str, size);
-            this->name = std::string(str, size);
+                file.read(str, size);
+                this->name = std::string(str, size);
 #if !(defined(__GNUC__) || defined(__GNUG__))
-            delete[](str);
+                delete[](str);
 #endif
-        }
+            }
 
-        void readType(std::ifstream &file) {
-            char typeT;
-            file.read(&typeT, 1);
-            this->type = (unsigned char)typeT;
-        }
-        // TODO: Rule of 3/5
-        virtual ~NBT_TAG() = default;
+            void readType(std::ifstream &file) {
+                char typeT;
+                file.read(&typeT, 1);
+                this->type = (unsigned char) typeT;
+            }
+
+            // TODO: Rule of 3/5
+            virtual ~NBT_TAG() = default;
     };
 
     class TAG_BYTE : public NBT_TAG {
-    private:
-        signed char payload;
-    public:
-        TAG_BYTE(): NBT_TAG(ID_TAG_BYTE){}
-        TAG_BYTE(const std::string& name): NBT_TAG(name, ID_TAG_BYTE){}
-        TAG_BYTE(const std::string& name, const signed char payload) : NBT_TAG(name, ID_TAG_BYTE) { this->payload = payload; }
+        private:
+            signed char payload;
+        public:
+            TAG_BYTE() : NBT_TAG(ID_TAG_BYTE) {}
 
-        inline signed char getPayload(){return payload;}
-        // this should be fine as file.write / file.read writes signed chars
-        inline virtual void writePayload(std::ofstream &file){file << payload;}
-        inline virtual void readPayload(std::ifstream &file) {file >> payload;}
+            TAG_BYTE(const std::string &name) : NBT_TAG(name, ID_TAG_BYTE) {}
+
+            TAG_BYTE(const std::string &name, const signed char payload) : NBT_TAG(name,
+                                                                                   ID_TAG_BYTE) { this->payload = payload; }
+
+            inline signed char getPayload() { return payload; }
+
+            // this should be fine as file.write / file.read writes signed chars
+            inline virtual void writePayload(std::ofstream &file) { file << payload; }
+
+            inline virtual void readPayload(std::ifstream &file) { file >> payload; }
     };
 
     class TAG_SHORT : public NBT_TAG {
-    private:
-        signed short payload;
-    public:
-        TAG_SHORT(): NBT_TAG(ID_TAG_SHORT){}
-        TAG_SHORT(const std::string& name): NBT_TAG(name, ID_TAG_SHORT){}
-        TAG_SHORT(const std::string& name, const signed short payload) : NBT_TAG(name, ID_TAG_SHORT) { this->payload = payload; }
+        private:
+            signed short payload;
+        public:
+            TAG_SHORT() : NBT_TAG(ID_TAG_SHORT) {}
 
-        inline signed short getPayload(){return payload;}
-        inline virtual void writePayload(std::ofstream &file) {
-            char data[2];
-            TD::DataConv::getShort(payload, data);
-            file.write(data, 2);
-        }
-        inline virtual void readPayload(std::ifstream &file) {
-            char data[2];
-            file.read(data, 2);
-            payload = TD::DataConv::getShort(data);
-        }
+            TAG_SHORT(const std::string &name) : NBT_TAG(name, ID_TAG_SHORT) {}
+
+            TAG_SHORT(const std::string &name, const signed short payload) : NBT_TAG(name,
+                                                                                     ID_TAG_SHORT) { this->payload = payload; }
+
+            inline signed short getPayload() { return payload; }
+
+            inline virtual void writePayload(std::ofstream &file) {
+                char data[2];
+                TD::DataConv::getShort(payload, data);
+                file.write(data, 2);
+            }
+
+            inline virtual void readPayload(std::ifstream &file) {
+                char data[2];
+                file.read(data, 2);
+                payload = TD::DataConv::getShort(data);
+            }
     };
 
     class TAG_INT : public NBT_TAG {
-    private:
-        signed int payload;
-    public:
-        TAG_INT(): NBT_TAG(ID_TAG_INT){}
-        TAG_INT(const std::string& name): NBT_TAG(name, ID_TAG_INT){}
-        TAG_INT(const std::string& name, const signed int payload) : NBT_TAG(name, ID_TAG_INT) { this->payload = payload;}
+        private:
+            signed int payload;
+        public:
+            TAG_INT() : NBT_TAG(ID_TAG_INT) {}
 
-        inline signed int getPayload(){return payload;}
-        inline virtual void writePayload(std::ofstream &file) {
-            char data[4];
-            TD::DataConv::getInt(payload, data);
-            file.write(data, 4);
-        }
-        inline virtual void readPayload(std::ifstream &file) {
-            char data[4];
-            file.read(data, 4);
-            payload = TD::DataConv::getInt(data);
-        }
+            TAG_INT(const std::string &name) : NBT_TAG(name, ID_TAG_INT) {}
+
+            TAG_INT(const std::string &name, const signed int payload) : NBT_TAG(name,
+                                                                                 ID_TAG_INT) { this->payload = payload; }
+
+            inline signed int getPayload() { return payload; }
+
+            inline virtual void writePayload(std::ofstream &file) {
+                char data[4];
+                TD::DataConv::getInt(payload, data);
+                file.write(data, 4);
+            }
+
+            inline virtual void readPayload(std::ifstream &file) {
+                char data[4];
+                file.read(data, 4);
+                payload = TD::DataConv::getInt(data);
+            }
     };
 
     class TAG_LONG : public NBT_TAG {
-    private:
-        signed long payload;
-    public:
-        TAG_LONG(): NBT_TAG(ID_TAG_LONG){}
-        TAG_LONG(const std::string& name): NBT_TAG(name, ID_TAG_LONG){}
-        TAG_LONG(const std::string& name, const signed long payload) : NBT_TAG(name, ID_TAG_LONG) { this->payload = payload; }
+        private:
+            signed long payload;
+        public:
+            TAG_LONG() : NBT_TAG(ID_TAG_LONG) {}
 
-        inline long getPayload(){return payload;}
-        inline virtual void writePayload(std::ofstream &file) {
-            char data[8];
-            TD::DataConv::getLong(payload, data);
-            file.write(data, 8);
-        }
-        inline virtual void readPayload(std::ifstream &file) {
-            char data[8];
-            file.read(data, 8);
-            payload = TD::DataConv::getLong(data);
-        }
+            TAG_LONG(const std::string &name) : NBT_TAG(name, ID_TAG_LONG) {}
+
+            TAG_LONG(const std::string &name, const signed long payload) : NBT_TAG(name,
+                                                                                   ID_TAG_LONG) { this->payload = payload; }
+
+            inline long getPayload() { return payload; }
+
+            inline virtual void writePayload(std::ofstream &file) {
+                char data[8];
+                TD::DataConv::getLong(payload, data);
+                file.write(data, 8);
+            }
+
+            inline virtual void readPayload(std::ifstream &file) {
+                char data[8];
+                file.read(data, 8);
+                payload = TD::DataConv::getLong(data);
+            }
     };
 
     class TAG_FLOAT : public NBT_TAG {
-    private:
-        float payload;
-    public:
-        TAG_FLOAT(): NBT_TAG(ID_TAG_FLOAT) {}
-        TAG_FLOAT(const std::string& name): NBT_TAG(name, ID_TAG_FLOAT){}
-        TAG_FLOAT(const std::string& name, const float payload) : NBT_TAG(name, ID_TAG_FLOAT) { this->payload = payload; }
+        private:
+            float payload;
+        public:
+            TAG_FLOAT() : NBT_TAG(ID_TAG_FLOAT) {}
 
-        inline float getPayload(){return payload;}
-        inline virtual void writePayload(std::ofstream &file) {
-            char data[4];
-            TD::DataConv::getFloat(payload, data);
-            file.write(data, 4);
-        }
-        inline virtual void readPayload(std::ifstream &file) {
-            char data[4];
-            file.read(data, 4);
-            this->payload = TD::DataConv::getFloat(data);
-        }
+            TAG_FLOAT(const std::string &name) : NBT_TAG(name, ID_TAG_FLOAT) {}
+
+            TAG_FLOAT(const std::string &name, const float payload) : NBT_TAG(name,
+                                                                              ID_TAG_FLOAT) { this->payload = payload; }
+
+            inline float getPayload() { return payload; }
+
+            inline virtual void writePayload(std::ofstream &file) {
+                char data[4];
+                TD::DataConv::getFloat(payload, data);
+                file.write(data, 4);
+            }
+
+            inline virtual void readPayload(std::ifstream &file) {
+                char data[4];
+                file.read(data, 4);
+                this->payload = TD::DataConv::getFloat(data);
+            }
     };
 
     class TAG_DOUBLE : public NBT_TAG {
-    private:
-        double payload;
-    public:
-        TAG_DOUBLE(): NBT_TAG(ID_TAG_DOUBLE){}
-        TAG_DOUBLE(const std::string& name): NBT_TAG(name, ID_TAG_DOUBLE){}
-        TAG_DOUBLE(const std::string& name, const double payload) : NBT_TAG(name, ID_TAG_DOUBLE) { this->payload = payload; }
+        private:
+            double payload;
+        public:
+            TAG_DOUBLE() : NBT_TAG(ID_TAG_DOUBLE) {}
 
-        inline double getPayload(){return payload;}
-        inline virtual void writePayload(std::ofstream &file) {
-            char data[8];
-            TD::DataConv::getDouble(payload, data);
-            file.write(data, 8);
-        }
-        inline virtual void readPayload(std::ifstream &file) {
-            char data[8];
-            file.read(data, 8);
-            this->payload = TD::DataConv::getDouble(data);
-        }
+            TAG_DOUBLE(const std::string &name) : NBT_TAG(name, ID_TAG_DOUBLE) {}
+
+            TAG_DOUBLE(const std::string &name, const double payload) : NBT_TAG(name,
+                                                                                ID_TAG_DOUBLE) { this->payload = payload; }
+
+            inline double getPayload() { return payload; }
+
+            inline virtual void writePayload(std::ofstream &file) {
+                char data[8];
+                TD::DataConv::getDouble(payload, data);
+                file.write(data, 8);
+            }
+
+            inline virtual void readPayload(std::ifstream &file) {
+                char data[8];
+                file.read(data, 8);
+                this->payload = TD::DataConv::getDouble(data);
+            }
     };
 
     class TAG_STRING : public NBT_TAG {
-    private:
-        std::string payload;
-    public:
-        TAG_STRING(): NBT_TAG(ID_TAG_STRING){}
-        TAG_STRING(const std::string& name): NBT_TAG(name, ID_TAG_STRING){}
-        TAG_STRING(const std::string& name, const std::string& payload) : NBT_TAG(name, ID_TAG_STRING) { this->payload = payload;}
+        private:
+            std::string payload;
+        public:
+            TAG_STRING() : NBT_TAG(ID_TAG_STRING) {}
 
-        inline std::string getPayload(){return payload;}
-        inline virtual void writePayload(std::ofstream &file) {
-            char bytes[2];
-            TD::DataConv::getShort(this->payload.size(), bytes);
-            file.write(bytes, 2);
-            for (int i = 0; i < payload.size(); i++)
-                file << this->payload[i];
-        }
-        inline virtual void readPayload(std::ifstream &file) {
-            short size = 0;
-            char sizeArr[2];
-            file.read(sizeArr, 2);
-            size = TD::DataConv::getShort(sizeArr);
+            TAG_STRING(const std::string &name) : NBT_TAG(name, ID_TAG_STRING) {}
+
+            TAG_STRING(const std::string &name, const std::string &payload) : NBT_TAG(name,
+                                                                                      ID_TAG_STRING) { this->payload = payload; }
+
+            inline std::string getPayload() { return payload; }
+
+            inline virtual void writePayload(std::ofstream &file) {
+                char bytes[2];
+                TD::DataConv::getShort(this->payload.size(), bytes);
+                file.write(bytes, 2);
+                for (int i = 0; i < payload.size(); i++)
+                    file << this->payload[i];
+            }
+
+            inline virtual void readPayload(std::ifstream &file) {
+                short size = 0;
+                char sizeArr[2];
+                file.read(sizeArr, 2);
+                size = TD::DataConv::getShort(sizeArr);
 #if defined(__GNUC__) || defined(__GNUG__)
-            char str[size];
+                char str[size];
 #else
-            char* str =  [size];
+                char* str = new char[size];
 #endif
-            file.read(str, size);
-            this->payload = std::string(str, size);
+                file.read(str, size);
+                this->payload = std::string(str, size);
 #if !(defined(__GNUC__) || defined(__GNUG__))
-            delete[](str);
+                delete[](str);
 #endif
-        }
+            }
     };
 
     class TAG_BYTE_ARRAY : public NBT_TAG {
-    private:
-        std::vector<signed char> payload;
-    public:
-        TAG_BYTE_ARRAY(): NBT_TAG(ID_TAG_BYTE_ARRAY){}
-        TAG_BYTE_ARRAY(const std::string& name): NBT_TAG(name, ID_TAG_BYTE_ARRAY){}
-        TAG_BYTE_ARRAY(const std::string& name, std::vector<signed char> payload) : NBT_TAG(name, ID_TAG_BYTE_ARRAY) { this->payload = payload;}
+        private:
+            std::vector<signed char> payload;
+        public:
+            TAG_BYTE_ARRAY() : NBT_TAG(ID_TAG_BYTE_ARRAY) {}
 
-        inline std::vector<signed char>& getPayload(){return payload;}
-        inline virtual void writePayload(std::ofstream &file) {
-            char data[4];
-            TD::DataConv::getInt(payload.size(), data);
-            file.write(data, 4);
-            for (int i = 0; i < payload.size(); i++) {
-                file << payload[i];
+            TAG_BYTE_ARRAY(const std::string &name) : NBT_TAG(name, ID_TAG_BYTE_ARRAY) {}
+
+            TAG_BYTE_ARRAY(const std::string &name, std::vector<signed char> payload) : NBT_TAG(name,
+                                                                                                ID_TAG_BYTE_ARRAY) { this->payload = payload; }
+
+            inline std::vector<signed char> &getPayload() { return payload; }
+
+            inline virtual void writePayload(std::ofstream &file) {
+                char data[4];
+                TD::DataConv::getInt(payload.size(), data);
+                file.write(data, 4);
+                for (int i = 0; i < payload.size(); i++) {
+                    file << payload[i];
+                }
             }
-        }
-        inline virtual void readPayload(std::ifstream &file) {
-            char sizeData[4];
-            file.read(sizeData, 4);
-            int size = TD::DataConv::getInt(sizeData);
-            std::vector<signed char> ptr;
-            for (int i = 0; i < size; i++) {
-                char byt;
-                file.read(&byt, 1);
-                ptr.push_back(byt);
+
+            inline virtual void readPayload(std::ifstream &file) {
+                char sizeData[4];
+                file.read(sizeData, 4);
+                int size = TD::DataConv::getInt(sizeData);
+                std::vector<signed char> ptr;
+                for (int i = 0; i < size; i++) {
+                    char byt;
+                    file.read(&byt, 1);
+                    ptr.push_back(byt);
+                }
+                this->payload = ptr;
             }
-            this->payload = ptr;
-        }
     };
 
     class TAG_INT_ARRAY : public NBT_TAG {
-    private:
-        std::vector<int> payload;
-    public:
-        TAG_INT_ARRAY(): NBT_TAG(ID_TAG_INT_ARRAY){}
-        TAG_INT_ARRAY(const std::string& name): NBT_TAG(name, ID_TAG_INT_ARRAY){}
-        TAG_INT_ARRAY(const std::string& name, std::vector<int> payload) : NBT_TAG(name, ID_TAG_INT_ARRAY) { this->payload = payload;}
+        private:
+            std::vector<int> payload;
+        public:
+            TAG_INT_ARRAY() : NBT_TAG(ID_TAG_INT_ARRAY) {}
 
-        inline std::vector<int>& getPayload(){return payload;}
-        inline virtual void writePayload(std::ofstream &file) {
-            char data[4];
-            TD::DataConv::getInt(payload.size(), data);
-            file.write(data, 4);
-            for (int i = 0; i < payload.size(); i++) {
-                char lData[4];
-                TD::DataConv::getInt(payload[i], lData);
-                file.write(lData, 4);
+            TAG_INT_ARRAY(const std::string &name) : NBT_TAG(name, ID_TAG_INT_ARRAY) {}
+
+            TAG_INT_ARRAY(const std::string &name, std::vector<int> payload) : NBT_TAG(name,
+                                                                                       ID_TAG_INT_ARRAY) { this->payload = payload; }
+
+            inline std::vector<int> &getPayload() { return payload; }
+
+            inline virtual void writePayload(std::ofstream &file) {
+                char data[4];
+                TD::DataConv::getInt(payload.size(), data);
+                file.write(data, 4);
+                for (int i = 0; i < payload.size(); i++) {
+                    char lData[4];
+                    TD::DataConv::getInt(payload[i], lData);
+                    file.write(lData, 4);
+                }
             }
-        }
-        inline virtual void readPayload(std::ifstream &file) {
-            char sizeData[4];
-            file.read(sizeData, 4);
-            int size = TD::DataConv::getInt(sizeData);
-            std::vector<int> ptr;
-            for (int i = 0; i < size; i++) {
-                char byt[4];
-                file.read(byt, 4);
-                ptr.push_back(TD::DataConv::getInt(byt));
+
+            inline virtual void readPayload(std::ifstream &file) {
+                char sizeData[4];
+                file.read(sizeData, 4);
+                int size = TD::DataConv::getInt(sizeData);
+                std::vector<int> ptr;
+                for (int i = 0; i < size; i++) {
+                    char byt[4];
+                    file.read(byt, 4);
+                    ptr.push_back(TD::DataConv::getInt(byt));
+                }
+                this->payload = ptr;
             }
-            this->payload = ptr;
-        }
     };
 
     class TAG_LONG_ARRAY : public NBT_TAG {
-    private:
-        std::vector<long> payload;
-    public:
-        TAG_LONG_ARRAY(): NBT_TAG(ID_TAG_LONG_ARRAY){}
-        TAG_LONG_ARRAY(const std::string& name): NBT_TAG(name, ID_TAG_LONG_ARRAY){}
-        TAG_LONG_ARRAY(const std::string& name, std::vector<long> payload) : NBT_TAG(name, ID_TAG_LONG_ARRAY) { this->payload = payload;}
+        private:
+            std::vector<long> payload;
+        public:
+            TAG_LONG_ARRAY() : NBT_TAG(ID_TAG_LONG_ARRAY) {}
 
-        inline std::vector<long>& getPayload(){return payload;}
-        inline virtual void writePayload(std::ofstream &file) {
-            char data[4];
-            TD::DataConv::getInt(payload.size(), data);
-            file.write(data, 4);
-            for (int i = 0; i < payload.size(); i++) {
-                char lData[8];
-                TD::DataConv::getLong(payload[i], lData);
-                file.write(lData, 8);
+            TAG_LONG_ARRAY(const std::string &name) : NBT_TAG(name, ID_TAG_LONG_ARRAY) {}
+
+            TAG_LONG_ARRAY(const std::string &name, std::vector<long> payload) : NBT_TAG(name,
+                                                                                         ID_TAG_LONG_ARRAY) { this->payload = payload; }
+
+            inline std::vector<long> &getPayload() { return payload; }
+
+            inline virtual void writePayload(std::ofstream &file) {
+                char data[4];
+                TD::DataConv::getInt(payload.size(), data);
+                file.write(data, 4);
+                for (int i = 0; i < payload.size(); i++) {
+                    char lData[8];
+                    TD::DataConv::getLong(payload[i], lData);
+                    file.write(lData, 8);
+                }
             }
-        }
-        inline virtual void readPayload(std::ifstream &file) {
-            char sizeData[4];
-            file.read(sizeData, 4);
-            int size = TD::DataConv::getInt(sizeData);
-            std::vector<long> ptr;
-            for (int i = 0; i < size; i++) {
-                char byt[8];
-                file.read(byt, 8);
-                ptr.push_back(TD::DataConv::getLong(byt));
+
+            inline virtual void readPayload(std::ifstream &file) {
+                char sizeData[4];
+                file.read(sizeData, 4);
+                int size = TD::DataConv::getInt(sizeData);
+                std::vector<long> ptr;
+                for (int i = 0; i < size; i++) {
+                    char byt[8];
+                    file.read(byt, 8);
+                    ptr.push_back(TD::DataConv::getLong(byt));
+                }
+                this->payload = ptr;
             }
-            this->payload = ptr;
-        }
     };
 
-    static shared_ptr<NBT_TAG> getCompound();
+    static std::shared_ptr<NBT_TAG> getCompound();
 
     class TAG_LIST : public NBT_TAG {
-    private:
-        std::vector<std::shared_ptr<NBT_TAG>> payload;
-        unsigned char lType = 0;
-    public:
-        TAG_LIST(): NBT_TAG(ID_TAG_LIST){}
-        explicit TAG_LIST(const std::string& name): NBT_TAG(name, ID_TAG_LIST){}
-        TAG_LIST(const std::string& name, std::vector<std::shared_ptr<NBT_TAG>> payload) : NBT_TAG(name, ID_TAG_LIST) { this->payload = payload;}
+        private:
+            std::vector<std::shared_ptr<NBT_TAG>> payload;
+            unsigned char lType = 0;
+        public:
+            TAG_LIST() : NBT_TAG(ID_TAG_LIST) {}
 
-        inline std::vector<std::shared_ptr<NBT_TAG>>& getPayload(){return payload;}
-        inline void put(NBT_TAG* tag) {
-            std::shared_ptr<NBT_TAG> taggers = std::shared_ptr<NBT_TAG>(tag);
-            payload.push_back(taggers);
-            this->lType = taggers->getType();
-        }
+            explicit TAG_LIST(const std::string &name) : NBT_TAG(name, ID_TAG_LIST) {}
 
-        inline virtual void writePayload(std::ofstream &file) {
-            if (payload.empty()) {
-                file << ID_TAG_END;
-                file << (int) 0;
-                return;
-            }
-            file << lType;
-            char data[4];
-            TD::DataConv::getInt((int)payload.size(), data);
-            file.write(data, 4);
-            for (auto& i : payload)
-                i->writePayload(file);
-        }
-        inline virtual void readPayload(std::ifstream &file) {
-            char sid;
-            file.read(&sid, 1);
-            lType = (unsigned char) sid;
+            TAG_LIST(const std::string &name, std::vector<std::shared_ptr<NBT_TAG>> payload) : NBT_TAG(name,
+                                                                                                       ID_TAG_LIST) { this->payload = payload; }
 
-            char sizeData[4];
-            file.read(sizeData, 4);
-            int size = TD::DataConv::getInt(sizeData);
-            for (int i = 0; i < size; i++){
-                std::shared_ptr<NBT_TAG> taggers;
-                switch (lType){
-                    case ID_TAG_BYTE: {
-                        taggers = std::shared_ptr<NBT_TAG>(new TAG_BYTE());
-                        break;
-                    }
-                    case ID_TAG_SHORT: {
-                        taggers = std::shared_ptr<NBT_TAG>(new TAG_SHORT());
-                        break;
-                    }
-                    case ID_TAG_INT: {
-                        taggers = std::shared_ptr<NBT_TAG>(new TAG_INT());
-                        break;
-                    }
-                    case ID_TAG_LONG: {
-                        taggers = std::shared_ptr<NBT_TAG>(new TAG_LONG());
-                        break;
-                    }
-                    case ID_TAG_FLOAT: {
-                        taggers = std::shared_ptr<NBT_TAG>(new TAG_FLOAT);
-                        break;
-                    }
-                    case ID_TAG_DOUBLE: {
-                        taggers = std::shared_ptr<NBT_TAG>(new TAG_DOUBLE());
-                        break;
-                    }
-                    case ID_TAG_BYTE_ARRAY: {
-                        taggers = std::shared_ptr<NBT_TAG>(new TAG_BYTE_ARRAY());
-                        break;
-                    }
-                    case ID_TAG_STRING: {
-                        taggers = std::shared_ptr<NBT_TAG>(new TAG_STRING());
-                        break;
-                    }
-                    case ID_TAG_LIST: {
-                        taggers = std::shared_ptr<NBT_TAG>(new TAG_LIST());
-                        break;
-                    }
-                    case ID_TAG_COMPOUND: {
-                        taggers = getCompound();
-                        break;
-                    }
-                    case ID_TAG_INT_ARRAY: {
-                        taggers = std::shared_ptr<NBT_TAG>(new TAG_INT_ARRAY());
-                        break;
-                    }
-                    case ID_TAG_LONG_ARRAY: {
-                        taggers = std::shared_ptr<NBT_TAG>(new TAG_LONG_ARRAY());
-                        break;
-                    }
-                    default: {
-                        return;
-                    }
-                }
-                taggers->readPayload(file);
+            inline std::vector<std::shared_ptr<NBT_TAG>> &getPayload() { return payload; }
+
+            inline void put(NBT_TAG *tag) {
+                std::shared_ptr<NBT_TAG> taggers = std::shared_ptr<NBT_TAG>(tag);
                 payload.push_back(taggers);
+                this->lType = taggers->getType();
             }
-        }
+
+            inline virtual void writePayload(std::ofstream &file) {
+                if (payload.empty()) {
+                    file << ID_TAG_END;
+                    file << (int) 0;
+                    return;
+                }
+                file << lType;
+                char data[4];
+                TD::DataConv::getInt((int) payload.size(), data);
+                file.write(data, 4);
+                for (auto &i: payload)
+                    i->writePayload(file);
+            }
+
+            inline virtual void readPayload(std::ifstream &file) {
+                char sid;
+                file.read(&sid, 1);
+                lType = (unsigned char) sid;
+
+                char sizeData[4];
+                file.read(sizeData, 4);
+                int size = TD::DataConv::getInt(sizeData);
+                for (int i = 0; i < size; i++) {
+                    std::shared_ptr<NBT_TAG> taggers;
+                    switch (lType) {
+                        case ID_TAG_BYTE: {
+                            taggers = std::shared_ptr<NBT_TAG>(new TAG_BYTE());
+                            break;
+                        }
+                        case ID_TAG_SHORT: {
+                            taggers = std::shared_ptr<NBT_TAG>(new TAG_SHORT());
+                            break;
+                        }
+                        case ID_TAG_INT: {
+                            taggers = std::shared_ptr<NBT_TAG>(new TAG_INT());
+                            break;
+                        }
+                        case ID_TAG_LONG: {
+                            taggers = std::shared_ptr<NBT_TAG>(new TAG_LONG());
+                            break;
+                        }
+                        case ID_TAG_FLOAT: {
+                            taggers = std::shared_ptr<NBT_TAG>(new TAG_FLOAT);
+                            break;
+                        }
+                        case ID_TAG_DOUBLE: {
+                            taggers = std::shared_ptr<NBT_TAG>(new TAG_DOUBLE());
+                            break;
+                        }
+                        case ID_TAG_BYTE_ARRAY: {
+                            taggers = std::shared_ptr<NBT_TAG>(new TAG_BYTE_ARRAY());
+                            break;
+                        }
+                        case ID_TAG_STRING: {
+                            taggers = std::shared_ptr<NBT_TAG>(new TAG_STRING());
+                            break;
+                        }
+                        case ID_TAG_LIST: {
+                            taggers = std::shared_ptr<NBT_TAG>(new TAG_LIST());
+                            break;
+                        }
+                        case ID_TAG_COMPOUND: {
+                            taggers = getCompound();
+                            break;
+                        }
+                        case ID_TAG_INT_ARRAY: {
+                            taggers = std::shared_ptr<NBT_TAG>(new TAG_INT_ARRAY());
+                            break;
+                        }
+                        case ID_TAG_LONG_ARRAY: {
+                            taggers = std::shared_ptr<NBT_TAG>(new TAG_LONG_ARRAY());
+                            break;
+                        }
+                        default: {
+                            return;
+                        }
+                    }
+                    taggers->readPayload(file);
+                    payload.push_back(taggers);
+                }
+            }
     };
 
     class TAG_COMPOUND : public NBT_TAG {
-    private:
-        std::vector<std::shared_ptr<NBT_TAG>> tags;
-        parallel_flat_hash_map<std::string, std::shared_ptr<NBT_TAG>> tagMap;
-    public:
-        TAG_COMPOUND(): NBT_TAG(ID_TAG_COMPOUND){}
-        TAG_COMPOUND(const std::string& name): NBT_TAG(name, ID_TAG_COMPOUND){}
-        TAG_COMPOUND(const std::string& name, std::vector<std::shared_ptr<NBT_TAG>> payload) : NBT_TAG(name, ID_TAG_COMPOUND) {
-            this->tags = payload;
-            for (const std::shared_ptr<NBT_TAG>& t : payload)
-                tagMap.insert(std::pair(t->getName(), t));
-        }
+        private:
+            std::vector<std::shared_ptr<NBT_TAG>> tags;
+            parallel_flat_hash_map<std::string, std::shared_ptr<NBT_TAG>> tagMap;
+        public:
+            TAG_COMPOUND() : NBT_TAG(ID_TAG_COMPOUND) {}
 
-        inline std::vector<std::shared_ptr<NBT_TAG>> getPayload(){return tags;}
-        inline void put(NBT_TAG* tag){
-            std::shared_ptr<NBT_TAG> taggers = std::shared_ptr<NBT_TAG>(tag);
-            tags.push_back(taggers);
-            tagMap[tag->getName()] = taggers;
-        }
-        inline void put(const std::shared_ptr<NBT_TAG>& tag){tags.push_back(tag); tagMap[tag->getName()] = tag;}
-        template<class T>
-        inline T* get(const std::string& tag){
-            return static_cast<T*>(tagMap[tag].get());
-        }
-        inline bool hasTag(const std::string& tag){
-            return tagMap.find(tag) != tagMap.end();
-        }
+            TAG_COMPOUND(const std::string &name) : NBT_TAG(name, ID_TAG_COMPOUND) {}
 
-        inline virtual void writePayload(std::ofstream &file) {
-            for (int i = 0; i < tags.size(); i++) {
-                tags[i]->writeType(file);
-                tags[i]->writeName(file);
-                tags[i]->writePayload(file);
+            TAG_COMPOUND(const std::string &name, std::vector<std::shared_ptr<NBT_TAG>> payload) : NBT_TAG(name,
+                                                                                                           ID_TAG_COMPOUND) {
+                this->tags = payload;
+                for (const std::shared_ptr<NBT_TAG> &t: payload)
+                    tagMap.insert(std::pair(t->getName(), t));
             }
-            file << ID_TAG_END;
-        }
-        inline virtual void readPayload(std::ifstream &file) {
-            unsigned char id;
-            do {
-                char sid;
-                file.read(&sid, 1);
-                //if (file.eof() || file.fail()) {
-                //    break;
-                //}
-                id = (unsigned char) sid;
-                std::shared_ptr<NBT_TAG> taggers;
-                switch (id){
-                    case ID_TAG_BYTE: {
-                        taggers = std::shared_ptr<NBT_TAG>(new TAG_BYTE());
-                        break;
-                    }
-                    case ID_TAG_SHORT: {
-                        taggers = std::shared_ptr<NBT_TAG>(new TAG_SHORT());
-                        break;
-                    }
-                    case ID_TAG_INT: {
-                        taggers = std::shared_ptr<NBT_TAG>(new TAG_INT());
-                        break;
-                    }
-                    case ID_TAG_LONG: {
-                        taggers = std::shared_ptr<NBT_TAG>(new TAG_LONG());
-                        break;
-                    }
-                    case ID_TAG_FLOAT: {
-                        taggers = std::shared_ptr<NBT_TAG>(new TAG_FLOAT);
-                        break;
-                    }
-                    case ID_TAG_DOUBLE: {
-                        taggers = std::shared_ptr<NBT_TAG>(new TAG_DOUBLE());
-                        break;
-                    }
-                    case ID_TAG_BYTE_ARRAY: {
-                        taggers = std::shared_ptr<NBT_TAG>(new TAG_BYTE_ARRAY());
-                        break;
-                    }
-                    case ID_TAG_STRING: {
-                        taggers = std::shared_ptr<NBT_TAG>(new TAG_STRING());
-                        break;
-                    }
-                    case ID_TAG_LIST: {
-                        taggers = std::shared_ptr<NBT_TAG>(new TAG_LIST());
-                        break;
-                    }
-                    case ID_TAG_COMPOUND: {
-                        taggers = std::shared_ptr<NBT_TAG>(new TAG_COMPOUND());
-                        break;
-                    }
-                    case ID_TAG_INT_ARRAY: {
-                        taggers = std::shared_ptr<NBT_TAG>(new TAG_INT_ARRAY());
-                        break;
-                    }
-                    case ID_TAG_LONG_ARRAY: {
-                        taggers = std::shared_ptr<NBT_TAG>(new TAG_LONG_ARRAY());
-                        break;
-                    }
-                    default: {
-                        return;
-                    }
-                }
-                taggers->readName(file);
-                taggers->readPayload(file);
+
+            inline std::vector<std::shared_ptr<NBT_TAG>> getPayload() { return tags; }
+
+            inline void put(NBT_TAG *tag) {
+                std::shared_ptr<NBT_TAG> taggers = std::shared_ptr<NBT_TAG>(tag);
                 tags.push_back(taggers);
-                tagMap.insert(std::pair(taggers->getName(), taggers));
-            } while (id != ID_TAG_END);
-        }
+                tagMap[tag->getName()] = taggers;
+            }
+
+            inline void put(const std::shared_ptr<NBT_TAG> &tag) {
+                tags.push_back(tag);
+                tagMap[tag->getName()] = tag;
+            }
+
+            template<class T>
+            inline T *get(const std::string &tag) {
+                return static_cast<T *>(tagMap[tag].get());
+            }
+
+            inline bool hasTag(const std::string &tag) {
+                return tagMap.find(tag) != tagMap.end();
+            }
+
+            inline virtual void writePayload(std::ofstream &file) {
+                for (int i = 0; i < tags.size(); i++) {
+                    tags[i]->writeType(file);
+                    tags[i]->writeName(file);
+                    tags[i]->writePayload(file);
+                }
+                file << ID_TAG_END;
+            }
+
+            inline virtual void readPayload(std::ifstream &file) {
+                unsigned char id;
+                do {
+                    char sid;
+                    file.read(&sid, 1);
+                    //if (file.eof() || file.fail()) {
+                    //    break;
+                    //}
+                    id = (unsigned char) sid;
+                    std::shared_ptr<NBT_TAG> taggers;
+                    switch (id) {
+                        case ID_TAG_BYTE: {
+                            taggers = std::shared_ptr<NBT_TAG>(new TAG_BYTE());
+                            break;
+                        }
+                        case ID_TAG_SHORT: {
+                            taggers = std::shared_ptr<NBT_TAG>(new TAG_SHORT());
+                            break;
+                        }
+                        case ID_TAG_INT: {
+                            taggers = std::shared_ptr<NBT_TAG>(new TAG_INT());
+                            break;
+                        }
+                        case ID_TAG_LONG: {
+                            taggers = std::shared_ptr<NBT_TAG>(new TAG_LONG());
+                            break;
+                        }
+                        case ID_TAG_FLOAT: {
+                            taggers = std::shared_ptr<NBT_TAG>(new TAG_FLOAT);
+                            break;
+                        }
+                        case ID_TAG_DOUBLE: {
+                            taggers = std::shared_ptr<NBT_TAG>(new TAG_DOUBLE());
+                            break;
+                        }
+                        case ID_TAG_BYTE_ARRAY: {
+                            taggers = std::shared_ptr<NBT_TAG>(new TAG_BYTE_ARRAY());
+                            break;
+                        }
+                        case ID_TAG_STRING: {
+                            taggers = std::shared_ptr<NBT_TAG>(new TAG_STRING());
+                            break;
+                        }
+                        case ID_TAG_LIST: {
+                            taggers = std::shared_ptr<NBT_TAG>(new TAG_LIST());
+                            break;
+                        }
+                        case ID_TAG_COMPOUND: {
+                            taggers = std::shared_ptr<NBT_TAG>(new TAG_COMPOUND());
+                            break;
+                        }
+                        case ID_TAG_INT_ARRAY: {
+                            taggers = std::shared_ptr<NBT_TAG>(new TAG_INT_ARRAY());
+                            break;
+                        }
+                        case ID_TAG_LONG_ARRAY: {
+                            taggers = std::shared_ptr<NBT_TAG>(new TAG_LONG_ARRAY());
+                            break;
+                        }
+                        default: {
+                            return;
+                        }
+                    }
+                    taggers->readName(file);
+                    taggers->readPayload(file);
+                    tags.push_back(taggers);
+                    tagMap.insert(std::pair(taggers->getName(), taggers));
+                } while (id != ID_TAG_END);
+            }
     };
 
-    static shared_ptr<NBT_TAG> getCompound(){
+    static std::shared_ptr<NBT_TAG> getCompound() {
         return std::shared_ptr<NBT_TAG>(new TAG_COMPOUND());
     }
 
     class NBTRecursiveReader {
-    public:
-        static TAG_COMPOUND read(std::string path){
-            const unsigned int length = 128*1024;
-            char buffer[length];
-            std::ifstream file;
-            file.rdbuf()->pubsetbuf(buffer, length);
-            file.open(path, std::ios::binary);
+        public:
+            static TAG_COMPOUND read(std::string path) {
+                const unsigned int length = 128 * 1024;
+                char buffer[length];
+                std::ifstream file;
+                file.rdbuf()->pubsetbuf(buffer, length);
+                file.open(path, std::ios::binary);
 
-            TAG_COMPOUND root;
-            char type;
-            file.read(&type, 1);
-            if (type != ID_TAG_COMPOUND) {
-                flog << "File started with " << root.getType();
-                flog << "Now, im sure you know the rules, but files must start with TAG_COMPOUND!";
-                throw runtime_error("Error! File does not start with TAG_COMPOUND!");
+                TAG_COMPOUND root;
+                char type;
+                file.read(&type, 1);
+                if (type != ID_TAG_COMPOUND) {
+                    flog << "File started with " << root.getType();
+                    flog << "Now, im sure you know the rules, but files must start with TAG_COMPOUND!";
+                    throw std::runtime_error("Error! File does not start with TAG_COMPOUND!");
+                }
+                root.readName(file);
+                root.readPayload(file);
+
+                file.close();
+
+                return root;
             }
-            root.readName(file);
-            root.readPayload(file);
-
-            file.close();
-
-            return root;
-        }
     };
 
     class NBTWriter {
-    private:
-    public:
-        static void write(TAG_COMPOUND& compound, const std::string& path){
-            const unsigned int length = 256*1024;
-            char buffer[length];
-            std::ofstream file;
-            file.rdbuf()->pubsetbuf(buffer, length);
-            file.open(path, std::ios::binary);
+        private:
+        public:
+            static void write(TAG_COMPOUND &compound, const std::string &path, bool useGZIP) {
+                const unsigned int length = 256 * 1024;
+                char buffer[length];
+                std::ofstream file;
+                file.rdbuf()->pubsetbuf(buffer, length);
+                file.open(path, std::ios::binary);
 
-            compound.writeType(file);
-            compound.writeName(file);
-            compound.writePayload(file);
+                compound.writeType(file);
+                compound.writeName(file);
+                compound.writePayload(file);
 
-            file.close();
-        }
+                file.close();
+            }
+
+            static void write(TAG_COMPOUND &compound, const std::string &path) {
+                write(compound, path, true);
+            }
+
     };
 
-    class NBTWriterThreaded{
-    private:
-        std::thread* thread;
-    public:
-        NBTWriterThreaded(TAG_COMPOUND& compound, const std::string& path){
-            thread = new std::thread([&]() -> void {
-                NBTWriter::write(compound, path);
-            });
-        }
-        // TODO: rule of 3 / 5
-        ~NBTWriterThreaded(){
-            thread->join();
-            delete(thread);
-        }
+    class NBTWriterThreaded {
+        private:
+            std::thread *thread;
+        public:
+            NBTWriterThreaded(TAG_COMPOUND &compound, const std::string &path) {
+                thread = new std::thread([&]() -> void {
+                    NBTWriter::write(compound, path);
+                });
+            }
+
+            // TODO: rule of 3 / 5
+            ~NBTWriterThreaded() {
+                thread->join();
+                delete (thread);
+            }
     };
 
 
