@@ -39,3 +39,7 @@ void TD::SQLTransaction::insertComponent(const TD::dPtr<TD::Component>& c) {
 void TD::SQLTransaction::insertOrUpdateComponent() {
 
 }
+
+void TD::SQLTransaction::insert(std::string str) {
+
+}

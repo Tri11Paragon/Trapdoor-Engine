@@ -43,6 +43,7 @@ namespace TD {
             void insertComponent(const dPtr<Component>& c);
             void insertOrUpdateComponent();
 
+            void insert(std::string str);
             std::string get(){strStream << "COMMIT;"; return strStream.str();}
     };
 
