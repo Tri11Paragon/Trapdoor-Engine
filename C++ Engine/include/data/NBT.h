@@ -127,7 +127,7 @@ namespace TD {
 
             [[nodiscard]] inline unsigned char getType() const { return type; }
 
-            void writeName(std::ofstream &file) {
+            void writeName(std::ostream &file) {
                 char data[2];
                 TD::DataConv::getShort((short) name.size(), data);
                 file.write(data, 2);
@@ -135,15 +135,15 @@ namespace TD {
                     file << this->name[i];
             }
 
-            void writeType(std::ofstream &file) const {
+            void writeType(std::ostream &file) const {
                 file << type;
             }
 
-            inline virtual void writePayload(std::ofstream &file) = 0;
+            inline virtual void writePayload(std::ostream &file) = 0;
 
-            inline virtual void readPayload(std::ifstream &file) = 0;
+            inline virtual void readPayload(std::istream &file) = 0;
 
-            void readName(std::ifstream &file) {
+            void readName(std::istream &file) {
                 char sizeArr[2];
                 file.read(sizeArr, 2);
                 short size = TD::DataConv::getShort(sizeArr);
@@ -159,7 +159,7 @@ namespace TD {
 #endif
             }
 
-            void readType(std::ifstream &file) {
+            void readType(std::istream &file) {
                 char typeT;
                 file.read(&typeT, 1);
                 this->type = (unsigned char) typeT;
@@ -183,9 +183,9 @@ namespace TD {
             inline signed char getPayload() { return payload; }
 
             // this should be fine as file.write / file.read writes signed chars
-            inline virtual void writePayload(std::ofstream &file) { file << payload; }
+            inline virtual void writePayload(std::ostream &file) { file << payload; }
 
-            inline virtual void readPayload(std::ifstream &file) { file >> payload; }
+            inline virtual void readPayload(std::istream &file) { file >> payload; }
     };
 
     class TAG_SHORT : public NBT_TAG {
@@ -201,13 +201,13 @@ namespace TD {
 
             inline signed short getPayload() { return payload; }
 
-            inline virtual void writePayload(std::ofstream &file) {
+            inline virtual void writePayload(std::ostream &file) {
                 char data[2];
                 TD::DataConv::getShort(payload, data);
                 file.write(data, 2);
             }
 
-            inline virtual void readPayload(std::ifstream &file) {
+            inline virtual void readPayload(std::istream &file) {
                 char data[2];
                 file.read(data, 2);
                 payload = TD::DataConv::getShort(data);
@@ -227,13 +227,13 @@ namespace TD {
 
             inline signed int getPayload() { return payload; }
 
-            inline virtual void writePayload(std::ofstream &file) {
+            inline virtual void writePayload(std::ostream &file) {
                 char data[4];
                 TD::DataConv::getInt(payload, data);
                 file.write(data, 4);
             }
 
-            inline virtual void readPayload(std::ifstream &file) {
+            inline virtual void readPayload(std::istream &file) {
                 char data[4];
                 file.read(data, 4);
                 payload = TD::DataConv::getInt(data);
@@ -253,13 +253,13 @@ namespace TD {
 
             inline long getPayload() { return payload; }
 
-            inline virtual void writePayload(std::ofstream &file) {
+            inline virtual void writePayload(std::ostream &file) {
                 char data[8];
                 TD::DataConv::getLong(payload, data);
                 file.write(data, 8);
             }
 
-            inline virtual void readPayload(std::ifstream &file) {
+            inline virtual void readPayload(std::istream &file) {
                 char data[8];
                 file.read(data, 8);
                 payload = TD::DataConv::getLong(data);
@@ -279,13 +279,13 @@ namespace TD {
 
             inline float getPayload() { return payload; }
 
-            inline virtual void writePayload(std::ofstream &file) {
+            inline virtual void writePayload(std::ostream &file) {
                 char data[4];
                 TD::DataConv::getFloat(payload, data);
                 file.write(data, 4);
             }
 
-            inline virtual void readPayload(std::ifstream &file) {
+            inline virtual void readPayload(std::istream &file) {
                 char data[4];
                 file.read(data, 4);
                 this->payload = TD::DataConv::getFloat(data);
@@ -305,13 +305,13 @@ namespace TD {
 
             inline double getPayload() { return payload; }
 
-            inline virtual void writePayload(std::ofstream &file) {
+            inline virtual void writePayload(std::ostream &file) {
                 char data[8];
                 TD::DataConv::getDouble(payload, data);
                 file.write(data, 8);
             }
 
-            inline virtual void readPayload(std::ifstream &file) {
+            inline virtual void readPayload(std::istream &file) {
                 char data[8];
                 file.read(data, 8);
                 this->payload = TD::DataConv::getDouble(data);
@@ -331,7 +331,7 @@ namespace TD {
 
             inline std::string getPayload() { return payload; }
 
-            inline virtual void writePayload(std::ofstream &file) {
+            inline virtual void writePayload(std::ostream &file) {
                 char bytes[2];
                 TD::DataConv::getShort(this->payload.size(), bytes);
                 file.write(bytes, 2);
@@ -339,7 +339,7 @@ namespace TD {
                     file << this->payload[i];
             }
 
-            inline virtual void readPayload(std::ifstream &file) {
+            inline virtual void readPayload(std::istream &file) {
                 short size = 0;
                 char sizeArr[2];
                 file.read(sizeArr, 2);
@@ -370,7 +370,7 @@ namespace TD {
 
             inline std::vector<signed char> &getPayload() { return payload; }
 
-            inline virtual void writePayload(std::ofstream &file) {
+            inline virtual void writePayload(std::ostream &file) {
                 char data[4];
                 TD::DataConv::getInt(payload.size(), data);
                 file.write(data, 4);
@@ -379,7 +379,7 @@ namespace TD {
                 }
             }
 
-            inline virtual void readPayload(std::ifstream &file) {
+            inline virtual void readPayload(std::istream &file) {
                 char sizeData[4];
                 file.read(sizeData, 4);
                 int size = TD::DataConv::getInt(sizeData);
@@ -406,7 +406,7 @@ namespace TD {
 
             inline std::vector<int> &getPayload() { return payload; }
 
-            inline virtual void writePayload(std::ofstream &file) {
+            inline virtual void writePayload(std::ostream &file) {
                 char data[4];
                 TD::DataConv::getInt(payload.size(), data);
                 file.write(data, 4);
@@ -417,7 +417,7 @@ namespace TD {
                 }
             }
 
-            inline virtual void readPayload(std::ifstream &file) {
+            inline virtual void readPayload(std::istream &file) {
                 char sizeData[4];
                 file.read(sizeData, 4);
                 int size = TD::DataConv::getInt(sizeData);
@@ -444,7 +444,7 @@ namespace TD {
 
             inline std::vector<long> &getPayload() { return payload; }
 
-            inline virtual void writePayload(std::ofstream &file) {
+            inline virtual void writePayload(std::ostream &file) {
                 char data[4];
                 TD::DataConv::getInt(payload.size(), data);
                 file.write(data, 4);
@@ -455,7 +455,7 @@ namespace TD {
                 }
             }
 
-            inline virtual void readPayload(std::ifstream &file) {
+            inline virtual void readPayload(std::istream &file) {
                 char sizeData[4];
                 file.read(sizeData, 4);
                 int size = TD::DataConv::getInt(sizeData);
@@ -491,7 +491,7 @@ namespace TD {
                 this->lType = taggers->getType();
             }
 
-            inline virtual void writePayload(std::ofstream &file) {
+            inline virtual void writePayload(std::ostream &file) {
                 if (payload.empty()) {
                     file << ID_TAG_END;
                     file << (int) 0;
@@ -505,7 +505,7 @@ namespace TD {
                     i->writePayload(file);
             }
 
-            inline virtual void readPayload(std::ifstream &file) {
+            inline virtual void readPayload(std::istream &file) {
                 char sid;
                 file.read(&sid, 1);
                 lType = (unsigned char) sid;
@@ -612,7 +612,7 @@ namespace TD {
                 return tagMap.find(tag) != tagMap.end();
             }
 
-            inline virtual void writePayload(std::ofstream &file) {
+            inline virtual void writePayload(std::ostream &file) {
                 for (int i = 0; i < tags.size(); i++) {
                     tags[i]->writeType(file);
                     tags[i]->writeName(file);
@@ -621,7 +621,7 @@ namespace TD {
                 file << ID_TAG_END;
             }
 
-            inline virtual void readPayload(std::ifstream &file) {
+            inline virtual void readPayload(std::istream &file) {
                 unsigned char id;
                 do {
                     char sid;
@@ -698,7 +698,7 @@ namespace TD {
 
     class NBTRecursiveReader {
         public:
-            static TAG_COMPOUND read(std::string path) {
+            static TAG_COMPOUND read(std::string path, bool useGZip) {
                 const unsigned int length = 128 * 1024;
                 char buffer[length];
                 std::ifstream file;
@@ -706,19 +706,42 @@ namespace TD {
                 file.open(path, std::ios::binary);
 
                 TAG_COMPOUND root;
-                char type;
-                file.read(&type, 1);
-                if (type != ID_TAG_COMPOUND) {
-                    flog << "File started with " << root.getType();
-                    flog << "Now, im sure you know the rules, but files must start with TAG_COMPOUND!";
-                    throw std::runtime_error("Error! File does not start with TAG_COMPOUND!");
+                if (useGZip){
+                    boost::iostreams::filtering_streambuf<boost::iostreams::input> inbuf;
+                    inbuf.push(boost::iostreams::gzip_decompressor());
+                    inbuf.push(file);
+
+                    std::istream in(&inbuf);
+
+                    char type;
+                    in.read(&type, 1);
+                    if (type != ID_TAG_COMPOUND) {
+                        flog << "File started with " << root.getType();
+                        flog << "Now, im sure you know the rules, but files must start with TAG_COMPOUND!";
+                        throw std::runtime_error("Error! File does not start with TAG_COMPOUND!");
+                    }
+                    root.readName(in);
+                    root.readPayload(in);
+
+                    boost::iostreams::close(inbuff);
+                } else {
+                    char type;
+                    file.read(&type, 1);
+                    if (type != ID_TAG_COMPOUND) {
+                        flog << "File started with " << root.getType();
+                        flog << "Now, im sure you know the rules, but files must start with TAG_COMPOUND!";
+                        throw std::runtime_error("Error! File does not start with TAG_COMPOUND!");
+                    }
+                    root.readName(file);
+                    root.readPayload(file);
                 }
-                root.readName(file);
-                root.readPayload(file);
 
                 file.close();
 
                 return root;
+            }
+            static TAG_COMPOUND read(std::string path) {
+                return read(path, true);
             }
     };
 
@@ -728,13 +751,24 @@ namespace TD {
             static void write(TAG_COMPOUND &compound, const std::string &path, bool useGZIP) {
                 const unsigned int length = 256 * 1024;
                 char buffer[length];
-                std::ofstream file;
+                std::ofstream file(path, std::ios::out | std::ios::binary);
                 file.rdbuf()->pubsetbuf(buffer, length);
-                file.open(path, std::ios::binary);
+                if (useGZIP) {
+                    boost::iostreams::filtering_streambuf<boost::iostreams::output> outbuf;
+                    outbuf.push(boost::iostreams::gzip_compressor());
+                    outbuf.push(file);
 
-                compound.writeType(file);
-                compound.writeName(file);
-                compound.writePayload(file);
+                    std::ostream out(&outbuf);
+                    compound.writeType(out);
+                    compound.writeName(out);
+                    compound.writePayload(out);
+
+                    boost::iostreams::close(outbuf);
+                } else {
+                    compound.writeType(file);
+                    compound.writeName(file);
+                    compound.writePayload(file);
+                }
 
                 file.close();
             }
