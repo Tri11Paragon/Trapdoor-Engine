@@ -35,15 +35,19 @@ namespace TD {
     class SQLTransaction {
         private:
             std::stringstream strStream;
+            bool firstE = true;
+            bool firstC = true;
+            void createEntityTable();
+            void createComponentTable();
         public:
             SQLTransaction() { strStream << "BEGIN TRANSACTION;"; }
 
             void insertEntity(const dPtr<Entity>& e);
             void insertOrUpdateEntity(const dPtr<Entity>& e);
             void insertComponent(const dPtr<Component>& c);
-            void insertOrUpdateComponent();
+            void insertOrUpdateComponent(const TD::dPtr<TD::Component>& c);
 
-            void insert(std::string str);
+            void insert(const std::string& str);
             std::string get(){strStream << "COMMIT;"; return strStream.str();}
     };
 

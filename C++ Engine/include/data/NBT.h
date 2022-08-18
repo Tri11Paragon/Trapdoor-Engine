@@ -139,11 +139,16 @@ namespace TD {
             char sizeArr[2];
             file.read(sizeArr, 2);
             short size = TD::DataConv::getShort(sizeArr);
-            // TODO: GCC this but keep for MSVC
+#if defined(__GNUC__) || defined(__GNUG__)
+            char str[size];
+#else
             char* str = new char[size];
+#endif
             file.read(str, size);
             this->name = std::string(str, size);
+#if !(defined(__GNUC__) || defined(__GNUG__))
             delete[](str);
+#endif
         }
 
         void readType(std::ifstream &file) {
@@ -295,10 +300,16 @@ namespace TD {
             char sizeArr[2];
             file.read(sizeArr, 2);
             size = TD::DataConv::getShort(sizeArr);
-            char* str = new char[size];
+#if defined(__GNUC__) || defined(__GNUG__)
+            char str[size];
+#else
+            char* str =  [size];
+#endif
             file.read(str, size);
             this->payload = std::string(str, size);
+#if !(defined(__GNUC__) || defined(__GNUG__))
             delete[](str);
+#endif
         }
     };
 

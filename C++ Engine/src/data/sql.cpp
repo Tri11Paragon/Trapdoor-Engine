@@ -25,21 +25,39 @@
 #include "data/sql.h"
 
 void TD::SQLTransaction::insertEntity(const TD::dPtr<TD::Entity>& e) {
-
+    if (!firstE)
+        createEntityTable();
+    flog << "Not implemented";
 }
 
 void TD::SQLTransaction::insertOrUpdateEntity(const TD::dPtr<TD::Entity>& e) {
-
+    if (!firstE)
+        createEntityTable();
+    flog << "Not implemented";
 }
 
 void TD::SQLTransaction::insertComponent(const TD::dPtr<TD::Component>& c) {
-
+    if (!firstC)
+        createComponentTable();
+    flog << "Not implemented";
 }
 
-void TD::SQLTransaction::insertOrUpdateComponent() {
-
+void TD::SQLTransaction::insertOrUpdateComponent(const TD::dPtr<TD::Component>& c) {
+    if (!firstC)
+        createComponentTable();
+    flog << "Not implemented";
 }
 
-void TD::SQLTransaction::insert(std::string str) {
+void TD::SQLTransaction::insert(const std::string& str) {
+    strStream << str;
+}
 
+void TD::SQLTransaction::createEntityTable() {
+    insert("CREATE TABLE IF NOT EXISTS entities (name MEDIUMTEXT PRIMARY KEY);");
+    firstE = false;
+}
+
+void TD::SQLTransaction::createComponentTable() {
+    insert("CREATE TABLE IF NOT EXISTS components (entityName MEDIUMTEXT PRIMARY KEY, componentName MEDIUMTEXT, componentTable MEDIUMTEXT);")
+    firstC = false;
 }
