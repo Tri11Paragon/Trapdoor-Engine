@@ -458,6 +458,7 @@ namespace TD {
     }
 
     Display::Display(const std::string& name) {
+        this->name = name;
         displays.insert(std::pair(name, this));
     }
 

@@ -9,7 +9,7 @@
 
 namespace TD {
 
-    TestDisplay::TestDisplay(std::string name) : Display(std::move(name)) {
+    TestDisplay::TestDisplay(const std::string& name) : Display(std::move(name)) {
         TD::DisplayManager::changeActiveCamera(&camera);
         world = new World();
         world->updateLights(lights);
@@ -79,6 +79,7 @@ namespace TD {
         // since this is the root tag, we should name it what it is called in the allocator.
         // otherwise the engine will not be able to load this display!
         auto* root = new TAG_COMPOUND("TestDisplay");
+        root->put(new TAG_STRING("name", this->name));
         if (world != nullptr){
             root->put(world->save());
         }

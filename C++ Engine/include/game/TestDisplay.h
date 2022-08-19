@@ -43,7 +43,7 @@ namespace TD {
         TD::World* world = nullptr;
     public:
         TestDisplay(): Display() {}
-        explicit TestDisplay(std::string name);
+        explicit TestDisplay(const std::string& name);
         virtual TAG_COMPOUND* onSave();
         virtual void onLoad(TAG_COMPOUND* tag);
         virtual void onSwitch();

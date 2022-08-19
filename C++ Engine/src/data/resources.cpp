@@ -13,7 +13,9 @@
 #include "world/World.h"
 #include <discord.h>
 #include <config.h>
+#include <iostream>
 #include <data/NBT.h>
+#include <filesystem>
 using namespace boost::filesystem;
 
 namespace TD {
@@ -148,11 +150,19 @@ namespace TD {
         if (projectHome.empty())
             return false;
         path p(projectHome + "/displays/");
-        if (exists(p)){
-            for (const auto& dir : directory_iterator(p)){
+        if (exists(p) && is_directory(p)){
+            // TODO: remove boost filesystem since std::filesystem contains the functions.
+            for (const auto& dir : std::filesystem::directory_iterator(projectHome + "/displays/")){
                 if (is_regular_file(dir.path())){
                     if (dir.path().extension() == ".display"){
-
+                        try {
+                            TAG_COMPOUND root = NBTRecursiveReader::read(dir.path());
+                            tlog << root.getName();
+                            GameRegistry::getDisplayByID(root.getName())->allocate(
+                                    root.get<TAG_STRING>("name")->getPayload());
+                        } catch (std::exception& e){
+                            flog << e.what();
+                        }
                     }
                 }
             }

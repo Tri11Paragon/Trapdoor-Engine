@@ -62,6 +62,8 @@ namespace TD {
 
     class Display {
     private:
+    protected:
+        std::string name;
     public:
         Display() = default;
         explicit Display(const std::string& name);
