@@ -9,7 +9,6 @@
 #include <logging.h>
 #include <hashmaps.h>
 #include <boost/algorithm/string.hpp>
-#include <data/NBT.h>
 
 #include <utility>
 

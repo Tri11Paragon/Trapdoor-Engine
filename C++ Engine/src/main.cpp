@@ -21,10 +21,11 @@ int main(int, char**){
     loadTimer.start("Load Time");
     init_logging("output");
     TD::Resources::init();
+    TD::GameRegistry::registerDisplayType("TestDisplay", new TD::TestDisplay());
     TD::Project::init();
     ilog << "Running with debugging systems? " << DEBUG_ENABLED_BOOL;
 
-    /*TD::GameRegistry::registerRegistrationCallback([]() -> void* {
+    TD::GameRegistry::registerRegistrationCallback([]() -> void* {
         // Register Models
         TD::GameRegistry::registerModel("taylor_plane", "../assets/models/32x32plane_sided.dae");
         TD::GameRegistry::registerModel("kent", "../assets/models/kent.dae");
@@ -32,13 +33,12 @@ int main(int, char**){
         TD::GameRegistry::registerModel("sponza", "../assets/models/sponzame/sponza.dae");
         // Register Fonts
         return nullptr;
-    });*/
+    });
 
     TD::DisplayManager::init("Trapdoor " + std::to_string(ENGINE_VERSION_MAJOR) + "." + std::to_string(ENGINE_VERSION_MINOR) + "."
             + std::to_string(ENGINE_VERSION_PATCH) + " // C++ Test");
 
     // Standard Defered about 120fps @ 1024 lights (8.5ms)
-    TD::GameRegistry::registerDisplayType("TestDisplay", new TD::TestDisplay());
     // will automatically be cleaned up when the display manager exits
     /*new TD::TestDisplay("TestDisplay");
     TD::DisplayManager::changeDisplay("TestDisplay");*/

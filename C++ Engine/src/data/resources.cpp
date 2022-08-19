@@ -13,6 +13,7 @@
 #include "world/World.h"
 #include <discord.h>
 #include <config.h>
+#include <data/NBT.h>
 using namespace boost::filesystem;
 
 namespace TD {
@@ -134,14 +135,28 @@ namespace TD {
     }
 
     bool Project::saveDisplays() {
-
+        for (auto d : displays){
+            auto* root = d.second->onSave();
+            if (root){
+                TD::NBTWriterThreaded(*root, projectHome + "/displays/" + d.first + ".display");
+            }
+        }
         return true;
     }
 
     bool Project::loadDisplays() {
         if (projectHome.empty())
             return false;
+        path p(projectHome + "/displays/");
+        if (exists(p)){
+            for (const auto& dir : directory_iterator(p)){
+                if (is_regular_file(dir.path())){
+                    if (dir.path().extension() == ".display"){
 
+                    }
+                }
+            }
+        }
         return true;
     }
 
@@ -235,7 +250,7 @@ namespace TD {
 
         if (ImGui::BeginMenu("Display Type")){
             for (const auto& d : displayAllocators) {
-                if (ImGui::MenuItem(d.first.c_str())){
+                if (ImGui::MenuItem(d.first.c_str(), nullptr, displayType == d.first)){
                     displayType = d.first;
                 }
             }
@@ -246,6 +261,7 @@ namespace TD {
             if (!displayName.empty() && !displayType.empty()) {
                 try {
                     GameRegistry::getDisplayByID(displayType)->allocate(displayName);
+                    DisplayManager::changeDisplay(displayName);
                     stayOpen = false;
                     displayType = {};
                 } catch (std::exception& e) {

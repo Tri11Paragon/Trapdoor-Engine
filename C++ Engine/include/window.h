@@ -7,6 +7,7 @@
 #include "std.h"
 #include "renderer/gl.h" // Will drag system OpenGL headers
 #include "font.h"
+#include <data/NBT.h>
 
 using namespace std;
 
@@ -66,8 +67,8 @@ namespace TD {
         explicit Display(const std::string& name);
         virtual ~Display() = default;
         // required functions
-        virtual void onSave() = 0;
-        virtual void onLoad() = 0;
+        virtual TAG_COMPOUND* onSave() = 0;
+        virtual void onLoad(TAG_COMPOUND* tag) = 0;
         virtual void onSwitch() = 0;
         virtual void render() = 0;
         virtual void update() = 0;
@@ -88,8 +89,8 @@ namespace TD {
     public:
         DefaultLoadingScreenDisplay(): Display(){}
         explicit DefaultLoadingScreenDisplay(std::string name);
-        virtual void onSave();
-        virtual void onLoad();
+        virtual TAG_COMPOUND* onSave();
+        virtual void onLoad(TAG_COMPOUND* tag);
         virtual void onSwitch();
         virtual void render();
         virtual void update();

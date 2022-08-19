@@ -40,17 +40,17 @@ namespace TD {
                 TD::Light(glm::vec3(25,height,25),colorRnd.getVec3(),0.07,0.20,65),
                 TD::Light(glm::vec3(-25,height,-25),colorRnd.getVec3(),0.07,0.20,65),
         };
-        TD::World world;
+        TD::World* world = nullptr;
     public:
         TestDisplay(): Display() {}
         explicit TestDisplay(std::string name);
-        virtual void onSave();
-        virtual void onLoad();
+        virtual TAG_COMPOUND* onSave();
+        virtual void onLoad(TAG_COMPOUND* tag);
         virtual void onSwitch();
         virtual void render();
         virtual void update();
         virtual void onLeave();
-        virtual World* getWorld(){return &world;}
+        virtual World* getWorld(){return world;}
         virtual Display* allocate(const std::string& name){
             return new TestDisplay(name);
         }

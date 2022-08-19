@@ -420,7 +420,9 @@ namespace TD {
                     for (const auto& p : displays){
                         if (p.first == activeDisplay)
                             continue;
-                        ImGui::MenuItem(p.first.c_str());
+                        if (ImGui::MenuItem(p.first.c_str())){
+                            DisplayManager::changeDisplay(p.first);
+                        }
                     }
                     ImGui::EndMenu();
                 }

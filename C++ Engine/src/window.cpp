@@ -405,7 +405,6 @@ namespace TD {
             //ImGui::ShowDemoWindow();
 
             if (activeDisplay != "NULL") {
-                flog << "Updating display!";
                 try {
                     Display* ptr = displays.at(activeDisplay);
                     ptr->render();
@@ -459,7 +458,6 @@ namespace TD {
     }
 
     Display::Display(const std::string& name) {
-        flog << "Adding display!!! " << name;
         displays.insert(std::pair(name, this));
     }
 
@@ -558,7 +556,7 @@ namespace TD {
         loadLocked.unlock();
     }
 
-    void DefaultLoadingScreenDisplay::onSave() {}
+    TAG_COMPOUND* DefaultLoadingScreenDisplay::onSave() { return nullptr; }
 
-    void DefaultLoadingScreenDisplay::onLoad() {}
+    void DefaultLoadingScreenDisplay::onLoad(TAG_COMPOUND* tag) {}
 }

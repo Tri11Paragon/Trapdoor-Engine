@@ -15,6 +15,7 @@
 #include "../hashmaps.h"
 #include "GameRegistry.h"
 #include "../imgui/imgui.h"
+#include <data/NBT.h>
 
 namespace TD {
 
@@ -45,6 +46,8 @@ namespace TD {
         virtual void drawImGuiVariables() = 0;
         virtual Component* allocateDefault() = 0;
         virtual Component* allocateData() = 0;
+        virtual TAG_COMPOUND* save() = 0;
+        virtual void load(TAG_COMPOUND* tag) = 0;
         void setAssociatedEntity(ID id) {this->associatedEntity = id;}
         [[nodiscard]] ID getAssociatedEntity() const {return associatedEntity;}
         [[nodiscard]] std::vector<std::string> getAssociatedSystems(){return associatedSystems;}
@@ -79,6 +82,36 @@ namespace TD {
         }
         virtual Component* allocateData() {
             return new TransformComponent();
+        }
+        virtual TAG_COMPOUND* save(){
+            auto* compound = new TAG_COMPOUND(this->getName());
+
+            compound->put(new TAG_FLOAT("tx", translate.x));
+            compound->put(new TAG_FLOAT("ty", translate.y));
+            compound->put(new TAG_FLOAT("tz", translate.z));
+
+            compound->put(new TAG_FLOAT("rx", rotation.x));
+            compound->put(new TAG_FLOAT("ry", rotation.y));
+            compound->put(new TAG_FLOAT("rz", rotation.z));
+
+            compound->put(new TAG_FLOAT("sx", scale.x));
+            compound->put(new TAG_FLOAT("sy", scale.y));
+            compound->put(new TAG_FLOAT("sz", scale.z));
+
+            return compound;
+        }
+        virtual void load(TAG_COMPOUND* tag){
+            this->translate.x = tag->get<TAG_FLOAT>("tx")->getPayload();
+            this->translate.y = tag->get<TAG_FLOAT>("ty")->getPayload();
+            this->translate.z = tag->get<TAG_FLOAT>("tz")->getPayload();
+
+            this->rotation.x = tag->get<TAG_FLOAT>("rx")->getPayload();
+            this->rotation.y = tag->get<TAG_FLOAT>("ry")->getPayload();
+            this->rotation.z = tag->get<TAG_FLOAT>("rz")->getPayload();
+
+            this->scale.x = tag->get<TAG_FLOAT>("sx")->getPayload();
+            this->scale.y = tag->get<TAG_FLOAT>("sy")->getPayload();
+            this->scale.z = tag->get<TAG_FLOAT>("sz")->getPayload();
         }
         glm::mat4 getTranslationMatrix(){
             glm::mat4 trans(1.0);
@@ -124,6 +157,16 @@ namespace TD {
         virtual Component* allocateData() {
             return new MeshComponent(modelName);
         }
+        virtual TAG_COMPOUND* save(){
+            auto* compound = new TAG_COMPOUND(this->getName());
+
+            compound->put(new TAG_STRING("modelName", modelName));
+
+            return compound;
+        }
+        virtual void load(TAG_COMPOUND* tag){
+            this->modelName = tag->get<TAG_STRING>("modelName")->getPayload();
+        }
         inline std::string getModelName(){return modelName;}
         virtual constexpr std::string getName(){return MESH_RENDERER_COMPONENT;}
     };
@@ -151,6 +194,16 @@ namespace TD {
         }
         virtual Component* allocateData() {
             return new AudioPlayerComponent(audioFile);
+        }
+        virtual TAG_COMPOUND* save(){
+            auto* compound = new TAG_COMPOUND(this->getName());
+
+            compound->put(new TAG_STRING("audioFile", audioFile));
+
+            return compound;
+        }
+        virtual void load(TAG_COMPOUND* tag){
+            this->audioFile = tag->get<TAG_STRING>("audioFile")->getPayload();
         }
         inline std::string getAudioFile(){return audioFile;}
         virtual constexpr std::string getName(){return AUDIO_PLAYER_COMPONENT;}
@@ -222,6 +275,10 @@ namespace TD {
         virtual ~System() = default;
     };
 
+    // deallocated at the closing of the window.
+    extern parallel_flat_hash_map<std::string, Component*> componentAllocators;
+    extern parallel_flat_hash_map<std::string, System*> systemAllocators;
+
     class World {
     private:
         parallel_flat_hash_map<std::string, dPtr<TD::Entity>> entityMap;
@@ -243,6 +300,51 @@ namespace TD {
         World();
         void render();
         void update();
+        virtual TAG_COMPOUND* save(){
+            auto* ret = new TAG_COMPOUND("World");
+            for (auto e : entityList){
+                auto compList = e->getComponents();
+                auto* tag = new TAG_COMPOUND("Entity_" + std::to_string(e->getID()));
+
+                tag->put(new TAG_STRING("EntityName", e->getName()));
+                auto* cmpts = new TAG_COMPOUND("Components");
+                for (auto c : compList){
+                    cmpts->put(c->save());
+                }
+                tag->put(cmpts);
+
+                ret->put(tag);
+            }
+            return ret;
+        }
+        virtual void load(TAG_COMPOUND* tag){
+            auto tagList = tag->getTags();
+            for (const auto& t : tagList){
+                // tag representing the entity
+                auto* asCompoundEntity_ = dynamic_cast<TAG_COMPOUND*>(t.get());
+                // this should never be false. we aren't going to exit if this happens
+                // but we will give a warning. If you see this, that is bad!
+                if (asCompoundEntity_->hasTag("EntityName")){
+                    // create a new entity representation.
+                    // now yes we did store the id in the name however that isn't overly relevant.
+                    // the engine handles assigning the IDs, and we don't really use them
+                    auto* e = new Entity(asCompoundEntity_->get<TAG_STRING>("EntityName")->getPayload());
+                    auto* entityComponents = asCompoundEntity_->get<TAG_COMPOUND>("Components");
+                    for (auto c : entityComponents->getTags()){
+                        // tag representing the component's data.
+                        auto* asCompoundComponent_ = dynamic_cast<TAG_COMPOUND*>(t.get());
+                        // the name should be the name of the component.
+                        std::string name = asCompoundComponent_->getName();
+                        auto* compoundUnloaded = componentAllocators.at(name)->allocateDefault();
+                        compoundUnloaded->load(asCompoundComponent_);
+                        e->addComponent(dPtr<Component>(compoundUnloaded));
+                    }
+
+                    spawnEntity(e);
+                } else
+                    wlog << "Invalid entity format!";
+            }
+        }
 
         inline flat_hash_map<ID, dPtr<Component>>& getComponents(const std::string& name){return components.at(name);}
 
@@ -334,10 +436,6 @@ namespace TD {
             return new MeshRendererSystem(wrld);
         }
     };
-
-    // deallocated at the closing of the window.
-    extern parallel_flat_hash_map<std::string, Component*> componentAllocators;
-    extern parallel_flat_hash_map<std::string, System*> systemAllocators;
 
     static void registerAllocators(){
         componentAllocators.insert(std::pair(MESH_RENDERER_COMPONENT, new MeshComponent("")));

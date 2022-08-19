@@ -581,7 +581,7 @@ namespace TD {
         public:
             TAG_COMPOUND() : NBT_TAG(ID_TAG_COMPOUND) {}
 
-            TAG_COMPOUND(const std::string &name) : NBT_TAG(name, ID_TAG_COMPOUND) {}
+            explicit TAG_COMPOUND(const std::string &name) : NBT_TAG(name, ID_TAG_COMPOUND) {}
 
             TAG_COMPOUND(const std::string &name, std::vector<std::shared_ptr<NBT_TAG>> payload) : NBT_TAG(name,
                                                                                                            ID_TAG_COMPOUND) {
@@ -610,6 +610,10 @@ namespace TD {
 
             inline bool hasTag(const std::string &tag) {
                 return tagMap.find(tag) != tagMap.end();
+            }
+
+            std::vector<std::shared_ptr<NBT_TAG>> getTags(){
+                return tags;
             }
 
             inline virtual void writePayload(std::ostream &file) {
@@ -723,7 +727,7 @@ namespace TD {
                     root.readName(in);
                     root.readPayload(in);
 
-                    boost::iostreams::close(inbuff);
+                    boost::iostreams::close(inbuf);
                 } else {
                     char type;
                     file.read(&type, 1);
