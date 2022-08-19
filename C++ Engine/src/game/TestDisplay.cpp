@@ -16,7 +16,7 @@ namespace TD {
          /**
           * create our entities
           */
-        /*auto* Lewis = new Entity("Lewis");
+        auto* Lewis = new Entity("Lewis");
         static_cast<TransformComponent*>(Lewis->getComponent(TRANSFORM_COMPONENT).get())->setTranslation(glm::vec3(0, 1, 0));
         Lewis->addComponent(dPtr<Component>(new MeshComponent("kent")));
         world->spawnEntity(Lewis);
@@ -46,7 +46,7 @@ namespace TD {
         static_cast<TransformComponent*>(Alejandro->getComponent(TRANSFORM_COMPONENT).get())->setTranslation(glm::vec3(0, 20, 0));
         static_cast<TransformComponent*>(Alejandro->getComponent(TRANSFORM_COMPONENT).get())->setRotation(glm::vec3(90, 0, 0));
         Alejandro->addComponent(dPtr<Component>(new MeshComponent("taylor_plane")));
-        world->spawnEntity(Alejandro);*/
+        world->spawnEntity(Alejandro);
 
         world->updateDirectionalLighting(direction, color, dirEnabled);
     }

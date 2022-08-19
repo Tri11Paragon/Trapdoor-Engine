@@ -146,6 +146,64 @@ namespace TD {
         gBufferFbo.updateLights(lights);
     }
 
+    void World::load(TAG_COMPOUND *tag) {
+        auto tagList = tag->getTags();
+        for (const auto& t : tagList){
+            // tag representing the entity
+            auto* asCompoundEntity_ = dynamic_cast<TAG_COMPOUND*>(t.get());
+            tlog << "Loading entity: " << asCompoundEntity_->getName();
+            // this should never be false. we aren't going to exit if this happens
+            // but we will give a warning. If you see this, that is bad!
+            if (asCompoundEntity_->hasTag("EntityName")){
+                // create a new entity representation.
+                // now yes we did store the id in the name however that isn't overly relevant.
+                // the engine handles assigning the IDs, and we don't really use them
+                auto* e = new Entity(asCompoundEntity_->get<TAG_STRING>("EntityName")->getPayload());
+                auto* entityComponents = asCompoundEntity_->get<TAG_COMPOUND>("Components");
+                for (auto c : entityComponents->getTags()){
+                    tlog << "Loading component: " << c->getName();
+                    // tag representing the component's data.
+                    auto *asCompoundComponent_ = dynamic_cast<TAG_COMPOUND *>(c.get());
+                    // the name should be the name of the component.
+                    std::string name = asCompoundComponent_->getName();
+                    Component *compoundUnloaded;
+                    // transforms aren't allowed to be added / removed from entities, + are created when we call new Entity:
+                    // so they don't exist inside the allocator table,
+                    // so we need a special case from them here.
+                    if (name == TRANSFORM_COMPONENT){
+                        auto transform = e->getComponent(TRANSFORM_COMPONENT);
+                        transform->load(asCompoundComponent_);
+                    } else {
+                        compoundUnloaded = componentAllocators.at(name)->allocateDefault();
+                        compoundUnloaded->load(asCompoundComponent_);
+                        e->addComponent(dPtr<Component>(compoundUnloaded));
+                    }
+                }
+
+                spawnEntity(e);
+            } else
+                wlog << "Invalid entity format!";
+        }
+    }
+
+    TAG_COMPOUND *World::save() {
+        auto* ret = new TAG_COMPOUND("World");
+        for (auto e : entityList){
+            auto compList = e->getComponents();
+            auto* tag = new TAG_COMPOUND("Entity_" + std::to_string(e->getID()));
+
+            tag->put(new TAG_STRING("EntityName", e->getName()));
+            auto* cmpts = new TAG_COMPOUND("Components");
+            for (auto c : compList){
+                cmpts->put(c->save());
+            }
+            tag->put(cmpts);
+
+            ret->put(tag);
+        }
+        return ret;
+    }
+
     void MeshRendererSystem::render(shader* shader) {
         auto &meshComponents = world->getComponents(MESH_RENDERER_COMPONENT);
         auto &transforms = world->getComponents(TRANSFORM_COMPONENT);
