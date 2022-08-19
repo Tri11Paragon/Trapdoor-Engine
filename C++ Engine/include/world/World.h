@@ -205,7 +205,7 @@ namespace TD {
         }
         virtual void load(TAG_COMPOUND* tag){
             this->audioFile = tag->get<TAG_STRING>("audioFile")->getPayload();
-            strcpy(stringBuffer, audioFile.c_str()
+            strcpy(stringBuffer, audioFile.c_str());
         }
         inline std::string getAudioFile(){return audioFile;}
         virtual constexpr std::string getName(){return AUDIO_PLAYER_COMPONENT;}
