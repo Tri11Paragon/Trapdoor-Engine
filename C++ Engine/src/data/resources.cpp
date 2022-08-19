@@ -161,9 +161,11 @@ namespace TD {
 
                         auto *display = GameRegistry::getDisplayByID(root.getName());
 
-                        if (root.hasTag("name"))
-                            display->allocate(root.get<TAG_STRING>("name")->getPayload())->onLoad(&root);
-                        else
+                        if (root.hasTag("name")) {
+                            auto n = root.get<TAG_STRING>("name")->getPayload();
+                            display->allocate(n)->onLoad(&root);
+                            DisplayManager::changeDisplay(n);
+                        } else
                             wlog << ".display format invalid!";
                     }
                 }

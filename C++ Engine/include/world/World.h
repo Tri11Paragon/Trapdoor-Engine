@@ -290,7 +290,7 @@ namespace TD {
         TD::skyboxRenderer skyboxRenderer;
         TD::gBufferFBO gBufferFbo;
         TD::shadowFBO shadowFbo;
-        TD::shader fxaaShader = TD::shader("../assets/shaders/postprocessing/filter-fxaa.vert", "../assets/shaders/postprocessing/filter-fxaa.frag");
+        //TD::shader fxaaShader = TD::shader("../assets/shaders/postprocessing/filter-fxaa.vert", "../assets/shaders/postprocessing/filter-fxaa.frag");
 
         World(const World& that); // Disable Copy Constructor
         World& operator=(const World& that); // Disable Copy Assignment
