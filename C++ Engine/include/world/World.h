@@ -331,13 +331,20 @@ namespace TD {
                     auto* e = new Entity(asCompoundEntity_->get<TAG_STRING>("EntityName")->getPayload());
                     auto* entityComponents = asCompoundEntity_->get<TAG_COMPOUND>("Components");
                     for (auto c : entityComponents->getTags()){
-                        // tag representing the component's data.
-                        auto* asCompoundComponent_ = dynamic_cast<TAG_COMPOUND*>(t.get());
-                        // the name should be the name of the component.
-                        std::string name = asCompoundComponent_->getName();
-                        auto* compoundUnloaded = componentAllocators.at(name)->allocateDefault();
-                        compoundUnloaded->load(asCompoundComponent_);
-                        e->addComponent(dPtr<Component>(compoundUnloaded));
+                            // tag representing the component's data.
+                            auto *asCompoundComponent_ = dynamic_cast<TAG_COMPOUND *>(c.get());
+                            // the name should be the name of the component.
+                            std::string name = asCompoundComponent_->getName();
+                            Component *compoundUnloaded;
+                            // transforms aren't allowed to be added / removed from entities,
+                            // so they don't exist inside the allocator table,
+                            // so we need a special case from them here.
+                            if (name == TRANSFORM_COMPONENT){
+                                compoundUnloaded = new TransformComponent();
+                            } else
+                                compoundUnloaded = componentAllocators.at(name)->allocateDefault();
+                            compoundUnloaded->load(asCompoundComponent_);
+                            e->addComponent(dPtr<Component>(compoundUnloaded));
                     }
 
                     spawnEntity(e);

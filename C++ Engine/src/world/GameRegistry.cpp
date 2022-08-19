@@ -178,7 +178,7 @@ namespace TD {
     }
 
     void GameRegistry::registerDisplayType(const std::string& id, Display *display) {
-        displayAllocators.insert({id, display});
+        displayAllocators.insert(std::pair(std::string(id), display));
     }
 
     Display *GameRegistry::getDisplayByID(const std::string& id) {

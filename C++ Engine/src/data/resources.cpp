@@ -16,14 +16,15 @@
 #include <iostream>
 #include <data/NBT.h>
 #include <filesystem>
+
 using namespace boost::filesystem;
 
 namespace TD {
 
     extern int _display_w, _display_h;
-    extern std::unordered_map<std::string, TD::Display*> displays;
+    extern std::unordered_map<std::string, TD::Display *> displays;
     extern std::string activeDisplay;
-    extern discord::Core* discore;
+    extern discord::Core *discore;
 
     /** ============{ Resources }============ **/
     std::string trapdoor_home;
@@ -49,8 +50,9 @@ namespace TD {
         }
     }
 
-    std::string Resources::getTrapdoorHome() {return trapdoor_home;}
-    std::string Resources::getUserHome() {return user_home;}
+    std::string Resources::getTrapdoorHome() { return trapdoor_home; }
+
+    std::string Resources::getUserHome() { return user_home; }
 
     /** ============{ Project }============ **/
     PropertiesFormat properties(trapdoor_home + "/trapdoor.profile");
@@ -59,19 +61,19 @@ namespace TD {
     int rc;
 
     sqlite3 *projectDB;
-    std::string projectDBLocation {};
+    std::string projectDBLocation{};
     char *projectErrMsg = nullptr;
     int projectRC;
 
-    std::string projectHome {};
-    std::string projectName {};
-    std::string lastFolderOpen {};
+    std::string projectHome{};
+    std::string projectName{};
+    std::string lastFolderOpen{};
 
-    static int qInsertProjectSettingsTableEmpty(void *NotUsed, int columnCount, char **columnData, char **azColName){
+    static int qInsertProjectSettingsTableEmpty(void *NotUsed, int columnCount, char **columnData, char **azColName) {
         return 0;
     }
 
-    static int qLastProject(void *NotUsed, int columnCount, char **columnData, char **azColName){
+    static int qLastProject(void *NotUsed, int columnCount, char **columnData, char **azColName) {
         if (columnCount > 1) {
             tlog << "CC :" << columnCount;
             projectHome = columnData[0];
@@ -84,7 +86,8 @@ namespace TD {
             return 0;
         } else {
             char *lErrMsg = nullptr;
-            int lrc = sqlite3_exec(db, "INSERT INTO settings VALUES (NULL, NULL);", qInsertProjectSettingsTableEmpty, nullptr, &lErrMsg);
+            int lrc = sqlite3_exec(db, "INSERT INTO settings VALUES (NULL, NULL);", qInsertProjectSettingsTableEmpty,
+                                   nullptr, &lErrMsg);
             if (lrc != SQLITE_OK) {
                 elog << "Error executing querry: " << lErrMsg;
                 sqlite3_free(lErrMsg);
@@ -126,8 +129,8 @@ namespace TD {
         newProjectDialogOpen = true;
     }
 
-    void Project::loadProject(const std::string& folderPath) {
-        if (exists(projectHome + "/project.profile")){
+    void Project::loadProject(const std::string &folderPath) {
+        if (exists(projectHome + "/project.profile")) {
             PropertiesFormat project(projectHome + "/project.profile");
             project.load();
             if (project.hasProperty("projectName"))
@@ -136,34 +139,32 @@ namespace TD {
     }
 
     bool Project::saveDisplays() {
-        for (auto d : displays){
-            auto* root = d.second->onSave();
-            if (root){
+        for (auto d: displays) {
+            auto *root = d.second->onSave();
+            if (root) {
                 TD::NBTWriterThreaded(*root, projectHome + "/displays/" + d.first + ".display");
             }
         }
         return true;
     }
 
-    extern parallel_flat_hash_map<std::string, Display*> displayAllocators;
-
     bool Project::loadDisplays() {
         if (projectHome.empty())
             return false;
         path p(projectHome + "/displays/");
-        if (exists(p) && is_directory(p)){
+        if (exists(p) && is_directory(p)) {
             // TODO: remove boost filesystem since std::filesystem contains the functions.
-            for (const auto& dir : std::filesystem::directory_iterator(projectHome + "/displays/")){
-                if (is_regular_file(dir.path())){
-                    if (dir.path().extension() == ".display"){
-                        try {
-                            TAG_COMPOUND root = NBTRecursiveReader::read(dir.path());
-                            tlog << "Loading display of type: " << root.getName();
-                            displayAllocators.at(root.getName())->allocate(
-                                    root.get<TAG_STRING>("name")->getPayload())->onLoad(&root);
-                        } catch (std::exception& e){
-                            flog << e.what();
-                        }
+            for (const auto &dir: std::filesystem::directory_iterator(projectHome + "/displays/")) {
+                if (is_regular_file(dir.path())) {
+                    if (dir.path().extension() == ".display") {
+                        TAG_COMPOUND root = NBTRecursiveReader::read(dir.path());
+
+                        auto *display = GameRegistry::getDisplayByID(root.getName());
+
+                        if (root.hasTag("name"))
+                            display->allocate(root.get<TAG_STRING>("name")->getPayload())->onLoad(&root);
+                        else
+                            wlog << ".display format invalid!";
                     }
                 }
             }
@@ -187,15 +188,15 @@ namespace TD {
         sqlite3_close(db);
     }
 
-    bool Project::setProjectLocationDialog(std::string& out) {
+    bool Project::setProjectLocationDialog(std::string &out) {
         nfdchar_t *outPath = nullptr;
-        nfdresult_t result = NFD_PickFolder( lastFolderOpen.empty() ? nullptr : lastFolderOpen.c_str(), &outPath );
-        if ( result == NFD_OKAY ) {
+        nfdresult_t result = NFD_PickFolder(lastFolderOpen.empty() ? nullptr : lastFolderOpen.c_str(), &outPath);
+        if (result == NFD_OKAY) {
             out = outPath;
             free(outPath);
             lastFolderOpen = out;
             return true;
-        } else if ( result == NFD_CANCEL )
+        } else if (result == NFD_CANCEL)
             elog << "User pressed cancel.";
         else
             elog << NFD_GetError();
@@ -206,15 +207,17 @@ namespace TD {
 
     bool Project::showNewProjectDialog() {
         bool stayOpen = true;
-        ImGui::SetNextWindowPos(ImVec2((float)_display_w /2, (float)_display_h / 2 - (float)offsetY/2), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-        ImGui::Begin("New Project", &stayOpen, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoSavedSettings);
+        ImGui::SetNextWindowPos(ImVec2((float) _display_w / 2, (float) _display_h / 2 - (float) offsetY / 2),
+                                ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+        ImGui::Begin("New Project", &stayOpen, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse |
+                                               ImGuiWindowFlags_NoSavedSettings);
 
         static char stringBuffer[512]{};
 
         ImGui::Text("Project Name: ");
         ImGui::InputText("##Name", stringBuffer, 512, ImGuiInputTextFlags_EnterReturnsTrue);
         Strtrim(stringBuffer);
-        if (stringBuffer[0]){
+        if (stringBuffer[0]) {
             projectName = std::string(stringBuffer);
             boost::trim(projectName);
         }
@@ -222,12 +225,12 @@ namespace TD {
         ImGui::Text("Project Directory: ");
         ImGui::SameLine();
         ImGui::Text("%s", projectHome.c_str());
-        if (ImGui::Button("Select Directory")){
+        if (ImGui::Button("Select Directory")) {
             setProjectLocationDialog(projectHome);
         }
         ImGui::NewLine();
-        if (ImGui::Button("Create New Project")){
-            if (projectHome.empty() || projectName.empty()){
+        if (ImGui::Button("Create New Project")) {
+            if (projectHome.empty() || projectName.empty()) {
                 wlog << "Project name and home must not be empty!";
             } else {
                 createNewProject();
@@ -239,12 +242,14 @@ namespace TD {
         return stayOpen;
     }
 
-    extern parallel_flat_hash_map<std::string, Display*> displayAllocators;
+    extern parallel_flat_hash_map<std::string, Display *> displayAllocators;
 
     bool Project::showNewScreenDialog() {
         bool stayOpen = true;
-        ImGui::SetNextWindowPos(ImVec2((float)_display_w /2, (float)_display_h / 2 - (float)offsetY/2), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-        ImGui::Begin("New Project", &stayOpen, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoSavedSettings);
+        ImGui::SetNextWindowPos(ImVec2((float) _display_w / 2, (float) _display_h / 2 - (float) offsetY / 2),
+                                ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+        ImGui::Begin("New Project", &stayOpen, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse |
+                                               ImGuiWindowFlags_NoSavedSettings);
 
         static char stringBuffer[512]{};
         std::string displayName;
@@ -252,16 +257,16 @@ namespace TD {
         ImGui::Text("Display Name: ");
         ImGui::InputText("##DisName", stringBuffer, 512, ImGuiInputTextFlags_EnterReturnsTrue);
         Strtrim(stringBuffer);
-        if (stringBuffer[0]){
+        if (stringBuffer[0]) {
             displayName = std::string(stringBuffer);
             boost::trim(displayName);
         }
 
         static std::string displayType;
 
-        if (ImGui::BeginMenu("Display Type")){
-            for (const auto& d : displayAllocators) {
-                if (ImGui::MenuItem(d.first.c_str(), nullptr, displayType == d.first)){
+        if (ImGui::BeginMenu("Display Type")) {
+            for (const auto &d: displayAllocators) {
+                if (ImGui::MenuItem(d.first.c_str(), nullptr, displayType == d.first)) {
                     displayType = d.first;
                 }
             }
@@ -275,7 +280,7 @@ namespace TD {
                     DisplayManager::changeDisplay(displayName);
                     stayOpen = false;
                     displayType = {};
-                } catch (std::exception& e) {
+                } catch (std::exception &e) {
                     elog << e.what();
                 }
             } else
@@ -288,8 +293,8 @@ namespace TD {
 
     void Project::createNewProject() {
         activeDisplay = "NULL";
-        for (auto& d : displays)
-            delete(d.second);
+        for (auto &d: displays)
+            delete (d.second);
         displays.clear();
     }
 
@@ -299,7 +304,7 @@ namespace TD {
 
     bool Project::saveProject() {
         int count;
-        if (projectHome.empty()){
+        if (projectHome.empty()) {
             newProjectDialogOpen = true;
             return false;
         }
@@ -310,18 +315,18 @@ namespace TD {
         properties.setOverrideProperty("lastOpenFolder", lastFolderOpen);
         properties.save();
 
-        path displaysPath (projectHome + "/displays");
+        path displaysPath(projectHome + "/displays");
         if (!exists(displaysPath))
             create_directories(displaysPath);
-        path resourcesPath (projectHome + "/resources");
+        path resourcesPath(projectHome + "/resources");
         if (!exists(resourcesPath))
             create_directories(resourcesPath);
-        path savesPath (projectHome + "/saves");
+        path savesPath(projectHome + "/saves");
         if (!exists(savesPath))
             create_directories(savesPath);
 
-        PropertiesFormat project (projectHome + "/project.profile");
-        if (exists(projectHome + "/project.profile")){
+        PropertiesFormat project(projectHome + "/project.profile");
+        if (exists(projectHome + "/project.profile")) {
             // load it so we don't override other data
             project.load();
         }
@@ -354,19 +359,19 @@ namespace TD {
     }
 
     void PropertiesFormat::load() {
-        if (path.empty()){
+        if (path.empty()) {
             wlog << "Path is empty!";
             return;
         }
-        const unsigned int length = 128*1024;
+        const unsigned int length = 128 * 1024;
         char buffer[length];
         std::ifstream file(path);
         file.rdbuf()->pubsetbuf(buffer, length);
 
         int currentLine = 0;
         std::string line;
-        while (std::getline(file, line)){
-            if (line.starts_with("#") || line.starts_with("//") || line.starts_with("--")){
+        while (std::getline(file, line)) {
+            if (line.starts_with("#") || line.starts_with("//") || line.starts_with("--")) {
                 comments.insert(std::pair(currentLine, line + "\n"));
                 currentLine++;
                 continue;
@@ -374,7 +379,7 @@ namespace TD {
             std::vector<std::string> splitStrs;
             boost::split(splitStrs, line, boost::is_any_of("="));
 
-            if (splitStrs.size() < 2){
+            if (splitStrs.size() < 2) {
                 // nulls out lines that aren't valid
                 // but keeps the spacing.
                 comments.insert(std::pair(currentLine, "\n"));
@@ -393,21 +398,21 @@ namespace TD {
     }
 
     void PropertiesFormat::save() {
-        if (path.empty()){
+        if (path.empty()) {
             wlog << "Path is empty!";
             return;
         }
-        const unsigned int length = 128*1024;
+        const unsigned int length = 128 * 1024;
         char buffer[length];
-        std::ofstream file (path);
+        std::ofstream file(path);
         file.rdbuf()->pubsetbuf(buffer, length);
 
         int currentLine = 0;
         auto itr = properties.begin();
         const auto end = properties.end();
-        while(itr != end){
+        while (itr != end) {
             // we have a comment at this current line.
-            if (comments.find(currentLine) != comments.end()){
+            if (comments.find(currentLine) != comments.end()) {
                 file << comments.at(currentLine);
                 comments.erase(currentLine);
                 currentLine++;
