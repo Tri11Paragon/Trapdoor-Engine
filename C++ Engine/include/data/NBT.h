@@ -630,9 +630,12 @@ namespace TD {
                 do {
                     char sid;
                     file.read(&sid, 1);
-                    //if (file.eof() || file.fail()) {
-                    //    break;
-                    //}
+                    if (file.eof()) {
+                        tlog << "Hey we are EOF";
+                        tlog << std::to_string(sid);
+                        file.clear(std::ios::failbit | std::ios::eofbit);
+                        break;
+                    }
                     id = (unsigned char) sid;
                     std::shared_ptr<NBT_TAG> taggers;
                     switch (id) {
@@ -702,12 +705,11 @@ namespace TD {
 
     class NBTRecursiveReader {
         public:
-            static TAG_COMPOUND read(std::string path, bool useGZip) {
+            static TAG_COMPOUND read(const std::string& path, bool useGZip) {
                 const unsigned int length = 128 * 1024;
                 char buffer[length];
-                std::ifstream file;
+                std::ifstream file(path, std::ios::binary);
                 file.rdbuf()->pubsetbuf(buffer, length);
-                file.open(path, std::ios::binary);
 
                 TAG_COMPOUND root;
                 if (useGZip){
@@ -744,7 +746,7 @@ namespace TD {
 
                 return root;
             }
-            static TAG_COMPOUND read(std::string path) {
+            static TAG_COMPOUND read(const std::string& path) {
                 return read(path, true);
             }
     };

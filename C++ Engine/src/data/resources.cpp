@@ -133,7 +133,6 @@ namespace TD {
             if (project.hasProperty("projectName"))
                 projectName = project.getProperty("projectName");
         }
-        loadDisplays();
     }
 
     bool Project::saveDisplays() {
@@ -146,6 +145,8 @@ namespace TD {
         return true;
     }
 
+    extern parallel_flat_hash_map<std::string, Display*> displayAllocators;
+
     bool Project::loadDisplays() {
         if (projectHome.empty())
             return false;
@@ -157,9 +158,9 @@ namespace TD {
                     if (dir.path().extension() == ".display"){
                         try {
                             TAG_COMPOUND root = NBTRecursiveReader::read(dir.path());
-                            tlog << root.getName();
-                            GameRegistry::getDisplayByID(root.getName())->allocate(
-                                    root.get<TAG_STRING>("name")->getPayload());
+                            tlog << "Loading display of type: " << root.getName();
+                            displayAllocators.at(root.getName())->allocate(
+                                    root.get<TAG_STRING>("name")->getPayload())->onLoad(&root);
                         } catch (std::exception& e){
                             flog << e.what();
                         }

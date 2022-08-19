@@ -38,6 +38,8 @@ int main(int, char**){
     TD::DisplayManager::init("Trapdoor " + std::to_string(ENGINE_VERSION_MAJOR) + "." + std::to_string(ENGINE_VERSION_MINOR) + "."
             + std::to_string(ENGINE_VERSION_PATCH) + " // C++ Test");
 
+    TD::Project::loadDisplays();
+
     // Standard Defered about 120fps @ 1024 lights (8.5ms)
     // will automatically be cleaned up when the display manager exits
     /*new TD::TestDisplay("TestDisplay");
