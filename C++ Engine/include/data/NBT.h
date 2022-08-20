@@ -769,6 +769,7 @@ namespace TD {
                     compound.writeName(out);
                     compound.writePayload(out);
 
+                    boost::iostreams::flush(outbuf);
                     boost::iostreams::close(outbuf);
                 } else {
                     compound.writeType(file);
@@ -776,6 +777,7 @@ namespace TD {
                     compound.writePayload(file);
                 }
 
+                file.flush();
                 file.close();
             }
 
