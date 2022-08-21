@@ -2384,9 +2384,18 @@ namespace IMGUIZMO_NAMESPACE
 
       mat.OrthoNormalize();
 
-      rotation[0] = RAD2DEG * atan2f(mat.m[1][2], mat.m[2][2]);
-      rotation[1] = RAD2DEG * atan2f(-mat.m[0][2], sqrtf(mat.m[1][2] * mat.m[1][2] + mat.m[2][2] * mat.m[2][2]));
-      rotation[2] = RAD2DEG * atan2f(mat.m[0][1], mat.m[0][0]);
+      float m12 = mat.m[1][2] / scale[1];
+      float m22 = mat.m[2][2] / scale[2];
+      float m02 = mat.m[0][2] / scale[0];
+      float m01 = mat.m[0][1] / scale[0];
+      float m00 = mat.m[0][0] / scale[0];
+
+      //rotation[0] = RAD2DEG * atan2f(mat.m[1][2], mat.m[2][2]);
+      //rotation[1] = RAD2DEG * atan2f(-mat.m[0][2], sqrtf(mat.m[1][2] * mat.m[1][2] + mat.m[2][2] * mat.m[2][2]));
+      //rotation[2] = RAD2DEG * atan2f(mat.m[0][1], mat.m[0][0]);
+      rotation[0] = RAD2DEG * atan2f(m12, m22);
+      rotation[1] = RAD2DEG * atan2f(m02, sqrtf(m12 * m12 + m22 * m22));
+      rotation[2] = RAD2DEG * atan2f(m01, m00);
 
       translation[0] = mat.v.position.x;
       translation[1] = mat.v.position.y;
@@ -2883,7 +2892,7 @@ namespace IMGUIZMO_NAMESPACE
                interpolationUp = referenceUp;
             }
             interpolationFrames = 40;
-            
+
          }
          isClicking = false;
          isDraging = false;
