@@ -16,6 +16,7 @@
 #include <iostream>
 #include <data/NBT.h>
 #include <filesystem>
+#include <config.h>
 
 using namespace boost::filesystem;
 
@@ -112,7 +113,9 @@ namespace TD {
                 lastFolderOpen = properties.getProperty("lastOpenFolder");
             }
 
+#ifdef DEBUG_ENABLED
             TD::Editor::setToOpen();
+#endif
             if (!projectHome.empty()) {
                 loadProject(projectHome);
                 return true;
@@ -122,11 +125,17 @@ namespace TD {
         return false;
     }
 
+#ifdef DEBUG_ENABLED
     extern bool newProjectDialogOpen;
+#else
+    bool newProjectDialogOpen = false;
+#endif
 
     void Project::newProject() {
+#ifdef DEBUG_ENABLED
         TD::Editor::setToOpen();
         newProjectDialogOpen = true;
+#endif
     }
 
     void Project::loadProject(const std::string &folderPath) {
@@ -157,7 +166,7 @@ namespace TD {
             for (const auto &dir: std::filesystem::directory_iterator(projectHome + "/displays/")) {
                 if (is_regular_file(dir.path())) {
                     if (dir.path().extension() == ".display") {
-                        TAG_COMPOUND root = NBTRecursiveReader::read(dir.path());
+                        TAG_COMPOUND root = NBTRecursiveReader::read(dir.path().string());
 
                         auto *display = GameRegistry::getDisplayByID(root.getName());
 
@@ -204,8 +213,12 @@ namespace TD {
             elog << NFD_GetError();
         return false;
     }
-
+    
+#ifdef DEBUG_ENABLED
     extern int offsetY;
+#else
+    int offsetY = 0;
+#endif
 
     bool Project::showNewProjectDialog() {
         bool stayOpen = true;

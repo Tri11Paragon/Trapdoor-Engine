@@ -57,31 +57,39 @@ elseif(WIN32)
     #set( BOOST_INCLUDEDIR "libs/boost_lib_windows/include" CACHE PATH "Boost library path" )
     #set( BOOST_LIBRARYDIR "libs/boost_lib_windows/lib" CACHE PATH "Boost library path" )
     #set(Boost_ARCHITECTURE "-x64")
-    set(Boost_INCLUDE_DIRS libs/boost_lib_windows/include/boost-1_79)
+    set(Boost_INCLUDE_DIRS libs/boost_lib_windows/include/boost-1_80)
     if(CMAKE_BUILD_TYPE MATCHES Debug)
         set(Boost_LIBRARIES 
-            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_atomic-vc143-mt-gd-x64-1_79.lib"
-            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_chrono-vc143-mt-gd-x64-1_79.lib"
-            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_filesystem-vc143-mt-gd-x64-1_79.lib"
-            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_log_setup-vc143-mt-gd-x64-1_79.lib"
-            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_log-vc143-mt-gd-x64-1_79.lib"
-            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_regex-vc143-mt-gd-x64-1_79.lib"
-            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_thread-vc143-mt-gd-x64-1_79.lib"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_atomic-vc143-mt-gd-x64-1_80.lib"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_chrono-vc143-mt-gd-x64-1_80.lib"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_filesystem-vc143-mt-gd-x64-1_80.lib"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_log_setup-vc143-mt-gd-x64-1_80.lib"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_log-vc143-mt-gd-x64-1_80.lib"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_regex-vc143-mt-gd-x64-1_80.lib"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_thread-vc143-mt-gd-x64-1_80.lib"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_iostreams-vc143-mt-gd-x64-1_80.lib"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_zlib-vc143-mt-gd-x64-1_80.lib"
         )
-        set(bfilesystem "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_filesystem-vc143-mt-gd-x64-1_79.lib")
-        set(blog "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_log-vc143-mt-gd-x64-1_79.lib")
+        set(bfilesystem "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_filesystem-vc143-mt-gd-x64-1_80.lib")
+        set(blog "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_log-vc143-mt-gd-x64-1_80.lib")
+        set(iostreams "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_iostreams-vc143-mt-gd-x64-1_80.lib")
+        set(bzlib "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_zlib-vc143-mt-gd-x64-1_80.lib")
     else()
         set(Boost_LIBRARIES 
-            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_atomic-vc143-mt-x64-1_79.lib"
-            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_chrono-vc143-mt-x64-1_79.lib"
-            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_filesystem-vc143-mt-x64-1_79.lib"
-            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_log_setup-vc143-mt-x64-1_79.lib"
-            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_log-vc143-mt-x64-1_79.lib"
-            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_regex-vc143-mt-x64-1_79.lib"
-            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_thread-vc143-mt-x64-1_79.lib"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_atomic-vc143-mt-x64-1_80.lib"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_chrono-vc143-mt-x64-1_80.lib"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_filesystem-vc143-mt-x64-1_80.lib"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_log_setup-vc143-mt-x64-1_80.lib"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_log-vc143-mt-x64-1_80.lib"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_regex-vc143-mt-x64-1_80.lib"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_thread-vc143-mt-x64-1_80.lib"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_iostreams-vc143-mt-x64-1_80.lib"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_zlib-vc143-mt-x64-1_80.lib"
         )
-        set(bfilesystem "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_filesystem-vc143-mt-x64-1_79.lib")
-        set(blog "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_log-vc143-mt-x64-1_79.lib")
+        set(bfilesystem "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_filesystem-vc143-mt-x64-1_80.lib")
+        set(blog "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_log-vc143-mt-x64-1_80.lib")
+        set(iostreams "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_iostreams-vc143-mt-x64-1_80.lib")
+        set(bzlib "${PROJECT_SOURCE_DIR}/libs/boost_lib_windows/lib/libboost_zlib-vc143-mt-x64-1_80.lib")
     endif()
 endif()
 
@@ -137,7 +145,7 @@ message("Backto BUILD: ${TD_BUILD_SETTING} // ${CMAKE_BUILD_TYPE}")
 #include_directories(${PROJECT_SOURCE_DIR}/libs/nativefiledialog/src/include)
 add_subdirectory(libs/nativefiledialog)
 #discord
-add_subdirectory(libs/discord)
+add_subdirectory(libs/discord) 
 
 # Zips
 
@@ -169,7 +177,7 @@ target_link_libraries(${PROJECT_NAME} Threads::Threads)
 if (UNIX)
     target_link_libraries(${PROJECT_NAME} Boost::filesystem Boost::log Boost::iostreams)
 elseif(WIN32)
-    target_link_libraries(${PROJECT_NAME} ${bfilesystem} ${blog})
+    target_link_libraries(${PROJECT_NAME} ${bfilesystem} ${blog} ${iostreams} ${bzlib})
 endif()
 target_link_libraries(${PROJECT_NAME} direct-to-video)
 

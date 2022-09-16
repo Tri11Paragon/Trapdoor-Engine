@@ -187,12 +187,15 @@ static void init_logging(const std::string& file){
 
     std::string _format = "[%TimeStamp%] [%ThreadID%] [%Severity%] %Message%";
 
+#ifdef linux
+
     logging::add_file_log(
             keywords::file_name = "logs/%Y-%m-%d_%H:%M:%S_%N-" + file + ".log",
             keywords::rotation_size = 10 * 1024 * 1024, // 10mb
             keywords::time_based_rotation = sinks::file::rotation_at_time_point(0, 0, 0), // or at midnight
             keywords::format = _format
     );
+#endif
 
     auto log = logging::add_console_log(std::cout, boost::log::keywords::format = _format);
     log->set_formatter(&td_coloring_formatter);
