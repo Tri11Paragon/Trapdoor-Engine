@@ -1,6 +1,15 @@
 cmake_minimum_required(VERSION 3.22)
 project(engine VERSION "0.0.1")
 
+if(CMAKE_CXX_COMPILER MATCHES "/em\\+\\+(-[a-zA-Z0-9.])?$")
+    message(" * C++ compiler: Emscripten")
+    set(USING_EMSCRIPTEN ON)
+else()
+    message(" * C++ cimpiler: ${CMAKE_CXX_COMPILER_ID}")
+endif()
+
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+
 set(CMAKE_CXX_STANDARD 20)
 if (UNIX AND (CMAKE_BUILD_TYPE MATCHES Debug))
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -g")
@@ -21,7 +30,7 @@ else()
     message("release mode")
     set(DEBUG_ENABLED false)
     set(DEBUG_ENABLED_BOOL true)
-endif(CMAKE_BUILD_TYPE MATCHES Debug)
+endif(EnableDebugMenu MATCHES ON)
 set(ENGINE_VERSION_MAJOR " ${PROJECT_VERSION_MAJOR}")
 set(ENGINE_VERSION_MINOR " ${PROJECT_VERSION_MINOR}")
 set(ENGINE_VERSION_PATCH " ${PROJECT_VERSION_PATCH}")
@@ -46,12 +55,31 @@ set(Boost_NO_WARN_NEW_VERSIONS  ON)
 
 # Boost Dirs
 if (UNIX)
-    set( BOOST_ROOT "libs/boost_lib/" CACHE PATH "Boost library path" )
-    set( BOOST_INCLUDEDIR "libs/boost_lib/include" CACHE PATH "Boost library path" )
-    set( BOOST_LIBRARYDIR "libs/boost_lib/lib" CACHE PATH "Boost library path" )
-    set( Boost_NO_SYSTEM_PATHS on CACHE BOOL "Do not search system for Boost" )
+    #message("${CMAKE_SOURCE_DIR}/libs/boost_lib/")
+    #set( BOOST_ROOT "libs/boost_lib/" CACHE PATH "Boost library path" )
+    #set( BOOST_INCLUDEDIR "libs/boost_lib/include" CACHE PATH "Boost library path" )
+    #set( BOOST_LIBRARYDIR "libs/boost_lib/lib" CACHE PATH "Boost library path" )
+    #set( Boost_NO_SYSTEM_PATHS on CACHE BOOL "Do not search system for Boost" )
 
-    find_package(Boost REQUIRED COMPONENTS filesystem log iostreams)
+    #message(${BOOST_INCLUDEDIR})
+
+    #find_package(Boost REQUIRED COMPONENTS filesystem log iostreams)
+    set(Boost_INCLUDE_DIRS libs/boost_lib/include/boost-1_80)
+    set(Boost_LIBRARIES
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib/lib/libboost_atomic.a"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib/lib/libboost_chrono.a"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib/lib/libboost_filesystem.a"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib/lib/libboost_iostreams.a"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib/lib/libboost_log_setup.a"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib/lib/libboost_log.a"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib/lib/libboost_regex.a"
+            "${PROJECT_SOURCE_DIR}/libs/boost_lib/lib/libboost_thread.a"
+            )
+
+    set(bfilesystem     "${PROJECT_SOURCE_DIR}/libs/boost_lib/lib/libboost_filesystem.a")
+    set(blog            "${PROJECT_SOURCE_DIR}/libs/boost_lib/lib/libboost_log.a")
+    set(iostreams       "${PROJECT_SOURCE_DIR}/libs/boost_lib/lib/libboost_iostreams.a")
+
 elseif(WIN32)
     #set( BOOST_ROOT "libs/boost_lib_windows/" CACHE PATH "Boost library path" )
     #set( BOOST_INCLUDEDIR "libs/boost_lib_windows/include" CACHE PATH "Boost library path" )
@@ -99,10 +127,15 @@ find_package(Threads REQUIRED)
 
 #GL Setup
 find_package(OpenGL REQUIRED)
-#find_package(glfw3 3.3 REQUIRED)
-add_subdirectory(libs/glfw)
-include_directories(libs/glfw/include)
-
+if (USING_EMSCRIPTEN)
+    message("Disabling X11")
+    set(GLFW_BUILD_X11 OFF)
+    find_package(glfw3 3.3 REQUIRED)
+    #include_directories(GLF)
+else()
+    add_subdirectory(libs/glfw)
+    include_directories(libs/glfw/include)
+endif()
 add_subdirectory(libs/glad/cmake)
 add_subdirectory(libs/glm)
 
@@ -126,8 +159,11 @@ set(CMAKE_BUILD_TYPE ${TD_BUILD_SETTING})
 add_subdirectory(libs/meshoptimizer)
 message("Meshoptimizer BUILD: ${TD_BUILD_SETTING} // ${CMAKE_BUILD_TYPE}")
 # DTV setup
-add_subdirectory(libs/direct-to-video)
-include_directories(libs/direct-to-video/include)
+if(NOT USING_EMSCRIPTEN)
+    message("Including direct to video!")
+    add_subdirectory(libs/direct-to-video)
+    include_directories(libs/direct-to-video/include)
+endif()
 
 # Bullet Setup
 #set( BULLET_ROOT "libs/bullet3/build" CACHE PATH "Bullet library path" )
@@ -145,7 +181,10 @@ message("Backto BUILD: ${TD_BUILD_SETTING} // ${CMAKE_BUILD_TYPE}")
 #include_directories(${PROJECT_SOURCE_DIR}/libs/nativefiledialog/src/include)
 add_subdirectory(libs/nativefiledialog)
 #discord
-add_subdirectory(libs/discord) 
+if(NOT USING_EMSCRIPTEN)
+    message("Including discord!")
+    add_subdirectory(libs/discord)
+endif()
 
 # Zips
 
@@ -164,7 +203,9 @@ add_executable(${PROJECT_NAME} ${source_files} ${source_c_files})
 
 #Linking
 
-target_link_libraries(${PROJECT_NAME} OpenGL::GL)
+if(NOT USING_EMSCRIPTEN)
+    target_link_libraries(${PROJECT_NAME} OpenGL::GL)
+endif()
 target_link_libraries(${PROJECT_NAME} glfw)
 target_link_libraries(${PROJECT_NAME} glad_gl_core)
 target_link_libraries(${PROJECT_NAME} glm)
@@ -175,12 +216,17 @@ target_link_libraries(${PROJECT_NAME} ${CMAKE_DL_LIBS})
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} Threads::Threads)
 if (UNIX)
-    target_link_libraries(${PROJECT_NAME} Boost::filesystem Boost::log Boost::iostreams)
+    #target_link_libraries(${PROJECT_NAME} Boost::filesystem Boost::log Boost::iostreams)
+    target_link_libraries(${PROJECT_NAME} ${bfilesystem} ${blog} ${iostreams} ${bzlib})
 elseif(WIN32)
     target_link_libraries(${PROJECT_NAME} ${bfilesystem} ${blog} ${iostreams} ${bzlib})
 endif()
-target_link_libraries(${PROJECT_NAME} direct-to-video)
+if(NOT USING_EMSCRIPTEN)
+    target_link_libraries(${PROJECT_NAME} direct-to-video)
+endif()
 
 #target_link_libraries(${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/libs/nativefiledialog/build/lib/Debug/x64/libnfd_d.a)
 target_link_libraries(${PROJECT_NAME} nativefiledialog)
-target_link_libraries(${PROJECT_NAME} discord)
+if(NOT USING_EMSCRIPTEN)
+    target_link_libraries(${PROJECT_NAME} discord)
+endif()

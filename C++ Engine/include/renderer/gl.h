@@ -18,6 +18,7 @@
 #include <utility>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <util.h>
 
 namespace TD {
 
@@ -389,6 +390,28 @@ namespace TD {
         void bindDepthTextureArray();
         void finish();
         virtual void windowResized(int x, int y, int width, int height);
+    };
+
+    class SSAOFBO : public fbo {
+        private:
+            SSAOFBO(const SSAOFBO& that); // Disable Copy Constructor
+            SSAOFBO& operator=(const SSAOFBO& that); // Disable Copy Assignment
+
+            TD::shader* ssaoShader;
+
+            std::uniform_real_distribution<float> randomFloats{0.0f, 1.0f}; // random floats between [0.0, 1.0]
+            std::default_random_engine generator;
+            std::vector<glm::vec3> ssaoKernel;
+
+            virtual void createAttachments();
+        public:
+            SSAOFBO(SSAOFBO &&) noexcept = delete; // Disable move constructor.
+            SSAOFBO& operator=(SSAOFBO &&) noexcept = delete; // Disable Move Assignment
+
+            SSAOFBO();
+            ~SSAOFBO();
+
+            void doSSAO();
     };
 
     void createMatrixUBO();

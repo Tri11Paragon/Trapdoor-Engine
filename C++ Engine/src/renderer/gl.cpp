@@ -855,6 +855,7 @@ namespace TD {
         bindColorTexture(GL_TEXTURE2, GL_COLOR_ATTACHMENT2);
         secondPassShader->use();
         secondPassShader->setVec3("viewPos", camera.getPosition());
+        secondPassShader->setVec2("screenSize", (float)_display_w, (float)_display_h);
         renderToQuad(*secondPassShader);
     }
 
@@ -1057,6 +1058,23 @@ namespace TD {
 
     // shadows don't need to be resized.
     void shadowFBO::windowResized(int x, int y, int width, int height) {
+    }
+
+    /***---------------{Basic SSAO}---------------***/
+    void SSAOFBO::createAttachments() {
+        fbo::createAttachments();
+    }
+
+    SSAOFBO::SSAOFBO() {
+
+    }
+
+    SSAOFBO::~SSAOFBO() {
+
+    }
+
+    void SSAOFBO::doSSAO() {
+
     }
 
     /***---------------{Static Stuff}---------------***/

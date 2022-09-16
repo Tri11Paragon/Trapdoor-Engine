@@ -31,6 +31,7 @@ layout (std140) uniform Matrices {
 uniform vec3 direction;
 uniform vec4 color;
 uniform bool enabled;
+uniform vec2 screenSize;
 
 layout (std140, binding = 3) uniform LightSpaceMatrices {
     mat4 lightSpaceMatrices[16];
@@ -39,7 +40,7 @@ uniform float cascadePlaneDistances[16];
 uniform int cascadeCount;   // number of frusta - 1
 uniform float farPlane;
 
-mat4 ditherPattern = {
+float[][] ditherPattern = {
     { 0.0f, 0.5f, 0.125f, 0.625f},
     { 0.75f, 0.22f, 0.875f, 0.375f},
     { 0.1875f, 0.6875f, 0.0625f, 0.5625},
@@ -143,6 +144,7 @@ vec3 accumFog(vec3 worldPos, vec3 startPosition){
 
     vec3 accumFog = vec3(0.0f);
     //float ditherValue = ditherPattern[int(gl_FragCoord.x) % 4][int(gl_FragCoord.y) % 4];
+    float ditherValue = ditherPattern[int(gl_FragCoord.x * screenSize.x) % 4][int(gl_FragCoord.y * screenSize.y) % 4];
 
     for (int i = 0; i < NB_STEPS; i++) {
         // select cascade layer
@@ -174,7 +176,8 @@ vec3 accumFog(vec3 worldPos, vec3 startPosition){
         if (shadowMapValue > currentDepth) { // worldByShadowCamera.z
             accumFog += vec3(ComputeScattering(dot(rayDirection, direction))) * color.xyz;
         }
-        currentPosition += step;
+
+        currentPosition += step * ditherValue;
     }
     accumFog /= NB_STEPS;
     return accumFog;
@@ -216,5 +219,8 @@ void main() {
             lighting += diffuse + specular;
         }
     }
+
+    //float ditherValue = ditherPattern[int(gl_FragCoord.x * screenSize.x) % 4][int(gl_FragCoord.y * screenSize.y) % 4];
+
     FragColor = vec4(lighting + accumFog(FragPos, viewPos), 1.0);
 }
