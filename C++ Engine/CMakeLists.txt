@@ -12,9 +12,9 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 set(CMAKE_CXX_STANDARD 20)
 if (UNIX AND (CMAKE_BUILD_TYPE MATCHES Debug))
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -g")
-add_compile_options(-fsanitize=address)
-add_link_options(-fsanitize=address)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -g")
+    add_compile_options(-fsanitize=address)
+    add_link_options(-fsanitize=address)
 endif()
 
 #set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
