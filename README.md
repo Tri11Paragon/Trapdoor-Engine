@@ -11,4 +11,4 @@ updated unless there is a project stuck in Java.
 
 ## C++ Engine?
 So the C++ engine is my first big C++ project. My only projects before it was for school and as a result the code isn't exactly clean, clear, or even 
-good C++. The code can be compiled on GCC 12 or MSCV (tested on 2022 Visual Studio)
+good C++. The code can be compiled on GCC 12 or MSVC (tested on 2022 Visual Studio)
