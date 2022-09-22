@@ -64,7 +64,7 @@ if (UNIX)
     #message(${BOOST_INCLUDEDIR})
 
     #find_package(Boost REQUIRED COMPONENTS filesystem log iostreams)
-    set(Boost_INCLUDE_DIRS libs/boost_lib/include/boost-1_80)
+    set(Boost_INCLUDE_DIRS libs/boost_lib/include)
     set(Boost_LIBRARIES
             "${PROJECT_SOURCE_DIR}/libs/boost_lib/lib/libboost_atomic.a"
             "${PROJECT_SOURCE_DIR}/libs/boost_lib/lib/libboost_chrono.a"

@@ -451,9 +451,12 @@ namespace TD {
     void Editor::renderGuizmo() {
         if (world == nullptr)
             return;
+        auto LET = world->getComponentRaw<TransformComponent>(activeEntityID);
+        if (!LET)
+            return;
         ImGuizmo::SetOrthographic(false);
         ImGuizmo::BeginFrame();
-        trans = world->getComponentRaw<TransformComponent>(activeEntityID)->getTranslationMatrix();
+        trans = LET->getTranslationMatrix();
 
         ImGuizmo::SetRect((float)offsetX, (float)-offsetY, (float)(_display_w), (float)(_display_h));
         ImGuizmo::Manipulate(glm::value_ptr(viewMatrix), glm::value_ptr(projectionMatrix), mCurrentGizmoOperation, mCurrentGizmoMode, glm::value_ptr(trans), nullptr, useSnap ? &snap[snapPos] : nullptr);

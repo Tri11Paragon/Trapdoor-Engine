@@ -376,12 +376,14 @@ namespace TD {
         settings.bitRate = 4500 * 1024; // 4500 KBS -- OBS setting
         settings.inputAlpha = true;
         //encoder.run(settings, 16);
-        discord::Activity activity{};
-        activity.SetState(projectName.c_str());
-        activity.SetDetails("Making a game");
-        activity.GetAssets().SetLargeImage("ben");
-        activity.GetAssets().SetSmallImage("character_texture");
-        discore->ActivityManager().UpdateActivity(activity, [](discord::Result result) {});
+        if (discore) {
+            discord::Activity activity{};
+            activity.SetState(projectName.c_str());
+            activity.SetDetails("Making a game");
+            activity.GetAssets().SetLargeImage("ben");
+            activity.GetAssets().SetSmallImage("character_texture");
+            discore->ActivityManager().UpdateActivity(activity, [](discord::Result result) {});
+        }
     }
 
     void runEncoder(){
@@ -396,7 +398,8 @@ namespace TD {
         // Main loop
         while (!TD::window::isCloseRequested()) {
             TD::window::startRender();
-            discore->RunCallbacks();
+            if(discore)
+                discore->RunCallbacks();
 
             TD::debugUI::render();
 #ifdef DEBUG_ENABLED

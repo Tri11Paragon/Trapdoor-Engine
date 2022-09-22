@@ -99,7 +99,7 @@ namespace TD {
 
     bool Project::init() {
         TD::registerAllocators();
-        auto result = discord::Core::Create(1008769434187476995, DiscordCreateFlags_Default, &discore);
+        auto result = discord::Core::Create(1008769434187476995, DiscordCreateFlags_NoRequireDiscord, &discore);
         if (exists(trapdoor_home + "/trapdoor.profile")) {
             properties.open(trapdoor_home + "/trapdoor.profile");
             properties.load();
@@ -364,12 +364,14 @@ namespace TD {
                 sqlite3_free(zErrMsg);
             }
         }*/
-        discord::Activity activity{};
-        activity.SetState(projectName.c_str());
-        activity.SetDetails("Making a game");
-        activity.GetAssets().SetLargeImage("ben");
-        activity.GetAssets().SetSmallImage("character_texture");
-        discore->ActivityManager().UpdateActivity(activity, [](discord::Result result) {});
+        if (discore) {
+            discord::Activity activity{};
+            activity.SetState(projectName.c_str());
+            activity.SetDetails("Making a game");
+            activity.GetAssets().SetLargeImage("ben");
+            activity.GetAssets().SetSmallImage("character_texture");
+            discore->ActivityManager().UpdateActivity(activity, [](discord::Result result) {});
+        }
         return saveDisplays();
     }
 
