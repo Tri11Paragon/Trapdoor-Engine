@@ -379,7 +379,7 @@ namespace TD {
         inline auto end() noexcept { return entityMap.end(); }
         inline auto cend() const noexcept { return entityMap.cend(); }
         inline parallel_flat_hash_map<std::string, dPtr<TD::Entity>> getEntities(){return entityMap;}
-        inline std::vector<dPtr<Entity>> getEntitiesList(){return entityList;}
+        inline std::vector<dPtr<Entity>>& getEntitiesList(){return entityList;}
         ~World();
     };
 

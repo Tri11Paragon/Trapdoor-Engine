@@ -365,12 +365,13 @@ namespace TD {
 
         if (activeDisplay != "NULL") {
             world = displays[activeDisplay]->getWorld();
-        }
+        } else // world must be reset if the active display is null, otherwise we will attempt to access a now deleted world.
+            world = nullptr;
         if (ImGui::CollapsingHeader(activeDisplay.c_str(), nullptr, ImGuiTreeNodeFlags_DefaultOpen)){
             if (world != nullptr){
                 ImGui::BeginChild("_EntityDisplay", ImVec2(0,(float)sceneHierarchyHeight - 120));
                 ImGuiListClipper entityClipper;
-                auto entityList = world->getEntitiesList();
+                auto& entityList = world->getEntitiesList();
                 entityClipper.Begin((int)entityList.size());
                 while (entityClipper.Step()) {
                     for (int row_n = entityClipper.DisplayStart; row_n < entityClipper.DisplayEnd; row_n++) {

@@ -48,6 +48,8 @@ int main(int, char**){
     loadTimer.print();
     TD::DisplayManager::update();
     TD::DisplayManager::close();
+    tlog << "Display Manager closed!";
     TD::Project::close();
+    tlog << "All closed now, exiting! Have a good day :)";
     return 0;
 }

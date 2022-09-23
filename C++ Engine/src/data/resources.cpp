@@ -308,8 +308,10 @@ namespace TD {
 
     void Project::createNewProject() {
         activeDisplay = "NULL";
-        for (auto &d: displays)
-            delete (d.second);
+        for (auto &d: displays) {
+            if (d.first.find("_TD") == d.first.npos)
+                delete (d.second);
+        }
         displays.clear();
     }
 

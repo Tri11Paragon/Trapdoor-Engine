@@ -358,8 +358,6 @@ namespace TD {
     texture::~texture() {
         tlog << "Deleting Texture {" << textureID << "}";
         glDeleteTextures(1, &textureID);
-        if (data != nullptr)
-            stbi_image_free(data);
         data = nullptr;
     }
 
