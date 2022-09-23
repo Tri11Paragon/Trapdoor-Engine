@@ -9,7 +9,7 @@
 #include <vector>
 #include <map>
 #include <string>
-#include <string.h>
+#include <cstring>
 #include <queue>
 #include <ios>
 #include <fstream>

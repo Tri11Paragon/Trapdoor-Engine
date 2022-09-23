@@ -53,7 +53,7 @@ namespace TD {
         // then load all the textures
         while (!textureQueue.empty() || modelLoaded < modelThreads.size()){
             if (!textureQueue.empty()) {
-                auto textureToLoad = textureQueue.front();
+                auto& textureToLoad = textureQueue.front();
 
                 std::string ident = textureToLoad.first;
                 std::string path = textureToLoad.second;

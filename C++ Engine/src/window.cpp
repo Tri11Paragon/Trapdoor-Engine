@@ -15,6 +15,7 @@
 #include <encoder.h>
 #include <cmath>
 #include <discord.h>
+#include <profiler.h>
 
 #include <utility>
 
@@ -81,6 +82,7 @@ namespace TD {
 
 
     void window::initWindow(string title) {
+        profiler::start("Window", "Setup");
         // Setup window
         glfwSetErrorCallback(glfw_error_callback);
         if (!glfwInit()) {
@@ -106,7 +108,9 @@ namespace TD {
         maximizeWindow();
         glfwMakeContextCurrent(_window);
         glfwSwapInterval(0); // Enable vsync
+        profiler::end("Window", "Setup");
 
+        profiler::start("Window", "GL Setup");
         ilog << "GLFW Window Created.\n";
         ilog << "Creating GLAD2 GL Context\n";
 
@@ -119,7 +123,9 @@ namespace TD {
         ilog << "Glad Init Complete. Loaded GL" << GLAD_VERSION_MAJOR(version) << "." << GLAD_VERSION_MINOR(version)
         << "\n";
         ilog << "Creating Dear ImGUI Context.\n";
+        profiler::end("Window", "GL Setup");
 
+        profiler::start("Window", "ImGUI Setup");
         // Setup Dear ImGui context
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
@@ -171,6 +177,7 @@ namespace TD {
         glfwGetFramebufferSize(_window, &_display_w, &_display_h);
         updateOnlyProjection(_display_w, _display_h);
         updateOnlyOrtho(_display_w, _display_h);
+        profiler::endAndPrint("Window", "ImGUI Setup");
 
         _loadingComplete = true;
     }
@@ -342,6 +349,7 @@ namespace TD {
     discord::Core* discore;
 
     void DisplayManager::init(std::string window) {
+        profiler::start("Display Manager Init", "Setup");
         // we use these and are therefore required. The TODO: is to change the paths
         TD::GameRegistry::registerFont("quicksand", "../assets/fonts/quicksand/Quicksand-Regular.ttf", 16.0f);
         TD::GameRegistry::registerFont("roboto", "../assets/fonts/roboto/Roboto-Regular.ttf", 16.0f);
@@ -350,6 +358,7 @@ namespace TD {
         TD::window::initWindow(std::move(window));
         TD::Input::IM_RegisterKeyListener(&keyCallBack);
         defaultLoadDisplay->onSwitch();
+        profiler::endAndPrint("Display Manager Init", "Setup");
 
         while (!TD::GameRegistry::loadingComplete()){
             TD::window::startRender();
@@ -441,6 +450,7 @@ namespace TD {
         TD::window::deleteWindow();
         for (const auto& pa : displays)
             delete(pa.second);
+        profiler::cleanup();
     }
 
     void DisplayManager::changeActiveCamera(camera *camera) {

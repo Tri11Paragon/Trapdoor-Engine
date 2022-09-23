@@ -9,6 +9,8 @@
 
 namespace TD {
 
+    parallel_flat_hash_map<std::string, profiler*> profiles;
+
     profiler::profiler(std::string name) {
         this->name = name;
         TD::debugUI::addTab(this);
